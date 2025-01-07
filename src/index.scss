@@ -1,0 +1,36 @@
+:root {
+    ::selection {
+        background-color: #ffc69e61;
+    }
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #fe6f14 #f7f7f7;
+    font-family: "Rubik", sans-serif;
+
+    &::-webkit-scrollbar {
+        width: 0.7rem;
+        height: 1rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f7f7f7;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #fe6f14;
+        border-radius: 15px;
+        border: 2px solid #f7f7f7;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #c84f03;
+    }
+}
+
+body {
+    button {
+        cursor: pointer;
+    }
+}

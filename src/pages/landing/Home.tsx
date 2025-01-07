@@ -1,0 +1,133 @@
+// import { useContext } from 'react';
+import Button from '@mui/material/Button';
+
+// import { ThemeContext } from '../../theme/ThemeContext';
+import './Home.scss';
+
+const Home = () => {
+    // const { toggleTheme, isDarkMode } = useContext(ThemeContext);
+
+    return (
+        <div className="home-container">
+            {/* Header */}
+            <header className="header">
+                <nav className="nav-container">
+                    <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
+
+                    <div className="nav-buttons">
+                        {/* <button className="theme-toggle">
+                            <span className="material-symbols-rounded">
+                                {isDarkMode ? 'light_mode' : 'dark_mode'}
+                            </span>
+                        </button> */}
+                        <button
+                            className="cta-button"
+                            onClick={() => window.location.href = '/login'}>
+                            Login
+                        </button>
+                    </div>
+                </nav>
+            </header>
+
+            {/* Hero Section */}
+            <section className="hero-section">
+                <div className="hero-container">
+                    <div className="hero-content">
+                        <h2 className="hero-title">
+                            Manage your finances in a SMART way
+                        </h2>
+                        <p className="hero-subtitle">
+                            Take control of your finances and save more with our platform
+                        </p>
+                        <Button
+                            variant="contained"
+                            className="cta-button"
+                            onClick={() => window.location.href = '/login'}>
+                            Start Now
+                        </Button>
+                    </div>
+                    <div className="hero-image">
+                        <img
+                            src="https://res.cloudinary.com/dnhlagojg/image/upload/v1736263487/AppPhotos/Brand/mockup/ujcemumjttmpe3mnjfmt.png"
+                            alt="Dashboard Preview"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            {/* Features Bento Section */}
+            <section className="features-section">
+                <div className="features-container bento-grid">
+                    <article className="feature-card highlight">
+                        <span className="material-symbols-rounded">query_stats</span>
+                        <h4>Annual Report</h4>
+                        <p>Visualize your annual expenses with monthly graphs and detailed category analysis</p>
+                    </article>
+
+                    <article className="feature-card">
+                        <span className="material-symbols-rounded">receipt_long</span>
+                        <h4>Transactions</h4>
+                        <p>Manage your monthly expenses with intuitive category and income vs expense graphs</p>
+                    </article>
+
+                    <article className="feature-card">
+                        <span className="material-symbols-rounded">savings</span>
+                        <h4>Goals</h4>
+                        <p>Set and achieve your financial goals with smart tracking</p>
+                    </article>
+
+                    <article className="feature-card">
+                        <span className="material-symbols-rounded">note_alt</span>
+                        <h4>Notes</h4>
+                        <p>Keep important notes and reminders about your personal finances</p>
+                    </article>
+
+                    <article className="feature-card highlight">
+                        <span className="material-symbols-rounded">account_balance</span>
+                        <h4>Accounts</h4>
+                        <p>Monitor your total account balance with a visual representation of your net worth</p>
+                    </article>
+
+                    <article className="feature-card">
+                        <span className="material-symbols-rounded">savings</span>
+                        <h4>Goals <span className="soon-badge">Soon</span></h4>
+                        <p>Set and achieve your financial goals with smart tracking</p>
+                    </article>
+
+                    <article className="feature-card soon">
+                        <span className="material-symbols-rounded">trending_up</span>
+                        <h4>Investment Tracking <span className="soon-badge">Soon</span></h4>
+                        <p>Monitor your investments and analyze their performance over time</p>
+                    </article>
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="footer">
+                <div className="footer-container">
+                    <div className="footer-content">
+                        <div className="footer-section">
+                            <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
+                            <p>Simplifying personal finance management for everyone.</p>
+                        </div>
+
+                        <div className="footer-section">
+                            <h4>Company</h4>
+                            <ul>
+                                <li>About Us</li>
+                                <li>Contact</li>
+                                <li>Privacy Policy</li>
+                                <li>Terms of Service</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="footer-bottom">
+                        <p>&copy; 2024 Profit&Lost. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+export default Home;
