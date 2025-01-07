@@ -1,72 +1,243 @@
-import { useState } from 'react';
-import {
-    TextField,
-    Button,
-    InputAdornment,
-    IconButton
-} from '@mui/material';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+
+import { authService } from '../../services/auth.service';
+import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/auth.types';
 
 import './AuthPage.scss';
 
 const AuthPage = () => {
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [loginData, setLoginData] = useState<LoginCredentials>({
+        identifier: '',
+        password: ''
+    });
+    const [registerData, setRegisterData] = useState<RegisterCredentials>({
+        username: '',
+        email: '',
+        password: '',
+        name: '',
+        surname: ''
+    });
 
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
+    const validatePassword = (password: string): boolean => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (isLogin) {
+            setLoginData(prev => ({
+                ...prev,
+                [name]: value.trim()
+            }));
+        } else {
+            setRegisterData(prev => ({
+                ...prev,
+                [name]: value.trim()
+            }));
+        }
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            if (isLogin) {
+                const response = await authService.login(loginData);
+                if (response.success) {
+                    toast.success('Welcome back!');
+                    navigate('/dashboard');
+                }
+            } else {
+                if (!validatePassword(registerData.password)) {
+                    setLoading(false);
+                    toast.error('The password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number');
+                    return;
+                }
+
+                // Validar campos vacíos
+                if (!registerData.username || !registerData.email || !registerData.password || !registerData.name || !registerData.surname) {
+                    setLoading(false);
+                    toast.error('All fields are required');
+                    return;
+                }
+
+                const response = await authService.register(registerData);
+                if (response.success) {
+                    toast.success('Registration successful!');
+                    navigate('/dashboard');
+                }
+            }
+        } catch (err: unknown) {
+            const error = err as ApiErrorResponse;
+
+            switch (error.error as AuthErrorType) {
+                case 'MISSING_FIELDS':
+                    toast.error('All fields are required');
+                    break;
+                case 'INVALID_FORMAT':
+                    toast.error('Formato inválido. Verifica los campos');
+                    break;
+                case 'EMAIL_EXISTS':
+                    toast.error('Email already registered');
+                    break;
+                case 'USERNAME_EXISTS':
+                    toast.error('Username already in use');
+                    break;
+                case 'PASSWORD_TOO_WEAK':
+                    toast.error('The password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number');
+                    break;
+                case 'INVALID_CREDENTIALS':
+                    toast.error('Invalid credentials');
+                    break;
+                case 'ACCOUNT_INACTIVE':
+                    toast.error('Account inactive. Contact support');
+                    break;
+                case 'ACCOUNT_LOCKED':
+                    {
+                        const minutes = Math.ceil((error.remainingTime || 0) / (60 * 1000));
+                        toast.error(`Account locked temporarily. Try again in ${minutes} minutes`);
+                        break;
+                    }
+                case 'SERVER_ERROR':
+                    toast.error('Server error. Please try again later');
+                    break;
+                case 'CONNECTION_ERROR':
+                    toast.error('Connection error. Check your internet connection');
+                    break;
+                default:
+                    toast.error(error.message || 'Unknown error');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const isFormValid = () => {
+        if (isLogin) {
+            return loginData.identifier.trim() !== '' && loginData.password.trim() !== '';
+        } else {
+            return (
+                registerData.username.trim() !== '' &&
+                registerData.email.trim() !== '' &&
+                registerData.password.trim() !== '' &&
+                registerData.name.trim() !== '' &&
+                registerData.surname.trim() !== ''
+            );
+        }
     };
 
     return (
         <div className="auth-container">
             <img
-                onClick={() => window.location.href = '/'}
-                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
+                onClick={() => navigate('/')}
+                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
+                alt="logo"
+                className="auth-logo"
+            />
 
             <div className="auth-card">
                 <div className="auth-header">
-                    <h2>{isLogin ? 'Iniciar Sesión' : 'Registrarse'}</h2>
+                    <h2>{isLogin ? 'Login' : 'Register'}</h2>
                     <p>
                         {isLogin
-                            ? '¡Bienvenido de nuevo!'
-                            : 'Crea una cuenta para comenzar'}
+                            ? 'Welcome back!'
+                            : 'Create an account to start'}
                     </p>
                 </div>
 
-                <div className="auth-form">
-                    {!isLogin && (
+                <form onSubmit={handleSubmit} className="auth-form">
+                    {!isLogin ? (
+                        <>
+                            <TextField
+                                fullWidth
+                                required
+                                label="Nombre"
+                                variant="outlined"
+                                margin="normal"
+                                name="name"
+                                value={registerData.name}
+                                onChange={handleChange}
+                                placeholder="Tu nombre"
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                label="Apellido"
+                                variant="outlined"
+                                margin="normal"
+                                name="surname"
+                                value={registerData.surname}
+                                onChange={handleChange}
+                                placeholder="Tu apellido"
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                label="Nombre de usuario"
+                                variant="outlined"
+                                margin="normal"
+                                name="username"
+                                value={registerData.username}
+                                onChange={handleChange}
+                                placeholder="username"
+                                helperText="Entre 3 y 20 caracteres, solo letras, números y guiones"
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                label="Email"
+                                type="email"
+                                variant="outlined"
+                                margin="normal"
+                                name="email"
+                                value={registerData.email}
+                                onChange={handleChange}
+                                placeholder="tu@email.com"
+                            />
+                        </>
+                    ) : (
                         <TextField
                             fullWidth
-                            label="Nombre completo"
+                            required
+                            label="Email o username"
                             variant="outlined"
                             margin="normal"
-                            placeholder="Ingresa tu nombre"
+                            name="identifier"
+                            value={loginData.identifier}
+                            onChange={handleChange}
+                            placeholder="email@example.com o username"
                         />
                     )}
 
                     <TextField
                         fullWidth
-                        label="Correo electrónico"
-                        variant="outlined"
-                        margin="normal"
-                        type="email"
-                        placeholder="ejemplo@correo.com"
-                    />
-
-                    <TextField
-                        fullWidth
+                        required
                         label="Contraseña"
                         variant="outlined"
                         margin="normal"
                         type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={isLogin ? loginData.password : registerData.password}
+                        onChange={handleChange}
                         placeholder="••••••••"
+                        helperText={!isLogin ? "Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo" : ""}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
+                                        onClick={() => setShowPassword(!showPassword)}
                                         edge="end"
                                     >
                                         <span className="material-symbols-rounded">
@@ -79,8 +250,10 @@ const AuthPage = () => {
                     />
 
                     <Button
+                        type="submit"
                         variant="contained"
                         fullWidth
+                        disabled={loading || !isFormValid()}
                         sx={{
                             mt: 2,
                             backgroundColor: '#fe6f14',
@@ -89,11 +262,11 @@ const AuthPage = () => {
                             },
                         }}
                     >
-                        {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
+                        {loading ? 'Loading...' : isLogin ? 'Login' : 'Register'}
                     </Button>
 
                     <div className="auth-divider">
-                        <span>o</span>
+                        <span>or</span>
                     </div>
 
                     <Button
@@ -101,19 +274,19 @@ const AuthPage = () => {
                         className="google-button"
                         fullWidth
                         disabled
-                        startIcon={<img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="Google" />}
+                        startIcon={<img src="/assets/google-icon.svg" alt="Google" />}
                     >
-                        Continuar con Google
+                        Continue with Google
                     </Button>
-                </div>
+                </form>
 
                 <div className="auth-footer">
                     <p>
                         {isLogin
-                            ? '¿No tienes una cuenta? '
-                            : '¿Ya tienes una cuenta? '}
+                            ? 'Don\'t have an account? '
+                            : 'Already have an account? '}
                         <Button
-                            onClick={() => setIsLogin(!isLogin)}
+                            onClick={() => setIsLogin(prev => !prev)}
                             sx={{
                                 color: '#fe6f14',
                                 padding: '0',
@@ -126,7 +299,7 @@ const AuthPage = () => {
                                 }
                             }}
                         >
-                            {isLogin ? 'Regístrate' : 'Inicia sesión'}
+                            {isLogin ? 'Register' : 'Login'}
                         </Button>
                     </p>
                 </div>
