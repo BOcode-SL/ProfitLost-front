@@ -8,16 +8,23 @@
         width: 100%;
         z-index: 1000;
         padding: 1rem;
+        transition: all 0.3s ease;
 
         .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             border-radius: 1.5rem;
             padding: 0 2rem;
             background-color: #ffffff;
+
+            &.scrolled {
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
 
             img {
                 width: 150px;

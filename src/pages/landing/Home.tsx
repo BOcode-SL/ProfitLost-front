@@ -1,4 +1,5 @@
 // import { useContext } from 'react';
+import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 
 // import { ThemeContext } from '../../theme/ThemeContext';
@@ -6,6 +7,20 @@ import './Home.scss';
 
 const Home = () => {
     // const { toggleTheme, isDarkMode } = useContext(ThemeContext);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const header = document.querySelector('.nav-container');
+            if (window.scrollY > 50) {
+                header?.classList.add('scrolled');
+            } else {
+                header?.classList.remove('scrolled');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <div className="home-container">
