@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import { useUser } from '../../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 import DashboardHeader from './components/DashboardHeader';
 import DashboardNav from './components/DashboardNav';
@@ -9,6 +11,26 @@ import './Dashboard.scss';
 
 export default function Dashboard() {
     const [activeSection, setActiveSection] = useState('Dashboard');
+    const { user, loadUserData, isLoading } = useUser();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isLoading && !user) {
+            navigate('/auth');
+        }
+    }, [user, isLoading, navigate]);
+
+    useEffect(() => {
+        loadUserData();
+    }, [loadUserData]);
+
+    if (isLoading) {
+        return (
+            <div className='loading-container'>
+                <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg" alt="logo" />
+            </div>
+        );
+    }
 
     const menuItems = [
         {
@@ -39,17 +61,12 @@ export default function Dashboard() {
 
     return (
         <Box className='dashboard' sx={{ bgcolor: 'background.default' }}>
-            <DashboardHeader
-                userImage=""
-                userName=""
-            />
-
+            <DashboardHeader />
             <DashboardNav
                 activeSection={activeSection}
                 handleMenuItemClick={setActiveSection}
                 menuItems={menuItems}
             />
-
             <DashboardContent activeSection={activeSection} />
         </Box>
     );

@@ -6,13 +6,15 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 
+import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/services/auth.types';
 import { authService } from '../../services/auth.service';
-import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/auth.types';
+import { useUser } from '../../contexts/UserContext';
 
 import './AuthPage.scss';
 
 const AuthPage = () => {
     const navigate = useNavigate();
+    const { loadUserData } = useUser();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -56,6 +58,7 @@ const AuthPage = () => {
             if (isLogin) {
                 const response = await authService.login(loginData);
                 if (response.success) {
+                    await loadUserData();
                     toast.success('Welcome back!');
                     navigate('/dashboard');
                 }
@@ -75,6 +78,7 @@ const AuthPage = () => {
 
                 const response = await authService.register(registerData);
                 if (response.success) {
+                    await loadUserData();
                     toast.success('Registration successful!');
                     navigate('/dashboard');
                 }
@@ -274,7 +278,7 @@ const AuthPage = () => {
                         className="google-button"
                         fullWidth
                         disabled
-                        startIcon={<img src="/assets/google-icon.svg" alt="Google" />}
+                        startIcon={<img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="Google" />}
                     >
                         Continue with Google
                     </Button>

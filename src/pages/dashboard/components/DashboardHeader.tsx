@@ -14,16 +14,12 @@ import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 
 import { authService } from '../../../services/auth.service';
+import { useUser } from '../../../contexts/UserContext';
 
 import './DashboardHeader.scss';
 
-interface DashboardHeaderProps {
-    userImage?: string;
-    userName?: string;
-    userEmail?: string;
-}
-
-const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProps) => {
+const DashboardHeader = () => {
+    const { user } = useUser();
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -90,8 +86,8 @@ const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProp
                     </Badge>
                     <Avatar
                         onClick={() => setDrawerOpen(true)}
-                        src={userImage}
-                        alt={userName}
+                        src={user?.profileImage}
+                        alt={user?.name}
                         sx={{
                             width: 40,
                             height: 40,
@@ -99,7 +95,7 @@ const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProp
                             bgcolor: 'primary.main'
                         }}
                     >
-                        {userName?.[0]}
+                        {user?.name?.[0]}
                     </Avatar>
                 </Paper>
             </Box>
@@ -126,19 +122,19 @@ const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProp
                         mt: 2
                     }}>
                         <Avatar
-                            src={userImage}
-                            alt={userName}
+                            src={user?.profileImage}
+                            alt={user?.name}
                             sx={{
                                 width: 48,
                                 height: 48,
                                 bgcolor: 'primary.main'
                             }}
                         >
-                            {userName?.[0]}
+                            {user?.name?.[0]}
                         </Avatar>
                         <Box>
-                            <p className='dashboard__header-name'>{userName}</p>
-                            <p className='dashboard__header-email'>{userEmail}</p>
+                            <p className='dashboard__header-name'>{user?.name}</p>
+                            <p className='dashboard__header-email'>{user?.email}</p>
                         </Box>
                     </Box>
 

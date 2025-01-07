@@ -1,5 +1,6 @@
 import { Box, Paper, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Icon } from '@mui/material';
+
 import './DashboardNav.scss';
 
 interface DashboardNavProps {

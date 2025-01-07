@@ -1,4 +1,4 @@
-import { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/auth.types';
+import { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
