@@ -1,4 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
@@ -11,6 +13,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 
+import { authService } from '../../../services/auth.service';
+
 import './DashboardHeader.scss';
 
 interface DashboardHeaderProps {
@@ -20,6 +24,7 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProps) => {
+    const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const handleScroll = useCallback(() => {
@@ -33,6 +38,17 @@ const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProp
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
+
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+            toast.success('See you soon!');
+            navigate('/login');
+        } catch (error) {
+            toast.error('Logout error');
+            console.error('Logout error:', error);
+        }
+    };
 
     const menuItems1 = [
         { icon: 'person', text: 'Profile Settings' },
@@ -191,11 +207,12 @@ const DashboardHeader = ({ userImage, userName, userEmail }: DashboardHeaderProp
                 </Box>
 
                 {/* Logout Button */}
-                <Box sx={{ mt: 'auto' }}>
+                <Box sx={{ mt: 'auto', mb: 2 }}>
                     <Button
                         fullWidth
                         variant="outlined"
                         color="primary"
+                        onClick={handleLogout}
                         startIcon={
                             <span className="material-symbols-rounded">
                                 logout
