@@ -1,0 +1,39 @@
+.dashboard__header {
+    grid-area: Header;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 280px;
+    width: calc(100% - 280px);
+    padding: 1rem 1rem 0 0;
+    z-index: 999;
+
+    .dashboard__header-container {
+        &.scrolled {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            border: none;
+            background: none;
+            padding: 0;
+
+            &:hover {
+                opacity: 0.8;
+            }
+
+            &.dark {
+                fill: #fff;
+            }
+        }
+    }
+
+    @media (max-width: 868px) {
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+    }
+}

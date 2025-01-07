@@ -1,0 +1,11 @@
+.dashboard__content {
+    grid-area: Content;
+    width: 100%;
+    min-height: calc(100vh - 90px);
+    padding-right: 1rem;
+
+    @media (max-width: 868px) {
+        padding: 1rem;
+        margin-bottom: 80px;
+    }
+}

@@ -30,11 +30,6 @@ const Home = () => {
                     <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
 
                     <div className="nav-buttons">
-                        {/* <button className="theme-toggle">
-                            <span className="material-symbols-rounded">
-                                {isDarkMode ? 'light_mode' : 'dark_mode'}
-                            </span>
-                        </button> */}
                         <button
                             className="cta-button"
                             onClick={() => window.location.href = '/login'}>

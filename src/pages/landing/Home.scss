@@ -36,18 +36,6 @@
                 gap: 0.5rem;
                 align-items: center;
 
-                .theme-toggle {
-                    display: flex;
-                    align-items: center;
-                    padding: 0.5rem 1rem;
-                    border: none;
-                    background: none;
-
-                    &:hover {
-                        opacity: 0.8;
-                    }
-                }
-
                 .cta-button {
                     background-color: #fe6f14;
                     color: #ffffff;

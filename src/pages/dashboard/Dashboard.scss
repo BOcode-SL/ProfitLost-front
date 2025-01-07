@@ -1,0 +1,15 @@
+.dashboard {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 90px 1fr;
+    grid-template-areas:
+        "Nav Header"
+        "Nav Content";
+    min-height: 100vh;
+
+    @media (max-width: 868px) {
+        display: flex;
+        flex-direction: column;
+    }
+}

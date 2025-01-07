@@ -1,0 +1,35 @@
+.dashboard__nav {
+    grid-area: Nav;
+    position: fixed;
+    height: 100vh;
+    width: 280px;
+    padding: 1rem;
+    z-index: 999;
+
+    .dashboard__nav-img {
+        display: flex;
+        justify-content: center;
+        padding: 1.5rem 0;
+
+        img {
+            width: 75%;
+        }
+    }
+
+    @media (max-width: 868px) {
+        display: none;
+    }
+}
+
+.dashboard__nav-mobile {
+    display: none;
+
+    @media (max-width: 868px) {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        z-index: 999;
+    }
+}
