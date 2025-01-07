@@ -101,6 +101,25 @@ const themeOptions: ThemeOptions = {
                 disableElevation: true,
             },
         },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    padding: '0.5rem 0rem',
+                    backgroundColor: '#ffffff',
+                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px',
+                    transition: 'all 0.3s ease',
+                },
+                elevation0: {
+                    boxShadow: 'none',
+                },
+                elevation1: {
+                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 2px',
+                },
+                elevation2: {
+                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px',
+                },
+            },
+        },
     },
 };
 

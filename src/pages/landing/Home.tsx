@@ -1,12 +1,9 @@
-// import { useContext } from 'react';
 import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 
-// import { ThemeContext } from '../../theme/ThemeContext';
 import './Home.scss';
 
 const Home = () => {
-    // const { toggleTheme, isDarkMode } = useContext(ThemeContext);
 
     useEffect(() => {
         const handleScroll = () => {

@@ -17,7 +17,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                     className='dashboard__nav-container'
                     sx={{
                         height: '100%',
-                        borderRadius: 2,
+                        borderRadius: 3,
                         bgcolor: 'background.paper'
                     }}
                 >
@@ -35,7 +35,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                                 key={item.label}
                                 onClick={() => handleMenuItemClick(item.label)}
                                 sx={{
-                                    borderRadius: 2,
+                                    borderRadius: 3,
                                     mb: 0.5,
                                     cursor: 'pointer',
                                     transition: 'all 0.3s ease',
@@ -69,7 +69,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                         display: 'flex',
                         justifyContent: 'space-around',
                         p: 1,
-                        borderRadius: 2,
+                        borderRadius: 3,
                         bgcolor: 'background.paper'
                     }}
                 >
