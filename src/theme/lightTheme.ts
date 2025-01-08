@@ -120,6 +120,16 @@ const themeOptions: ThemeOptions = {
                 },
             },
         },
+        MuiDrawer: {
+            styleOverrides: {
+                modal: {
+                    '& .MuiBackdrop-root': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.25)',
+                        backdropFilter: 'blur(5px)',
+                    }
+                }
+            }
+        },
     },
 };
 
