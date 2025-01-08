@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -14,14 +14,15 @@ import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user.types';
 
 import './DashboardHeader.scss';
 
-import UserSettings from '../features/settings/UserSettings';
-import SecurityPrivacy from '../features/settings/SecurityPrivacy';
+const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
+const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 // import Help from '../features/settings/Help';
 
 interface DashboardHeaderProps {
@@ -80,16 +81,26 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     };
 
     const renderSettingsComponent = () => {
-        switch (settingsDrawer.component) {
-            case 'profile':
-                return <UserSettings />;
-            case 'security':
-            return <SecurityPrivacy />;
-            // case 'help':
-            //     return <Help />;
-            default:
-                return null;
-        }
+        return (
+            <Suspense fallback={
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                    <CircularProgress size="3rem" />
+                </Box>
+            }>
+                {(() => {
+                    switch (settingsDrawer.component) {
+                        case 'profile':
+                            return <UserSettings />;
+                        case 'security':
+                            return <SecurityPrivacy />;
+                        // case 'help':
+                        //     return <Help />;
+                        default:
+                            return null;
+                    }
+                })()}
+            </Suspense>
+        );
     };
 
     return (
