@@ -118,7 +118,7 @@ const AuthPage = () => {
                     toast.error('Server error. Please try again later');
                     break;
                 case 'CONNECTION_ERROR':
-                    toast.error('Connection error. Check your internet connection');
+                    toast.error('Connection error.');
                     break;
                 default:
                     toast.error(error.message || 'Unknown error');

@@ -1,4 +1,5 @@
-import { Box, Paper, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { useState } from 'react';
+import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Icon } from '@mui/material';
 
 import './DashboardNav.scss';
@@ -10,6 +11,24 @@ interface DashboardNavProps {
 }
 
 const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) => {
+    const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
+
+    const mainMenuItems = menuItems.slice(0, 3); // Dashboard, Annual Report, Movements
+    const moreMenuItems = menuItems.slice(3); // Resto de items
+
+    const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
+        setMoreAnchorEl(event.currentTarget);
+    };
+
+    const handleMoreClose = () => {
+        setMoreAnchorEl(null);
+    };
+
+    const handleMoreItemClick = (label: string) => {
+        handleMenuItemClick(label);
+        handleMoreClose();
+    };
+
     return (
         <>
             <Box className='dashboard__nav'>
@@ -23,7 +42,6 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                     }}
                 >
                     <Box className='dashboard__nav-img'>
-                        {/* Cuando se pone en dark mode, el texto debe ser blanco */}
                         <img
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
@@ -47,7 +65,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                                         bgcolor: 'primary.main',
                                         color: 'primary.contrastText',
                                         '&:hover': {
-                                            color: 'primary.ccontrastText',
+                                            color: 'primary.contrastText',
                                         }
                                     })
                                 }}
@@ -70,11 +88,11 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                         display: 'flex',
                         justifyContent: 'space-around',
                         p: 1,
-                        borderRadius: 3,
+                        borderRadius: '12px 12px 0 0',
                         bgcolor: 'background.paper'
                     }}
                 >
-                    {menuItems.slice(0, 4).map((item) => (
+                    {mainMenuItems.map((item) => (
                         <Box
                             key={item.label}
                             onClick={() => handleMenuItemClick(item.label)}
@@ -91,7 +109,49 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                             <Box sx={{ fontSize: '0.75rem' }}>{item.label}</Box>
                         </Box>
                     ))}
+                    <Box
+                        onClick={handleMoreClick}
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 0.5,
+                            cursor: 'pointer',
+                            color: moreMenuItems.some(item => activeSection === item.label) ? 'primary.main' : 'text.primary'
+                        }}
+                    >
+                        <Icon className="material-symbols-rounded">more_horiz</Icon>
+                        <Box sx={{ fontSize: '0.75rem' }}>More</Box>
+                    </Box>
                 </Paper>
+
+                <Menu
+                    anchorEl={moreAnchorEl}
+                    open={Boolean(moreAnchorEl)}
+                    onClose={handleMoreClose}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                >
+                    {moreMenuItems.map((item) => (
+                        <MenuItem
+                            key={item.label}
+                            onClick={() => handleMoreItemClick(item.label)}
+                            sx={{
+                                color: activeSection === item.label ? 'primary.main' : 'text.primary',
+                                gap: 2
+                            }}
+                        >
+                            <Icon className="material-symbols-rounded">{item.icon}</Icon>
+                            {item.label}
+                        </MenuItem>
+                    ))}
+                </Menu>
             </Box>
         </>
     );
