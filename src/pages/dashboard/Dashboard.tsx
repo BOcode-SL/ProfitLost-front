@@ -11,7 +11,7 @@ import './Dashboard.scss';
 
 export default function Dashboard() {
     const [activeSection, setActiveSection] = useState('Dashboard');
-    const { user, loadUserData, isLoading } = useUser();
+    const { user, isLoading } = useUser();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,10 +19,6 @@ export default function Dashboard() {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
-
-    useEffect(() => {
-        loadUserData();
-    }, [loadUserData]);
 
     if (isLoading) {
         return (
@@ -33,35 +29,17 @@ export default function Dashboard() {
     }
 
     const menuItems = [
-        {
-            label: 'Dashboard',
-            icon: 'home',
-        },
-        {
-            label: 'Annual Report',
-            icon: 'bar_chart_4_bars',
-        },
-        {
-            label: 'Movements',
-            icon: 'receipt_long',
-        },
-        {
-            label: 'Accounts',
-            icon: 'credit_card',
-        },
-        {
-            label: 'Goals',
-            icon: 'task_alt',
-        },
-        {
-            label: 'Notes',
-            icon: 'description',
-        }
+        { label: 'Dashboard', icon: 'home' },
+        { label: 'Annual Report', icon: 'bar_chart_4_bars' },
+        { label: 'Movements', icon: 'receipt_long' },
+        { label: 'Accounts', icon: 'credit_card' },
+        { label: 'Goals', icon: 'task_alt' },
+        { label: 'Notes', icon: 'description' }
     ];
 
     return (
         <Box className='dashboard' sx={{ bgcolor: 'background.default' }}>
-            <DashboardHeader />
+            <DashboardHeader user={user} />
             <DashboardNav
                 activeSection={activeSection}
                 handleMenuItemClick={setActiveSection}

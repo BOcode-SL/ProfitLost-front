@@ -14,12 +14,15 @@ import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 
 import { authService } from '../../../services/auth.service';
-import { useUser } from '../../../contexts/UserContext';
+import { User } from '../../../types/models/user.types';
 
 import './DashboardHeader.scss';
 
-const DashboardHeader = () => {
-    const { user } = useUser();
+interface DashboardHeaderProps {
+    user: User | null;
+}
+
+const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
 

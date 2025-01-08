@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
 
 import type { User, UserContextType } from '../types/models/user.types';
@@ -11,9 +10,14 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const location = useLocation();
 
-    const loadUserData = async () => {
+   const loadUserData = useCallback(async () => {
+        
+        if (!localStorage.getItem('token')) {
+            setUser(null);
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const response = await userService.getUserData();
@@ -30,25 +34,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        if (location.pathname.startsWith('/dashboard')) {
-            loadUserData();
-        } else {
-            setIsLoading(false);
-        }
-    }, [location.pathname]);
-
-    const value = {
-        user,
-        setUser,
-        isLoading,
-        loadUserData
-    };
+        loadUserData();
+    }, [loadUserData]);
 
     return (
-        <UserContext.Provider value={value}>
+        <UserContext.Provider value={{ user, setUser, isLoading, loadUserData }}>
             {children}
         </UserContext.Provider>
     );
