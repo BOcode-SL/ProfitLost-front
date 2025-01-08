@@ -22,7 +22,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await userService.getUserData();
             if (response.success && response.data) {
-                setUser(response.data);
+                setUser(response.data as User);
             }
         } catch (error) {
             console.error('Error loading user data:', error);
