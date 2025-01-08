@@ -96,15 +96,15 @@ const Home = () => {
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded">savings</span>
-                        <h4>Goals <span className="soon-badge">Soon</span></h4>
-                        <p>Set and achieve your financial goals with smart tracking</p>
-                    </article>
-
-                    <article className="feature-card soon">
                         <span className="material-symbols-rounded">trending_up</span>
                         <h4>Investment Tracking <span className="soon-badge">Soon</span></h4>
                         <p>Monitor your investments and analyze their performance over time</p>
+                    </article>
+                    
+                    <article className="feature-card soon">
+                        <span className="material-symbols-rounded">inbox</span>
+                        <h4>Inbox <span className="soon-badge">Soon</span></h4>
+                        <p>Recive notifications and stay up to date with your personal finances</p>
                     </article>
                 </div>
             </section>

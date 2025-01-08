@@ -144,15 +144,15 @@ const AuthPage = () => {
 
     return (
         <div className="auth-container">
-            <img
-                onClick={() => navigate('/')}
-                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
-                alt="logo"
-                className="auth-logo"
-            />
 
             <div className="auth-card">
                 <div className="auth-header">
+                    <img
+                        onClick={() => navigate('/')}
+                        src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
+                        alt="logo"
+                        className="auth-logo"
+                    />
                     <h2>{isLogin ? 'Login' : 'Register'}</h2>
                     <p>
                         {isLogin
@@ -167,36 +167,36 @@ const AuthPage = () => {
                             <TextField
                                 fullWidth
                                 required
-                                label="Nombre"
+                                label="Name"
                                 variant="outlined"
                                 margin="normal"
                                 name="name"
                                 value={registerData.name}
                                 onChange={handleChange}
-                                placeholder="Tu nombre"
+                                placeholder="Your name"
                             />
                             <TextField
                                 fullWidth
                                 required
-                                label="Apellido"
+                                label="Surname"
                                 variant="outlined"
                                 margin="normal"
                                 name="surname"
                                 value={registerData.surname}
                                 onChange={handleChange}
-                                placeholder="Tu apellido"
+                                placeholder="Your surname"
                             />
                             <TextField
                                 fullWidth
                                 required
-                                label="Nombre de usuario"
+                                label="Username"
                                 variant="outlined"
                                 margin="normal"
                                 name="username"
                                 value={registerData.username}
                                 onChange={handleChange}
                                 placeholder="username"
-                                helperText="Entre 3 y 20 caracteres, solo letras, números y guiones"
+                                helperText="Between 3 and 20 characters, only letters, numbers and hyphens"
                             />
                             <TextField
                                 fullWidth
@@ -228,7 +228,7 @@ const AuthPage = () => {
                     <TextField
                         fullWidth
                         required
-                        label="Contraseña"
+                        label="Password"
                         variant="outlined"
                         margin="normal"
                         type={showPassword ? 'text' : 'password'}
@@ -236,7 +236,7 @@ const AuthPage = () => {
                         value={isLogin ? loginData.password : registerData.password}
                         onChange={handleChange}
                         placeholder="••••••••"
-                        helperText={!isLogin ? "Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo" : ""}
+                        helperText={!isLogin ? "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol" : ""}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">

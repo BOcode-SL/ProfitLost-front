@@ -7,12 +7,6 @@
     padding: 2rem;
     background: linear-gradient(135deg, rgba(254, 111, 20, 0.05) 0%, rgba(254, 111, 20, 0.1) 100%);
 
-    img {
-        width: 200px;
-        margin-bottom: 2rem;
-        cursor: pointer;
-    }
-
     .auth-card {
         background: white;
         border-radius: 24px;
@@ -24,6 +18,11 @@
         .auth-header {
             text-align: center;
             margin-bottom: 2rem;
+
+            img {
+                width: 200px;
+                cursor: pointer;
+            }
 
             h2 {
                 font-size: 2rem;
