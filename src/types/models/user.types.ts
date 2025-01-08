@@ -7,12 +7,13 @@ export interface User {
     profileImage?: string;
     profileImagePublicId?: string;
     accountsOrder?: string[];
-    language?: string;
+    language?: Language;
     currency?: Currency;
     dateFormat?: DateFormat;
     timeFormat?: TimeFormat;
 }
 
+export type Language = 'enUS' | 'esES';
 export type Currency = 'USD' | 'EUR' | 'GBP';
 export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY';
 export type TimeFormat = '12h' | '24h';
