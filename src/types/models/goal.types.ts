@@ -1,14 +1,18 @@
+import type { ISODateString } from '../common.types';
+
 export interface Goal {
     id: string;
     name: string;
     type: string;
     targetAmount: number;
     currentAmount: number;
-    deadline?: string;
+    deadline?: ISODateString;
     history: GoalHistory[];
+    createdAt: ISODateString;
+    updatedAt: ISODateString;
 }
 
 export interface GoalHistory {
-    date: string;
+    date: ISODateString;
     amount: number;
 } 

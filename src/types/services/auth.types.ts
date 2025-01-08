@@ -22,11 +22,24 @@ export type LoginErrorType = Extract<
     'MISSING_FIELDS' | 'INVALID_FORMAT' | 'INVALID_CREDENTIALS' | 'ACCOUNT_INACTIVE' | 'ACCOUNT_LOCKED' | 'SERVER_ERROR' | 'CONNECTION_ERROR'
 >;
 
+export type HttpStatusCode = 
+    | 200  // OK
+    | 201  // Created
+    | 400  // Bad Request
+    | 401  // Unauthorized
+    | 403  // Forbidden
+    | 404  // Not Found
+    | 409  // Conflict
+    | 429  // Too Many Requests
+    | 500; // Internal Server Error
+
 export interface ApiErrorResponse {
     success: false;
     message: string;
     error: AuthErrorType;
-    remainingTime?: number;
+    status: HttpStatusCode;
+    remainingTime?: number; // Para bloqueo de cuenta
+    remainingAttempts?: number; // Para intentos de login
 }
 
 export interface ApiSuccessResponse {

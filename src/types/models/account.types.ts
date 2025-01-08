@@ -1,9 +1,13 @@
+import type { ISODateString } from '../common.types';
+
 export interface Account {
     _id: string;
     user_id: string;
     accountName: string;
     records: AccountRecord[];
     configuration: AccountConfiguration;
+    createdAt: ISODateString;
+    updatedAt: ISODateString;
 }
 
 export interface AccountRecord {

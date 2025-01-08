@@ -1,4 +1,4 @@
-import { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.types';
+import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse, HttpStatusCode } from '../types/services/auth.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -19,7 +19,7 @@ export const authService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    status: response.status as HttpStatusCode
                 } as ApiErrorResponse;
             }
 
@@ -32,7 +32,7 @@ export const authService = {
                 success: false,
                 message: 'Connection error. Please check your internet connection.',
                 error: 'CONNECTION_ERROR',
-                status: 0
+                status: 0 as HttpStatusCode
             } as ApiErrorResponse;
         }
     },
@@ -66,7 +66,7 @@ export const authService = {
                 success: false,
                 message: 'Connection error. Please check your internet connection.',
                 error: 'CONNECTION_ERROR',
-                status: 0
+                status: 0 as HttpStatusCode
             } as ApiErrorResponse;
         }
     },
