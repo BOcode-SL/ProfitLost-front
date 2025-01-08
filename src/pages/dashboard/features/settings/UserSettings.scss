@@ -29,37 +29,11 @@
             gap: 1.5rem;
             width: 100%;
             margin-top: 1rem;
-
-            .MuiTextField-root {
-                .MuiOutlinedInput-root {
-                    background-color: var(--bg-default);
-
-                    &:hover .MuiOutlinedInput-notchedOutline {
-                        border-color: var(--primary-main);
-                    }
-                }
-            }
-
-            .MuiFormControl-root {
-                width: 100%;
-            }
         }
 
         .submit-button {
             margin-top: 1rem;
             align-self: flex-end;
         }
-    }
-}
-
-.language-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    img {
-        width: 20px;
-        height: 15px;
-        object-fit: cover;
     }
 }

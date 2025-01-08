@@ -21,7 +21,7 @@ import { User } from '../../../types/models/user.types';
 import './DashboardHeader.scss';
 
 import UserSettings from '../features/settings/UserSettings';
-// import SecurityPrivacy from '../features/settings/SecurityPrivacy';
+import SecurityPrivacy from '../features/settings/SecurityPrivacy';
 // import Help from '../features/settings/Help';
 
 interface DashboardHeaderProps {
@@ -83,8 +83,8 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         switch (settingsDrawer.component) {
             case 'profile':
                 return <UserSettings />;
-            // case 'security':
-            // return <SecurityPrivacy />;
+            case 'security':
+            return <SecurityPrivacy />;
             // case 'help':
             //     return <Help />;
             default:
@@ -272,7 +272,9 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 PaperProps={{
                     sx: {
                         width: 450,
-                        bgcolor: 'background.default'
+                        bgcolor: 'background.default',
+                        px: 1,
+                        py: 1
                     }
                 }}
             >
