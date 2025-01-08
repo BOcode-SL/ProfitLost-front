@@ -26,21 +26,17 @@ export interface ApiErrorResponse {
     success: false;
     message: string;
     error: AuthErrorType;
-    status: number;
-    remainingAttempts?: number;
     remainingTime?: number;
 }
 
 export interface ApiSuccessResponse {
     success: true;
     message: string;
-    user: {
-        id: string;
+    token: string;
+    data?: {
+        _id: string;
         username: string;
         email: string;
-        name: string;
-        language: string;
-        currency: string;
     };
 }
 

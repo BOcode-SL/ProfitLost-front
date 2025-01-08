@@ -2,11 +2,8 @@ export interface User {
     _id: string;
     username: string;
     email: string;
-    password: string;
     name: string;
     surname: string;
-    resetToken?: string;
-    resetTokenExpiry?: string;
     profileImage?: string;
     profileImagePublicId?: string;
     accountsOrder?: string[];

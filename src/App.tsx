@@ -24,7 +24,7 @@ function App() {
       );
     }
 
-    return user ? <>{children}</> : <Navigate to='/login' />;
+    return user ? <>{children}</> : <Navigate to='/login' replace />;
   };
 
   return (

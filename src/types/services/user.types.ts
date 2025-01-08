@@ -1,10 +1,19 @@
+import type { Currency, DateFormat, TimeFormat } from '../models/user.types';
+
 export type UserErrorType =
-    | 'UNAUTHORIZED'
-    | 'NOT_FOUND'
+    | 'INVALID_ID_FORMAT'
+    | 'USER_NOT_FOUND'
+    | 'DATABASE_ERROR'
+    | 'MISSING_FIELDS'
+    | 'INVALID_DATE_FORMAT'
+    | 'INVALID_TIME_FORMAT'
+    | 'IMAGE_UPLOAD_ERROR'
+    | 'NO_CHANGES'
+    | 'INVALID_PASSWORD'
+    | 'INVALID_FORMAT'
     | 'SERVER_ERROR'
     | 'CONNECTION_ERROR'
-    | 'INVALID_TOKEN'
-    | 'TOKEN_EXPIRED';
+    | 'UNAUTHORIZED';
 
 export interface UserApiErrorResponse {
     success: false;
@@ -16,19 +25,18 @@ export interface UserApiErrorResponse {
 export interface UserApiSuccessResponse {
     success: true;
     message: string;
-    user: {
+    data?: {
         _id: string;
         username: string;
         email: string;
         name: string;
         surname: string;
         profileImage?: string;
-        profileImagePublicId?: string;
-        accountsOrder?: string[];
+        accountsOrder: string[];
         language: string;
-        currency: string;
-        dateFormat: 'DD/MM/YYYY' | 'MM/DD/YYYY';
-        timeFormat: '12h' | '24h';
+        currency: Currency;
+        dateFormat: DateFormat;
+        timeFormat: TimeFormat;
     };
 }
 
