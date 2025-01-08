@@ -12,11 +12,17 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user.types';
 
 import './DashboardHeader.scss';
+
+import UserSettings from '../features/settings/UserSettings';
+// import SecurityPrivacy from '../features/settings/SecurityPrivacy';
+// import Help from '../features/settings/Help';
 
 interface DashboardHeaderProps {
     user: User | null;
@@ -25,6 +31,13 @@ interface DashboardHeaderProps {
 const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [settingsDrawer, setSettingsDrawer] = useState<{
+        open: boolean;
+        component: string;
+    }>({
+        open: false,
+        component: ''
+    });
 
     const handleScroll = useCallback(() => {
         const headerContainer = document.querySelector('.dashboard__header-container');
@@ -56,8 +69,28 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
 
     const menuItems2 = [
         { icon: 'help', text: 'Help' },
-        { icon: 'info', text: 'About Us' },
     ];
+
+    const handleSettingsClick = (component: string) => {
+        setDrawerOpen(false);
+        setSettingsDrawer({
+            open: true,
+            component
+        });
+    };
+
+    const renderSettingsComponent = () => {
+        switch (settingsDrawer.component) {
+            case 'profile':
+                return <UserSettings />;
+            // case 'security':
+            // return <SecurityPrivacy />;
+            // case 'help':
+            //     return <Help />;
+            default:
+                return null;
+        }
+    };
 
     return (
         <>
@@ -88,12 +121,14 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         </span>
                     </Badge>
                     <Avatar
+                        variant="square"
                         onClick={() => setDrawerOpen(true)}
                         src={user?.profileImage}
                         alt={user?.name}
                         sx={{
                             width: 40,
                             height: 40,
+                            borderRadius: 2,
                             cursor: 'pointer',
                             bgcolor: 'primary.main'
                         }}
@@ -107,9 +142,10 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 anchor="right"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
+                className="dashboard__header-drawer"
                 PaperProps={{
                     sx: {
-                        width: 400,
+                        width: 450,
                         p: 2,
                         bgcolor: 'background.default'
                     }
@@ -117,20 +153,24 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
             >
                 <Box>
                     {/* User Info Section */}
-                    <Box sx={{
+                    <Paper elevation={2} sx={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 2,
                         mb: 3,
-                        mt: 2
+                        mt: 2,
+                        p: 2,
+                        borderRadius: 3
                     }}>
                         <Avatar
+                            variant="square"
                             src={user?.profileImage}
                             alt={user?.name}
                             sx={{
                                 width: 48,
                                 height: 48,
-                                bgcolor: 'primary.main'
+                                bgcolor: 'primary.main',
+                                borderRadius: 2
                             }}
                         >
                             {user?.name?.[0]}
@@ -139,7 +179,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             <p className='dashboard__header-name'>{user?.name}</p>
                             <p className='dashboard__header-email'>{user?.email}</p>
                         </Box>
-                    </Box>
+                    </Paper>
 
                     {/* Menu Items 1*/}
                     <Paper
@@ -154,6 +194,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             {menuItems1.map((item) => (
                                 <ListItem key={item.text} disablePadding>
                                     <ListItemButton
+                                        onClick={() => handleSettingsClick(item.icon === 'person' ? 'profile' : 'security')}
                                         sx={{
                                             py: 1.5,
                                             '&:hover': {
@@ -221,6 +262,37 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         Log out
                     </Button>
                 </Box>
+            </Drawer>
+
+            {/* Drawer de Configuraciones */}
+            <Drawer
+                anchor="right"
+                open={settingsDrawer.open}
+                onClose={() => setSettingsDrawer({ open: false, component: '' })}
+                PaperProps={{
+                    sx: {
+                        width: 450,
+                        bgcolor: 'background.default'
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <IconButton
+                        onClick={() => {
+                            setSettingsDrawer({ open: false, component: '' });
+                            setDrawerOpen(true);
+                        }}
+                        sx={{ mr: 2 }}
+                    >
+                        <span className="material-symbols-rounded">arrow_back</span>
+                    </IconButton>
+                    <Typography variant="h6">
+                        {settingsDrawer.component === 'profile' && 'Profile Settings'}
+                        {settingsDrawer.component === 'security' && 'Security & Privacy'}
+                        {settingsDrawer.component === 'help' && 'Help'}
+                    </Typography>
+                </Box>
+                {renderSettingsComponent()}
             </Drawer>
         </>
     );

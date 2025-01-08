@@ -11,10 +11,14 @@ export interface User {
     profileImagePublicId?: string;
     accountsOrder?: string[];
     language?: string;
-    currency?: string;
-    dateFormat?: 'DD/MM/YYYY' | 'MM/DD/YYYY';
-    timeFormat?: '12h' | '24h';
+    currency?: Currency;
+    dateFormat?: DateFormat;
+    timeFormat?: TimeFormat;
 }
+
+export type Currency = 'USD' | 'EUR' | 'GBP';
+export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY';
+export type TimeFormat = '12h' | '24h';
 
 export interface UserContextType {
     user: User | null;
