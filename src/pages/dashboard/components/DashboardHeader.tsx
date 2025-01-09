@@ -23,7 +23,7 @@ import './DashboardHeader.scss';
 
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
-// import Help from '../features/settings/Help';
+const Help = React.lazy(() => import('../features/settings/Help'));
 
 interface DashboardHeaderProps {
     user: User | null;
@@ -81,26 +81,16 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     };
 
     const renderSettingsComponent = () => {
-        return (
-            <Suspense fallback={
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                    <CircularProgress size="3rem" />
-                </Box>
-            }>
-                {(() => {
-                    switch (settingsDrawer.component) {
-                        case 'profile':
-                            return <UserSettings />;
-                        case 'security':
-                            return <SecurityPrivacy />;
-                        // case 'help':
-                        //     return <Help />;
-                        default:
-                            return null;
-                    }
-                })()}
-            </Suspense>
-        );
+        switch (settingsDrawer.component) {
+            case 'Profile Settings':
+                return <UserSettings />;
+            case 'Security and Privacy':
+                return <SecurityPrivacy />;
+            case 'Help':
+                return <Help />;
+            default:
+                return null;
+        }
     };
 
     return (
@@ -204,19 +194,9 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         <List disablePadding>
                             {menuItems1.map((item) => (
                                 <ListItem key={item.text} disablePadding>
-                                    <ListItemButton
-                                        onClick={() => handleSettingsClick(item.icon === 'person' ? 'profile' : 'security')}
-                                        sx={{
-                                            py: 1.5,
-                                            '&:hover': {
-                                                bgcolor: 'rgba(254, 111, 20, 0.08)',
-                                            }
-                                        }}
-                                    >
+                                    <ListItemButton onClick={() => handleSettingsClick(item.text)}>
                                         <ListItemIcon>
-                                            <span className="material-symbols-rounded">
-                                                {item.icon}
-                                            </span>
+                                            <span className="material-symbols-rounded">{item.icon}</span>
                                         </ListItemIcon>
                                         <ListItemText primary={item.text} />
                                     </ListItemButton>
@@ -236,18 +216,9 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         <List disablePadding>
                             {menuItems2.map((item) => (
                                 <ListItem key={item.text} disablePadding>
-                                    <ListItemButton
-                                        sx={{
-                                            py: 1.5,
-                                            '&:hover': {
-                                                bgcolor: 'rgba(254, 111, 20, 0.08)',
-                                            }
-                                        }}
-                                    >
+                                    <ListItemButton onClick={() => handleSettingsClick(item.text)}>
                                         <ListItemIcon>
-                                            <span className="material-symbols-rounded">
-                                                {item.icon}
-                                            </span>
+                                            <span className="material-symbols-rounded">{item.icon}</span>
                                         </ListItemIcon>
                                         <ListItemText primary={item.text} />
                                     </ListItemButton>
@@ -300,12 +271,22 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         <span className="material-symbols-rounded">arrow_back</span>
                     </IconButton>
                     <Typography variant="h6">
-                        {settingsDrawer.component === 'profile' && 'Profile Settings'}
-                        {settingsDrawer.component === 'security' && 'Security & Privacy'}
-                        {settingsDrawer.component === 'help' && 'Help'}
+                        {settingsDrawer.component === 'Profile Settings' && 'Profile Settings'}
+                        {settingsDrawer.component === 'Security and Privacy' && 'Security & Privacy'}
+                        {settingsDrawer.component === 'Help' && 'Help'}
                     </Typography>
                 </Box>
-                {renderSettingsComponent()}
+                <Suspense fallback={
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <CircularProgress />
+                    </Box>
+                }>
+                    {renderSettingsComponent()}
+                </Suspense>
             </Drawer>
         </>
     );

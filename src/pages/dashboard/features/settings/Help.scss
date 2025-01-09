@@ -1,0 +1,28 @@
+.help-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .help-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+        h2 {
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        p {
+            line-height: 1.6;
+            margin: 0;
+        }
+    }
+}

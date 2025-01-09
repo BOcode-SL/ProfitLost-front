@@ -36,17 +36,17 @@
         width: 100%;
         padding: 1rem;
     }
-}
 
-.dashboard__header-drawer {
-    .dashboard__header-name {
-        font-weight: 500;
-        margin: 0;
-    }
+    &-drawer {
+        .dashboard__header-name {
+            font-weight: 500;
+            margin: 0;
+        }
 
-    .dashboard__header-email {
-        font-size: 0.8rem;
-        font-weight: 400;
-        margin: 0;
+        .dashboard__header-email {
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin: 0;
+        }
     }
 }
