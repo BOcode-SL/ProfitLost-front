@@ -11,3 +11,19 @@ export type HttpStatusCode =
     | 409  // Conflict
     | 429  // Too Many Requests
     | 500; // Internal Server Error
+
+export interface ApiSuccessResponse<T = unknown> {
+    success: true;
+    message: string;
+    data?: T;
+    statusCode: HttpStatusCode;
+}
+
+export interface ApiErrorResponse {
+    success: false;
+    message: string;
+    error: string;
+    statusCode: HttpStatusCode;
+}
+
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
