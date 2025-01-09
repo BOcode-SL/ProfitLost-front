@@ -1,6 +1,7 @@
-import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse, HttpStatusCode } from '../types/services/auth.types';
+import { HttpStatusCode } from '../types/common.types';
+import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<ApiResponse> {

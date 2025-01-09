@@ -1,6 +1,6 @@
 import type { UserApiResponse, UserApiErrorResponse } from '../types/services/user.types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const userService = {
     async getUserData(): Promise<UserApiResponse> {
