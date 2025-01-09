@@ -3,12 +3,10 @@ import type { AccountResponse, CreateAccountRequest, UpdateAccountRequest } from
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-class AccountService {
-    private readonly baseUrl = `${API_URL}/accounts`;
-
+export const accountService = {
     async getAllAccounts(): Promise<AccountResponse> {
         try {
-            const response = await fetch(`${this.baseUrl}/all`, {
+            const response = await fetch(`${API_URL}/api/accounts/all`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -40,11 +38,11 @@ class AccountService {
                 statusCode: 0
             };
         }
-    }
+    },
 
     async getAccountsByYear(year: number): Promise<AccountResponse> {
         try {
-            const response = await fetch(`${this.baseUrl}/${year}`, {
+            const response = await fetch(`${API_URL}/api/accounts/${year}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -76,11 +74,11 @@ class AccountService {
                 statusCode: 0
             };
         }
-    }
+    },
 
     async createAccount(accountData: CreateAccountRequest): Promise<AccountResponse> {
         try {
-            const response = await fetch(`${this.baseUrl}/add`, {
+            const response = await fetch(`${API_URL}/api/accounts/create`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -115,11 +113,11 @@ class AccountService {
                 statusCode: 0
             };
         }
-    }
+    },
 
     async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountResponse> {
         try {
-            const response = await fetch(`${this.baseUrl}/edit/${id}`, {
+            const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
@@ -154,11 +152,11 @@ class AccountService {
                 statusCode: 0
             };
         }
-    }
+    },
 
     async deleteAccount(id: string): Promise<AccountResponse> {
         try {
-            const response = await fetch(`${this.baseUrl}/remove/${id}`, {
+            const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {
@@ -192,6 +190,4 @@ class AccountService {
             };
         }
     }
-}
-
-export const accountService = new AccountService();
+};
