@@ -1,4 +1,4 @@
-export default Help = () => {
+export default function Help() {
     return (
         <div>Help</div>
     )
