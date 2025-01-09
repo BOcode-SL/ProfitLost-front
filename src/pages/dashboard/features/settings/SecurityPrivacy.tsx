@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { userService } from '../../../../services/user.service';
 import { useUser } from '../../../../contexts/UserContext';
 import './SecurityPrivacy.scss';
-import type { UserApiErrorResponse } from '../../../../types/services/user.types';
+import type { UserApiErrorResponse } from '../../../../types/services/user.serviceTypes';
 
 export default function SecurityPrivacy() {
     const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import type { HttpStatusCode } from '../types/common.types';
-import type { CategoryApiResponse, CategoryApiErrorResponse } from '../types/services/category.types';
-import type { Category } from '../types/models/category.types';
+import type { CategoryApiResponse, CategoryApiErrorResponse } from '../types/services/category.serviceTypes';
+import type { Category } from '../types/models/category.modelTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

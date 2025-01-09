@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '../types/common.types';
-import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.types';
+import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.serviceTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

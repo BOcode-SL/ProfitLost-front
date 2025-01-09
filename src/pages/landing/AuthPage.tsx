@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 
-import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/services/auth.types';
+import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/services/auth.serviceTypes';
 import { authService } from '../../services/auth.service';
 import { useUser } from '../../contexts/UserContext';
 

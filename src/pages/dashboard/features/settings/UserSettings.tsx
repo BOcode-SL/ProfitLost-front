@@ -12,8 +12,8 @@ import toast from 'react-hot-toast';
 
 import { useUser } from '../../../../contexts/UserContext';
 import { userService } from '../../../../services/user.service';
-import type { UserApiErrorResponse } from '../../../../types/services/user.types';
-import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user.types';
+import type { UserApiErrorResponse } from '../../../../types/services/user.serviceTypes';
+import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user.modelTypes';
 import './UserSettings.scss';
 
 const dateFormatOptions = [

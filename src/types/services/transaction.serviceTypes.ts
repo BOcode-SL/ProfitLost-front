@@ -1,4 +1,4 @@
-import type { Transaction } from '../models/transaction.types';
+import type { Transaction } from '../models/transaction.modelTypes';
 import { HttpStatusCode } from '../common.types';
 
 export type TransactionErrorType =

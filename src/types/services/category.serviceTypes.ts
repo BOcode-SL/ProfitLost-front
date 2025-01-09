@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '../common.types';
-import type { Category } from '../models/category.types';
+import type { Category } from '../models/category.modelTypes';
 
 export type CategoryErrorType =
     | 'INVALID_ID_FORMAT'

@@ -1,6 +1,6 @@
 import { HttpStatusCode } from '../types/common.types';
-import type { TransactionApiResponse, TransactionApiErrorResponse } from '../types/services/transaction.types';
-import { Transaction } from '../types/models/transaction.types';
+import type { TransactionApiResponse, TransactionApiErrorResponse } from '../types/services/transaction.serviceTypes';
+import { Transaction } from '../types/models/transaction.modelTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

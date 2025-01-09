@@ -1,4 +1,4 @@
-import type { Currency, DateFormat, TimeFormat } from '../models/user.types';
+import type { Currency, DateFormat, TimeFormat } from '../models/user.modelTypes';
 
 export type UserErrorType =
     | 'INVALID_ID_FORMAT'

@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { authService } from '../../../services/auth.service';
-import { User } from '../../../types/models/user.types';
+import { User } from '../../../types/models/user.modelTypes';
 
 import './DashboardHeader.scss';
 

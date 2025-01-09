@@ -1,4 +1,4 @@
-import type { UserApiResponse, UserApiErrorResponse } from '../types/services/user.types';
+import type { UserApiResponse, UserApiErrorResponse } from '../types/services/user.serviceTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
