@@ -95,10 +95,20 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
     }, []);
 
     const categoriesBalance = useMemo(() => {
+        if (!categories.length) {
+            return [];
+        }
+
         const balances = categories.map(category => {
-            const balance = transactions
-                .filter(transaction => transaction.category === category._id)
-                .reduce((acc, transaction) => acc + transaction.amount, 0);
+            // Filter transactions for this category
+            const categoryTransactions = transactions.filter(
+                transaction => transaction.category === category.name
+            );
+
+            // Calculate total balance (income - expenses)
+            const balance = categoryTransactions.reduce((acc, transaction) => {
+                return acc + transaction.amount;
+            }, 0);
 
             return {
                 category,
@@ -107,9 +117,8 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         });
 
         // Filter by search
-        const filtered = balances.filter(item =>
-            item.category.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const filtered = balances
+            .filter(item => item.category.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
         // Sort by selected option
         return filtered.sort((a, b) => {
