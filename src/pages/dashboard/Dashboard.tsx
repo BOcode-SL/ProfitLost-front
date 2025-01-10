@@ -31,7 +31,7 @@ export default function Dashboard() {
     const menuItems = [
         { label: 'Dashboard', icon: 'home' },
         { label: 'Annual Report', icon: 'bar_chart_4_bars' },
-        { label: 'Movements', icon: 'receipt_long' },
+        { label: 'Transactions', icon: 'receipt_long' },
         { label: 'Accounts', icon: 'credit_card' },
         { label: 'Goals', icon: 'task_alt' },
         { label: 'Notes', icon: 'description' }
