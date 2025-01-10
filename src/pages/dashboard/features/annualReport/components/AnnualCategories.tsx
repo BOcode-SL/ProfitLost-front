@@ -15,12 +15,20 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import { forwardRef } from 'react';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import type { Category } from '../../../../../types/models/category.modelTypes';
 import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
+import { CategoryApiErrorResponse } from '../../../../../types/services/category.serviceTypes';
 
 interface AnnualCategoriesProps {
     transactions: Transaction[];
@@ -28,6 +36,22 @@ interface AnnualCategoriesProps {
 }
 
 type SortOption = 'name_asc' | 'name_desc' | 'balance_asc' | 'balance_desc';
+
+interface EditCategoryState {
+    isOpen: boolean;
+    category: Category | null;
+    name: string;
+    color: string;
+}
+
+const Transition = forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function AnnualCategories({ transactions, loading }: AnnualCategoriesProps) {
     const { user } = useUser();
@@ -41,6 +65,17 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         color: '#ff8e38'
     });
     const [savingCategory, setSavingCategory] = useState(false);
+    const [editCategory, setEditCategory] = useState<EditCategoryState>({
+        isOpen: false,
+        category: null,
+        name: '',
+        color: ''
+    });
+    const [savingChanges, setSavingChanges] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState({
+        open: false,
+        categoryName: ''
+    });
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -109,17 +144,112 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
             if (response.success) {
                 toast.success('Category created successfully');
                 setDrawerOpen(false);
-                setNewCategory({ name: '', color: '#000000' });
-                // Reload categories
+                setNewCategory({ name: '', color: '#ff8e38' });
                 const categoriesResponse = await categoryService.getAllCategories();
                 if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
                     setCategories(categoriesResponse.data);
                 }
             }
-        } catch {
-            toast.error('Error creating category');
+        } catch (error: unknown) {
+            if ((error as CategoryApiErrorResponse).error === 'DUPLICATE_CATEGORY') {
+                toast.error('A category with this name already exists');
+            } else if ((error as CategoryApiErrorResponse).error === 'MISSING_FIELDS') {
+                toast.error('Please fill in all required fields');
+            } else {
+                toast.error('Error creating category');
+            }
         } finally {
             setSavingCategory(false);
+        }
+    };
+
+    const handleCategoryClick = (category: Category) => {
+        setEditCategory({
+            isOpen: true,
+            category,
+            name: category.name,
+            color: category.color
+        });
+    };
+
+    const handleUpdateCategory = async () => {
+        if (!editCategory.category || !editCategory.name.trim()) {
+            toast.error('Category name is required');
+            return;
+        }
+
+        setSavingChanges(true);
+        try {
+            const response = await categoryService.updateCategory(editCategory.category._id, {
+                name: editCategory.name,
+                color: editCategory.color
+            });
+
+            if (response.success) {
+                toast.success('Category updated successfully');
+                const categoriesResponse = await categoryService.getAllCategories();
+                if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
+                    setCategories(categoriesResponse.data);
+                }
+                setEditCategory({ isOpen: false, category: null, name: '', color: '' });
+            }
+        } catch (error: unknown) {
+            if ((error as CategoryApiErrorResponse).error === 'DUPLICATE_CATEGORY') {
+                toast.error('A category with this name already exists');
+            } else if ((error as CategoryApiErrorResponse).error === 'NOT_FOUND') {
+                toast.error('Category not found');
+            } else if ((error as CategoryApiErrorResponse).error === 'MISSING_FIELDS') {
+                toast.error('Please fill in all required fields');
+            } else {
+                toast.error('Error updating category');
+            }
+        } finally {
+            setSavingChanges(false);
+        }
+    };
+
+    const handleDeleteCategory = async () => {
+        if (!editCategory.category) return;
+
+        setDeleteDialog({
+            open: true,
+            categoryName: editCategory.category.name
+        });
+    };
+
+    const confirmDelete = async () => {
+        if (!editCategory.category) return;
+
+        setSavingChanges(true);
+        try {
+            const response = await categoryService.deleteCategory(editCategory.category._id);
+
+            if (response.success) {
+                toast.success('Category deleted successfully');
+                const categoriesResponse = await categoryService.getAllCategories();
+                if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
+                    setCategories(categoriesResponse.data);
+                }
+                setEditCategory({ isOpen: false, category: null, name: '', color: '' });
+            }
+        } catch (error: unknown) {
+            const categoryError = error as CategoryApiErrorResponse;
+            switch (categoryError.error) {
+                case 'CATEGORY_IN_USE':
+                    toast.error('Cannot delete a category with associated transactions');
+                    break;
+                case 'NOT_FOUND':
+                    toast.error('Category not found');
+                    break;
+                case 'INVALID_ID_FORMAT':
+                    toast.error('Invalid category format');
+                    break;
+                default:
+                    toast.error('Error deleting category');
+            }
+        } finally {
+            setSavingChanges(false);
+            setDeleteDialog({ open: false, categoryName: '' });
         }
     };
 
@@ -196,6 +326,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 {categoriesBalance.map(({ category, balance }) => (
                     <ListItem
                         key={category._id}
+                        onClick={() => handleCategoryClick(category)}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -247,7 +378,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 open={drawerOpen}
                 onClose={() => {
                     setDrawerOpen(false);
-                    setNewCategory({ name: '', color: '#ff8e38' }); // Limpiar el contenido del input al cerrar
+                    setNewCategory({ name: '', color: '#ff8e38' });
                 }}
                 anchor="right"
                 PaperProps={{
@@ -269,7 +400,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     <IconButton
                         onClick={() => {
                             setDrawerOpen(false);
-                            setNewCategory({ name: '', color: '#ff8e38' }); // Limpiar el contenido del input al cerrar
+                            setNewCategory({ name: '', color: '#ff8e38' });
                         }}
                         sx={{ mr: 2 }}
                     >
@@ -297,7 +428,11 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         <Paper
                             elevation={2}
                             sx={{
-                                p: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                width: '100%',
+                                p: 2,
                                 borderRadius: 3,
                             }}>
                             <input
@@ -306,14 +441,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                 onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
                                 style={{ width: '60px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                             />
-                        </Paper>
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                p: 1,
-                                borderRadius: 3,
-                                width: '100%'
-                            }}>
                             <TextField
                                 label="Category Name"
                                 value={newCategory.name}
@@ -338,6 +465,166 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     </Button>
                 </Box>
             </Drawer>
+
+            <Drawer
+                anchor="right"
+                open={editCategory.isOpen}
+                onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
+                PaperProps={{
+                    sx: {
+                        width: {
+                            xs: '100%',
+                            sm: 450
+                        },
+                        bgcolor: 'background.default',
+                        p: 2
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <IconButton
+                        onClick={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
+                        sx={{ mr: 2 }}
+                    >
+                        <span className="material-symbols-rounded">close</span>
+                    </IconButton>
+                    <Typography variant="h6">Edit Category</Typography>
+                </Box>
+
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    px: 3
+                }}>
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        width: '100%'
+                    }}>
+                        <Paper
+                            elevation={2}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                width: '100%',
+                                p: 2,
+                                borderRadius: 3,
+                            }}>
+                            <input
+                                type="color"
+                                value={editCategory.color}
+                                onChange={(e) => setEditCategory(prev => ({ ...prev, color: e.target.value }))}
+                                style={{ width: '60px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                            />
+                            <TextField
+                                label="Category Name"
+                                value={editCategory.name}
+                                onChange={(e) => setEditCategory(prev => ({ ...prev, name: e.target.value }))}
+                                fullWidth
+                                size="small"
+                            />
+                        </Paper>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleDeleteCategory}
+                            disabled={savingChanges}
+                            fullWidth
+                            sx={{ height: '45px' }}
+                        >
+                            Delete
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleUpdateCategory}
+                            disabled={savingChanges}
+                            fullWidth
+                            sx={{ height: '45px' }}
+                        >
+                            {savingChanges ? <CircularProgress size={24} /> : 'Save Changes'}
+                        </Button>
+                    </Box>
+                </Box>
+            </Drawer>
+
+            <Dialog
+                open={deleteDialog.open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setDeleteDialog({ open: false, categoryName: '' })}
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        width: '90%',
+                        maxWidth: '400px'
+                    }
+                }}
+            >
+                <DialogTitle sx={{
+                    textAlign: 'center',
+                    pt: 3,
+                    pb: 1
+                }}>
+                    Delete Category
+                </DialogTitle>
+                <DialogContent sx={{
+                    textAlign: 'center',
+                    py: 2
+                }}>
+                    <Typography>
+                        Are you sure you want to delete the category{' '}
+                        <Typography component="span" fontWeight="bold" color="primary">
+                            {deleteDialog.categoryName}
+                        </Typography>
+                        ?
+                    </Typography>
+                    <Typography variant="body2" color="warning.main" sx={{ mt: 2 }}>
+                        Note: Categories with associated transactions cannot be deleted.
+                        You must first reassign or delete those transactions.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{
+                    justifyContent: 'center',
+                    gap: 2,
+                    p: 3
+                }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => setDeleteDialog({ open: false, categoryName: '' })}
+                        sx={{
+                            width: '120px',
+                            height: '45px'
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={confirmDelete}
+                        disabled={savingChanges}
+                        sx={{
+                            width: '120px',
+                            height: '45px'
+                        }}
+                    >
+                        {savingChanges ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            'Delete'
+                        )}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
