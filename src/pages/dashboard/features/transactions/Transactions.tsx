@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -6,17 +6,19 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-import { PieChart } from '@mui/x-charts/PieChart';
 import { useTheme } from '@mui/material/styles';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import { useUser } from '../../../../contexts/UserContext';
+import { User } from '../../../../types/models/user.modelTypes';
 import { transactionService } from '../../../../services/transaction.service';
 import type { Transaction } from '../../../../types/models/transaction.modelTypes';
 import type { TransactionApiErrorResponse } from '../../../../types/services/transaction.serviceTypes';
 import { categoryService } from '../../../../services/category.service';
 import type { Category } from '../../../../types/models/category.modelTypes';
-import { formatCurrency } from '../../../../utils/formatCurrency';
+
+import TransactionPies from './components/TransactionPies';
+import TransactionBarChart from './components/TransactionBarChart';
+import TransactionBalances from './components/TransactionBalances';
 
 export default function Transactions() {
     const theme = useTheme();
@@ -29,9 +31,10 @@ export default function Transactions() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             setLoading(true);
+
             const [transactionsResponse, categoriesResponse, allTransactionsResponse] = await Promise.all([
                 transactionService.getTransactionsByYearAndMonth(year, month),
                 categoryService.getAllCategories(),
@@ -53,35 +56,39 @@ export default function Transactions() {
             const transactionError = error as TransactionApiErrorResponse;
             switch (transactionError.error) {
                 case 'UNAUTHORIZED':
-                    toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+                    toast.error('Session expired. Please log in again.');
                     break;
                 case 'CONNECTION_ERROR':
-                    toast.error('Error de conexión. Por favor, verifique su conexión a internet.');
+                    toast.error('Connection error. Please check your internet connection.');
                     break;
                 case 'DATABASE_ERROR':
                 case 'SERVER_ERROR':
-                    toast.error('Error del servidor. Por favor, inténtelo más tarde.');
+                    toast.error('Server error. Please try again later.');
                     break;
                 default:
-                    toast.error('Error al cargar los datos');
+                    toast.error('Error loading data');
             }
         } finally {
             setLoading(false);
         }
-    };
+    }, [year, month, currentYear]);
 
     useEffect(() => {
         fetchData();
-    }, [year, month]);
+    }, [fetchData]);
 
-    // Calcular totales por categoría usando el modelo actual de Transaction
+    // Calculate totals by category using the current Transaction model
     const { incomeData, expensesData, totalIncome, totalExpenses } = useMemo(() => {
+
         const income: { [key: string]: number } = {};
         const expenses: { [key: string]: number } = {};
 
         transactions.forEach((transaction) => {
-            const category = categories.find(c => c._id === transaction.category);
-            if (!category) return;
+            const category = categories.find(c => c.name === transaction.category);
+            if (!category) {
+                console.warn('⚠️ No category found for transaction:', transaction);
+                return;
+            }
 
             if (transaction.amount > 0) {
                 income[category.name] = (income[category.name] || 0) + transaction.amount;
@@ -104,6 +111,7 @@ export default function Transactions() {
             color: categories.find(c => c.name === name)?.color || theme.palette.error.main
         }));
 
+
         const totalIncome = transactions.reduce((acc, { amount }) =>
             amount > 0 ? acc + amount : acc, 0
         );
@@ -116,18 +124,8 @@ export default function Transactions() {
     }, [transactions, categories, theme]);
 
     return (
-        <Box
-            className='transactions'
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2
-            }}>
-            <Box className='transactions__selectors'
-                sx={{
-                    display: 'flex',
-                    gap: 2
-                }}>
+        <Box className='transactions' sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box className='transactions__selectors' sx={{ display: 'flex', gap: 2 }}>
                 <Paper
                     elevation={2}
                     sx={{
@@ -180,71 +178,26 @@ export default function Transactions() {
                 </Paper>
             </Box>
 
-            <Box
-                className='transactions__pie-charts'
-                sx={{
-                    display: 'flex',
-                    gap: 2,
-                    flexWrap: 'wrap'
-                }}>
-                <Paper sx={{ p: 2, flex: 1, minWidth: 300 }}>
-                    {loading ? (
-                        <CircularProgress />
-                    ) : (
-                        <PieChart
-                            series={[
-                                {
-                                    data: incomeData,
-                                    innerRadius: 80,
-                                    paddingAngle: 2,
-                                    cornerRadius: 4,
-                                    highlightScope: { faded: 'global', highlighted: 'item' },
-                                }
-                            ]}
-                            height={300}
-                            legend={{ hidden: true }}
-                        >
-                            <text
-                                x="50%"
-                                y="50%"
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                            >
-                                {formatCurrency(totalIncome, user)}
-                            </text>
-                        </PieChart>
-                    )}
-                </Paper>
-
-                <Paper sx={{ p: 2, flex: 1, minWidth: 300 }}>
-                    {loading ? (
-                        <CircularProgress />
-                    ) : (
-                        <PieChart
-                            series={[
-                                {
-                                    data: expensesData,
-                                    innerRadius: 80,
-                                    paddingAngle: 2,
-                                    cornerRadius: 4,
-                                    highlightScope: { faded: 'global', highlighted: 'item' },
-                                }
-                            ]}
-                            height={300}
-                            legend={{ hidden: true }}
-                        >
-                            <text
-                                x="50%"
-                                y="50%"
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                            >
-                                {formatCurrency(totalExpenses, user)}
-                            </text>
-                        </PieChart>
-                    )}
-                </Paper>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap'}}>
+                <TransactionPies
+                    loading={loading}
+                    incomeData={incomeData}
+                    expensesData={expensesData}
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                />
+                <TransactionBarChart
+                    loading={loading}
+                    income={totalIncome}
+                    expenses={totalExpenses}
+                />
             </Box>
+
+            <TransactionBalances
+                totalIncome={totalIncome}
+                totalExpenses={totalExpenses}
+                user={user as User}
+            />
         </Box>
     );
 }
