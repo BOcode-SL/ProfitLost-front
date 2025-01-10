@@ -30,21 +30,38 @@ export default function AnnualReport() {
             try {
                 const response = await transactionService.getAllTransactions();
                 if (response.success && Array.isArray(response.data)) {
-                    const years = new Set(
+                    const transactionYears = new Set(
                         response.data.map((transaction: Transaction) =>
                             new Date(transaction.date).getFullYear().toString()
                         )
                     );
-                    setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
+                    
+                    transactionYears.add(currentYear);
+                    
+                    const sortedYears = [...transactionYears].sort((a, b) => Number(b) - Number(a));
+                    setYearsWithData(sortedYears);
                 }
             } catch (error: unknown) {
-                const err = error as TransactionApiErrorResponse;
-                toast.error(err.message || 'Error loading years');
+                const transactionError = error as TransactionApiErrorResponse;
+                switch (transactionError.error) {
+                    case 'UNAUTHORIZED':
+                        toast.error('Expired session. Please log in again.');
+                        break;
+                    case 'CONNECTION_ERROR':
+                        toast.error('Connection error. Please check your internet connection.');
+                        break;
+                    case 'DATABASE_ERROR':
+                    case 'SERVER_ERROR':
+                        toast.error('Server error. Please try again later.');
+                        break;
+                    default:
+                        toast.error('Error loading years');
+                }
             }
         };
 
         fetchAllTransactions();
-    }, []);
+    }, [currentYear]);
 
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
@@ -55,8 +72,25 @@ export default function AnnualReport() {
                     setTransactions(response.data);
                 }
             } catch (error: unknown) {
-                const err = error as TransactionApiErrorResponse;
-                toast.error(err.message || 'Error loading transactions');
+                const transactionError = error as TransactionApiErrorResponse;
+                switch (transactionError.error) {
+                    case 'INVALID_DATE_FORMAT':
+                        toast.error('Invalid date format');
+                        break;
+                    case 'UNAUTHORIZED':
+                        toast.error('Expired session. Please log in again.');
+                        break;
+                    case 'CONNECTION_ERROR':
+                        toast.error('Connection error. Please check your internet connection.');
+                        break;
+                    case 'DATABASE_ERROR':
+                    case 'SERVER_ERROR':
+                        toast.error('Server error. Please try again later.');
+                        break;
+                    default:
+                        toast.error('Error loading transactions');
+                }
+                setTransactions([]);
             } finally {
                 setLoading(false);
             }
