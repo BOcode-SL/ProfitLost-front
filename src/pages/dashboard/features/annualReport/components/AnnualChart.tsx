@@ -36,7 +36,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
 
     if (loading) {
         return (
-            <Box sx={{ width: '100%', height: { xs: 300, sm: 400 } }}>
+            <Box sx={{ width: '100%', height: { xs: 300, sm: 350 } }}>
                 <Skeleton variant="rectangular" width="100%" height="100%" />
             </Box>
         );
@@ -45,7 +45,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
     return (
         <Box sx={{
             width: '100%',
-            height: { xs: 300, sm: 400, pt: 1 },
+            height: { xs: 300, sm: 350, pt: 1 },
             '& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
                 fontSize: isMobile ? '0.75rem' : '0.875rem',
             }
@@ -71,7 +71,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                         textAnchor: isMobile ? 'start' : 'middle',
                     }
                 }]}
-                height={isMobile ? 300 : 400}
+                height={isMobile ? 300 : 350}
                 borderRadius={5}
                 margin={{
                     left: 60,
