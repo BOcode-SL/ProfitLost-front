@@ -266,7 +266,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 display: 'flex',
                 gap: 2,
                 mb: 2,
-                flexDirection: { xs: 'column', sm: 'row' },
+                flexDirection: { xs: 'column-reverse', sm: 'row' },
                 justifyContent: 'flex-end'
             }}>
                 <TextField

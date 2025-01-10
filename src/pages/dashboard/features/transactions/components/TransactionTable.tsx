@@ -90,7 +90,7 @@ export default function TransactionTable({
                         sx={{
                             display: 'flex',
                             justifyContent: 'end',
-                            flexDirection: { xs: 'column', sm: 'row' },
+                            flexDirection: { xs: 'column-reverse', sm: 'row' },
                             gap: 2,
                             mb: 2,
                         }}>

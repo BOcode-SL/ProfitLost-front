@@ -23,7 +23,8 @@ export default function TransactionPie({
     return (
         <Box sx={{
             flex: 1,
-            minWidth: { xs: '45%', md: 300 }
+            minWidth: { xs: '45%', md: 300 },
+            display: { xs: 'none', sm: 'block' }
         }}>
             <Paper elevation={2} sx={{
                 p: 2,
