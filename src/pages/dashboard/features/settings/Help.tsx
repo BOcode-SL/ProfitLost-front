@@ -9,7 +9,7 @@ import './Help.scss';
 export default function Help() {
     return (
         <Box className="help-container">
-            <Box className="help-content" sx={{ p: 3 }}>
+            <Box className="help-content">
                 <h2>Frequently Asked Questions</h2>
 
                 <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
@@ -122,6 +122,6 @@ export default function Help() {
                     </Accordion>
                 </Paper>
             </Box>
-        </Box>
+        </Box >
     );
 }

@@ -146,13 +146,23 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 className="dashboard__header-drawer"
                 PaperProps={{
                     sx: {
-                        width: 450,
+                        width: {
+                            xs: '100%',
+                            sm: 450
+                        },
                         p: 2,
                         bgcolor: 'background.default'
                     }
                 }}
             >
                 <Box>
+                    {/* Close Button */}
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-start ', mb: 2 }}>
+                        <IconButton onClick={() => setDrawerOpen(false)}>
+                            <span className="material-symbols-rounded">close</span>
+                        </IconButton>
+                    </Box>
+
                     {/* User Info Section */}
                     <Paper elevation={2} sx={{
                         display: 'flex',
@@ -253,10 +263,12 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 onClose={() => setSettingsDrawer({ open: false, component: '' })}
                 PaperProps={{
                     sx: {
-                        width: 450,
+                        width: {
+                            xs: '100%',
+                            sm: 450
+                        },
                         bgcolor: 'background.default',
-                        px: 1,
-                        py: 1
+                        p: 2
                     }
                 }}
             >

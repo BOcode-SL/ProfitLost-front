@@ -33,11 +33,11 @@ const currencyOptions = [
 ];
 
 const languageOptions = [
-    { 
+    {
         value: 'enUS' as Language,
         label: 'English (US)'
     },
-    { 
+    {
         value: 'esES' as Language,
         label: 'Español (ES)'
     }

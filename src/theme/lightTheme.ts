@@ -130,6 +130,30 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '8px',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                        borderRadius: '8px',
+                    }
+                }
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '8px',
+                }
+            }
+        },
+        MuiInputLabel: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '8px',
+                }
+            }
+        }
     },
 };
 
