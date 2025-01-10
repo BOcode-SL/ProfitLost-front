@@ -74,7 +74,6 @@ export default function TransactionTable({
                 sx={{
                     p: 1,
                     borderRadius: 3,
-                    mb: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2,

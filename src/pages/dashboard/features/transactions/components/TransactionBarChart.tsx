@@ -17,8 +17,7 @@ export default function TransactionBarChart({
     return (
         <Box sx={{
             flex: 1,
-            minWidth: { xs: '100%', md: '300px' },
-            maxWidth: { xs: '100%', md: '400px' }
+            minWidth: { xs: '100%', md: '300px' }
         }}>
             <Paper elevation={2} sx={{
                 p: 2,

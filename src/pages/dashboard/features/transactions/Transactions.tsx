@@ -16,7 +16,7 @@ import type { TransactionApiErrorResponse } from '../../../../types/services/tra
 import { categoryService } from '../../../../services/category.service';
 import type { Category } from '../../../../types/models/category.modelTypes';
 
-import TransactionPies from './components/TransactionPies';
+import TransactionPie from './components/TransactionPie';
 import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
 import TransactionTable from './components/TransactionTable';
@@ -179,13 +179,18 @@ export default function Transactions() {
                 </Paper>
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap'}}>
-                <TransactionPies
+            <Box sx={{
+                display: 'flex',
+                gap: 2,
+                flexWrap: 'wrap',
+            }}>
+                <TransactionPie
                     loading={loading}
-                    incomeData={incomeData}
-                    expensesData={expensesData}
-                    totalIncome={totalIncome}
-                    totalExpenses={totalExpenses}
+                    data={incomeData}
+                />
+                <TransactionPie
+                    loading={loading}
+                    data={expensesData}
                 />
                 <TransactionBarChart
                     loading={loading}
