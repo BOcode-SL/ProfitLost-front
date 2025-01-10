@@ -458,7 +458,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         sx={{
                             mt: 2,
                             width: '100%',
-                            height: '45px'
                         }}
                     >
                         {savingCategory ? <CircularProgress size={24} /> : 'Save Category'}

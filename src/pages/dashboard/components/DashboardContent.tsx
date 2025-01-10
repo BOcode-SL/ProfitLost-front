@@ -1,8 +1,11 @@
 import { Suspense, lazy } from 'react';
-import { Box, CircularProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
 import './DashboardContent.scss';
 
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
+const Transactions = lazy(() => import('../features/transactions/Transactions'));
 
 interface DashboardContentProps {
     activeSection: string;
@@ -13,10 +16,22 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
         switch (activeSection) {
             case 'Annual Report':
                 return <AnnualReport />;
+            case 'Transactions':
+                return <Transactions />;
             default:
-                return <Box>
-                    <h4>{activeSection}</h4>
-                </Box>;
+                return <Paper
+                    elevation={3}
+                    sx={{
+                        p: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '12px'
+                    }}
+                >
+                    <p style={{ fontSize: '2rem' }}>🚧{activeSection} is under construction🚧</p>
+                </Paper>
         }
     };
 

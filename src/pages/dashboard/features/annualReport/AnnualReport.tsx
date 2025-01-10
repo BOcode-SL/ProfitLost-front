@@ -15,7 +15,6 @@ import type { TransactionApiErrorResponse } from '../../../../types/services/tra
 
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
-import './AnnualReport.scss';
 
 export default function AnnualReport() {
     const { user } = useUser();
@@ -129,7 +128,7 @@ export default function AnnualReport() {
                         size="small"
                         sx={{ minWidth: { xs: '100%', sm: 200 } }}
                     >
-                        <InputLabel>Año</InputLabel>
+                        <InputLabel>Year</InputLabel>
                         <Select
                             value={year}
                             label="Year"
