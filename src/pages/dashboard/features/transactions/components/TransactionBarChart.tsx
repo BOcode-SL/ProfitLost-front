@@ -31,7 +31,7 @@ export default function TransactionBarChart({
                 minHeight: 285
             }}>
                 {loading ? (
-                    <Skeleton variant="rectangular" width="100%" height={250} />
+                    <Skeleton variant="rectangular" width="100%" height={250} sx={{ borderRadius: 3 }}/>
                 ) : (
                     <BarChart
                         xAxis={[{
