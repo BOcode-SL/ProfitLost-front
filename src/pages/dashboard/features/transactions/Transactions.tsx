@@ -19,6 +19,7 @@ import type { Category } from '../../../../types/models/category.modelTypes';
 import TransactionPies from './components/TransactionPies';
 import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
+import TransactionTable from './components/TransactionTable';
 
 export default function Transactions() {
     const theme = useTheme();
@@ -197,6 +198,13 @@ export default function Transactions() {
                 totalIncome={totalIncome}
                 totalExpenses={totalExpenses}
                 user={user as User}
+            />
+
+            <TransactionTable
+                data={transactions}
+                loading={loading}
+                categories={categories}
+                onReload={fetchData}
             />
         </Box>
     );
