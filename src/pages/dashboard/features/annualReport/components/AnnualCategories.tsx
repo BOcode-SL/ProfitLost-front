@@ -56,7 +56,6 @@ const Transition = forwardRef(function Transition(
 export default function AnnualCategories({ transactions, loading }: AnnualCategoriesProps) {
     const { user } = useUser();
     const [categories, setCategories] = useState<Category[]>([]);
-    const [loadingCategories, setLoadingCategories] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState<SortOption>('name_asc');
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -86,8 +85,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 }
             } catch {
                 toast.error('Error loading categories');
-            } finally {
-                setLoadingCategories(false);
             }
         };
 
@@ -262,14 +259,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
-    if (loading || loadingCategories) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
         <Box sx={{ p: { xs: 1, sm: 2 } }}>
 
@@ -304,8 +293,9 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     }}>
                     <InputLabel>Sort by</InputLabel>
                     <Select
-                        value={sortOption}
+                        size="small"
                         label="Sort by"
+                        value={sortOption}
                         onChange={(e) => setSortOption(e.target.value as SortOption)}
                     >
                         <MenuItem value="name_asc">Name (A-Z)</MenuItem>
@@ -331,57 +321,75 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 </Button>
             </Box>
 
-            <List sx={{ width: '100%' }}>
-                {categoriesBalance.map(({ category, balance }) => (
-                    <ListItem
-                        key={category._id}
-                        onClick={() => handleCategoryClick(category)}
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            py: 1.5,
-                            px: { xs: 1, sm: 2 },
-                            borderRadius: 2,
-                            cursor: 'pointer',
-                            '&:hover': {
-                                bgcolor: `${category.color}20`
-                            }
-                        }}
-                    >
-                        <Box
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                    <CircularProgress />
+                </Box>
+            ) : categoriesBalance.length === 0 ? (
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    p: 3,
+                    minHeight: 200
+                }}>
+                    <Typography variant="h5" color="text.secondary">
+                        🪂 Add your first category 🪂
+                    </Typography>
+                </Box>
+            ) : (
+                <List sx={{ width: '100%' }}>
+                    {categoriesBalance.map(({ category, balance }) => (
+                        <ListItem
+                            key={category._id}
+                            onClick={() => handleCategoryClick(category)}
                             sx={{
-                                width: { xs: 20, sm: 24 },
-                                height: { xs: 20, sm: 24 },
-                                borderRadius: '50%',
-                                bgcolor: category.color,
-                                flexShrink: 0
-                            }}
-                        />
-                        <ListItemText
-                            primary={category.name}
-                            sx={{
-                                flex: 1,
-                                '& .MuiListItemText-primary': {
-                                    fontWeight: 400,
-                                    fontSize: { xs: '0.9rem', sm: '1rem' }
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                py: 1.5,
+                                px: { xs: 1, sm: 2 },
+                                borderRadius: 2,
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    bgcolor: `${category.color}20`
                                 }
                             }}
-                        />
-                        <Box
-                            sx={{
-                                color: balance >= 0 ? 'success.main' : 'error.main',
-                                fontWeight: 400,
-                                fontSize: { xs: '0.9rem', sm: '1rem' },
-                                textAlign: 'right',
-                                minWidth: { xs: 80, sm: 120 }
-                            }}
                         >
-                            {formatCurrency(balance, user)}
-                        </Box>
-                    </ListItem>
-                ))}
-            </List>
+                            <Box
+                                sx={{
+                                    width: { xs: 20, sm: 24 },
+                                    height: { xs: 20, sm: 24 },
+                                    borderRadius: '50%',
+                                    bgcolor: category.color,
+                                    flexShrink: 0
+                                }}
+                            />
+                            <ListItemText
+                                primary={category.name}
+                                sx={{
+                                    flex: 1,
+                                    '& .MuiListItemText-primary': {
+                                        fontWeight: 400,
+                                        fontSize: { xs: '0.9rem', sm: '1rem' }
+                                    }
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                    color: balance >= 0 ? 'success.main' : 'error.main',
+                                    fontWeight: 400,
+                                    fontSize: { xs: '0.9rem', sm: '1rem' },
+                                    textAlign: 'right',
+                                    minWidth: { xs: 80, sm: 120 }
+                                }}
+                            >
+                                {formatCurrency(balance, user)}
+                            </Box>
+                        </ListItem>
+                    ))}
+                </List>
+            )}
 
             <Drawer
                 open={drawerOpen}
@@ -415,7 +423,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     >
                         <span className="material-symbols-rounded">close</span>
                     </IconButton>
-                    <Typography variant="h6">New Category</Typography>
+                    <Typography variant="h6">Add your first category</Typography>
                 </Box>
 
                 <Box sx={{
@@ -633,6 +641,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Box >
     );
 }
