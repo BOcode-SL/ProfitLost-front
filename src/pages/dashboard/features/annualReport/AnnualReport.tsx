@@ -12,7 +12,9 @@ import { transactionService } from '../../../../services/transaction.service';
 import { formatCurrency } from '../../../../utils/formatCurrency';
 import type { Transaction } from '../../../../types/models/transaction.modelTypes';
 import type { TransactionApiErrorResponse } from '../../../../types/services/transaction.serviceTypes';
+
 import AnnualChart from './components/AnnualChart';
+import AnnualCategories from './components/AnnualCategories';
 import './AnnualReport.scss';
 
 export default function AnnualReport() {
@@ -177,6 +179,18 @@ export default function AnnualReport() {
                         </span>
                     </Paper>
                 </Box>
+
+                <Paper elevation={2} sx={{
+                    p: 1,
+                    borderRadius: 3,
+                    width: '100%',
+                    mt: 2
+                }}>
+                    <AnnualCategories 
+                        transactions={transactions}
+                        loading={loading}
+                    />
+                </Paper>
             </Box>
         </Box>
     );
