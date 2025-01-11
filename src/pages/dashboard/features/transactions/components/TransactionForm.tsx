@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
@@ -22,12 +22,24 @@ interface TransactionFormProps {
     categories: Category[];
 }
 
-export default function TransactionForm({ onSubmit, onClose, categories }: TransactionFormProps) {
+export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
     const [date, setDate] = useState(new Date().toISOString().slice(0, 16));
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
     const [isIncome, setIsIncome] = useState(false);
+
+    // Cargar datos si estamos editando
+    useEffect(() => {
+        if (transaction) {
+            const localDate = new Date(transaction.date);
+            setDate(localDate.toISOString().slice(0, 16));
+            setDescription(transaction.description);
+            setAmount(Math.abs(transaction.amount).toString());
+            setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
+            setIsIncome(transaction.amount >= 0);
+        }
+    }, [transaction, categories]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,18 +65,25 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                 localDate.getMinutes()
             ));
 
-            await transactionService.createTransaction({
+            const transactionData = {
                 date: utcDate.toISOString(),
                 description: description.trim(),
                 amount: numAmount * (isIncome ? 1 : -1),
                 category
-            });
+            };
+            
+            if (transaction) {
+                await transactionService.updateTransaction(transaction._id, transactionData);
+                toast.success('Transaction updated successfully');
+            } else {
+                await transactionService.createTransaction(transactionData);
+                toast.success('Transaction created successfully');
+            }
 
-            toast.success('Transaction created successfully');
             onSubmit();
         } catch (error) {
-            toast.error('Failed to create transaction');
-            console.error('Error creating transaction:', error);
+            console.error('Error details:', error);
+            toast.error(transaction ? 'Failed to update transaction' : 'Failed to create transaction');
         }
     };
 
@@ -74,7 +93,7 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
                 </IconButton>
-                <Typography variant="h6">New Transaction</Typography>
+                <Typography variant="h6">{transaction ? 'Edit Transaction' : 'New Transaction'}</Typography>
             </Box>
 
             <form onSubmit={handleSubmit}>
@@ -88,16 +107,16 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             gap: 2,
                             width: '100%',
                             p: 1,
-                            borderRadius: 3
+                            borderRadius: 3,
                         }}>
                         <TextField
+                            size="small"
                             label="Date"
                             type="datetime-local"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             fullWidth
                             required
-                            size='small'
                         />
                     </Paper>
 
@@ -109,9 +128,13 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             gap: 2,
                             width: '100%',
                             p: 1,
-                            borderRadius: 3
+                            borderRadius: 3,
                         }}>
-                        <FormControl fullWidth size='small'>
+                        <FormControl
+                            fullWidth
+                            size="small"
+                            required
+                        >
                             <InputLabel>Type</InputLabel>
                             <Select
                                 value={isIncome}
@@ -134,7 +157,11 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             p: 1,
                             borderRadius: 3,
                         }}>
-                        <FormControl fullWidth required size='small'>
+                        <FormControl
+                            fullWidth
+                            required
+                            size="small"
+                        >
                             <InputLabel>Category</InputLabel>
                             <Select
                                 value={category}
@@ -160,13 +187,14 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             p: 1,
                             borderRadius: 3,
                         }}>
+
                         <TextField
+                            size="small"
                             label="Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             fullWidth
                             required
-                            size='small'
                         />
                     </Paper>
 
@@ -181,20 +209,18 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             borderRadius: 3,
                         }}>
                         <TextField
+                            size="small"
                             label="Amount"
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             fullWidth
                             required
-                            inputProps={{ step: "0.01" }}
-                            size='small'
                         />
                     </Paper>
 
-                    <Box sx={{ display: 'flex', gap: 2, mt: 2, width: '100%' }}>
+                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
                         <Button
-
                             onClick={onClose}
                             variant="outlined"
                             sx={{ width: '100%', height: '45px' }}
@@ -206,7 +232,7 @@ export default function TransactionForm({ onSubmit, onClose, categories }: Trans
                             variant="contained"
                             sx={{ width: '100%', height: '45px' }}
                         >
-                            Create
+                            {transaction ? 'Update' : 'Create'}
                         </Button>
                     </Box>
                 </Box>

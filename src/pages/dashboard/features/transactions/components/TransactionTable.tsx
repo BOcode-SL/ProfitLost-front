@@ -246,7 +246,10 @@ export default function TransactionTable({
                 open={editDrawerOpen}
                 onClose={() => setEditDrawerOpen(false)}
                 PaperProps={{
-                    sx: { width: { xs: '100%', sm: 500 } }
+                    sx: {
+                        width: { xs: '100%', sm: 500 },
+                        bgcolor: 'background.default',
+                    }
                 }}
             >
                 <TransactionForm

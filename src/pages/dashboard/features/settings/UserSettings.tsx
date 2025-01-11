@@ -166,7 +166,9 @@ export default function UserSettings() {
                                     variant="text"
                                     onClick={handleDeleteImage}
                                     disabled={loading}
-                                    size="small"
+                                    sx={{
+                                        height: '45px',
+                                    }}
                                 >
                                     Delete Image
                                 </Button>
@@ -175,7 +177,9 @@ export default function UserSettings() {
                                     variant="text"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={loading}
-                                    size="small"
+                                    sx={{
+                                        height: '45px',
+                                    }}
                                 >
                                     Change Image
                                 </Button>
@@ -189,6 +193,7 @@ export default function UserSettings() {
                     <h3>Personal Information</h3>
                     <Box className="form-fields">
                         <TextField
+                            size="small"
                             label="Name"
                             name="name"
                             value={formData.name}
@@ -196,6 +201,7 @@ export default function UserSettings() {
                             fullWidth
                         />
                         <TextField
+                            size="small"
                             label="Surname"
                             name="surname"
                             value={formData.surname}
@@ -209,7 +215,7 @@ export default function UserSettings() {
                 <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Preferences</h3>
                     <Box className="form-fields">
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small">
                             <InputLabel>Language</InputLabel>
                             <Select<Language>
                                 name="language"
@@ -225,7 +231,7 @@ export default function UserSettings() {
                             </Select>
                         </FormControl>
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small">
                             <InputLabel>Currency</InputLabel>
                             <Select<Currency>
                                 name="currency"
@@ -241,7 +247,7 @@ export default function UserSettings() {
                             </Select>
                         </FormControl>
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small">
                             <InputLabel>Date Format</InputLabel>
                             <Select<DateFormat>
                                 name="dateFormat"
@@ -257,7 +263,7 @@ export default function UserSettings() {
                             </Select>
                         </FormControl>
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth size="small">
                             <InputLabel>Time Format</InputLabel>
                             <Select<TimeFormat>
                                 name="timeFormat"
@@ -280,7 +286,7 @@ export default function UserSettings() {
                     onClick={handleSubmit}
                     disabled={loading}
                     className="submit-button"
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', height: '45px' }}
                 >
                     {loading ? 'Saving...' : 'Save Changes'}
                 </Button>

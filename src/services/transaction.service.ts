@@ -151,6 +151,7 @@ export const transactionService = {
 
             return data as TransactionApiResponse;
         } catch (error) {
+            console.error('Update Error:', error);
             if ((error as TransactionApiErrorResponse).status) {
                 throw error as TransactionApiErrorResponse;
             }

@@ -120,6 +120,9 @@ export default function SecurityPrivacy() {
                                 variant="outlined"
                                 disabled={true}
                                 onClick={() => {/* handle 2FA toggle */ }}
+                                sx={{
+                                    height: '45px',
+                                }}
                                 startIcon={
                                     <span className="material-symbols-rounded">
                                         {/* {false ? 'lock_open' : 'lock'} */}
@@ -140,6 +143,7 @@ export default function SecurityPrivacy() {
                     <form onSubmit={handlePasswordChange}>
                         <Box className="form-fields">
                             <TextField
+                                size="small"
                                 label="Current Password"
                                 type={showPassword.current ? 'text' : 'password'}
                                 value={formData.currentPassword}
@@ -162,6 +166,7 @@ export default function SecurityPrivacy() {
                             />
 
                             <TextField
+                                size="small"
                                 label="New Password"
                                 type={showPassword.new ? 'text' : 'password'}
                                 value={formData.newPassword}
@@ -184,6 +189,7 @@ export default function SecurityPrivacy() {
                             />
 
                             <TextField
+                                size="small"
                                 label="Confirm New Password"
                                 type={showPassword.confirm ? 'text' : 'password'}
                                 value={formData.confirmPassword}
@@ -210,6 +216,9 @@ export default function SecurityPrivacy() {
                                 variant="contained"
                                 color="primary"
                                 fullWidth
+                                sx={{
+                                    height: '45px',
+                                }}
                             >
                                 Update Password
                             </Button>
@@ -234,6 +243,7 @@ export default function SecurityPrivacy() {
                                 borderColor: 'red',
                                 color: 'red',
                                 width: '100%',
+                                height: '45px',
                             }}
                         >
                             Delete my account
@@ -264,6 +274,7 @@ export default function SecurityPrivacy() {
                                         borderColor: 'red',
                                         color: 'red',
                                         width: '100%',
+                                        height: '45px',
                                     }}
                                 >
                                     Confirm
