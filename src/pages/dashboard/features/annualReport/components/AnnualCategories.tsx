@@ -1,11 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,14 +13,12 @@ import InputLabel from '@mui/material/InputLabel';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Paper from '@mui/material/Paper';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import { forwardRef } from 'react';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
@@ -29,6 +26,7 @@ import { formatCurrency } from '../../../../../utils/formatCurrency';
 import type { Category } from '../../../../../types/models/category.modelTypes';
 import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
 import { CategoryApiErrorResponse } from '../../../../../types/services/category.serviceTypes';
+import CategoryForm from './CategoryForm';
 
 interface AnnualCategoriesProps {
     transactions: Transaction[];
@@ -59,11 +57,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState<SortOption>('name_asc');
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [newCategory, setNewCategory] = useState({
-        name: '',
-        color: '#ff8e38'
-    });
-    const [savingCategory, setSavingCategory] = useState(false);
     const [editCategory, setEditCategory] = useState<EditCategoryState>({
         isOpen: false,
         category: null,
@@ -135,37 +128,9 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
     }, [categories, transactions, searchTerm, sortOption]);
 
     const handleCreateCategory = async () => {
-        if (!newCategory.name.trim()) {
-            toast.error('Category name is required');
-            return;
-        }
-
-        setSavingCategory(true);
-        try {
-            const response = await categoryService.createCategory({
-                name: newCategory.name,
-                color: newCategory.color
-            });
-
-            if (response.success) {
-                toast.success('Category created successfully');
-                setDrawerOpen(false);
-                setNewCategory({ name: '', color: '#ff8e38' });
-                const categoriesResponse = await categoryService.getAllCategories();
-                if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
-                    setCategories(categoriesResponse.data);
-                }
-            }
-        } catch (error: unknown) {
-            if ((error as CategoryApiErrorResponse).error === 'DUPLICATE_CATEGORY') {
-                toast.error('A category with this name already exists');
-            } else if ((error as CategoryApiErrorResponse).error === 'MISSING_FIELDS') {
-                toast.error('Please fill in all required fields');
-            } else {
-                toast.error('Error creating category');
-            }
-        } finally {
-            setSavingCategory(false);
+        const categoriesResponse = await categoryService.getAllCategories();
+        if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
+            setCategories(categoriesResponse.data);
         }
     };
 
@@ -179,48 +144,10 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
     };
 
     const handleUpdateCategory = async () => {
-        if (!editCategory.category || !editCategory.name.trim()) {
-            toast.error('Category name is required');
-            return;
+        const categoriesResponse = await categoryService.getAllCategories();
+        if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
+            setCategories(categoriesResponse.data);
         }
-
-        setSavingChanges(true);
-        try {
-            const response = await categoryService.updateCategory(editCategory.category._id, {
-                name: editCategory.name,
-                color: editCategory.color
-            });
-
-            if (response.success) {
-                toast.success('Category updated successfully');
-                const categoriesResponse = await categoryService.getAllCategories();
-                if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
-                    setCategories(categoriesResponse.data);
-                }
-                setEditCategory({ isOpen: false, category: null, name: '', color: '' });
-            }
-        } catch (error: unknown) {
-            if ((error as CategoryApiErrorResponse).error === 'DUPLICATE_CATEGORY') {
-                toast.error('A category with this name already exists');
-            } else if ((error as CategoryApiErrorResponse).error === 'NOT_FOUND') {
-                toast.error('Category not found');
-            } else if ((error as CategoryApiErrorResponse).error === 'MISSING_FIELDS') {
-                toast.error('Please fill in all required fields');
-            } else {
-                toast.error('Error updating category');
-            }
-        } finally {
-            setSavingChanges(false);
-        }
-    };
-
-    const handleDeleteCategory = async () => {
-        if (!editCategory.category) return;
-
-        setDeleteDialog({
-            open: true,
-            categoryName: editCategory.category.name
-        });
     };
 
     const confirmDelete = async () => {
@@ -392,96 +319,20 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
             )}
 
             <Drawer
-                open={drawerOpen}
-                onClose={() => {
-                    setDrawerOpen(false);
-                    setNewCategory({ name: '', color: '#ff8e38' });
-                }}
                 anchor="right"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
                 PaperProps={{
                     sx: {
-                        width: {
-                            xs: '100%',
-                            sm: 450
-                        },
-                        bgcolor: 'background.default',
-                        p: 2
+                        width: { xs: '100%', sm: 450 },
+                        bgcolor: 'background.default'
                     }
                 }}
             >
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    mb: 3
-                }}>
-                    <IconButton
-                        onClick={() => {
-                            setDrawerOpen(false);
-                            setNewCategory({ name: '', color: '#ff8e38' });
-                        }}
-                        sx={{ mr: 2 }}
-                    >
-                        <span className="material-symbols-rounded">close</span>
-                    </IconButton>
-                    <Typography variant="h6">Add your first category</Typography>
-                </Box>
-
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    gap: 2,
-                    px: 3,
-                    mt: 6
-                }}>
-
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            width: '100%'
-                        }}
-                    >
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                width: '100%',
-                                p: 2,
-                                borderRadius: 3,
-                            }}>
-                            <input
-                                type="color"
-                                value={newCategory.color}
-                                onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
-                                style={{ width: '60px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                            />
-                            <TextField
-                                label="Category Name"
-                                value={newCategory.name}
-                                onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                                fullWidth
-                                size="small"
-                            />
-                        </Paper>
-                    </Box>
-
-                    <Button
-                        variant="contained"
-                        onClick={handleCreateCategory}
-                        disabled={savingCategory}
-                        sx={{
-                            mt: 2,
-                            width: '100%',
-                            height: '45px'
-                        }}
-                    >
-                        {savingCategory ? <CircularProgress size={24} /> : 'Save Category'}
-                    </Button>
-                </Box>
+                <CategoryForm
+                    onSubmit={handleCreateCategory}
+                    onClose={() => setDrawerOpen(false)}
+                />
             </Drawer>
 
             <Drawer
@@ -490,85 +341,24 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
                 PaperProps={{
                     sx: {
-                        width: {
-                            xs: '100%',
-                            sm: 450
-                        },
-                        bgcolor: 'background.default',
-                        p: 2
+                        width: { xs: '100%', sm: 450 },
+                        bgcolor: 'background.default'
                     }
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    <IconButton
-                        onClick={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
-                        sx={{ mr: 2 }}
-                    >
-                        <span className="material-symbols-rounded">close</span>
-                    </IconButton>
-                    <Typography variant="h6">Edit Category</Typography>
-                </Box>
-
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    px: 3
-                }}>
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        width: '100%'
-                    }}>
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                width: '100%',
-                                p: 2,
-                                borderRadius: 3,
-                            }}>
-                            <input
-                                type="color"
-                                value={editCategory.color}
-                                onChange={(e) => setEditCategory(prev => ({ ...prev, color: e.target.value }))}
-                                style={{ width: '60px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                            />
-                            <TextField
-                                label="Category Name"
-                                value={editCategory.name}
-                                onChange={(e) => setEditCategory(prev => ({ ...prev, name: e.target.value }))}
-                                fullWidth
-                                size="small"
-                            />
-                        </Paper>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={handleDeleteCategory}
-                            disabled={savingChanges}
-                            fullWidth
-                            sx={{ height: '45px' }}
-                        >
-                            Delete
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={handleUpdateCategory}
-                            disabled={savingChanges}
-                            fullWidth
-                            sx={{ height: '45px' }}
-                        >
-                            {savingChanges ? <CircularProgress size={24} /> : 'Save Changes'}
-                        </Button>
-                    </Box>
-                </Box>
+                <CategoryForm
+                    category={editCategory.category || undefined}
+                    onSubmit={handleUpdateCategory}
+                    onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
+                    onDelete={() => {
+                        if (editCategory.category) {
+                            setDeleteDialog({
+                                open: true,
+                                categoryName: editCategory.category.name
+                            });
+                        }
+                    }}
+                />
             </Drawer>
 
             <Dialog
