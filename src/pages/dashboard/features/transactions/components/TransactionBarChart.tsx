@@ -50,6 +50,7 @@ export default function TransactionBarChart({
                                 color: '#9d300f',
                             }
                         ]}
+                        borderRadius={5}
                         height={250}
                         width={350}
                         margin={{ top: 40, bottom: 40, left: 60, right: 20 }}
