@@ -431,7 +431,8 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     flexDirection: 'column',
                     width: '100%',
                     gap: 2,
-                    px: 3
+                    px: 3,
+                    mt: 6
                 }}>
 
                     <Box
@@ -475,6 +476,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         sx={{
                             mt: 2,
                             width: '100%',
+                            height: '45px'
                         }}
                     >
                         {savingCategory ? <CircularProgress size={24} /> : 'Save Category'}

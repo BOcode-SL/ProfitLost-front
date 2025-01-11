@@ -14,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 
 import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
 import type { Category } from '../../../../../types/models/category.modelTypes';
+import TransactionForm from './TransactionForm';
 
 interface TransactionTableProps {
     data: Transaction[];
@@ -34,6 +35,7 @@ export default function TransactionTable({
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [hoveredTransactionId, setHoveredTransactionId] = useState<string | null>(null);
+    const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
 
     const getCategoryColor = (categoryName: string) => {
         const category = categories.find(cat => cat.name === categoryName);
@@ -130,7 +132,7 @@ export default function TransactionTable({
                         </FormControl>
                         <Button
                             variant="contained"
-                            onClick={() => { }}
+                            onClick={() => setCreateDrawerOpen(true)}
                             startIcon={<span className="material-symbols-rounded">add</span>}
                             size="small"
                             sx={{
@@ -247,15 +249,33 @@ export default function TransactionTable({
                     sx: { width: { xs: '100%', sm: 500 } }
                 }}
             >
-                {/* Aquí irá el formulario de edición */}
-                {/* <TransactionForm 
-                    transaction={selectedTransaction}
+                <TransactionForm
+                    transaction={selectedTransaction || undefined}
                     onSubmit={() => {
                         setEditDrawerOpen(false);
                         onReload();
                     }}
                     onClose={() => setEditDrawerOpen(false)}
-                /> */}
+                    categories={categories}
+                />
+            </Drawer>
+
+            <Drawer
+                anchor="right"
+                open={createDrawerOpen}
+                onClose={() => setCreateDrawerOpen(false)}
+                PaperProps={{
+                    sx: { width: { xs: '100%', sm: 500 }, bgcolor: 'background.default', }
+                }}
+            >
+                <TransactionForm
+                    onSubmit={() => {
+                        setCreateDrawerOpen(false);
+                        onReload();
+                    }}
+                    onClose={() => setCreateDrawerOpen(false)}
+                    categories={categories}
+                />
             </Drawer>
         </Box>
     );
