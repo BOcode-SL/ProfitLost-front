@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -31,20 +31,50 @@ export default function TransactionTable({
 }: TransactionTableProps) {
     const theme = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOption, setSortOption] = useState('date_desc');
+    const [sortOption, setSortOption] = useState<string>('date_desc');
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+    const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [hoveredTransactionId, setHoveredTransactionId] = useState<string | null>(null);
-    const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
+
+    const handleTransactionClick = useCallback((transaction: Transaction) => {
+        setCreateDrawerOpen(false);
+        setEditDrawerOpen(false);
+        
+        setSelectedTransaction(null);
+        
+        requestAnimationFrame(() => {
+            setSelectedTransaction(transaction);
+            setEditDrawerOpen(true);
+        });
+    }, []);
+
+    const handleCloseEditDrawer = useCallback(() => {
+        setEditDrawerOpen(false);
+        setTimeout(() => {
+            setSelectedTransaction(null);
+        }, 300);
+    }, []);
+
+    const handleCreateClick = useCallback(() => {
+        setSelectedTransaction(null);
+        setCreateDrawerOpen(true);
+    }, []);
 
     const getCategoryColor = (categoryName: string) => {
         const category = categories.find(cat => cat.name === categoryName);
         return category?.color || theme.palette.grey[500];
     };
 
-    const handleTransactionClick = (transaction: Transaction) => {
-        setSelectedTransaction(transaction);
-        setEditDrawerOpen(true);
+    const formatDateTime = (date: string) => {
+        return new Date(date).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
     };
 
     // Filter and sort transactions
@@ -132,7 +162,7 @@ export default function TransactionTable({
                         </FormControl>
                         <Button
                             variant="contained"
-                            onClick={() => setCreateDrawerOpen(true)}
+                            onClick={handleCreateClick}
                             startIcon={<span className="material-symbols-rounded">add</span>}
                             size="small"
                             sx={{
@@ -201,7 +231,7 @@ export default function TransactionTable({
                                             {transaction.description}
                                         </Typography>
                                         <Typography variant="caption" color="text.secondary">
-                                            {new Date(transaction.date).toLocaleDateString()}
+                                            {formatDateTime(transaction.date)}
                                         </Typography>
                                     </Box>
 
@@ -244,7 +274,12 @@ export default function TransactionTable({
             <Drawer
                 anchor="right"
                 open={editDrawerOpen}
-                onClose={() => setEditDrawerOpen(false)}
+                onClose={handleCloseEditDrawer}
+                slotProps={{
+                    backdrop: {
+                        timeout: 300,
+                    },
+                }}
                 PaperProps={{
                     sx: {
                         width: { xs: '100%', sm: 500 },
@@ -252,23 +287,30 @@ export default function TransactionTable({
                     }
                 }}
             >
-                <TransactionForm
-                    transaction={selectedTransaction || undefined}
-                    onSubmit={() => {
-                        setEditDrawerOpen(false);
-                        onReload();
-                    }}
-                    onClose={() => setEditDrawerOpen(false)}
-                    categories={categories}
-                />
+                {selectedTransaction && (
+                    <TransactionForm
+                        transaction={selectedTransaction}
+                        onSubmit={() => {
+                            handleCloseEditDrawer();
+                            onReload();
+                        }}
+                        onClose={handleCloseEditDrawer}
+                        categories={categories}
+                    />
+                )}
             </Drawer>
 
             <Drawer
                 anchor="right"
                 open={createDrawerOpen}
                 onClose={() => setCreateDrawerOpen(false)}
+                slotProps={{
+                    backdrop: {
+                        timeout: 300,
+                    },
+                }}
                 PaperProps={{
-                    sx: { width: { xs: '100%', sm: 500 }, bgcolor: 'background.default', }
+                    sx: { width: { xs: '100%', sm: 500 }, bgcolor: 'background.default' }
                 }}
             >
                 <TransactionForm

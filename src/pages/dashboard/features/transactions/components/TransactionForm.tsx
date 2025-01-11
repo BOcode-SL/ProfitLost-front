@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
@@ -10,6 +10,13 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { toast } from 'react-hot-toast';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { transactionService } from '../../../../../services/transaction.service';
 import type { Category } from '../../../../../types/models/category.modelTypes';
@@ -22,14 +29,31 @@ interface TransactionFormProps {
     categories: Category[];
 }
 
-export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
-    const [date, setDate] = useState(new Date().toISOString().slice(0, 16));
-    const [description, setDescription] = useState('');
-    const [amount, setAmount] = useState('');
-    const [category, setCategory] = useState('');
-    const [isIncome, setIsIncome] = useState(false);
+const Transition = forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
-    // Cargar datos si estamos editando
+export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
+    const [date, setDate] = useState(transaction 
+        ? new Date(transaction.date).toISOString().slice(0, 16)
+        : new Date().toISOString().slice(0, 16)
+    );
+    const [description, setDescription] = useState(transaction?.description || '');
+    const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
+    const [category, setCategory] = useState(transaction 
+        ? (categories.find(cat => cat.name === transaction.category)?._id || '')
+        : ''
+    );
+    const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState(false);
+
+    // Actualizamos los valores solo si cambia la transacción
     useEffect(() => {
         if (transaction) {
             const localDate = new Date(transaction.date);
@@ -39,7 +63,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
             setIsIncome(transaction.amount >= 0);
         }
-    }, [transaction, categories]);
+    }, [transaction?._id]); // Solo dependemos del ID de la transacción
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -84,6 +108,25 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         } catch (error) {
             console.error('Error details:', error);
             toast.error(transaction ? 'Failed to update transaction' : 'Failed to create transaction');
+        }
+    };
+
+    const handleDeleteClick = () => {
+        setDeleteDialog(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            setIsDeleting(true);
+            await transactionService.deleteTransaction(transaction!._id);
+            toast.success('Transaction deleted successfully');
+            onSubmit();
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+            toast.error('Failed to delete transaction');
+        } finally {
+            setIsDeleting(false);
+            setDeleteDialog(false);
         }
     };
 
@@ -220,23 +263,111 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </Paper>
 
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
-                        <Button
-                            onClick={onClose}
-                            variant="outlined"
-                            sx={{ width: '100%', height: '45px' }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            sx={{ width: '100%', height: '45px' }}
-                        >
-                            {transaction ? 'Update' : 'Create'}
-                        </Button>
+                        {transaction ? (
+                            <>
+                                <Button
+                                    onClick={handleDeleteClick}
+                                    variant="outlined"
+                                    color="error"
+                                    disabled={isDeleting}
+                                    sx={{ width: '100%', height: '45px' }}
+                                >
+                                    Delete
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ width: '100%', height: '45px' }}
+                                >
+                                    Update
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    onClick={onClose}
+                                    variant="outlined"
+                                    sx={{ width: '100%', height: '45px' }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ width: '100%', height: '45px' }}
+                                >
+                                    Create
+                                </Button>
+                            </>
+                        )}
                     </Box>
                 </Box>
             </form>
+
+            <Dialog
+                open={deleteDialog}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setDeleteDialog(false)}
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        width: '90%',
+                        maxWidth: '400px'
+                    }
+                }}
+            >
+                <DialogTitle sx={{
+                    textAlign: 'center',
+                    pt: 3,
+                    pb: 1
+                }}>
+                    Delete Transaction
+                </DialogTitle>
+                <DialogContent sx={{
+                    textAlign: 'center',
+                    py: 2
+                }}>
+                    <Typography>
+                        Are you sure you want to delete this transaction?
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{
+                    justifyContent: 'center',
+                    gap: 2,
+                    p: 3
+                }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => setDeleteDialog(false)}
+                        sx={{
+                            width: '120px',
+                            height: '45px'
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={confirmDelete}
+                        disabled={isDeleting}
+                        sx={{
+                            width: '120px',
+                            height: '45px'
+                        }}
+                    >
+                        {isDeleting ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            'Delete'
+                        )}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 } 
