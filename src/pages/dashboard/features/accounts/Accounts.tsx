@@ -3,8 +3,10 @@ import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/mate
 import { Fade } from '@mui/material';
 
 import { accountService } from '../../../../services/account.service';
+import { userService } from '../../../../services/user.service';
 import type { Account } from '../../../../types/models/account.modelTypes';
 import AccountsChart from './components/AccountsChart';
+import AccountsTable from './components/AccountsTable';
 
 export default function Accounts() {
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -16,16 +18,42 @@ export default function Accounts() {
         return accounts.filter(account => account.configuration.isActive !== false);
     }, [accounts]);
 
+    const orderAccounts = (accountsToOrder: Account[], accountsOrder: string[]) => {
+        if (!accountsOrder?.length) return accountsToOrder;
+
+        const orderedAccounts = [...accountsToOrder];
+        orderedAccounts.sort((a, b) => {
+            const indexA = accountsOrder.indexOf(a._id);
+            const indexB = accountsOrder.indexOf(b._id);
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+
+        return orderedAccounts;
+    };
+
     useEffect(() => {
         const fetchAccounts = async () => {
             setLoading(true);
             try {
-                const response = await accountService.getAllAccounts();
-                if (response.success && response.data) {
-                    const accountsData = Array.isArray(response.data) ? response.data : [response.data];
-                    setAccounts(accountsData);
+                const [accountsResponse, userResponse] = await Promise.all([
+                    accountService.getAllAccounts(),
+                    userService.getUserData()
+                ]);
 
-                    // Obtain unique years with data
+                if (accountsResponse.success && accountsResponse.data) {
+                    const accountsData = Array.isArray(accountsResponse.data) 
+                        ? accountsResponse.data 
+                        : [accountsResponse.data];
+
+                    // Verificar si userResponse es un éxito antes de acceder a data
+                    if (userResponse.success && userResponse.data) {
+                        const orderedAccounts = orderAccounts(accountsData, userResponse.data.accountsOrder);
+                        setAccounts(orderedAccounts);
+                    }
+
+                    // Obtener años únicos con datos
                     const years = new Set<number>();
                     const currentYear = new Date().getFullYear();
                     years.add(currentYear);
@@ -69,6 +97,20 @@ export default function Accounts() {
         fetchAccountsByYear();
     }, [year]);
 
+    const handleReorder = async (reorderedAccounts: Account[]) => {
+        try {
+            // Actualizamos el estado local
+            setAccounts(reorderedAccounts);
+            
+            // Actualizamos el orden en el backend
+            const accountIds = reorderedAccounts.map(account => account._id);
+            await userService.updateAccountsOrder(accountIds);
+        } catch (error) {
+            console.error('Error updating accounts order:', error);
+            // Aquí podrías mostrar un mensaje de error al usuario
+        }
+    };
+
     return (
         <Fade in timeout={400}>
             <Box sx={{
@@ -108,6 +150,13 @@ export default function Accounts() {
                         selectedYear={parseInt(year)}
                     />
                 </Paper>
+
+                <AccountsTable 
+                    accounts={activeAccounts}
+                    loading={loading}
+                    selectedYear={parseInt(year)}
+                    onReorder={handleReorder}
+                />
             </Box>
         </Fade>
     );
