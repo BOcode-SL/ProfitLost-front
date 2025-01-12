@@ -6,6 +6,7 @@ import './DashboardContent.scss';
 
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
+const Accounts = lazy(() => import('../features/accounts/Accounts'));
 
 interface DashboardContentProps {
     activeSection: string;
@@ -18,6 +19,8 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                 return <AnnualReport />;
             case 'Transactions':
                 return <Transactions />;
+            case 'Accounts':
+                return <Accounts />;
             default:
                 return <Paper
                     elevation={3}

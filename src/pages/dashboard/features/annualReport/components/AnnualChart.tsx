@@ -38,12 +38,12 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
     if (loading) {
         return (
             <Fade in timeout={300}>
-                <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5 }}>
-                    <Skeleton variant="rectangular" width="100%" height="100%" 
-                        sx={{ 
+                <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5, p: 1 }}>
+                    <Skeleton variant="rectangular" width="100%" height="100%"
+                        sx={{
                             borderRadius: 3,
                             animation: 'pulse 1.5s ease-in-out infinite'
-                        }} 
+                        }}
                     />
                 </Box>
             </Fade>

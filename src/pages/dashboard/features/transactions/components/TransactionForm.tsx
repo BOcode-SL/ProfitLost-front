@@ -53,7 +53,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
 
-    // Actualizamos los valores solo si cambia la transacción
     useEffect(() => {
         if (transaction) {
             const localDate = new Date(transaction.date);
@@ -63,7 +62,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
             setIsIncome(transaction.amount >= 0);
         }
-    }, [transaction?._id]); // Solo dependemos del ID de la transacción
+    }, [categories, transaction, transaction?._id]); 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,7 +85,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 localDate.getMonth(),
                 localDate.getDate(),
                 localDate.getHours(),
-                localDate.getMinutes()
+                localDate.getMinutes(),
+                localDate.getSeconds()
             ));
 
             const transactionData = {
