@@ -10,6 +10,9 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import { toast } from 'react-hot-toast';
+import { Switch } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 import { accountService } from '../../../../../services/account.service';
 import { Account } from '../../../../../types/models/account.modelTypes';
@@ -20,32 +23,113 @@ interface AccountsFormProps {
     account?: Account | null;
 }
 
+// Definir un tipo para los meses
+type MonthKey = 'January' | 'February' | 'March' | 'April' | 'May' | 'June' | 
+                'July' | 'August' | 'September' | 'October' | 'November' | 'December';
+
 export default function AccountsForm({ onClose, onSuccess, account }: AccountsFormProps) {
     const [accountName, setAccountName] = useState(account?.accountName || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#7e2a10');
     const [fontColor, setFontColor] = useState(account?.configuration.color || '#ffffff');
-    const [isActive] = useState(account?.configuration.isActive !== false);
+    const [isActive, setIsActive] = useState(account?.configuration.isActive !== false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [monthlyValues, setMonthlyValues] = useState<{ [key: string]: number }>({});
     const [saving, setSaving] = useState(false);
+    const [customYear, setCustomYear] = useState('');
+    const [showCustomYearInput, setShowCustomYearInput] = useState(false);
+    const [uniqueYears, setUniqueYears] = useState<number[]>([]);
 
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const months = [
+        'January', 'February', 'March', 'April', 
+        'May', 'June', 'July', 'August', 
+        'September', 'October', 'November', 'December'
+    ] as const;
+
+    const monthsMap: Record<MonthKey, string> = {
+        'January': 'Jan',
+        'February': 'Feb',
+        'March': 'Mar',
+        'April': 'Apr',
+        'May': 'May',
+        'June': 'Jun',
+        'July': 'Jul',
+        'August': 'Aug',
+        'September': 'Sep',
+        'October': 'Oct',
+        'November': 'Nov',
+        'December': 'Dec'
+    };
 
     useEffect(() => {
         if (account) {
-            const values: { [key: string]: number } = {};
+            console.log('Account Data:', account);
+            // Solo obtener años que tengan registros con valores
+            const years = new Set(
+                account.records
+                    .filter(record => record.value !== 0)
+                    .map(record => record.year)
+            );
+            const sortedYears = Array.from(years).sort((a, b) => b - a); // Ordenar descendente
+            console.log('Available Years:', sortedYears);
+            setUniqueYears(sortedYears);
+            
+            if (sortedYears.length > 0) {
+                setSelectedYear(sortedYears[0]); // Seleccionar el año más reciente
+            }
+
+            const initialValues: { [key: string]: number } = {};
             account.records.forEach(record => {
-                values[`${record.year}-${record.month}`] = record.value;
+                const key = `${record.year}-${record.month}`;
+                initialValues[key] = record.value;
+                console.log(`Record for ${key}:`, record.value);
             });
-            setMonthlyValues(values);
+
+            setMonthlyValues(initialValues);
+            console.log('Initial Monthly Values:', initialValues);
         }
     }, [account]);
 
-    const handleMonthValueChange = (month: string, value: number) => {
-        setMonthlyValues(prev => ({
-            ...prev,
-            [`${selectedYear}-${month}`]: value
-        }));
+    const handleMonthValueChange = (month: MonthKey, value: number) => {
+        const shortMonth = monthsMap[month];
+        const key = `${selectedYear}-${shortMonth}`;
+        console.log(`Updating value for ${key} to:`, value);
+        
+        setMonthlyValues(prev => {
+            const newValues = { ...prev };
+            newValues[key] = value;
+            console.log('New monthly values:', newValues);
+            return newValues;
+        });
+    };
+
+    const handleAddCustomYear = () => {
+        const yearNumber = parseInt(customYear);
+
+        if (yearNumber >= 1900 && yearNumber <= 2100) {
+            if (!uniqueYears.includes(yearNumber)) {
+                if (account) {
+                    const updatedYears = [...uniqueYears, yearNumber].sort((a, b) => a - b);
+                    setUniqueYears(updatedYears);
+
+                    const newValues = { ...monthlyValues };
+                    months.forEach(month => {
+                        const key = `${yearNumber}-${month}`;
+                        newValues[key] = 0;
+                    });
+                    setMonthlyValues(newValues);
+
+                    setSelectedYear(yearNumber);
+                    setShowCustomYearInput(false);
+                    setCustomYear('');
+
+                    toast.success('Year added successfully');
+                }
+            } else {
+                toast.error('Year already exists');
+            }
+        } else {
+            toast.error('Invalid year');
+        }
     };
 
     const handleSubmit = async () => {
@@ -56,6 +140,23 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
 
         setSaving(true);
         try {
+            console.log('Current monthly values:', monthlyValues);
+
+            // Filtrar registros duplicados y asegurar formato correcto
+            const recordsMap = new Map();
+            Object.entries(monthlyValues).forEach(([key, value]) => {
+                const [year, month] = key.split('-');
+                const recordKey = `${year}-${month}`;
+                recordsMap.set(recordKey, {
+                    year: parseInt(year),
+                    month: month.substring(0, 3),
+                    value: Number(value)
+                });
+            });
+
+            const records = Array.from(recordsMap.values());
+            console.log('Prepared records:', records);
+
             const accountData = {
                 accountName: accountName.trim(),
                 configuration: {
@@ -63,15 +164,10 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     color: fontColor,
                     isActive,
                 },
-                records: account ? Object.entries(monthlyValues).map(([key, value]) => {
-                    const [year, month] = key.split('-');
-                    return {
-                        year: parseInt(year),
-                        month,
-                        value
-                    };
-                }) : undefined
+                records
             };
+
+            console.log('Sending account data:', accountData);
 
             const response = account
                 ? await accountService.updateAccount(account._id, accountData)
@@ -82,6 +178,7 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                 onSuccess();
                 onClose();
             } else {
+                console.error('Error response:', response);
                 toast.error(response.message || `Failed to ${account ? 'update' : 'create'} account`);
             }
         } catch (error) {
@@ -114,6 +211,20 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
             } finally {
                 setSaving(false);
             }
+        }
+    };
+
+    const handleYearChange = (e: SelectChangeEvent<number | 'add_year'>) => {
+        const value = e.target.value;
+        if (value === 'add_year') {
+            setShowCustomYearInput(true);
+        } else {
+            setShowCustomYearInput(false);
+            setSelectedYear(Number(value));
+            console.log('Selected Year Changed to:', value);
+            console.log('Monthly Values for year:', Object.entries(monthlyValues)
+                .filter(([key]) => key.startsWith(`${value}-`))
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}));
         }
     };
 
@@ -169,43 +280,84 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                             <FormControl fullWidth size="small">
                                 <InputLabel>Year</InputLabel>
                                 <Select
+                                    value={showCustomYearInput ? 'add_year' : selectedYear}
+                                    onChange={handleYearChange}
                                     label="Year"
-                                    value={selectedYear}
-                                    onChange={(e) => setSelectedYear(Number(e.target.value))}
                                 >
-                                    {/* Options for years */}
+                                    {uniqueYears.map((year) => (
+                                        <MenuItem key={year} value={year}>
+                                            {year}
+                                        </MenuItem>
+                                    ))}
+                                    <MenuItem value="add_year">Add New Year</MenuItem>
                                 </Select>
                             </FormControl>
                         </Paper>
 
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                p: 1,
-                                gap: 2,
-                                mt: 2,
-                                borderRadius: 3
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                                {months.map(month => (
-                                    <Box
-                                        key={month}
-                                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-                                        <Typography sx={{ width: 100 }}>{month}</Typography>
-                                        <TextField
-                                            size="small"
-                                            type="number"
-                                            value={monthlyValues[`${selectedYear}-${month}`] || 0}
-                                            onChange={(e) => handleMonthValueChange(month, Number(e.target.value))}
-                                        />
-                                    </Box>
-                                ))}
-                            </Box>
-                        </Paper>
+                        {showCustomYearInput && (
+                            <Paper elevation={2} sx={{ p: 1, mt: 2, borderRadius: 3 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <TextField
+                                        label="Custom Year"
+                                        type="number"
+                                        value={customYear}
+                                        onChange={(e) => setCustomYear(e.target.value)}
+                                        size="small"
+                                        fullWidth
+                                        sx={{ flex: 2 }}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleAddCustomYear}
+                                        size="small"
+                                        sx={{ height: '35px' }}
+                                    >
+                                        <span className="material-symbols-rounded">add</span>
+                                    </Button>
+                                </Box>
+                            </Paper>
+                        )}
+
+                        {!showCustomYearInput && (
+                            <Paper elevation={2} sx={{ p: 2, mt: 2, borderRadius: 3 }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    {months.map((month) => {
+                                        const shortMonth = monthsMap[month];
+                                        const key = `${selectedYear}-${shortMonth}`;
+                                        const value = monthlyValues[key] || 0;
+                                        console.log(`Rendering input for ${key} with value:`, value);
+
+                                        return (
+                                            <Box
+                                                key={month}
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    gap: 2
+                                                }}
+                                            >
+                                                <Typography sx={{ width: 100 }}>{month}</Typography>
+                                                <TextField
+                                                    type="number"
+                                                    size="small"
+                                                    value={value}
+                                                    onChange={(e) => {
+                                                        const newValue = Number(e.target.value);
+                                                        handleMonthValueChange(month, newValue);
+                                                    }}
+                                                    inputProps={{
+                                                        step: "0.01",
+                                                        min: "0"
+                                                    }}
+                                                    sx={{ width: '150px' }}
+                                                />
+                                            </Box>
+                                        );
+                                    })}
+                                </Box>
+                            </Paper>
+                        )}
                     </>
                 )}
 
@@ -241,6 +393,24 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     </Box>
                 </Paper>
 
+                <Paper
+                    elevation={2}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-evenly',
+                        p: 1,
+                        gap: 2,
+                        mt: 2,
+                        borderRadius: 3
+                    }}
+                >
+                    <Typography variant="body2">Active Account</Typography>
+                    <Switch
+                        checked={isActive}
+                        onChange={(e) => setIsActive(e.target.checked)}
+                    />
+                </Paper>
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button

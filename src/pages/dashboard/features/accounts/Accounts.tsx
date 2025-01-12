@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Fade } from '@mui/material';
+import { toast } from 'react-hot-toast';
 
 import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
@@ -47,7 +48,6 @@ export default function Accounts() {
                         ? accountsResponse.data 
                         : [accountsResponse.data];
 
-                    // Verificar si userResponse es un éxito antes de acceder a data
                     if (userResponse.success && userResponse.data) {
                         const orderedAccounts = orderAccounts(accountsData, userResponse.data.accountsOrder);
                         setAccounts(orderedAccounts);
@@ -60,9 +60,7 @@ export default function Accounts() {
 
                     accountsData.forEach(account => {
                         account.records.forEach(record => {
-                            if (record.value !== 0) {
-                                years.add(record.year);
-                            }
+                            years.add(record.year);
                         });
                     });
 
@@ -70,6 +68,7 @@ export default function Accounts() {
                 }
             } catch (error) {
                 console.error('Error fetching accounts:', error);
+                toast.error('Failed to fetch accounts');
             } finally {
                 setLoading(false);
             }

@@ -1,6 +1,6 @@
 import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
 import { Fade } from '@mui/material';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import AccountsForm from './AccountsForm';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import { useUser } from '../../../../../contexts/UserContext';
@@ -19,10 +19,17 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
+    const currentMonth = useMemo(() => {
+        const date = new Date();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return months[date.getMonth()];
+    }, []);
+
     const getAccountBalance = (account: Account): number => {
-        return account.records
-            .filter(record => record.year === selectedYear)
-            .reduce((sum, record) => sum + record.value, 0);
+        const currentRecord = account.records.find(
+            record => record.year === selectedYear && record.month === currentMonth
+        );
+        return currentRecord?.value || 0;
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, accountId: string) => {

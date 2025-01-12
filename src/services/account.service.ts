@@ -105,7 +105,7 @@ export const accountService = {
                 statusCode: 201
             };
         } catch (error) {
-            console.error('❌ Error creating account:', error);
+            console.error('Error creating account:', error);
             return {
                 success: false,
                 message: 'Network error',
@@ -117,6 +117,7 @@ export const accountService = {
 
     async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountResponse> {
         try {
+            console.log('Updating account with data:', updateData);
 
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
@@ -130,6 +131,7 @@ export const accountService = {
             const data = await response.json();
 
             if (!response.ok) {
+                console.error('Error response:', data);
                 return {
                     success: false,
                     message: data.message || 'Failed to update account',
