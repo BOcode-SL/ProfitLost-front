@@ -117,8 +117,6 @@ export const accountService = {
 
     async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountResponse> {
         try {
-            console.log('Updating account:', id);
-            console.log('Update data:', updateData);
 
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
@@ -130,7 +128,6 @@ export const accountService = {
             });
 
             const data = await response.json();
-            console.log('Update response:', data);
 
             if (!response.ok) {
                 return {
@@ -160,7 +157,6 @@ export const accountService = {
 
     async deleteAccount(id: string): Promise<AccountResponse> {
         try {
-            console.log('Deleting account:', id);
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
@@ -170,7 +166,6 @@ export const accountService = {
             });
 
             const data = await response.json();
-            console.log('Delete response:', data);
 
             if (!response.ok) {
                 return {

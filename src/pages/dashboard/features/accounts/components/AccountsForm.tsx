@@ -29,7 +29,7 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
     const [monthlyValues, setMonthlyValues] = useState<{ [key: string]: number }>({});
     const [saving, setSaving] = useState(false);
 
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     useEffect(() => {
         if (account) {
@@ -73,7 +73,7 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                 }) : undefined
             };
 
-            const response = account 
+            const response = account
                 ? await accountService.updateAccount(account._id, accountData)
                 : await accountService.createAccount(accountData);
 
@@ -99,9 +99,7 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
         if (dialog) {
             setSaving(true);
             try {
-                console.log('Deleting account:', account._id);
                 const response = await accountService.deleteAccount(account._id);
-                console.log('Delete response:', response);
 
                 if (response.success) {
                     toast.success('Account deleted successfully');
@@ -154,6 +152,63 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     />
                 </Paper>
 
+                {account && (
+                    <>
+                        <Paper
+                            elevation={2}
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                p: 1,
+                                gap: 2,
+                                mt: 2,
+                                borderRadius: 3
+                            }}
+                        >
+                            <FormControl fullWidth size="small">
+                                <InputLabel>Year</InputLabel>
+                                <Select
+                                    label="Year"
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                >
+                                    {/* Options for years */}
+                                </Select>
+                            </FormControl>
+                        </Paper>
+
+                        <Paper
+                            elevation={2}
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                p: 1,
+                                gap: 2,
+                                mt: 2,
+                                borderRadius: 3
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                                {months.map(month => (
+                                    <Box
+                                        key={month}
+                                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+                                        <Typography sx={{ width: 100 }}>{month}</Typography>
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            value={monthlyValues[`${selectedYear}-${month}`] || 0}
+                                            onChange={(e) => handleMonthValueChange(month, Number(e.target.value))}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Paper>
+                    </>
+                )}
+
                 <Paper
                     elevation={2}
                     sx={{
@@ -189,7 +244,7 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             color="error"
                             onClick={handleDelete}
                             disabled={saving}
@@ -208,33 +263,6 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     </Button>
                 </Box>
             </Box>
-
-            {account && (
-                <>
-                    <FormControl fullWidth sx={{ mt: 2 }}>
-                        <InputLabel>Año</InputLabel>
-                        <Select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(Number(e.target.value))}
-                        >
-                            {/* Opciones de años */}
-                        </Select>
-                    </FormControl>
-
-                    <Box sx={{ mt: 2 }}>
-                        {months.map(month => (
-                            <Box key={month} sx={{ display: 'flex', gap: 2, mb: 1 }}>
-                                <Typography sx={{ width: 100 }}>{month}</Typography>
-                                <TextField
-                                    type="number"
-                                    value={monthlyValues[`${selectedYear}-${month}`] || 0}
-                                    onChange={(e) => handleMonthValueChange(month, Number(e.target.value))}
-                                />
-                            </Box>
-                        ))}
-                    </Box>
-                </>
-            )}
         </Box>
     );
 } 
