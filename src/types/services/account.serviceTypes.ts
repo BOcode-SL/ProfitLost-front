@@ -1,5 +1,5 @@
 import type { HttpStatusCode } from '../common.types';
-import type { Account } from '../models/account.modelTypes';
+import type { Account, AccountConfiguration } from '../models/account.modelTypes';
 
 export interface AccountResponse {
     success: boolean;
@@ -11,6 +11,7 @@ export interface AccountResponse {
 
 export interface CreateAccountRequest {
     accountName: string;
+    configuration: AccountConfiguration;
 }
 
 export interface UpdateAccountRequest {

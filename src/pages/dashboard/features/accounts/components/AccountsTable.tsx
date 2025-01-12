@@ -1,9 +1,11 @@
-import { Box, Paper, Typography, Button } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
 import { Fade } from '@mui/material';
-
+import { useState } from 'react';
+import AccountsForm from './AccountsForm';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account.modelTypes';
+import { accountService } from '../../../../../services/account.service';
 
 interface AccountsTableProps {
     accounts: Account[];
@@ -14,6 +16,8 @@ interface AccountsTableProps {
 
 export default function AccountsTable({ accounts, selectedYear, onReorder }: AccountsTableProps) {
     const { user } = useUser();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
     const getAccountBalance = (account: Account): number => {
         return account.records
@@ -22,6 +26,7 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, accountId: string) => {
+        event.stopPropagation();
         event.dataTransfer.setData('text/plain', accountId);
     };
 
@@ -36,13 +41,30 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
             const draggedIndex = accounts.findIndex(acc => acc._id === draggedAccountId);
             const targetIndex = accounts.findIndex(acc => acc._id === targetAccountId);
-            
+
             const newAccounts = [...accounts];
             const [draggedAccount] = newAccounts.splice(draggedIndex, 1);
             newAccounts.splice(targetIndex, 0, draggedAccount);
-            
+
             onReorder(newAccounts);
         }
+    };
+
+    const handleAddAccountSuccess = async () => {
+        try {
+            const response = await accountService.getAccountsByYear(selectedYear);
+            if (response.success && response.data) {
+                const accountsData = Array.isArray(response.data) ? response.data : [response.data];
+                onReorder(accountsData);
+            }
+        } catch (error) {
+            console.error('Error refreshing accounts:', error);
+        }
+    };
+
+    const handleAccountClick = (account: Account) => {
+        setSelectedAccount(account);
+        setIsDrawerOpen(true);
     };
 
     return (
@@ -61,6 +83,7 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
                 }}>
                     <Button
                         variant="contained"
+                        onClick={() => setIsDrawerOpen(true)}
                         startIcon={<span className="material-symbols-rounded">add</span>}
                         size="small"
                         sx={{
@@ -75,10 +98,35 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
                     </Button>
                 </Box>
 
+                <Drawer
+                    open={isDrawerOpen}
+                    onClose={() => {
+                        setIsDrawerOpen(false);
+                        setSelectedAccount(null);
+                    }}
+                    anchor="right"
+                    PaperProps={{
+                        sx: {
+                            width: { xs: '100%', sm: 450 },
+                            bgcolor: 'background.default'
+                        }
+                    }}
+                >
+                    <AccountsForm 
+                        onClose={() => {
+                            setIsDrawerOpen(false);
+                            setSelectedAccount(null);
+                        }} 
+                        onSuccess={handleAddAccountSuccess}
+                        account={selectedAccount}
+                    />
+                </Drawer>
+
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     {accounts.map((account) => (
                         <Paper
                             key={account._id}
+                            onClick={() => handleAccountClick(account)}
                             draggable
                             onDragStart={(e) => handleDragStart(e, account._id)}
                             onDragOver={handleDragOver}

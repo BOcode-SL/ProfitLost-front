@@ -96,19 +96,10 @@ export default function Accounts() {
 
         fetchAccountsByYear();
     }, [year]);
-
-    const handleReorder = async (reorderedAccounts: Account[]) => {
-        try {
-            // Actualizamos el estado local
-            setAccounts(reorderedAccounts);
-            
-            // Actualizamos el orden en el backend
-            const accountIds = reorderedAccounts.map(account => account._id);
-            await userService.updateAccountsOrder(accountIds);
-        } catch (error) {
-            console.error('Error updating accounts order:', error);
-            // Aquí podrías mostrar un mensaje de error al usuario
-        }
+    
+    const handleReorder = async (newAccounts: Account[]) => {
+        setAccounts(newAccounts);
+        // Aquí deberías también actualizar el orden en el backend
     };
 
     return (
