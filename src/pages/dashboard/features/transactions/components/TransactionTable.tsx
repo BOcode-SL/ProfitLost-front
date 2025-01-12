@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import { useTheme } from '@mui/material/styles';
+import { Fade } from '@mui/material';
 
 import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
 import type { Category } from '../../../../../types/models/category.modelTypes';
@@ -101,175 +102,183 @@ export default function TransactionTable({
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Paper
-                elevation={2}
-                sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    flexWrap: { xs: 'wrap', sm: 'nowrap' }
-                }}>
-                <Box
+            <Fade in timeout={400}>
+                <Paper
+                    elevation={2}
                     sx={{
+                        p: 1,
+                        borderRadius: 3,
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
-                        p: 2,
+                        flexWrap: { xs: 'wrap', sm: 'nowrap' }
                     }}>
                     <Box
                         sx={{
                             display: 'flex',
-                            justifyContent: 'end',
-                            flexDirection: { xs: 'column-reverse', sm: 'row' },
-                            gap: 2,
-                            mb: 2,
-                        }}>
-                        <TextField
-                            size="small"
-                            placeholder="Search transactions..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            sx={{
-                                minWidth: 200,
-                                '& .MuiInputBase-root': {
-                                    height: '35px'
-                                }
-                            }}
-                        />
-                        <FormControl
-                            size="small"
-                            sx={{
-                                minWidth: { xs: '100%', sm: 200 },
-                                height: '35px',
-                                '& .MuiInputBase-root': {
-                                    height: '35px'
-                                }
-                            }}>
-                            <InputLabel>Sort by</InputLabel>
-                            <Select
-                                size="small"
-                                label="Sort by"
-                                value={sortOption}
-                                onChange={(e) => setSortOption(e.target.value)}
-                            >
-                                <MenuItem value="date_desc">Newest First</MenuItem>
-                                <MenuItem value="date_asc">Oldest First</MenuItem>
-                                <MenuItem value="amount_desc">Highest Amount</MenuItem>
-                                <MenuItem value="amount_asc">Lowest Amount</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <Button
-                            variant="contained"
-                            onClick={handleCreateClick}
-                            startIcon={<span className="material-symbols-rounded">add</span>}
-                            size="small"
-                            sx={{
-                                px: 2,
-                                py: 1,
-                                fontWeight: 500,
-                                fontSize: '0.9rem',
-                                height: '35px'
-                            }}
-                        >
-                            New Transaction
-                        </Button>
-                    </Box>
-
-                    {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : filteredAndSortedTransactions.length === 0 ? (
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: 3,
-                            minHeight: 200
-                        }}>
-                            <Typography variant="h5" color="text.secondary">
-                                💸 Add your first transaction of the month 💸
-                            </Typography>
-                        </Box>
-                    ) : (
-                        <Box sx={{
-                            display: 'flex',
                             flexDirection: 'column',
-                            gap: 1,
+                            gap: 2,
+                            p: 2,
                         }}>
-                            {filteredAndSortedTransactions.map((transaction) => (
-                                <Box
-                                    key={transaction._id}
-                                    onClick={() => handleTransactionClick(transaction)}
-                                    onMouseEnter={() => setHoveredTransactionId(transaction._id)}
-                                    onMouseLeave={() => setHoveredTransactionId(null)}
-                                    sx={{
-                                        p: 1,
-                                        borderRadius: 3,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        backgroundColor: hoveredTransactionId === transaction._id
-                                            ? `${getCategoryColor(transaction.category)}25`
-                                            : 'transparent',
-                                        transition: 'background-color 0.3s ease'
-                                    }}
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'end',
+                                flexDirection: { xs: 'column-reverse', sm: 'row' },
+                                gap: 2,
+                                mb: 2,
+                            }}>
+                            <TextField
+                                size="small"
+                                placeholder="Search transactions..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                sx={{
+                                    minWidth: 200,
+                                    '& .MuiInputBase-root': {
+                                        height: '35px'
+                                    }
+                                }}
+                            />
+                            <FormControl
+                                size="small"
+                                sx={{
+                                    minWidth: { xs: '100%', sm: 200 },
+                                    height: '35px',
+                                    '& .MuiInputBase-root': {
+                                        height: '35px'
+                                    }
+                                }}>
+                                <InputLabel>Sort by</InputLabel>
+                                <Select
+                                    size="small"
+                                    label="Sort by"
+                                    value={sortOption}
+                                    onChange={(e) => setSortOption(e.target.value)}
                                 >
-                                    <Box sx={{
-                                        width: 12,
-                                        height: 12,
-                                        borderRadius: '50%',
-                                        bgcolor: getCategoryColor(transaction.category),
-                                        display: { xs: 'block', md: 'none' }
-                                    }} />
+                                    <MenuItem value="date_desc">Newest First</MenuItem>
+                                    <MenuItem value="date_asc">Oldest First</MenuItem>
+                                    <MenuItem value="amount_desc">Highest Amount</MenuItem>
+                                    <MenuItem value="amount_asc">Lowest Amount</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <Button
+                                variant="contained"
+                                onClick={handleCreateClick}
+                                startIcon={<span className="material-symbols-rounded">add</span>}
+                                size="small"
+                                sx={{
+                                    px: 2,
+                                    py: 1,
+                                    fontWeight: 500,
+                                    fontSize: '0.9rem',
+                                    height: '35px'
+                                }}
+                            >
+                                New Transaction
+                            </Button>
+                        </Box>
 
-                                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
-                                        <Typography variant="body1" fontWeight={500}>
-                                            {transaction.description}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            {formatDateTime(transaction.date)}
-                                        </Typography>
-                                    </Box>
-
-                                    <Box sx={{
-                                        display: { xs: 'none', md: 'flex' },
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        flex: 1
-                                    }}>
-                                        <Box sx={{
-                                            width: 12,
-                                            height: 12,
-                                            borderRadius: '50%',
-                                            bgcolor: getCategoryColor(transaction.category)
-                                        }} />
-                                        <Typography>{transaction.category}</Typography>
-                                    </Box>
-
-                                    <Typography
-                                        sx={{
-                                            color: transaction.amount >= 0
-                                                ? theme.palette.success.main
-                                                : theme.palette.error.main,
-                                            width: { xs: '25%', md: '20%' },
-                                            textAlign: 'right'
-                                        }}
-                                    >
-                                        {new Intl.NumberFormat('es-ES', {
-                                            style: 'currency',
-                                            currency: 'EUR'
-                                        }).format(transaction.amount)}
+                        {loading ? (
+                            <Fade in timeout={300}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                                    <CircularProgress />
+                                </Box>
+                            </Fade>
+                        ) : filteredAndSortedTransactions.length === 0 ? (
+                            <Fade in timeout={300}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    p: 3,
+                                    minHeight: 200
+                                }}>
+                                    <Typography variant="h5" color="text.secondary">
+                                        💸 Add your first transaction of the month 💸
                                     </Typography>
                                 </Box>
-                            ))}
-                        </Box>
-                    )}
-                </Box>
-            </Paper>
+                            </Fade>
+                        ) : (
+                            <Fade in timeout={500}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 1,
+                                }}>
+                                    {filteredAndSortedTransactions.map((transaction) => (
+                                        <Box
+                                            key={transaction._id}
+                                            onClick={() => handleTransactionClick(transaction)}
+                                            onMouseEnter={() => setHoveredTransactionId(transaction._id)}
+                                            onMouseLeave={() => setHoveredTransactionId(null)}
+                                            sx={{
+                                                p: 1,
+                                                borderRadius: 3,
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 1,
+                                                backgroundColor: hoveredTransactionId === transaction._id
+                                                    ? `${getCategoryColor(transaction.category)}25`
+                                                    : 'transparent',
+                                                transition: 'background-color 0.3s ease'
+                                            }}
+                                        >
+                                            <Box sx={{
+                                                width: 12,
+                                                height: 12,
+                                                borderRadius: '50%',
+                                                bgcolor: getCategoryColor(transaction.category),
+                                                display: { xs: 'block', md: 'none' }
+                                            }} />
+
+                                            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
+                                                <Typography variant="body1" fontWeight={500}>
+                                                    {transaction.description}
+                                                </Typography>
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {formatDateTime(transaction.date)}
+                                                </Typography>
+                                            </Box>
+
+                                            <Box sx={{
+                                                display: { xs: 'none', md: 'flex' },
+                                                alignItems: 'center',
+                                                gap: 1,
+                                                flex: 1
+                                            }}>
+                                                <Box sx={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    borderRadius: '50%',
+                                                    bgcolor: getCategoryColor(transaction.category)
+                                                }} />
+                                                <Typography>{transaction.category}</Typography>
+                                            </Box>
+
+                                            <Typography
+                                                sx={{
+                                                    color: transaction.amount >= 0
+                                                        ? theme.palette.success.main
+                                                        : theme.palette.error.main,
+                                                    width: { xs: '25%', md: '20%' },
+                                                    textAlign: 'right'
+                                                }}
+                                            >
+                                                {new Intl.NumberFormat('es-ES', {
+                                                    style: 'currency',
+                                                    currency: 'EUR'
+                                                }).format(transaction.amount)}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Fade>
+                        )}
+                    </Box>
+                </Paper>
+            </Fade>
 
             <Drawer
                 anchor="right"

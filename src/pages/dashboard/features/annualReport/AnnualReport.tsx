@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import { Fade } from '@mui/material';
 
 import { useUser } from '../../../../contexts/UserContext';
 import { transactionService } from '../../../../services/transaction.service';
@@ -117,114 +118,108 @@ export default function AnnualReport() {
 
     return (
         <Box className="annual-report">
-            <Box className="annual-report__content">
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    width: '100%'
-                }}>
-                    <FormControl
-                        fullWidth
-                        size="small"
-                        sx={{ minWidth: { xs: '100%', sm: 200 } }}
-                    >
-                        <InputLabel>Year</InputLabel>
-                        <Select
-                            value={year}
-                            label="Year"
-                            onChange={(e) => setYear(e.target.value)}
-                        >
-                            {yearsWithData.map((yearOption) => (
-                                <MenuItem key={yearOption} value={yearOption}>
-                                    {yearOption}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Paper>
-
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    mt: 2,
-                    width: '100%'
-                }}>
-                    <AnnualChart transactions={transactions} loading={loading} />
-                </Paper>
-
-                <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                    gap: 1,
-                    mt: 2
-                }}>
-                    <Paper elevation={2} sx={{
-                        p: 1,
-                        borderRadius: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 2
-                    }}>
-                        <span className="material-symbols-rounded" style={{ color: '#ff8e38', fontSize: '2rem' }}>
-                            download
-                        </span>
-                        <span style={{ fontSize: '1.5rem' }}>
-                            {formatCurrency(totals.income, user)}
-                        </span>
+            <Fade in timeout={400}>
+                <Box className="annual-report__content">
+                    <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
+                        <Fade in timeout={500}>
+                            <FormControl fullWidth size="small" sx={{ minWidth: { xs: '100%', sm: 200 } }}>
+                                <InputLabel>Year</InputLabel>
+                                <Select
+                                    value={year}
+                                    label="Year"
+                                    onChange={(e) => setYear(e.target.value)}
+                                >
+                                    {yearsWithData.map((yearOption) => (
+                                        <MenuItem key={yearOption} value={yearOption}>
+                                            {yearOption}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Fade>
                     </Paper>
 
-                    <Paper elevation={2} sx={{
-                        p: 1,
-                        borderRadius: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 2
-                    }}>
-                        <span className="material-symbols-rounded" style={{ color: '#9d300f', fontSize: '2rem' }}>
-                            upload
-                        </span>
-                        <span style={{ fontSize: '1.5rem' }}>
-                            {formatCurrency(totals.expenses, user)}
-                        </span>
+                    <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
+                        <Fade in timeout={600}>
+                            <Box>
+                                <AnnualChart transactions={transactions} loading={loading} />
+                            </Box>
+                        </Fade>
                     </Paper>
 
-                    <Paper elevation={2} sx={{
-                        p: 1,
-                        borderRadius: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 2
-                    }}>
-                        {totals.balance > 0 ? (
-                            <span className="material-symbols-rounded" style={{ color: '#4CAF50', fontSize: '2rem' }}>
-                                savings
-                            </span>
-                        ) : (
-                            <span className="material-symbols-rounded" style={{ color: '#f44336', fontSize: '2rem' }}>
-                                savings
-                            </span>
-                        )}
-                        <span style={{ fontSize: '1.5rem' }}>
-                            {formatCurrency(totals.balance, user)}
-                        </span>
-                    </Paper>
+                    <Fade in timeout={700}>
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
+                            gap: 1,
+                            mt: 2
+                        }}>
+                            <Paper elevation={2} sx={{
+                                p: 1,
+                                borderRadius: 3,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 2
+                            }}>
+                                <span className="material-symbols-rounded" style={{ color: '#ff8e38', fontSize: '2rem' }}>
+                                    download
+                                </span>
+                                <span style={{ fontSize: '1.5rem' }}>
+                                    {formatCurrency(totals.income, user)}
+                                </span>
+                            </Paper>
+
+                            <Paper elevation={2} sx={{
+                                p: 1,
+                                borderRadius: 3,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 2
+                            }}>
+                                <span className="material-symbols-rounded" style={{ color: '#9d300f', fontSize: '2rem' }}>
+                                    upload
+                                </span>
+                                <span style={{ fontSize: '1.5rem' }}>
+                                    {formatCurrency(totals.expenses, user)}
+                                </span>
+                            </Paper>
+
+                            <Paper elevation={2} sx={{
+                                p: 1,
+                                borderRadius: 3,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 2
+                            }}>
+                                {totals.balance > 0 ? (
+                                    <span className="material-symbols-rounded" style={{ color: '#4CAF50', fontSize: '2rem' }}>
+                                        savings
+                                    </span>
+                                ) : (
+                                    <span className="material-symbols-rounded" style={{ color: '#f44336', fontSize: '2rem' }}>
+                                        savings
+                                    </span>
+                                )}
+                                <span style={{ fontSize: '1.5rem' }}>
+                                    {formatCurrency(totals.balance, user)}
+                                </span>
+                            </Paper>
+                        </Box>
+                    </Fade>
+
+                    <Fade in timeout={800}>
+                        <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
+                            <AnnualCategories 
+                                transactions={transactions}
+                                loading={loading}
+                            />
+                        </Paper>
+                    </Fade>
                 </Box>
-
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    width: '100%',
-                    mt: 2
-                }}>
-                    <AnnualCategories 
-                        transactions={transactions}
-                        loading={loading}
-                    />
-                </Paper>
-            </Box>
+            </Fade>
         </Box>
     );
 }

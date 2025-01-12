@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/material/styles';
 
 import { useUser } from '../../../../contexts/UserContext';
@@ -125,92 +126,91 @@ export default function Transactions() {
     }, [transactions, categories, theme]);
 
     return (
-        <Box className='transactions' sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box className='transactions__selectors' sx={{ display: 'flex', gap: 2 }}>
-                <Paper
-                    elevation={2}
-                    sx={{
+        <Fade in timeout={400}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{
+                    display: 'flex',
+                    gap: 2
+                }}>
+                    <Paper elevation={2} sx={{
                         p: 1,
                         borderRadius: 3,
                         width: '100%'
                     }}>
+                        <FormControl size="small" sx={{ width: '100%' }}>
+                            <InputLabel>Year</InputLabel>
+                            <Select
+                                value={year}
+                                label="Year"
+                                onChange={(e) => setYear(e.target.value)}
+                            >
+                                {yearsWithData.map(y => (
+                                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Paper>
 
-                    <FormControl
-                        size="small"
-                        sx={{ width: '100%' }}>
-                        <InputLabel>Year</InputLabel>
-                        <Select
-                            value={year}
-                            label="Year"
-                            onChange={(e) => setYear(e.target.value)}
-                        >
-                            {yearsWithData.map((y) => (
-                                <MenuItem key={y} value={y}>{y}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Paper>
-                <Paper
-                    elevation={2}
-                    sx={{
+                    <Paper elevation={2} sx={{
                         p: 1,
                         borderRadius: 3,
                         width: '100%'
                     }}>
-                    <FormControl
-                        size="small"
-                        sx={{ width: '100%' }}>
-                        <InputLabel>Month</InputLabel>
-                        <Select
-                            value={month}
-                            label="Month"
-                            onChange={(e) => setMonth(e.target.value)}
-                        >
-                            {Array.from({ length: 12 }, (_, i) => {
-                                const monthNum = (i + 1).toString().padStart(2, '0');
-                                return (
-                                    <MenuItem key={monthNum} value={monthNum}>
-                                        {new Date(2000, i).toLocaleString('default', { month: 'long' })}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                </Paper>
+                        <FormControl size="small" sx={{ width: '100%' }}>
+                            <InputLabel>Month</InputLabel>
+                            <Select
+                                value={month}
+                                label="Month"
+                                onChange={(e) => setMonth(e.target.value)}
+                            >
+                                {Array.from({ length: 12 }, (_, i) => {
+                                    const monthNum = (i + 1).toString().padStart(2, '0');
+                                    return (
+                                        <MenuItem key={monthNum} value={monthNum}>
+                                            {new Date(2000, i).toLocaleString('default', { month: 'long' })}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Paper>
+                </Box>
+
+                <Box sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                }}>
+                    <TransactionPie
+                        loading={loading}
+                        data={incomeData}
+                    />
+                    <TransactionPie
+                        loading={loading}
+                        data={expensesData}
+                    />
+                    <TransactionBarChart
+                        loading={loading}
+                        income={totalIncome}
+                        expenses={totalExpenses}
+                    />
+                </Box>
+
+                <TransactionBalances
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                    user={user as User}
+                />
+
+                <Box>
+                    <TransactionTable
+                        data={transactions}
+                        loading={loading}
+                        categories={categories}
+                        onReload={fetchData}
+                    />
+                </Box>
             </Box>
-
-            <Box sx={{
-                display: 'flex',
-                gap: 2,
-                flexWrap: 'wrap',
-            }}>
-                <TransactionPie
-                    loading={loading}
-                    data={incomeData}
-                />
-                <TransactionPie
-                    loading={loading}
-                    data={expensesData}
-                />
-                <TransactionBarChart
-                    loading={loading}
-                    income={totalIncome}
-                    expenses={totalExpenses}
-                />
-            </Box>
-
-            <TransactionBalances
-                totalIncome={totalIncome}
-                totalExpenses={totalExpenses}
-                user={user as User}
-            />
-
-            <TransactionTable
-                data={transactions}
-                loading={loading}
-                categories={categories}
-                onReload={fetchData}
-            />
-        </Box>
+        </Fade>
     );
 }

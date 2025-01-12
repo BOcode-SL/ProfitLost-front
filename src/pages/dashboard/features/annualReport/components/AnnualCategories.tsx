@@ -19,6 +19,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
+import { Fade, Skeleton } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
@@ -188,135 +189,131 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
 
     return (
         <Box sx={{ p: { xs: 1, sm: 2 } }}>
-
-            <Box sx={{
-                display: 'flex',
-                gap: 2,
-                mb: 2,
-                flexDirection: { xs: 'column-reverse', sm: 'row' },
-                justifyContent: 'flex-end'
-            }}>
-                <TextField
-                    size="small"
-                    placeholder="Find category..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{
-                        minWidth: { xs: '100%', sm: 200 },
-                        height: '35px',
-                        '& .MuiInputBase-root': {
-                            height: '35px'
-                        }
-                    }}
-                />
-                <FormControl
-                    size="small"
-                    sx={{
-                        minWidth: { xs: '100%', sm: 200 },
-                        height: '35px',
-                        '& .MuiInputBase-root': {
-                            height: '35px'
-                        }
+            <Fade in timeout={500}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box sx={{
+                        display: 'flex',
+                        gap: 2,
+                        mb: 2,
+                        flexDirection: { xs: 'column-reverse', sm: 'row' },
+                        justifyContent: 'flex-end'
                     }}>
-                    <InputLabel>Sort by</InputLabel>
-                    <Select
-                        size="small"
-                        label="Sort by"
-                        value={sortOption}
-                        onChange={(e) => setSortOption(e.target.value as SortOption)}
-                    >
-                        <MenuItem value="name_asc">Name (A-Z)</MenuItem>
-                        <MenuItem value="name_desc">Name (Z-A)</MenuItem>
-                        <MenuItem value="balance_desc">Balance (Higher)</MenuItem>
-                        <MenuItem value="balance_asc">Balance (Lower)</MenuItem>
-                    </Select>
-                </FormControl>
-                <Button
-                    variant="contained"
-                    onClick={() => setDrawerOpen(true)}
-                    startIcon={<span className="material-symbols-rounded">add</span>}
-                    size="small"
-                    sx={{
-                        px: 2,
-                        py: 1,
-                        fontWeight: 500,
-                        fontSize: '0.9rem',
-                        height: '35px'
-                    }}
-                >
-                    New Category
-                </Button>
-            </Box>
-
-            {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                    <CircularProgress />
-                </Box>
-            ) : categoriesBalance.length === 0 ? (
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    p: 3,
-                    minHeight: 200
-                }}>
-                    <Typography variant="h5" color="text.secondary">
-                        🪂 Add your first category 🪂
-                    </Typography>
-                </Box>
-            ) : (
-                <List sx={{ width: '100%' }}>
-                    {categoriesBalance.map(({ category, balance }) => (
-                        <ListItem
-                            key={category._id}
-                            onClick={() => handleCategoryClick(category)}
+                        <TextField
+                            size="small"
+                            placeholder="Find category..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                py: 1.5,
-                                px: { xs: 1, sm: 2 },
-                                borderRadius: 2,
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    bgcolor: `${category.color}20`
+                                minWidth: { xs: '100%', sm: 200 },
+                                height: '35px',
+                                '& .MuiInputBase-root': {
+                                    height: '35px'
                                 }
                             }}
-                        >
-                            <Box
-                                sx={{
-                                    width: { xs: 20, sm: 24 },
-                                    height: { xs: 20, sm: 24 },
-                                    borderRadius: '50%',
-                                    bgcolor: category.color,
-                                    flexShrink: 0
-                                }}
-                            />
-                            <ListItemText
-                                primary={category.name}
-                                sx={{
-                                    flex: 1,
-                                    '& .MuiListItemText-primary': {
-                                        fontWeight: 400,
-                                        fontSize: { xs: '0.9rem', sm: '1rem' }
-                                    }
-                                }}
-                            />
-                            <Box
-                                sx={{
-                                    color: balance >= 0 ? 'success.main' : 'error.main',
-                                    fontWeight: 400,
-                                    fontSize: { xs: '0.9rem', sm: '1rem' },
-                                    textAlign: 'right',
-                                    minWidth: { xs: 80, sm: 120 }
-                                }}
+                        />
+                        <FormControl
+                            size="small"
+                            sx={{
+                                minWidth: { xs: '100%', sm: 200 },
+                                height: '35px',
+                                '& .MuiInputBase-root': {
+                                    height: '35px'
+                                }
+                            }}>
+                            <InputLabel>Sort by</InputLabel>
+                            <Select
+                                size="small"
+                                label="Sort by"
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value as SortOption)}
                             >
-                                {formatCurrency(balance, user)}
-                            </Box>
-                        </ListItem>
-                    ))}
-                </List>
-            )}
+                                <MenuItem value="name_asc">Name (A-Z)</MenuItem>
+                                <MenuItem value="name_desc">Name (Z-A)</MenuItem>
+                                <MenuItem value="balance_desc">Balance (Higher)</MenuItem>
+                                <MenuItem value="balance_asc">Balance (Lower)</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="contained"
+                            onClick={() => setDrawerOpen(true)}
+                            startIcon={<span className="material-symbols-rounded">add</span>}
+                            size="small"
+                            sx={{
+                                px: 2,
+                                py: 1,
+                                fontWeight: 500,
+                                fontSize: '0.9rem',
+                                height: '35px'
+                            }}
+                        >
+                            New Category
+                        </Button>
+                    </Box>
+
+                    {loading ? (
+                        <Fade in timeout={300}>
+                            <Skeleton variant="rectangular" height={400} sx={{ 
+                                borderRadius: 3,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}/>
+                        </Fade>
+                    ) : (
+                        <Fade in timeout={500}>
+                            <List sx={{ width: '100%' }}>
+                                {categoriesBalance.map(({ category, balance }) => (
+                                    <ListItem
+                                        key={category._id}
+                                        onClick={() => handleCategoryClick(category)}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 2,
+                                            py: 1.5,
+                                            px: { xs: 1, sm: 2 },
+                                            borderRadius: 2,
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                                bgcolor: `${category.color}20`
+                                            }
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: { xs: 20, sm: 24 },
+                                                height: { xs: 20, sm: 24 },
+                                                borderRadius: '50%',
+                                                bgcolor: category.color,
+                                                flexShrink: 0
+                                            }}
+                                        />
+                                        <ListItemText
+                                            primary={category.name}
+                                            sx={{
+                                                flex: 1,
+                                                '& .MuiListItemText-primary': {
+                                                    fontWeight: 400,
+                                                    fontSize: { xs: '0.9rem', sm: '1rem' }
+                                                }
+                                            }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                color: balance >= 0 ? 'success.main' : 'error.main',
+                                                fontWeight: 400,
+                                                fontSize: { xs: '0.9rem', sm: '1rem' },
+                                                textAlign: 'right',
+                                                minWidth: { xs: 80, sm: 120 }
+                                            }}
+                                        >
+                                            {formatCurrency(balance, user)}
+                                        </Box>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Fade>
+                    )}
+                </Box>
+            </Fade>
 
             <Drawer
                 anchor="right"
