@@ -92,12 +92,30 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!account) return;
 
         const dialog = window.confirm('¿Estás seguro de que quieres eliminar esta cuenta?');
         if (dialog) {
-            // ... resto del código de eliminación
+            setSaving(true);
+            try {
+                console.log('Deleting account:', account._id);
+                const response = await accountService.deleteAccount(account._id);
+                console.log('Delete response:', response);
+
+                if (response.success) {
+                    toast.success('Account deleted successfully');
+                    onSuccess();
+                    onClose();
+                } else {
+                    toast.error(response.message || 'Failed to delete account');
+                }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                toast.error('Failed to delete account');
+            } finally {
+                setSaving(false);
+            }
         }
     };
 
