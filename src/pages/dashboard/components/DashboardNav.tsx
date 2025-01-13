@@ -13,8 +13,8 @@ interface DashboardNavProps {
 const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) => {
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    const mainMenuItems = menuItems.slice(0, 3); // Dashboard, Annual Report, Movements
-    const moreMenuItems = menuItems.slice(3); // Resto de items
+    const mainMenuItems = menuItems.slice(0, 3);
+    const moreMenuItems = menuItems.slice(3);
 
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setMoreAnchorEl(event.currentTarget);

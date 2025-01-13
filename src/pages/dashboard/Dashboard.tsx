@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { useUser } from '../../contexts/UserContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import DashboardHeader from './components/DashboardHeader';
 import DashboardNav from './components/DashboardNav';
@@ -13,12 +13,25 @@ export default function Dashboard() {
     const [activeSection, setActiveSection] = useState('Dashboard');
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         if (!isLoading && !user) {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
+
+    useEffect(() => {
+        const section = searchParams.get('section');
+        if (section) {
+            setActiveSection(section);
+        }
+    }, [searchParams]);
+
+    const handleMenuItemClick = (sectionName: string) => {
+        setActiveSection(sectionName);
+        setSearchParams(sectionName === 'Dashboard' ? {} : { section: sectionName });
+    };
 
     if (isLoading) {
         return (
@@ -42,7 +55,7 @@ export default function Dashboard() {
             <DashboardHeader user={user} />
             <DashboardNav
                 activeSection={activeSection}
-                handleMenuItemClick={setActiveSection}
+                handleMenuItemClick={handleMenuItemClick}
                 menuItems={menuItems}
             />
             <DashboardContent activeSection={activeSection} />

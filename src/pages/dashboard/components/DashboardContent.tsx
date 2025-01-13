@@ -2,7 +2,6 @@ import { Suspense, lazy } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
-import './DashboardContent.scss';
 
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -39,7 +38,19 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
     };
 
     return (
-        <Box className='dashboard__content'>
+        <Box sx={{
+            gridArea: 'Content',
+            width: '100%',
+            minHeight: 'calc(100vh - 90px)',
+            paddingRight: '1rem',
+            paddingBottom: '1rem',
+            '@media (max-width: 868px)': {
+                padding: '1rem',
+                marginBottom: '80px',
+                flex: 1,
+                marginTop: '80px'
+            }
+        }}>
             <Suspense fallback={
                 <Box sx={{
                     display: 'flex',
