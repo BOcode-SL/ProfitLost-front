@@ -120,9 +120,6 @@ export default function SecurityPrivacy() {
                                 variant="outlined"
                                 disabled={true}
                                 onClick={() => {/* handle 2FA toggle */ }}
-                                sx={{
-                                    height: '45px',
-                                }}
                                 startIcon={
                                     <span className="material-symbols-rounded">
                                         {/* {false ? 'lock_open' : 'lock'} */}
@@ -216,9 +213,6 @@ export default function SecurityPrivacy() {
                                 variant="contained"
                                 color="primary"
                                 fullWidth
-                                sx={{
-                                    height: '45px',
-                                }}
                             >
                                 Update Password
                             </Button>
@@ -242,8 +236,7 @@ export default function SecurityPrivacy() {
                             sx={{
                                 borderColor: 'red',
                                 color: 'red',
-                                width: '100%',
-                                height: '45px',
+                                width: '100%'
                             }}
                         >
                             Delete my account
@@ -274,7 +267,10 @@ export default function SecurityPrivacy() {
                                         borderColor: 'red',
                                         color: 'red',
                                         width: '100%',
-                                        height: '45px',
+                                        '&:hover': {
+                                            backgroundColor: 'red',
+                                            color: 'white',
+                                        }
                                     }}
                                 >
                                     Confirm

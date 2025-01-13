@@ -84,7 +84,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         display: 'flex',
                         alignItems: 'center',
                         gap: 2,
-                        p: 2,
+                        p: 1,
                         borderRadius: 3,
                         mb: 2
                     }}
@@ -112,7 +112,6 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                             onClick={onDelete}
                             disabled={saving}
                             fullWidth
-                            sx={{ height: '45px' }}
                         >
                             Delete
                         </Button>
@@ -122,7 +121,6 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         onClick={handleSubmit}
                         disabled={saving}
                         fullWidth
-                        sx={{ height: '45px' }}
                     >
                         {saving ? <CircularProgress size={24} /> : (category ? 'Save Changes' : 'Create')}
                     </Button>

@@ -63,13 +63,6 @@ export default function AccountsTable({ accounts, selectedYear, onUpdate, onCrea
                         onClick={() => setIsDrawerOpen(true)}
                         startIcon={<span className="material-symbols-rounded">add</span>}
                         size="small"
-                        sx={{
-                            px: 2,
-                            py: 1,
-                            fontWeight: 500,
-                            fontSize: '0.9rem',
-                            height: '35px'
-                        }}
                     >
                         New Account
                     </Button>

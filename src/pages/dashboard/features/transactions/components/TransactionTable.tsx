@@ -167,13 +167,6 @@ export default function TransactionTable({
                                 onClick={handleCreateClick}
                                 startIcon={<span className="material-symbols-rounded">add</span>}
                                 size="small"
-                                sx={{
-                                    px: 2,
-                                    py: 1,
-                                    fontWeight: 500,
-                                    fontSize: '0.9rem',
-                                    height: '35px'
-                                }}
                             >
                                 New Transaction
                             </Button>

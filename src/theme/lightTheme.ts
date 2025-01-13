@@ -66,14 +66,24 @@ const themeOptions: ThemeOptions = {
                 root: {
                     textTransform: 'none',
                     borderRadius: '8px',
-                    padding: '0.75rem 2rem',
                     fontSize: '1rem',
                     fontWeight: 500,
                     boxShadow: 'none',
                     transition: 'all 0.3s ease-in-out',
-                    '&:hover': {
-                        transform: 'scale(1.02)',
-                    },
+                },
+                sizeSmall: {
+                    height: '35px',
+                    padding: '0px 16px',
+                    fontSize: '0.9rem',
+                },
+                sizeMedium: {
+                    height: '45px',
+                    padding: '0px 24px',
+                },
+                sizeLarge: {
+                    height: '55px',
+                    padding: '0px 32px',
+                    fontSize: '1.1rem',
                 },
                 contained: {
                     backgroundColor: '#fe6f14',

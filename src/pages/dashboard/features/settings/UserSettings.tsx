@@ -166,9 +166,7 @@ export default function UserSettings() {
                                     variant="text"
                                     onClick={handleDeleteImage}
                                     disabled={loading}
-                                    sx={{
-                                        height: '45px',
-                                    }}
+                                    size="small"
                                 >
                                     Delete Image
                                 </Button>
@@ -177,9 +175,7 @@ export default function UserSettings() {
                                     variant="text"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={loading}
-                                    sx={{
-                                        height: '45px',
-                                    }}
+                                    size="small"
                                 >
                                     Change Image
                                 </Button>
@@ -286,7 +282,7 @@ export default function UserSettings() {
                     onClick={handleSubmit}
                     disabled={loading}
                     className="submit-button"
-                    sx={{ width: '100%', height: '45px' }}
+                    size="medium"
                 >
                     {loading ? 'Saving...' : 'Save Changes'}
                 </Button>

@@ -39,13 +39,13 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
-    const [date, setDate] = useState(transaction 
+    const [date, setDate] = useState(transaction
         ? new Date(transaction.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16)
     );
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
-    const [category, setCategory] = useState(transaction 
+    const [category, setCategory] = useState(transaction
         ? (categories.find(cat => cat.name === transaction.category)?._id || '')
         : ''
     );
@@ -62,7 +62,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
             setIsIncome(transaction.amount >= 0);
         }
-    }, [categories, transaction, transaction?._id]); 
+    }, [categories, transaction, transaction?._id]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,7 +95,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 amount: numAmount * (isIncome ? 1 : -1),
                 category
             };
-            
+
             if (transaction) {
                 await transactionService.updateTransaction(transaction._id, transactionData);
                 toast.success('Transaction updated successfully');
@@ -270,14 +270,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                     variant="outlined"
                                     color="error"
                                     disabled={isDeleting}
-                                    sx={{ width: '100%', height: '45px' }}
+                                    fullWidth
                                 >
                                     Delete
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    sx={{ width: '100%', height: '45px' }}
+                                    fullWidth
                                 >
                                     Update
                                 </Button>
@@ -287,14 +287,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 <Button
                                     onClick={onClose}
                                     variant="outlined"
-                                    sx={{ width: '100%', height: '45px' }}
+                                    fullWidth
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    sx={{ width: '100%', height: '45px' }}
+                                    fullWidth
                                 >
                                     Create
                                 </Button>
@@ -344,8 +344,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         variant="outlined"
                         onClick={() => setDeleteDialog(false)}
                         sx={{
-                            width: '120px',
-                            height: '45px'
+                            width: '120px'
                         }}
                     >
                         Cancel
@@ -356,8 +355,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         onClick={confirmDelete}
                         disabled={isDeleting}
                         sx={{
-                            width: '120px',
-                            height: '45px'
+                            width: '120px'
                         }}
                     >
                         {isDeleting ? (

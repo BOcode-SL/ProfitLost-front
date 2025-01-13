@@ -254,7 +254,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             variant="outlined"
                             color="error"
                             onClick={() => setDeleteDialog(true)}
-                            sx={{ flex: 1, height: '45px' }}
+                            sx={{ flex: 1 }}
                         >
                             Delete
                         </Button>
@@ -263,7 +263,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         variant="contained"
                         onClick={handleSubmit}
                         disabled={savingChanges}
-                        sx={{ flex: 1, height: '45px' }}
+                        sx={{ flex: 1}}
                     >
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
@@ -315,7 +315,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     <Button
                         variant="outlined"
                         onClick={() => setDeleteDialog(false)}
-                        sx={{ width: '120px', height: '45px' }}
+                        sx={{ width: '120px' }}
                     >
                         Cancel
                     </Button>
@@ -324,7 +324,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         color="error"
                         onClick={handleDelete}
                         disabled={savingChanges}
-                        sx={{ width: '120px', height: '45px' }}
+                        sx={{ width: '120px'}}
                     >
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />

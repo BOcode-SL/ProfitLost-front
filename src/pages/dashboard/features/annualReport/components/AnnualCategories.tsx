@@ -238,13 +238,6 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             onClick={() => setDrawerOpen(true)}
                             startIcon={<span className="material-symbols-rounded">add</span>}
                             size="small"
-                            sx={{
-                                px: 2,
-                                py: 1,
-                                fontWeight: 500,
-                                fontSize: '0.9rem',
-                                height: '35px'
-                            }}
                         >
                             New Category
                         </Button>
@@ -252,10 +245,10 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
 
                     {loading ? (
                         <Fade in timeout={300}>
-                            <Skeleton variant="rectangular" height={400} sx={{ 
+                            <Skeleton variant="rectangular" height={400} sx={{
                                 borderRadius: 3,
                                 animation: 'pulse 1.5s ease-in-out infinite'
-                            }}/>
+                            }} />
                         </Fade>
                     ) : (
                         <Fade in timeout={500}>
@@ -406,8 +399,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         variant="outlined"
                         onClick={() => setDeleteDialog({ open: false, categoryName: '' })}
                         sx={{
-                            width: '120px',
-                            height: '45px'
+                            width: '120px'
                         }}
                     >
                         Cancel
@@ -418,8 +410,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         onClick={confirmDelete}
                         disabled={savingChanges}
                         sx={{
-                            width: '120px',
-                            height: '45px'
+                            width: '120px'
                         }}
                     >
                         {savingChanges ? (
