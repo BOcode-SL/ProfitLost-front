@@ -1,77 +1,47 @@
 import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
 import { Fade } from '@mui/material';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import AccountsForm from './AccountsForm';
-import { formatCurrency } from '../../../../../utils/formatCurrency';
-import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account.modelTypes';
-import { accountService } from '../../../../../services/account.service';
 
 interface AccountsTableProps {
     accounts: Account[];
     loading: boolean;
     selectedYear: number;
-    onReorder: (accounts: Account[]) => void;
+    onUpdate: (account: Account) => Promise<boolean>;
+    onCreate: (account: Account) => Promise<boolean>;
+    onDelete: (accountId: string) => void;
+    onOrderChange: (newOrder: string[]) => void;
 }
 
-export default function AccountsTable({ accounts, selectedYear, onReorder }: AccountsTableProps) {
-    const { user } = useUser();
+export default function AccountsTable({ accounts, selectedYear, onUpdate, onCreate, onDelete, onOrderChange }: AccountsTableProps) {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+    const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
 
-    const currentMonth = useMemo(() => {
-        const date = new Date();
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return months[date.getMonth()];
-    }, []);
-
-    const getAccountBalance = (account: Account): number => {
-        const currentRecord = account.records.find(
-            record => record.year === selectedYear && record.month === currentMonth
+    const getCurrentBalance = (account: Account): number => {
+        const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
+        const record = account.records.find(r => 
+            r.year === selectedYear && r.month === currentMonth
         );
-        return currentRecord?.value || 0;
+        return record?.value || 0;
     };
 
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>, accountId: string) => {
-        event.stopPropagation();
-        event.dataTransfer.setData('text/plain', accountId);
+    const handleDragStart = (accountId: string) => {
+        setDraggedAccountId(accountId);
     };
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-        event.preventDefault();
-    };
-
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>, targetAccountId: string) => {
-        event.preventDefault();
-        const draggedAccountId = event.dataTransfer.getData('text/plain');
-
+    const handleDrop = (targetAccountId: string) => {
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
             const draggedIndex = accounts.findIndex(acc => acc._id === draggedAccountId);
             const targetIndex = accounts.findIndex(acc => acc._id === targetAccountId);
+            const updatedAccounts = [...accounts];
+            const [draggedAccount] = updatedAccounts.splice(draggedIndex, 1);
+            updatedAccounts.splice(targetIndex, 0, draggedAccount);
 
-            const newAccounts = [...accounts];
-            const [draggedAccount] = newAccounts.splice(draggedIndex, 1);
-            newAccounts.splice(targetIndex, 0, draggedAccount);
-
-            onReorder(newAccounts);
+            onOrderChange(updatedAccounts.map(acc => acc._id));
         }
-    };
-
-    const handleAddAccountSuccess = async () => {
-        try {
-            const response = await accountService.getAccountsByYear(selectedYear);
-            if (response.success && response.data) {
-                const accountsData = Array.isArray(response.data) ? response.data : [response.data];
-                onReorder(accountsData);
-            }
-        } catch (error) {
-            console.error('Error refreshing accounts:', error);
-        }
-    };
-
-    const handleAccountClick = (account: Account) => {
-        setSelectedAccount(account);
-        setIsDrawerOpen(true);
+        setDraggedAccountId(null);
     };
 
     return (
@@ -119,12 +89,22 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
                         }
                     }}
                 >
-                    <AccountsForm 
+                    <AccountsForm
                         onClose={() => {
                             setIsDrawerOpen(false);
                             setSelectedAccount(null);
-                        }} 
-                        onSuccess={handleAddAccountSuccess}
+                        }}
+                        onSuccess={async (account) => {
+                            if (selectedAccount) {
+                                await onUpdate(account);
+                            } else {
+                                await onCreate(account);
+                            }
+                            setIsDrawerOpen(false);
+                            setSelectedAccount(null);
+                            return true;
+                        }}
+                        onDelete={onDelete}
                         account={selectedAccount}
                     />
                 </Drawer>
@@ -133,11 +113,14 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
                     {accounts.map((account) => (
                         <Paper
                             key={account._id}
-                            onClick={() => handleAccountClick(account)}
+                            onClick={() => {
+                                setSelectedAccount(account);
+                                setIsDrawerOpen(true);
+                            }}
+                            onDragStart={() => handleDragStart(account._id)}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={() => handleDrop(account._id)}
                             draggable
-                            onDragStart={(e) => handleDragStart(e, account._id)}
-                            onDragOver={handleDragOver}
-                            onDrop={(e) => handleDrop(e, account._id)}
                             elevation={0}
                             sx={{
                                 display: 'flex',
@@ -145,46 +128,28 @@ export default function AccountsTable({ accounts, selectedYear, onReorder }: Acc
                                 alignItems: 'center',
                                 p: 2,
                                 borderRadius: 3,
-                                cursor: 'grab',
-                                height: '64px',
-                                transition: 'all 0.2s ease',
+                                cursor: 'pointer',
                                 backgroundColor: account.configuration.backgroundColor,
                                 color: account.configuration.color,
-                                opacity: account.configuration.isActive ? 1 : 0.5,
-                                '&:hover': {
-                                    opacity: 0.8
-                                },
-                                '&:active': {
-                                    cursor: 'grabbing'
-                                }
                             }}
                         >
-                            <Box sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                flex: 1
-                            }}>
-                                <span className="material-symbols-rounded">drag_indicator</span>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontWeight: 500,
-                                        fontSize: '1.2rem'
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <span 
+                                    className="material-symbols-rounded"
+                                    style={{ 
+                                        cursor: 'grab',
+                                        fontSize: '20px',
+                                        opacity: 0.7
                                     }}
                                 >
+                                    drag_indicator
+                                </span>
+                                <Typography variant="h6" sx={{ color: account.configuration.color }}>
                                     {account.accountName}
                                 </Typography>
                             </Box>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    textAlign: 'right',
-                                    fontSize: '1.3rem',
-                                    fontWeight: 500
-                                }}
-                            >
-                                {formatCurrency(getAccountBalance(account), user)}
+                            <Typography variant="h6" sx={{ color: account.configuration.color }}>
+                                ${getCurrentBalance(account).toFixed(2)}
                             </Typography>
                         </Paper>
                     ))}

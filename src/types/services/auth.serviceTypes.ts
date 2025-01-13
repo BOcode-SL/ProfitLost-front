@@ -1,6 +1,6 @@
 import { HttpStatusCode } from "../common.types";
 
-// Tipo base común para errores de autenticación
+// Base type for authentication errors
 export type AuthErrorType =
     | 'MISSING_FIELDS'
     | 'INVALID_FORMAT'
@@ -13,7 +13,7 @@ export type AuthErrorType =
     | 'SERVER_ERROR'
     | 'CONNECTION_ERROR';
 
-// Tipos específicos que extienden del tipo base
+// Expecific types that extends the base type
 export type RegisterErrorType = Extract<
     AuthErrorType,
     'MISSING_FIELDS' | 'INVALID_FORMAT' | 'EMAIL_EXISTS' | 'USERNAME_EXISTS' | 'PASSWORD_TOO_WEAK' | 'SERVER_ERROR' | 'CONNECTION_ERROR'

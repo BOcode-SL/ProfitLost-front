@@ -1,136 +1,82 @@
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
+import { useState, useEffect, useMemo } from 'react';
+import {
+    Box, IconButton, Typography, TextField, Paper, Button, Switch,
+    Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress,
+    FormControl, InputLabel, Select, MenuItem
+} from '@mui/material';
 import { toast } from 'react-hot-toast';
-import { Switch } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import { SelectChangeEvent } from '@mui/material/Select';
-
-import { accountService } from '../../../../../services/account.service';
-import { Account } from '../../../../../types/models/account.modelTypes';
+import type { Account } from '../../../../../types/models/account.modelTypes';
 
 interface AccountsFormProps {
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (account: Account) => Promise<boolean>;
+    onDelete?: (accountId: string) => void;
     account?: Account | null;
 }
 
-// Definir un tipo para los meses
-type MonthKey = 'January' | 'February' | 'March' | 'April' | 'May' | 'June' | 
-                'July' | 'August' | 'September' | 'October' | 'November' | 'December';
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+];
+const monthNames = {
+    Jan: 'January',
+    Feb: 'February',
+    Mar: 'March',
+    Apr: 'April',
+    May: 'May',
+    Jun: 'June',
+    Jul: 'July',
+    Aug: 'August',
+    Sep: 'September',
+    Oct: 'October',
+    Nov: 'November',
+    Dec: 'December'
+};
 
-export default function AccountsForm({ onClose, onSuccess, account }: AccountsFormProps) {
+export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const [accountName, setAccountName] = useState(account?.accountName || '');
-    const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#7e2a10');
-    const [fontColor, setFontColor] = useState(account?.configuration.color || '#ffffff');
-    const [isActive, setIsActive] = useState(account?.configuration.isActive !== false);
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
+    const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
+    const [isActive, setIsActive] = useState(account?.configuration.isActive ?? true);
     const [monthlyValues, setMonthlyValues] = useState<{ [key: string]: number }>({});
-    const [saving, setSaving] = useState(false);
-    const [customYear, setCustomYear] = useState('');
-    const [showCustomYearInput, setShowCustomYearInput] = useState(false);
-    const [uniqueYears, setUniqueYears] = useState<number[]>([]);
+    const [savingChanges, setSavingChanges] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
 
-    const months = [
-        'January', 'February', 'March', 'April', 
-        'May', 'June', 'July', 'August', 
-        'September', 'October', 'November', 'December'
-    ] as const;
+    const availableYears = useMemo(() => {
+        const years = new Set<number>();
+        const currentYear = new Date().getFullYear();
+        years.add(currentYear);
 
-    const monthsMap: Record<MonthKey, string> = {
-        'January': 'Jan',
-        'February': 'Feb',
-        'March': 'Mar',
-        'April': 'Apr',
-        'May': 'May',
-        'June': 'Jun',
-        'July': 'Jul',
-        'August': 'Aug',
-        'September': 'Sep',
-        'October': 'Oct',
-        'November': 'Nov',
-        'December': 'Dec'
-    };
+        if (account) {
+            account.records.forEach(record => years.add(record.year));
+        }
+
+        return Array.from(years).sort((a, b) => b - a);
+    }, [account]);
 
     useEffect(() => {
         if (account) {
-            console.log('Account Data:', account);
-            // Solo obtener años que tengan registros con valores
-            const years = new Set(
-                account.records
-                    .filter(record => record.value !== 0)
-                    .map(record => record.year)
-            );
-            const sortedYears = Array.from(years).sort((a, b) => b - a); // Ordenar descendente
-            console.log('Available Years:', sortedYears);
-            setUniqueYears(sortedYears);
-            
-            if (sortedYears.length > 0) {
-                setSelectedYear(sortedYears[0]); // Seleccionar el año más reciente
-            }
-
-            const initialValues: { [key: string]: number } = {};
-            account.records.forEach(record => {
-                const key = `${record.year}-${record.month}`;
-                initialValues[key] = record.value;
-                console.log(`Record for ${key}:`, record.value);
+            const values: { [key: string]: number } = {};
+            months.forEach(month => {
+                const record = account.records.find(r =>
+                    r.year === selectedYear && r.month === month
+                );
+                values[month] = record?.value || 0;
             });
-
-            setMonthlyValues(initialValues);
-            console.log('Initial Monthly Values:', initialValues);
+            setMonthlyValues(values);
         }
-    }, [account]);
-
-    const handleMonthValueChange = (month: MonthKey, value: number) => {
-        const shortMonth = monthsMap[month];
-        const key = `${selectedYear}-${shortMonth}`;
-        console.log(`Updating value for ${key} to:`, value);
-        
-        setMonthlyValues(prev => {
-            const newValues = { ...prev };
-            newValues[key] = value;
-            console.log('New monthly values:', newValues);
-            return newValues;
-        });
-    };
-
-    const handleAddCustomYear = () => {
-        const yearNumber = parseInt(customYear);
-
-        if (yearNumber >= 1900 && yearNumber <= 2100) {
-            if (!uniqueYears.includes(yearNumber)) {
-                if (account) {
-                    const updatedYears = [...uniqueYears, yearNumber].sort((a, b) => a - b);
-                    setUniqueYears(updatedYears);
-
-                    const newValues = { ...monthlyValues };
-                    months.forEach(month => {
-                        const key = `${yearNumber}-${month}`;
-                        newValues[key] = 0;
-                    });
-                    setMonthlyValues(newValues);
-
-                    setSelectedYear(yearNumber);
-                    setShowCustomYearInput(false);
-                    setCustomYear('');
-
-                    toast.success('Year added successfully');
-                }
-            } else {
-                toast.error('Year already exists');
-            }
-        } else {
-            toast.error('Invalid year');
-        }
-    };
+    }, [account, selectedYear]);
 
     const handleSubmit = async () => {
         if (!accountName.trim()) {
@@ -138,93 +84,73 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
             return;
         }
 
-        setSaving(true);
+        setSavingChanges(true);
         try {
-            console.log('Current monthly values:', monthlyValues);
+            const records = months.map(month => ({
+                year: selectedYear,
+                month,
+                value: monthlyValues[month] || 0
+            }));
 
-            // Filtrar registros duplicados y asegurar formato correcto
-            const recordsMap = new Map();
-            Object.entries(monthlyValues).forEach(([key, value]) => {
-                const [year, month] = key.split('-');
-                const recordKey = `${year}-${month}`;
-                recordsMap.set(recordKey, {
-                    year: parseInt(year),
-                    month: month.substring(0, 3),
-                    value: Number(value)
-                });
-            });
-
-            const records = Array.from(recordsMap.values());
-            console.log('Prepared records:', records);
-
-            const accountData = {
-                accountName: accountName.trim(),
-                configuration: {
-                    backgroundColor,
-                    color: fontColor,
-                    isActive,
-                },
-                records
-            };
-
-            console.log('Sending account data:', accountData);
-
-            const response = account
-                ? await accountService.updateAccount(account._id, accountData)
-                : await accountService.createAccount(accountData);
-
-            if (response.success) {
-                toast.success(account ? 'Account updated successfully' : 'Account created successfully');
-                onSuccess();
-                onClose();
+            if (account) {
+                // Update
+                const updatedAccount: Account = {
+                    ...account,
+                    accountName: accountName.trim(),
+                    configuration: {
+                        backgroundColor,
+                        color: textColor,
+                        isActive
+                    },
+                    records: [
+                        ...account.records.filter(r => r.year !== selectedYear),
+                        ...records
+                    ]
+                };
+                const success = await onSuccess(updatedAccount);
+                if (success) {
+                    onClose();
+                }
             } else {
-                console.error('Error response:', response);
-                toast.error(response.message || `Failed to ${account ? 'update' : 'create'} account`);
+                // Create
+                const newAccount: Account = {
+                    _id: '',
+                    user_id: '',
+                    accountName: accountName.trim(),
+                    configuration: {
+                        backgroundColor,
+                        color: textColor,
+                        isActive
+                    },
+                    records,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                const success = await onSuccess(newAccount);
+                if (success) {
+                    onClose();
+                }
             }
         } catch (error) {
-            console.error(`Error ${account ? 'updating' : 'creating'} account:`, error);
-            toast.error(`Failed to ${account ? 'update' : 'create'} account`);
+            console.error('❌ Error saving changes:', error);
+            toast.error('Error saving changes');
         } finally {
-            setSaving(false);
+            setSavingChanges(false);
         }
     };
 
     const handleDelete = async () => {
         if (!account) return;
 
-        const dialog = window.confirm('¿Estás seguro de que quieres eliminar esta cuenta?');
-        if (dialog) {
-            setSaving(true);
-            try {
-                const response = await accountService.deleteAccount(account._id);
-
-                if (response.success) {
-                    toast.success('Account deleted successfully');
-                    onSuccess();
-                    onClose();
-                } else {
-                    toast.error(response.message || 'Failed to delete account');
-                }
-            } catch (error) {
-                console.error('Error deleting account:', error);
-                toast.error('Failed to delete account');
-            } finally {
-                setSaving(false);
-            }
-        }
-    };
-
-    const handleYearChange = (e: SelectChangeEvent<number | 'add_year'>) => {
-        const value = e.target.value;
-        if (value === 'add_year') {
-            setShowCustomYearInput(true);
-        } else {
-            setShowCustomYearInput(false);
-            setSelectedYear(Number(value));
-            console.log('Selected Year Changed to:', value);
-            console.log('Monthly Values for year:', Object.entries(monthlyValues)
-                .filter(([key]) => key.startsWith(`${value}-`))
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}));
+        setSavingChanges(true);
+        try {
+            onDelete?.(account._id);
+            onClose();
+        } catch {
+            toast.error('Failed to delete account');
+        } finally {
+            setSavingChanges(false);
+            setDeleteDialog(false);
         }
     };
 
@@ -235,190 +161,100 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     <span className="material-symbols-rounded">close</span>
                 </IconButton>
                 <Typography variant="h6">
-                    {account ? 'Edit Account' : 'Add New Account'}
+                    {account ? 'Edit account' : 'New account'}
                 </Typography>
             </Box>
 
-            <Box component="form" onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-            }}>
-                <Paper
-                    elevation={2}
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        p: 1,
-                        borderRadius: 3,
-                        mb: 2
-                    }}
-                >
+            <Box component="form">
+                <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
-                        label="Account Name"
-                        value={accountName}
-                        onChange={(e) => setAccountName(e.target.value)}
+                        label="Account name"
                         fullWidth
                         size="small"
+                        value={accountName}
+                        onChange={(e) => setAccountName(e.target.value)}
                     />
                 </Paper>
 
                 {account && (
                     <>
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                p: 1,
-                                gap: 2,
-                                mt: 2,
-                                borderRadius: 3
-                            }}
-                        >
-                            <FormControl fullWidth size="small">
+                        <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
+                            <FormControl size="small" fullWidth>
                                 <InputLabel>Year</InputLabel>
                                 <Select
-                                    value={showCustomYearInput ? 'add_year' : selectedYear}
-                                    onChange={handleYearChange}
+                                    value={selectedYear}
                                     label="Year"
+                                    onChange={(e) => setSelectedYear(Number(e.target.value))}
                                 >
-                                    {uniqueYears.map((year) => (
+                                    {availableYears.map(year => (
                                         <MenuItem key={year} value={year}>
                                             {year}
                                         </MenuItem>
                                     ))}
-                                    <MenuItem value="add_year">Add New Year</MenuItem>
                                 </Select>
                             </FormControl>
                         </Paper>
 
-                        {showCustomYearInput && (
-                            <Paper elevation={2} sx={{ p: 1, mt: 2, borderRadius: 3 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <TextField
-                                        label="Custom Year"
-                                        type="number"
-                                        value={customYear}
-                                        onChange={(e) => setCustomYear(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        sx={{ flex: 2 }}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleAddCustomYear}
-                                        size="small"
-                                        sx={{ height: '35px' }}
-                                    >
-                                        <span className="material-symbols-rounded">add</span>
-                                    </Button>
-                                </Box>
-                            </Paper>
-                        )}
+                        <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                {months.map(month => (
+                                    <Box key={month} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography>{monthNames[month as keyof typeof monthNames]}</Typography>
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            value={monthlyValues[month] || 0}
+                                            onChange={(e) => setMonthlyValues(prev => ({
+                                                ...prev,
+                                                [month]: Number(e.target.value)
+                                            }))}
+                                            InputProps={{
+                                                startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>
+                                            }}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Paper>
 
-                        {!showCustomYearInput && (
-                            <Paper elevation={2} sx={{ p: 2, mt: 2, borderRadius: 3 }}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    {months.map((month) => {
-                                        const shortMonth = monthsMap[month];
-                                        const key = `${selectedYear}-${shortMonth}`;
-                                        const value = monthlyValues[key] || 0;
-                                        console.log(`Rendering input for ${key} with value:`, value);
-
-                                        return (
-                                            <Box
-                                                key={month}
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                    gap: 2
-                                                }}
-                                            >
-                                                <Typography sx={{ width: 100 }}>{month}</Typography>
-                                                <TextField
-                                                    type="number"
-                                                    size="small"
-                                                    value={value}
-                                                    onChange={(e) => {
-                                                        const newValue = Number(e.target.value);
-                                                        handleMonthValueChange(month, newValue);
-                                                    }}
-                                                    inputProps={{
-                                                        step: "0.01",
-                                                        min: "0"
-                                                    }}
-                                                    sx={{ width: '150px' }}
-                                                />
-                                            </Box>
-                                        );
-                                    })}
-                                </Box>
-                            </Paper>
-                        )}
+                        <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Typography>Active account</Typography>
+                                <Switch
+                                    checked={isActive}
+                                    onChange={(e) => setIsActive(e.target.checked)}
+                                />
+                            </Box>
+                        </Paper>
                     </>
                 )}
 
-                <Paper
-                    elevation={2}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        p: 1,
-                        gap: 2,
-                        mt: 2,
-                        borderRadius: 3
-                    }}
-                >
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 1, width: '100%' }}>
-                        <Typography variant="body2" sx={{ width: '100px' }}>Background</Typography>
+                <Paper elevation={2} sx={{ display: 'flex', alignItems: '', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography>Background color</Typography>
                         <input
                             type="color"
                             value={backgroundColor}
                             onChange={(e) => setBackgroundColor(e.target.value)}
-                            style={{ width: '150px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                         />
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 1, width: '100%' }}>
-                        <Typography variant="body2" sx={{ width: '100px' }}>Font</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                        <Typography>Text color</Typography>
                         <input
                             type="color"
-                            value={fontColor}
-                            onChange={(e) => setFontColor(e.target.value)}
-                            style={{ width: '150px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                            value={textColor}
+                            onChange={(e) => setTextColor(e.target.value)}
                         />
                     </Box>
                 </Paper>
 
-                <Paper
-                    elevation={2}
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-evenly',
-                        p: 1,
-                        gap: 2,
-                        mt: 2,
-                        borderRadius: 3
-                    }}
-                >
-                    <Typography variant="body2">Active Account</Typography>
-                    <Switch
-                        checked={isActive}
-                        onChange={(e) => setIsActive(e.target.checked)}
-                    />
-                </Paper>
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button
                             variant="outlined"
                             color="error"
-                            onClick={handleDelete}
-                            disabled={saving}
-                            sx={{ height: '45px', flex: 1 }}
+                            onClick={() => setDeleteDialog(true)}
+                            sx={{ flex: 1, height: '45px' }}
                         >
                             Delete
                         </Button>
@@ -426,13 +262,78 @@ export default function AccountsForm({ onClose, onSuccess, account }: AccountsFo
                     <Button
                         variant="contained"
                         onClick={handleSubmit}
-                        disabled={saving}
-                        sx={{ height: '45px', flex: 1 }}
+                        disabled={savingChanges}
+                        sx={{ flex: 1, height: '45px' }}
                     >
-                        {saving ? <CircularProgress size={24} color="inherit" /> : (account ? 'Update' : 'Create')}
+                        {savingChanges ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            account ? 'Update' : 'Create'
+                        )}
                     </Button>
                 </Box>
             </Box>
+
+            <Dialog
+                open={deleteDialog}
+                onClose={() => setDeleteDialog(false)}
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        width: '90%',
+                        maxWidth: '400px'
+                    }
+                }}
+            >
+                <DialogTitle sx={{
+                    textAlign: 'center',
+                    pt: 3,
+                    pb: 1
+                }}>
+                    Delete Account
+                </DialogTitle>
+                <DialogContent sx={{
+                    textAlign: 'center',
+                    py: 2
+                }}>
+                    <Typography>
+                        Are you sure you want to delete the account{' '}
+                        <Typography component="span" fontWeight="bold" color="primary">
+                            {accountName}
+                        </Typography>
+                        ?
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{
+                    justifyContent: 'center',
+                    gap: 2,
+                    p: 3
+                }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => setDeleteDialog(false)}
+                        sx={{ width: '120px', height: '45px' }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleDelete}
+                        disabled={savingChanges}
+                        sx={{ width: '120px', height: '45px' }}
+                    >
+                        {savingChanges ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            'Delete'
+                        )}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 } 

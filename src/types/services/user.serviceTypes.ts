@@ -1,4 +1,5 @@
-import type { Currency, DateFormat, TimeFormat } from '../models/user.modelTypes';
+import { HttpStatusCode } from '../common.types';
+import type { User } from '../models/user.modelTypes';
 
 export type UserErrorType =
     | 'INVALID_ID_FORMAT'
@@ -19,25 +20,13 @@ export interface UserApiErrorResponse {
     success: false;
     message: string;
     error: UserErrorType;
-    status: number;
+    status: HttpStatusCode;
 }
 
 export interface UserApiSuccessResponse {
     success: true;
     message: string;
-    data?: {
-        _id: string;
-        username: string;
-        email: string;
-        name: string;
-        surname: string;
-        profileImage?: string;
-        accountsOrder: string[];
-        language: string;
-        currency: Currency;
-        dateFormat: DateFormat;
-        timeFormat: TimeFormat;
-    };
+    data?: User | User[];
 }
 
 export type UserApiResponse = UserApiSuccessResponse | UserApiErrorResponse; 

@@ -1,104 +1,151 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
+import type { Account } from '../../../../types/models/account.modelTypes';
+import type { User } from '../../../../types/models/user.modelTypes';
 import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
-import type { Account } from '../../../../types/models/account.modelTypes';
+
 import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 
 export default function Accounts() {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(true);
-    const [year, setYear] = useState<string>(new Date().getFullYear().toString());
-    const [yearsWithData, setYearsWithData] = useState<number[]>([]);
+    const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
+    const [user, setUser] = useState<User | null>(null);
 
-    const activeAccounts = useMemo(() => {
-        return accounts.filter(account => account.configuration.isActive !== false);
-    }, [accounts]);
+    const availableYears = useMemo(() => {
+        const years = new Set<number>();
+        const currentYear = new Date().getFullYear();
+        years.add(currentYear);
 
-    const orderAccounts = (accountsToOrder: Account[], accountsOrder: string[]) => {
-        if (!accountsOrder?.length) return accountsToOrder;
-
-        const orderedAccounts = [...accountsToOrder];
-        orderedAccounts.sort((a, b) => {
-            const indexA = accountsOrder.indexOf(a._id);
-            const indexB = accountsOrder.indexOf(b._id);
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
+        accounts.forEach(account => {
+            account.records.forEach(record => {
+                years.add(record.year);
+            });
         });
 
-        return orderedAccounts;
+        return Array.from(years).sort((a: number, b: number) => b - a);
+    }, [accounts]);
+
+    const fetchUserData = async () => {
+        const response = await userService.getUserData();
+        if (response.success && response.data) {
+            setUser(response.data as User);
+        }
+    };
+
+    const fetchAccounts = async () => {
+        const response = await accountService.getAllAccounts();
+        if (response.success && response.data) {
+            setAccounts(response.data as Account[]);
+        } else {
+            toast.error(response.message || 'Error loading accounts');
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
-        const fetchAccounts = async () => {
-            setLoading(true);
-            try {
-                const [accountsResponse, userResponse] = await Promise.all([
-                    accountService.getAllAccounts(),
-                    userService.getUserData()
-                ]);
-
-                if (accountsResponse.success && accountsResponse.data) {
-                    const accountsData = Array.isArray(accountsResponse.data) 
-                        ? accountsResponse.data 
-                        : [accountsResponse.data];
-
-                    if (userResponse.success && userResponse.data) {
-                        const orderedAccounts = orderAccounts(accountsData, userResponse.data.accountsOrder);
-                        setAccounts(orderedAccounts);
-                    }
-
-                    // Obtener años únicos con datos
-                    const years = new Set<number>();
-                    const currentYear = new Date().getFullYear();
-                    years.add(currentYear);
-
-                    accountsData.forEach(account => {
-                        account.records.forEach(record => {
-                            years.add(record.year);
-                        });
-                    });
-
-                    setYearsWithData(Array.from(years).sort((a, b) => b - a));
-                }
-            } catch (error) {
-                console.error('Error fetching accounts:', error);
-                toast.error('Failed to fetch accounts');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAccounts();
+        Promise.all([fetchUserData(), fetchAccounts()]);
     }, []);
 
-    useEffect(() => {
-        const fetchAccountsByYear = async () => {
-            setLoading(true);
-            try {
-                const response = await accountService.getAccountsByYear(parseInt(year));
-                if (response.success && response.data) {
-                    const accountsData = Array.isArray(response.data) ? response.data : [response.data];
-                    setAccounts(accountsData);
-                }
-            } catch (error) {
-                console.error('Error fetching accounts by year:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const orderedAccounts = useMemo(() => {
+        if (!user?.accountsOrder || !accounts.length) return accounts;
 
-        fetchAccountsByYear();
-    }, [year]);
-    
-    const handleReorder = async (newAccounts: Account[]) => {
-        setAccounts(newAccounts);
-        // Aquí deberías también actualizar el orden en el backend
+        const accountMap = new Map(accounts.map(acc => [acc._id, acc]));
+        const orderedAccounts: Account[] = [];
+
+        user.accountsOrder.forEach(id => {
+            const account = accountMap.get(id);
+            if (account) {
+                orderedAccounts.push(account);
+                accountMap.delete(id);
+            }
+        });
+
+        accountMap.forEach(account => {
+            orderedAccounts.push(account);
+        });
+
+        return orderedAccounts;
+    }, [accounts, user?.accountsOrder]);
+
+    const handleAccountUpdate = async (updatedAccount: Account) => {
+        try {
+            const response = await accountService.updateAccount(updatedAccount._id, {
+                accountName: updatedAccount.accountName,
+                configuration: updatedAccount.configuration,
+                records: updatedAccount.records
+            });
+
+            if (response.success && response.data) {
+                setAccounts(prev => prev.map(acc =>
+                    acc._id === updatedAccount._id ? response.data as Account : acc
+                ));
+                toast.success('Account updated successfully');
+                return true;
+            } else {
+                toast.error(response.message || 'Error updating account');
+                await fetchAccounts();
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Error updating account:', error);
+            toast.error('Error updating account');
+            await fetchAccounts();
+            return false;
+        }
+    };
+
+    const handleAccountCreate = async (newAccount: Account): Promise<boolean> => {
+        const response = await accountService.createAccount({
+            accountName: newAccount.accountName,
+            configuration: newAccount.configuration,
+            records: newAccount.records
+        });
+
+        if (response.success && response.data) {
+            setAccounts(prev => [...prev, response.data as Account]);
+            toast.success('Account created successfully');
+            return true;
+        } else {
+            toast.error(response.message || 'Error creating account');
+            return false;
+        }
+    };
+
+    const handleAccountDelete = async (accountId: string): Promise<boolean> => {
+        const response = await accountService.deleteAccount(accountId);
+
+        if (response.success) {
+            setAccounts(prev => prev.filter(acc => acc._id !== accountId));
+            toast.success('Account deleted successfully');
+            return true;
+        } else {
+            toast.error(response.message || 'Error deleting account');
+            return false;
+        }
+    };
+
+    const handleOrderChange = async (newOrder: string[]) => {
+        try {
+            const response = await userService.updateAccountsOrder(newOrder);
+            if (response.success) {
+                setUser(prev => prev ? {
+                    ...prev,
+                    accountsOrder: newOrder
+                } : null);
+                toast.success('Accounts order updated successfully');
+            } else {
+                toast.error(response.message || 'Error updating accounts order');
+            }
+        } catch (error) {
+            console.error('❌ Error updating accounts order:', error);
+            toast.error('Error updating accounts order');
+        }
     };
 
     return (
@@ -117,12 +164,14 @@ export default function Accounts() {
                     <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
                         <InputLabel>Year</InputLabel>
                         <Select
-                            value={year}
+                            value={selectedYear}
                             label="Year"
-                            onChange={(e) => setYear(e.target.value)}
+                            onChange={(e) => setSelectedYear(e.target.value)}
                         >
-                            {yearsWithData.map(y => (
-                                <MenuItem key={y} value={y.toString()}>{y}</MenuItem>
+                            {availableYears.map(year => (
+                                <MenuItem key={year} value={year.toString()}>
+                                    {year}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -135,17 +184,20 @@ export default function Accounts() {
                     height: '400px'
                 }}>
                     <AccountsChart
-                        accounts={activeAccounts}
+                        accounts={orderedAccounts}
                         loading={loading}
-                        selectedYear={parseInt(year)}
+                        selectedYear={Number(selectedYear)}
                     />
                 </Paper>
 
-                <AccountsTable 
-                    accounts={activeAccounts}
+                <AccountsTable
+                    accounts={orderedAccounts}
                     loading={loading}
-                    selectedYear={parseInt(year)}
-                    onReorder={handleReorder}
+                    selectedYear={Number(selectedYear)}
+                    onUpdate={handleAccountUpdate}
+                    onCreate={handleAccountCreate}
+                    onDelete={handleAccountDelete}
+                    onOrderChange={handleOrderChange}
                 />
             </Box>
         </Fade>

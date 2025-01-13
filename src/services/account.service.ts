@@ -1,5 +1,6 @@
 import { HttpStatusCode } from '../types/common.types';
 import type { AccountResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/services/account.serviceTypes';
+import type { Account } from '../types/models/account.modelTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -101,11 +102,11 @@ export const accountService = {
             return {
                 success: true,
                 message: data.message,
-                data: data.data,
+                data: data.data as Account,
                 statusCode: 201
             };
         } catch (error) {
-            console.error('Error creating account:', error);
+            console.error('❌ Error creating account:', error);
             return {
                 success: false,
                 message: 'Network error',
@@ -117,8 +118,6 @@ export const accountService = {
 
     async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountResponse> {
         try {
-            console.log('Updating account with data:', updateData);
-
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
@@ -131,7 +130,10 @@ export const accountService = {
             const data = await response.json();
 
             if (!response.ok) {
-                console.error('Error response:', data);
+                console.error('❌ Update response error:', {
+                    status: response.status,
+                    data
+                });
                 return {
                     success: false,
                     message: data.message || 'Failed to update account',
@@ -143,7 +145,7 @@ export const accountService = {
             return {
                 success: true,
                 message: data.message,
-                data: data.data,
+                data: data.data as Account,
                 statusCode: 200
             };
         } catch (error) {

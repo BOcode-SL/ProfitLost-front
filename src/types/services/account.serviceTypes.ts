@@ -11,16 +11,8 @@ export interface AccountResponse {
 
 export interface CreateAccountRequest {
     accountName: string;
-    configuration: {
-        backgroundColor: string;
-        color: string;
-        isActive: boolean;
-    };
-    records: {
-        year: number;
-        month: string;
-        value: number;
-    }[];
+    configuration: AccountConfiguration;
+    records: AccountRecord[];
 }
 
 export interface UpdateAccountRequest {
