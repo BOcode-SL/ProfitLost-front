@@ -82,14 +82,14 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
 
             <Box className='dashboard__nav-mobile'>
                 <Paper
-                    elevation={0}
+                    elevation={3}
                     className='mobile-nav'
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-around',
-                        p: 1,
-                        borderRadius: '12px 12px 0 0',
-                        bgcolor: 'background.paper'
+                        py: 2,
+                        px: 1,
+                        borderRadius: '15px 15px 0 0'
                     }}
                 >
                     {mainMenuItems.map((item) => (
