@@ -134,5 +134,27 @@ export const transactionService = {
         } catch (error) {
             throw handleTransactionError(error);
         }
+    },
+
+    async getTransactionsByYearAndMonth(year: string, month: string): Promise<TransactionApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/transactions/${year}/${month}`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as TransactionApiErrorResponse;
+            }
+
+            return data as TransactionApiResponse;
+        } catch (error) {
+            throw handleTransactionError(error);
+        }
     }
 };
