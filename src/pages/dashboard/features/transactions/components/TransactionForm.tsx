@@ -19,8 +19,8 @@ import { TransitionProps } from '@mui/material/transitions';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { transactionService } from '../../../../../services/transaction.service';
-import type { Category } from '../../../../../types/models/category.modelTypes';
-import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
+import type { Category } from '../../../../../types/models/category';
+import type { Transaction } from '../../../../../types/models/transaction';
 
 interface TransactionFormProps {
     transaction?: Transaction;

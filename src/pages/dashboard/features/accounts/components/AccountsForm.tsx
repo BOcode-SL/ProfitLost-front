@@ -5,7 +5,7 @@ import {
     FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
-import type { Account } from '../../../../../types/models/account.modelTypes';
+import type { Account } from '../../../../../types/models/account';
 
 interface AccountsFormProps {
     onClose: () => void;

@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import { Fade } from '@mui/material';
 
 import { formatCurrency } from '../../../../../utils/formatCurrency';
-import type { User } from '../../../../../types/models/user.modelTypes';
+import type { User } from '../../../../../types/models/user';
 
 interface TransactionBalancesProps {
     totalIncome: number;

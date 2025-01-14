@@ -1,4 +1,4 @@
-import { User } from '../types/models/user.modelTypes';
+import { User } from '../types/models/user';
 
 export const formatCurrency = (amount: number, user: User | null): string => {
     const currency = user?.currency || 'USD';

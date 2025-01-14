@@ -1,4 +1,4 @@
-import type { ISODateString } from '../common.types';
+import type { ISODateString } from '../api/common';
 
 export interface Note {
     _id: string;

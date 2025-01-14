@@ -10,12 +10,12 @@ import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/material/styles';
 
 import { useUser } from '../../../../contexts/UserContext';
-import { User } from '../../../../types/models/user.modelTypes';
+import { User } from '../../../../types/models/user';
 import { transactionService } from '../../../../services/transaction.service';
-import type { Transaction } from '../../../../types/models/transaction.modelTypes';
+import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/services/transaction.serviceTypes';
 import { categoryService } from '../../../../services/category.service';
-import type { Category } from '../../../../types/models/category.modelTypes';
+import type { Category } from '../../../../types/models/category';
 
 import TransactionPie from './components/TransactionPie';
 import TransactionBarChart from './components/TransactionBarChart';

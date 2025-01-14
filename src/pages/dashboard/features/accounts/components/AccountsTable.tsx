@@ -2,7 +2,7 @@ import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
 import { Fade } from '@mui/material';
 import { useState } from 'react';
 import AccountsForm from './AccountsForm';
-import type { Account } from '../../../../../types/models/account.modelTypes';
+import type { Account } from '../../../../../types/models/account';
 
 interface AccountsTableProps {
     accounts: Account[];

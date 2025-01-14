@@ -3,8 +3,8 @@ import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/mate
 import { Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
-import type { Account } from '../../../../types/models/account.modelTypes';
-import type { User } from '../../../../types/models/user.modelTypes';
+import type { Account } from '../../../../types/models/account';
+import type { User } from '../../../../types/models/user';
 import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
 

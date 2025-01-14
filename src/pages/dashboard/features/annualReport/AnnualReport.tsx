@@ -11,7 +11,7 @@ import { Fade } from '@mui/material';
 import { useUser } from '../../../../contexts/UserContext';
 import { transactionService } from '../../../../services/transaction.service';
 import { formatCurrency } from '../../../../utils/formatCurrency';
-import type { Transaction } from '../../../../types/models/transaction.modelTypes';
+import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/services/transaction.serviceTypes';
 
 import AnnualChart from './components/AnnualChart';

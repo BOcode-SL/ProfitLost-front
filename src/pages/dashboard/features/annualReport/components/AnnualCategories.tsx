@@ -24,8 +24,8 @@ import { Fade, Skeleton } from '@mui/material';
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
-import type { Category } from '../../../../../types/models/category.modelTypes';
-import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
+import type { Category } from '../../../../../types/models/category';
+import type { Transaction } from '../../../../../types/models/transaction';
 import { CategoryApiErrorResponse } from '../../../../../types/services/category.serviceTypes';
 import CategoryForm from './CategoryForm';
 

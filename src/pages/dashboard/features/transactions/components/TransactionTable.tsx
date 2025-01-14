@@ -13,8 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import { useTheme } from '@mui/material/styles';
 import { Fade } from '@mui/material';
 
-import type { Transaction } from '../../../../../types/models/transaction.modelTypes';
-import type { Category } from '../../../../../types/models/category.modelTypes';
+import type { Transaction } from '../../../../../types/models/transaction';
+import type { Category } from '../../../../../types/models/category';
 import TransactionForm from './TransactionForm';
 
 interface TransactionTableProps {

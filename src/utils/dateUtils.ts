@@ -1,4 +1,4 @@
-import type { ISODateString } from '../types/common.types';
+import type { ISODateString } from '../types/api/common';
 
 export const toUTCString = (date: Date): ISODateString => {
     return date.toISOString();

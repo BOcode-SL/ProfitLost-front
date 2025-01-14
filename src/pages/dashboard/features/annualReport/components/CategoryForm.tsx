@@ -9,7 +9,7 @@ import { toast } from 'react-hot-toast';
 import IconButton from '@mui/material/IconButton';
 
 import { categoryService } from '../../../../../services/category.service';
-import type { Category } from '../../../../../types/models/category.modelTypes';
+import type { Category } from '../../../../../types/models/category';
 
 interface CategoryFormProps {
     category?: Category;

@@ -1,6 +1,6 @@
-import { HttpStatusCode } from '../types/common.types';
+import { HttpStatusCode } from '../types/api/common';
 import type { AccountResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/services/account.serviceTypes';
-import type { Account } from '../types/models/account.modelTypes';
+import type { Account } from '../types/models/account';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

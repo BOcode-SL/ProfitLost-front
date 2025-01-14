@@ -1,4 +1,4 @@
-import { HttpStatusCode } from '../types/common.types';
+import { HttpStatusCode } from '../types/api/common';
 import type { NoteResponse, CreateNoteRequest, UpdateNoteRequest } from '../types/services/note.serviceTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;

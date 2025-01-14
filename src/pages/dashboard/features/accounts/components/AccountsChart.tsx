@@ -1,6 +1,6 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
-import type { Account } from '../../../../../types/models/account.modelTypes';
+import type { Account } from '../../../../../types/models/account';
 
 interface AccountsChartProps {
     accounts: Account[];
