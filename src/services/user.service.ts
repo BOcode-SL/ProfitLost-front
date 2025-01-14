@@ -1,13 +1,27 @@
-import type { UserApiResponse, UserApiErrorResponse } from '../types/services/user.serviceTypes';
+import { HttpStatusCode } from '../types/api/common';
+import { CommonErrorType } from '../types/api/errors';
+import type { UserApiResponse, UserApiErrorResponse } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const handleUserError = (error: unknown): UserApiErrorResponse => {
+    if ((error as UserApiErrorResponse).statusCode) {
+        return error as UserApiErrorResponse;
+    }
+    return {
+        success: false,
+        message: 'Connection error. Please check your internet connection.',
+        error: 'CONNECTION_ERROR' as CommonErrorType,
+        statusCode: 0 as HttpStatusCode
+    };
+};
 
 export const userService = {
     async getUserData(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/me`, {
                 method: 'GET',
-                credentials: 'include',
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -15,21 +29,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     },
 
@@ -46,21 +52,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     },
 
@@ -80,21 +78,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     },
 
@@ -110,21 +100,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     },
 
@@ -140,21 +122,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     },
 
@@ -174,21 +148,13 @@ export const userService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as UserApiErrorResponse;
             }
 
             return data as UserApiResponse;
         } catch (error) {
-            if ((error as UserApiErrorResponse).status) {
-                throw error as UserApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0
-            } as UserApiErrorResponse;
+            throw handleUserError(error);
         }
     }
 }; 

@@ -32,14 +32,14 @@ export interface ApiSuccessResponse<T = unknown> {
 /**
  * Base interface for error API responses
  */
-export interface ApiErrorResponse {
+export interface ApiErrorResponse<E = string> {
     success: false;
     message: string;
-    error: string;
+    error: E;
     statusCode: HttpStatusCode;
 }
 
 /**
  * Generic API response type
  */
-export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
+export type ApiResponse<T = unknown, E = string> = ApiSuccessResponse<T> | ApiErrorResponse<E>;

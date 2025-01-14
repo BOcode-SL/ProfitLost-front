@@ -1,7 +1,25 @@
 import { HttpStatusCode } from '../types/api/common';
-import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse, AuthApiResponse } from '../types/api/responses';
+import { CommonErrorType } from '../types/api/errors';
+import type {
+    LoginCredentials,
+    RegisterCredentials,
+    AuthApiErrorResponse,
+    AuthApiResponse
+} from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const handleAuthError = (error: unknown): AuthApiErrorResponse => {
+    if ((error as AuthApiErrorResponse).statusCode) {
+        return error as AuthApiErrorResponse;
+    }
+    return {
+        success: false,
+        message: 'Connection error. Please check your internet connection.',
+        error: 'CONNECTION_ERROR' as CommonErrorType,
+        statusCode: 0 as HttpStatusCode
+    };
+};
 
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
@@ -20,21 +38,13 @@ export const authService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status as HttpStatusCode
+                    statusCode: response.status as HttpStatusCode
                 } as AuthApiErrorResponse;
             }
 
             return data as AuthApiResponse;
         } catch (error) {
-            if ((error as AuthApiErrorResponse).status) {
-                throw error as AuthApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as AuthApiErrorResponse;
+            throw handleAuthError(error);
         }
     },
 
@@ -54,37 +64,35 @@ export const authService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as AuthApiErrorResponse;
             }
 
             return data as AuthApiResponse;
         } catch (error) {
-            if ((error as AuthApiErrorResponse).status) {
-                throw error as AuthApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as AuthApiErrorResponse;
+            throw handleAuthError(error);
         }
     },
 
-    async logout(): Promise<void> {
+    async logout(): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error('Logout error');
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiErrorResponse;
             }
+
+            return data as AuthApiResponse;
         } catch (error) {
-            console.error('logout Error :', error);
-            throw new Error('Logout error');
+            throw handleAuthError(error);
         }
-    },
+    }
 }; 

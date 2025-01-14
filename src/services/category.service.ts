@@ -1,15 +1,28 @@
-import type { HttpStatusCode } from '../types/api/common';
-import type { CategoryApiResponse, CategoryApiErrorResponse } from '../types/services/category.serviceTypes';
+import { HttpStatusCode } from '../types/api/common';
+import { CommonErrorType } from '../types/api/errors';
+import type { CategoryApiResponse, CategoryApiErrorResponse } from '../types/api/responses';
 import type { Category } from '../types/models/category';
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const handleCategoryError = (error: unknown): CategoryApiErrorResponse => {
+    if ((error as CategoryApiErrorResponse).statusCode) {
+        return error as CategoryApiErrorResponse;
+    }
+    return {
+        success: false,
+        message: 'Connection error. Please check your internet connection.',
+        error: 'CONNECTION_ERROR' as CommonErrorType,
+        statusCode: 0 as HttpStatusCode
+    };
+};
 
 export const categoryService = {
     async getAllCategories(): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/all`, {
                 method: 'GET',
-                credentials: 'include',
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -17,21 +30,13 @@ export const categoryService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as CategoryApiErrorResponse;
             }
 
             return data as CategoryApiResponse;
         } catch (error) {
-            if ((error as CategoryApiErrorResponse).status) {
-                throw error as CategoryApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as CategoryApiErrorResponse;
+            throw handleCategoryError(error);
         }
     },
 
@@ -41,7 +46,7 @@ export const categoryService = {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(categoryData)
             });
@@ -51,21 +56,13 @@ export const categoryService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as CategoryApiErrorResponse;
             }
 
             return data as CategoryApiResponse;
         } catch (error) {
-            if ((error as CategoryApiErrorResponse).status) {
-                throw error as CategoryApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as CategoryApiErrorResponse;
+            throw handleCategoryError(error);
         }
     },
 
@@ -75,7 +72,7 @@ export const categoryService = {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(categoryData)
             });
@@ -85,21 +82,13 @@ export const categoryService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as CategoryApiErrorResponse;
             }
 
             return data as CategoryApiResponse;
         } catch (error) {
-            if ((error as CategoryApiErrorResponse).status) {
-                throw error as CategoryApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as CategoryApiErrorResponse;
+            throw handleCategoryError(error);
         }
     },
 
@@ -107,7 +96,7 @@ export const categoryService = {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
                 method: 'DELETE',
-                credentials: 'include',
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -115,21 +104,13 @@ export const categoryService = {
             if (!response.ok) {
                 throw {
                     ...data,
-                    status: response.status
+                    statusCode: response.status as HttpStatusCode
                 } as CategoryApiErrorResponse;
             }
 
             return data as CategoryApiResponse;
         } catch (error) {
-            if ((error as CategoryApiErrorResponse).status) {
-                throw error as CategoryApiErrorResponse;
-            }
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR',
-                status: 0 as HttpStatusCode
-            } as CategoryApiErrorResponse;
+            throw handleCategoryError(error);
         }
     }
 };

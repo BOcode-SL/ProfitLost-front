@@ -1,11 +1,24 @@
 import { HttpStatusCode } from '../types/api/common';
-import type { AccountResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/services/account.serviceTypes';
+import { AccountErrorType, CommonErrorType } from '../types/api/errors';
+import type { AccountApiErrorResponse, AccountApiResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/api/responses';
 import type { Account } from '../types/models/account';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const handleAccountError = (error: unknown): AccountApiErrorResponse => {
+    if ((error as AccountApiErrorResponse).statusCode) {
+        return error as AccountApiErrorResponse;
+    }
+    return {
+        success: false,
+        message: 'Connection error. Please check your internet connection.',
+        error: 'CONNECTION_ERROR' as CommonErrorType,
+        statusCode: 0 as HttpStatusCode
+    };
+};
+
 export const accountService = {
-    async getAllAccounts(): Promise<AccountResponse> {
+    async getAllAccounts(): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/all`, {
                 method: 'GET',
@@ -15,33 +28,22 @@ export const accountService = {
                 }
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                return {
-                    success: false,
-                    message: 'Failed to fetch accounts',
-                    error: 'FETCH_ERROR',
+                throw {
+                    ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as AccountApiErrorResponse;
             }
 
-            const data = await response.json();
-            return {
-                success: true,
-                data: data.data,
-                statusCode: 200
-            };
+            return data as AccountApiResponse;
         } catch (error) {
-            console.error('❌ Error fetching accounts:', error);
-            return {
-                success: false,
-                message: 'Network error',
-                error: 'NETWORK_ERROR',
-                statusCode: 0
-            };
+            throw handleAccountError(error);
         }
     },
 
-    async getAccountsByYear(year: number): Promise<AccountResponse> {
+    async getAccountsByYear(year: number): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${year}`, {
                 method: 'GET',
@@ -55,7 +57,7 @@ export const accountService = {
                 return {
                     success: false,
                     message: 'Failed to fetch accounts by year',
-                    error: 'FETCH_ERROR',
+                    error: 'FETCH_ERROR' as AccountErrorType,
                     statusCode: response.status as HttpStatusCode
                 };
             }
@@ -63,21 +65,22 @@ export const accountService = {
             const data = await response.json();
             return {
                 success: true,
+                message: data.message,
                 data: data.data,
-                statusCode: 200
+                statusCode: 200 as HttpStatusCode
             };
         } catch (error) {
             console.error('❌ Error fetching accounts by year:', error);
             return {
                 success: false,
                 message: 'Network error',
-                error: 'NETWORK_ERROR',
-                statusCode: 0
+                error: 'NETWORK_ERROR' as AccountErrorType,
+                statusCode: 0 as HttpStatusCode
             };
         }
     },
 
-    async createAccount(accountData: CreateAccountRequest): Promise<AccountResponse> {
+    async createAccount(accountData: CreateAccountRequest): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/create`, {
                 method: 'POST',
@@ -94,7 +97,7 @@ export const accountService = {
                 return {
                     success: false,
                     message: data.message || 'Failed to create account',
-                    error: data.error || 'CREATE_ERROR',
+                    error: data.error || 'CREATE_ERROR' as AccountErrorType,
                     statusCode: response.status as HttpStatusCode
                 };
             }
@@ -103,20 +106,20 @@ export const accountService = {
                 success: true,
                 message: data.message,
                 data: data.data as Account,
-                statusCode: 201
+                statusCode: 201 as HttpStatusCode
             };
         } catch (error) {
             console.error('❌ Error creating account:', error);
             return {
                 success: false,
                 message: 'Network error',
-                error: 'NETWORK_ERROR',
-                statusCode: 0
+                error: 'NETWORK_ERROR' as AccountErrorType,
+                statusCode: 0 as HttpStatusCode
             };
         }
     },
 
-    async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountResponse> {
+    async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
@@ -130,36 +133,19 @@ export const accountService = {
             const data = await response.json();
 
             if (!response.ok) {
-                console.error('❌ Update response error:', {
-                    status: response.status,
-                    data
-                });
-                return {
-                    success: false,
-                    message: data.message || 'Failed to update account',
-                    error: data.error || 'UPDATE_ERROR',
+                throw {
+                    ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as AccountApiErrorResponse;
             }
 
-            return {
-                success: true,
-                message: data.message,
-                data: data.data as Account,
-                statusCode: 200
-            };
+            return data as AccountApiResponse;
         } catch (error) {
-            console.error('❌ Error updating account:', error);
-            return {
-                success: false,
-                message: 'Network error',
-                error: 'NETWORK_ERROR',
-                statusCode: 0
-            };
+            throw handleAccountError(error);
         }
     },
 
-    async deleteAccount(id: string): Promise<AccountResponse> {
+    async deleteAccount(id: string): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'DELETE',
@@ -183,15 +169,15 @@ export const accountService = {
             return {
                 success: true,
                 message: data.message,
-                statusCode: 200
+                statusCode: 200 as HttpStatusCode
             };
         } catch (error) {
             console.error('❌ Error deleting account:', error);
             return {
                 success: false,
                 message: 'Network error',
-                error: 'NETWORK_ERROR',
-                statusCode: 0
+                error: 'NETWORK_ERROR' as AccountErrorType,
+                statusCode: 0 as HttpStatusCode
             };
         }
     }
