@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import toast from 'react-hot-toast';
 
 import type { User, UserContextType } from '../types/models/user';
-import type { UserApiErrorResponse } from '../types/services/user.serviceTypes';
+import type { UserApiErrorResponse } from '../types/api/responses';
 import { userService } from '../services/user.service';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

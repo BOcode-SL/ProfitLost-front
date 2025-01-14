@@ -6,7 +6,8 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 
-import type { LoginCredentials, RegisterCredentials, ApiErrorResponse, AuthErrorType } from '../../types/services/auth.serviceTypes';
+import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../types/api/responses';
+import { AuthErrorType } from '../../types/api/errors';
 import { authService } from '../../services/auth.service';
 import { useUser } from '../../contexts/UserContext';
 
@@ -85,7 +86,7 @@ const AuthPage = () => {
                 }
             }
         } catch (err: unknown) {
-            const error = err as ApiErrorResponse;
+            const error = err as AuthApiErrorResponse;
 
             switch (error.error as AuthErrorType) {
                 case 'MISSING_FIELDS':

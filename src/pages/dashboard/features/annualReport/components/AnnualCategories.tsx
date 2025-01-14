@@ -26,7 +26,7 @@ import { categoryService } from '../../../../../services/category.service';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
-import { CategoryApiErrorResponse } from '../../../../../types/services/category.serviceTypes';
+import { CategoryApiErrorResponse } from '../../../../../types/api/responses';
 import CategoryForm from './CategoryForm';
 
 interface AnnualCategoriesProps {
@@ -172,7 +172,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 case 'CATEGORY_IN_USE':
                     toast.error('Cannot delete a category with associated transactions');
                     break;
-                case 'NOT_FOUND':
+                case 'CATEGORY_NOT_FOUND':
                     toast.error('Category not found');
                     break;
                 case 'INVALID_ID_FORMAT':

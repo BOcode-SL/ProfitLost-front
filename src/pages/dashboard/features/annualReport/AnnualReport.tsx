@@ -12,7 +12,7 @@ import { useUser } from '../../../../contexts/UserContext';
 import { transactionService } from '../../../../services/transaction.service';
 import { formatCurrency } from '../../../../utils/formatCurrency';
 import type { Transaction } from '../../../../types/models/transaction';
-import type { TransactionApiErrorResponse } from '../../../../types/services/transaction.serviceTypes';
+import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
@@ -67,7 +67,7 @@ export default function AnnualReport() {
         const fetchTransactionsByYear = async () => {
             setLoading(true);
             try {
-                const response = await transactionService.getTransactionsByYear(year);
+                const response = await transactionService.getTransactionsByYear(Number(year));
                 if (response.success && Array.isArray(response.data)) {
                     setTransactions(response.data);
                 }

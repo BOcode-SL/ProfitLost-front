@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 import { useUser } from '../../../../contexts/UserContext';
 import { userService } from '../../../../services/user.service';
-import type { UserApiErrorResponse } from '../../../../types/services/user.serviceTypes';
+import type { UserApiErrorResponse } from '../../../../types/api/responses';
 import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user';
 import './UserSettings.scss';
 
