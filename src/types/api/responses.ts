@@ -7,9 +7,9 @@ import type { Account, AccountRecord, AccountConfiguration } from '../models/acc
 import type { Note } from '../models/note';
 
 /**
- * Types for API responses.
+ * Types for authentication API responses.
  */
-export interface ApiErrorResponse {
+export interface AuthApiErrorResponse {
     success: false;
     message: string;
     error: AuthErrorType;
@@ -18,7 +18,7 @@ export interface ApiErrorResponse {
     remainingAttempts?: number;
 }
 
-export interface ApiSuccessResponse {
+export interface AuthApiSuccessResponse {
     success: true;
     message: string;
     token: string;
@@ -29,7 +29,7 @@ export interface ApiSuccessResponse {
     };
 }
 
-export type ApiResponse = ApiSuccessResponse | ApiErrorResponse;
+export type AuthApiResponse = AuthApiSuccessResponse | AuthApiErrorResponse;
 
 export interface LoginCredentials {
     identifier: string;

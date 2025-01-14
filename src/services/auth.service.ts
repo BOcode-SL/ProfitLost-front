@@ -1,10 +1,10 @@
 import { HttpStatusCode } from '../types/api/common';
-import type { LoginCredentials, RegisterCredentials, ApiResponse, ApiErrorResponse } from '../types/services/auth.serviceTypes';
+import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse, AuthApiResponse } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const authService = {
-    async register(credentials: RegisterCredentials): Promise<ApiResponse> {
+    async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
@@ -21,24 +21,24 @@ export const authService = {
                 throw {
                     ...data,
                     status: response.status as HttpStatusCode
-                } as ApiErrorResponse;
+                } as AuthApiErrorResponse;
             }
 
-            return data as ApiResponse;
+            return data as AuthApiResponse;
         } catch (error) {
-            if ((error as ApiErrorResponse).status) {
-                throw error as ApiErrorResponse;
+            if ((error as AuthApiErrorResponse).status) {
+                throw error as AuthApiErrorResponse;
             }
             throw {
                 success: false,
                 message: 'Connection error. Please check your internet connection.',
                 error: 'CONNECTION_ERROR',
                 status: 0 as HttpStatusCode
-            } as ApiErrorResponse;
+            } as AuthApiErrorResponse;
         }
     },
 
-    async login(credentials: LoginCredentials): Promise<ApiResponse> {
+    async login(credentials: LoginCredentials): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
@@ -55,20 +55,20 @@ export const authService = {
                 throw {
                     ...data,
                     status: response.status
-                } as ApiErrorResponse;
+                } as AuthApiErrorResponse;
             }
 
-            return data as ApiResponse;
+            return data as AuthApiResponse;
         } catch (error) {
-            if ((error as ApiErrorResponse).status) {
-                throw error as ApiErrorResponse;
+            if ((error as AuthApiErrorResponse).status) {
+                throw error as AuthApiErrorResponse;
             }
             throw {
                 success: false,
                 message: 'Connection error. Please check your internet connection.',
                 error: 'CONNECTION_ERROR',
                 status: 0 as HttpStatusCode
-            } as ApiErrorResponse;
+            } as AuthApiErrorResponse;
         }
     },
 

@@ -1,5 +1,12 @@
-export type ISODateString = string; // YYYY-MM-DDTHH:mm:ss.sssZ 
+/**
+ * Represents an ISO 8601 date string format
+ * Example: "2024-03-18T15:30:00.000Z"
+ */
+export type ISODateString = string;
 
+/**
+ * HTTP Status Codes used in the application
+ */
 export type HttpStatusCode =
     | 0    // Connection Error
     | 200  // OK
@@ -12,6 +19,9 @@ export type HttpStatusCode =
     | 429  // Too Many Requests
     | 500; // Internal Server Error
 
+/**
+ * Base interface for successful API responses
+ */
 export interface ApiSuccessResponse<T = unknown> {
     success: true;
     message: string;
@@ -19,6 +29,9 @@ export interface ApiSuccessResponse<T = unknown> {
     statusCode: HttpStatusCode;
 }
 
+/**
+ * Base interface for error API responses
+ */
 export interface ApiErrorResponse {
     success: false;
     message: string;
@@ -26,4 +39,7 @@ export interface ApiErrorResponse {
     statusCode: HttpStatusCode;
 }
 
+/**
+ * Generic API response type
+ */
 export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
