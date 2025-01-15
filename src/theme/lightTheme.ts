@@ -25,9 +25,11 @@ const themeOptions: ThemeOptions = {
     },
     components: {
         MuiCssBaseline: {
-            styleOverrides: `
-        @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap");
-      `,
+            styleOverrides: {
+                body: {
+                    fontFamily: '"Rubik", sans-serif',
+                }
+            }
         },
         MuiSwitch: {
             styleOverrides: {
