@@ -21,7 +21,7 @@ export default function TransactionBalances({
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                gap: 2
+                gap: 1
             }}>
                 <Paper elevation={2} sx={{
                     p: 1,
