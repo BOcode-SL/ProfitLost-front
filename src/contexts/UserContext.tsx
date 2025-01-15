@@ -12,13 +12,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const loadUserData = useCallback(async () => {
-
-        if (!localStorage.getItem('token')) {
-            setUser(null);
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const response = await userService.getUserData();
             if (response.success && response.data) {

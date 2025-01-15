@@ -52,23 +52,19 @@ export const authService = {
         try {
             const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credentials),
                 credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials)
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw {
-                    ...data,
-                    statusCode: response.status as HttpStatusCode
-                } as AuthApiErrorResponse;
+                const error = await response.json();
+                throw error;
             }
 
-            return data as AuthApiResponse;
+            return response.json();
         } catch (error) {
             throw handleAuthError(error);
         }

@@ -59,7 +59,6 @@ const AuthPage = () => {
             if (isLogin) {
                 const response = await authService.login(loginData);
                 if (response.success) {
-                    localStorage.setItem('token', response.token);
                     await loadUserData();
                     toast.success('Welcome back!');
                     navigate('/dashboard', { replace: true });
