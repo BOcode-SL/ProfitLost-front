@@ -13,8 +13,11 @@ import InputLabel from '@mui/material/InputLabel';
 import { useTheme } from '@mui/material/styles';
 import { Fade } from '@mui/material';
 
+import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 import type { Category } from '../../../../../types/models/category';
+import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatDateTime } from '../../../../../utils/dateUtils';
 import TransactionForm from './TransactionForm';
 
 interface TransactionTableProps {
@@ -30,6 +33,7 @@ export default function TransactionTable({
     categories,
     onReload
 }: TransactionTableProps) {
+    const { user } = useUser();
     const theme = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState<string>('date_desc');
@@ -41,9 +45,9 @@ export default function TransactionTable({
     const handleTransactionClick = useCallback((transaction: Transaction) => {
         setCreateDrawerOpen(false);
         setEditDrawerOpen(false);
-        
+
         setSelectedTransaction(null);
-        
+
         requestAnimationFrame(() => {
             setSelectedTransaction(transaction);
             setEditDrawerOpen(true);
@@ -65,17 +69,6 @@ export default function TransactionTable({
     const getCategoryColor = (categoryName: string) => {
         const category = categories.find(cat => cat.name === categoryName);
         return category?.color || theme.palette.grey[500];
-    };
-
-    const formatDateTime = (date: string) => {
-        return new Date(date).toLocaleString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
     };
 
     // Filter and sort transactions
@@ -231,7 +224,7 @@ export default function TransactionTable({
                                                     {transaction.description}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary">
-                                                    {formatDateTime(transaction.date)}
+                                                    {formatDateTime(transaction.date, user)}
                                                 </Typography>
                                             </Box>
 
@@ -259,10 +252,7 @@ export default function TransactionTable({
                                                     textAlign: 'right'
                                                 }}
                                             >
-                                                {new Intl.NumberFormat('es-ES', {
-                                                    style: 'currency',
-                                                    currency: 'EUR'
-                                                }).format(transaction.amount)}
+                                                {formatCurrency(transaction.amount, user)}
                                             </Typography>
                                         </Box>
                                     ))}
