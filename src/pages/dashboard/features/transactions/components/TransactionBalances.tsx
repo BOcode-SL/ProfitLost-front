@@ -11,10 +11,10 @@ interface TransactionBalancesProps {
     user: User;
 }
 
-export default function TransactionBalances({ 
+export default function TransactionBalances({
     totalIncome,
     totalExpenses,
-    user 
+    user
 }: TransactionBalancesProps) {
     return (
         <Fade in timeout={500}>
@@ -31,7 +31,7 @@ export default function TransactionBalances({
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    <span className="material-symbols-rounded" style={{ color: '#ff8e38', fontSize: '2rem' }}>
+                    <span className="material-symbols-rounded no-select" style={{ color: '#ff8e38', fontSize: '2rem' }}>
                         download
                     </span>
                     <span style={{ fontSize: '1.5rem' }}>
@@ -47,7 +47,7 @@ export default function TransactionBalances({
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    <span className="material-symbols-rounded" style={{ color: '#9d300f', fontSize: '2rem' }}>
+                    <span className="material-symbols-rounded no-select" style={{ color: '#9d300f', fontSize: '2rem' }}>
                         upload
                     </span>
                     <span style={{ fontSize: '1.5rem' }}>
@@ -64,11 +64,11 @@ export default function TransactionBalances({
                     gap: 2
                 }}>
                     {totalIncome - totalExpenses > 0 ? (
-                        <span className="material-symbols-rounded" style={{ color: '#4CAF50', fontSize: '2rem' }}>
+                        <span className="material-symbols-rounded no-select" style={{ color: '#4CAF50', fontSize: '2rem' }}>
                             savings
                         </span>
                     ) : (
-                        <span className="material-symbols-rounded" style={{ color: '#f44336', fontSize: '2rem' }}>
+                        <span className="material-symbols-rounded no-select" style={{ color: '#f44336', fontSize: '2rem' }}>
                             savings
                         </span>
                     )}

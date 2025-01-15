@@ -117,7 +117,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             }
                         }}
                     >
-                        <span className="material-symbols-rounded">
+                        <span className="material-symbols-rounded no-select">
                             mail
                         </span>
                     </Badge>

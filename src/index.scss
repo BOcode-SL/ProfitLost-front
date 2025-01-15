@@ -62,6 +62,10 @@ body {
         font-size: 0.8rem;
     }
 
+    .no-select {
+        user-select: none;
+    }
+
     button {
         cursor: pointer;
     }

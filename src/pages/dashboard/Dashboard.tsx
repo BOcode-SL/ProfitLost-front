@@ -36,7 +36,7 @@ export default function Dashboard() {
     if (isLoading) {
         return (
             <div className='loading-container'>
-                <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg" alt="logo" />
+                <img className="no-select" src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg" alt="logo" />
             </div>
         );
     }

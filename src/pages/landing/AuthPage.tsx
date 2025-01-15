@@ -152,7 +152,7 @@ const AuthPage = () => {
                         onClick={() => navigate('/')}
                         src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                         alt="logo"
-                        className="auth-logo"
+                        className="auth-logo no-select"
                     />
                     <h2>{isLogin ? 'Login' : 'Register'}</h2>
                     <p>

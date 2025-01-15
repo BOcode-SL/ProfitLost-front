@@ -24,7 +24,7 @@ const Home = () => {
             {/* Header */}
             <header className="header">
                 <nav className="nav-container">
-                    <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
+                    <img className="no-select" src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
 
                     <div className="nav-buttons">
                         <button
@@ -55,6 +55,7 @@ const Home = () => {
                     </div>
                     <div className="hero-image">
                         <img
+                            className="no-select"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1736263487/AppPhotos/Brand/mockup/ujcemumjttmpe3mnjfmt.png"
                             alt="Dashboard Preview"
                         />
@@ -66,43 +67,43 @@ const Home = () => {
             <section className="features-section">
                 <div className="features-container bento-grid">
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded">query_stats</span>
+                        <span className="material-symbols-rounded no-select">query_stats</span>
                         <h4>Annual Report</h4>
                         <p>Visualize your annual expenses with monthly graphs and detailed category analysis</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded">receipt_long</span>
+                        <span className="material-symbols-rounded no-select">receipt_long</span>
                         <h4>Transactions</h4>
                         <p>Manage your monthly expenses with intuitive category and income vs expense graphs</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded">savings</span>
+                        <span className="material-symbols-rounded no-select">savings</span>
                         <h4>Goals</h4>
                         <p>Set and achieve your financial goals with smart tracking</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded">note_alt</span>
+                        <span className="material-symbols-rounded no-select">note_alt</span>
                         <h4>Notes</h4>
                         <p>Keep important notes and reminders about your personal finances</p>
                     </article>
 
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded">account_balance</span>
+                        <span className="material-symbols-rounded no-select">account_balance</span>
                         <h4>Accounts</h4>
                         <p>Monitor your total account balance with a visual representation of your net worth</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded">trending_up</span>
+                        <span className="material-symbols-rounded no-select">trending_up</span>
                         <h4>Investment Tracking <span className="soon-badge">Soon</span></h4>
                         <p>Monitor your investments and analyze their performance over time</p>
                     </article>
-                    
+
                     <article className="feature-card soon">
-                        <span className="material-symbols-rounded">inbox</span>
+                        <span className="material-symbols-rounded no-select">inbox</span>
                         <h4>Inbox <span className="soon-badge">Soon</span></h4>
                         <p>Recive notifications and stay up to date with your personal finances</p>
                     </article>
@@ -114,7 +115,7 @@ const Home = () => {
                 <div className="footer-container">
                     <div className="footer-content">
                         <div className="footer-section">
-                            <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
+                            <img className="no-select" src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
                             <p>Simplifying personal finance management for everyone.</p>
                         </div>
 

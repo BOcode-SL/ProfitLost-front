@@ -162,7 +162,7 @@ export default function AnnualReport() {
                                 justifyContent: 'center',
                                 gap: 2
                             }}>
-                                <span className="material-symbols-rounded" style={{ color: '#ff8e38', fontSize: '2rem' }}>
+                                <span className="material-symbols-rounded no-select" style={{ color: '#ff8e38', fontSize: '2rem' }}>
                                     download
                                 </span>
                                 <span style={{ fontSize: '1.5rem' }}>
@@ -178,7 +178,7 @@ export default function AnnualReport() {
                                 justifyContent: 'center',
                                 gap: 2
                             }}>
-                                <span className="material-symbols-rounded" style={{ color: '#9d300f', fontSize: '2rem' }}>
+                                <span className="material-symbols-rounded no-select" style={{ color: '#9d300f', fontSize: '2rem' }}>
                                     upload
                                 </span>
                                 <span style={{ fontSize: '1.5rem' }}>
@@ -195,11 +195,11 @@ export default function AnnualReport() {
                                 gap: 2
                             }}>
                                 {totals.balance > 0 ? (
-                                    <span className="material-symbols-rounded" style={{ color: '#4CAF50', fontSize: '2rem' }}>
+                                    <span className="material-symbols-rounded no-select" style={{ color: '#4CAF50', fontSize: '2rem' }}>
                                         savings
                                     </span>
                                 ) : (
-                                    <span className="material-symbols-rounded" style={{ color: '#f44336', fontSize: '2rem' }}>
+                                    <span className="material-symbols-rounded no-select" style={{ color: '#f44336', fontSize: '2rem' }}>
                                         savings
                                     </span>
                                 )}

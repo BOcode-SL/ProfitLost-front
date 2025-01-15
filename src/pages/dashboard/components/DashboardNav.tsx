@@ -43,6 +43,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                 >
                     <Box className='dashboard__nav-img'>
                         <img
+                            className="no-select"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
                         />
