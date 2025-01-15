@@ -70,10 +70,9 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                 borderRadius={5}
                 height={400}
                 margin={{
-                    top: 20,
-                    right: 30,
-                    bottom: 70,
-                    left: 70
+                    left: 60,
+                    right: 20,
+                    bottom: 35
                 }}
             />
         </Box>
