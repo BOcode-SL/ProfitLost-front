@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
 import { Fade } from '@mui/material';
-import { useState } from 'react';
-import AccountsForm from './AccountsForm';
+
+import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account';
+import { formatCurrency } from '../../../../../utils/formatCurrency';
+import AccountsForm from './AccountsForm';
 
 interface AccountsTableProps {
     accounts: Account[];
@@ -15,6 +18,7 @@ interface AccountsTableProps {
 }
 
 export default function AccountsTable({ accounts, selectedYear, onUpdate, onCreate, onDelete, onOrderChange }: AccountsTableProps) {
+    const { user } = useUser();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
@@ -142,7 +146,7 @@ export default function AccountsTable({ accounts, selectedYear, onUpdate, onCrea
                                 </Typography>
                             </Box>
                             <Typography variant="h6" sx={{ color: account.configuration.color }}>
-                                ${getCurrentBalance(account).toFixed(2)}
+                                {formatCurrency(getCurrentBalance(account), user)}
                             </Typography>
                         </Paper>
                     ))}

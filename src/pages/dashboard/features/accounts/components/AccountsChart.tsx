@@ -1,5 +1,8 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
+
+import { useUser } from '../../../../../contexts/UserContext';
+import { formatCurrency } from '../../../../../utils/formatCurrency';
 import type { Account } from '../../../../../types/models/account';
 
 interface AccountsChartProps {
@@ -17,6 +20,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 export default function AccountsChart({ accounts, loading, selectedYear }: AccountsChartProps) {
     const theme = useTheme();
+    const { user } = useUser();
 
     if (loading) {
         return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
@@ -36,7 +40,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         label: account.accountName,
         stack: 'total',
         color: account.configuration.backgroundColor,
-        valueFormatter: (value: number | null) => `$${(value || 0).toFixed(2)}`,
+        valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
     return (

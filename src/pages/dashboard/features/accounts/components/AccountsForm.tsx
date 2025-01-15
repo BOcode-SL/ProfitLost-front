@@ -208,9 +208,6 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                                 ...prev,
                                                 [month]: Number(e.target.value)
                                             }))}
-                                            InputProps={{
-                                                startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>
-                                            }}
                                         />
                                     </Box>
                                 ))}
