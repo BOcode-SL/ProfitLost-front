@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Paper, Typography, Button, Drawer } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer, Collapse } from '@mui/material';
 import { Fade } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
@@ -9,6 +9,7 @@ import AccountsForm from './AccountsForm';
 
 interface AccountsTableProps {
     accounts: Account[];
+    inactiveAccounts: Account[];
     loading: boolean;
     selectedYear: number;
     onUpdate: (account: Account) => Promise<boolean>;
@@ -17,15 +18,24 @@ interface AccountsTableProps {
     onOrderChange: (newOrder: string[]) => void;
 }
 
-export default function AccountsTable({ accounts, selectedYear, onUpdate, onCreate, onDelete, onOrderChange }: AccountsTableProps) {
+export default function AccountsTable({
+    accounts,
+    inactiveAccounts,
+    selectedYear,
+    onUpdate,
+    onCreate,
+    onDelete,
+    onOrderChange
+}: AccountsTableProps) {
     const { user } = useUser();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
+    const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
 
     const getCurrentBalance = (account: Account): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
-        const record = account.records.find(r => 
+        const record = account.records.find(r =>
             r.year === selectedYear && r.month === currentMonth
         );
         return record?.value || 0;
@@ -47,6 +57,53 @@ export default function AccountsTable({ accounts, selectedYear, onUpdate, onCrea
         }
         setDraggedAccountId(null);
     };
+
+    const renderAccount = (account: Account, isInactive: boolean = false) => (
+        <Paper
+            key={account._id}
+            onClick={() => {
+                setSelectedAccount(account);
+                setIsDrawerOpen(true);
+            }}
+            onDragStart={() => !isInactive && handleDragStart(account._id)}
+            onDragOver={(e) => !isInactive && e.preventDefault()}
+            onDrop={() => !isInactive && handleDrop(account._id)}
+            draggable={!isInactive}
+            elevation={0}
+            sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                p: 2,
+                borderRadius: 3,
+                cursor: 'pointer',
+                backgroundColor: account.configuration.backgroundColor,
+                color: account.configuration.color,
+                opacity: isInactive ? 0.7 : 1
+            }}
+        >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {!isInactive && (
+                    <span
+                        className="material-symbols-rounded"
+                        style={{
+                            cursor: 'grab',
+                            fontSize: '20px',
+                            opacity: 0.7
+                        }}
+                    >
+                        drag_indicator
+                    </span>
+                )}
+                <Typography variant="h6" sx={{ color: account.configuration.color }}>
+                    {account.accountName}
+                </Typography>
+            </Box>
+            <Typography variant="h6" sx={{ color: account.configuration.color }}>
+                {formatCurrency(getCurrentBalance(account), user)}
+            </Typography>
+        </Paper>
+    );
 
     return (
         <Fade in timeout={400}>
@@ -107,49 +164,28 @@ export default function AccountsTable({ accounts, selectedYear, onUpdate, onCrea
                 </Drawer>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {accounts.map((account) => (
-                        <Paper
-                            key={account._id}
-                            onClick={() => {
-                                setSelectedAccount(account);
-                                setIsDrawerOpen(true);
-                            }}
-                            onDragStart={() => handleDragStart(account._id)}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={() => handleDrop(account._id)}
-                            draggable
-                            elevation={0}
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                p: 2,
-                                borderRadius: 3,
-                                cursor: 'pointer',
-                                backgroundColor: account.configuration.backgroundColor,
-                                color: account.configuration.color,
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <span 
-                                    className="material-symbols-rounded"
-                                    style={{ 
-                                        cursor: 'grab',
-                                        fontSize: '20px',
-                                        opacity: 0.7
-                                    }}
-                                >
-                                    drag_indicator
-                                </span>
-                                <Typography variant="h6" sx={{ color: account.configuration.color }}>
-                                    {account.accountName}
-                                </Typography>
-                            </Box>
-                            <Typography variant="h6" sx={{ color: account.configuration.color }}>
-                                {formatCurrency(getCurrentBalance(account), user)}
-                            </Typography>
-                        </Paper>
-                    ))}
+                    {accounts.map(account => renderAccount(account))}
+
+                    {inactiveAccounts.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <Button
+                                onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
+                                startIcon={
+                                    <span className="material-symbols-rounded">
+                                        {showInactiveAccounts ? 'expand_less' : 'expand_more'}
+                                    </span>
+                                }
+                                sx={{ mb: 1, color: 'text.primary' }}
+                            >
+                                Inactive Accounts ({inactiveAccounts.length})
+                            </Button>
+                            <Collapse in={showInactiveAccounts}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    {inactiveAccounts.map(account => renderAccount(account, true))}
+                                </Box>
+                            </Collapse>
+                        </Box>
+                    )}
                 </Box>
             </Paper>
         </Fade>

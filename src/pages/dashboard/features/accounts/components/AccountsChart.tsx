@@ -26,16 +26,18 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
     }
 
+    const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
+
     const dataset: DataPoint[] = months.map(month => {
         const dataPoint: DataPoint = { month };
-        accounts.forEach(account => {
+        activeAccounts.forEach(account => {
             const record = account.records.find(r => r.year === selectedYear && r.month === month);
             dataPoint[account.accountName] = record?.value || 0;
         });
         return dataPoint;
     });
 
-    const series = accounts.map(account => ({
+    const series = activeAccounts.map(account => ({
         dataKey: account.accountName,
         label: account.accountName,
         stack: 'total',

@@ -148,6 +148,13 @@ export default function Accounts() {
         }
     };
 
+    const { activeAccounts, inactiveAccounts } = useMemo(() => {
+        return {
+            activeAccounts: accounts.filter(account => account.configuration.isActive !== false),
+            inactiveAccounts: accounts.filter(account => account.configuration.isActive === false)
+        };
+    }, [accounts]);
+
     return (
         <Fade in timeout={400}>
             <Box sx={{
@@ -191,7 +198,8 @@ export default function Accounts() {
                 </Paper>
 
                 <AccountsTable
-                    accounts={orderedAccounts}
+                    accounts={activeAccounts}
+                    inactiveAccounts={inactiveAccounts}
                     loading={loading}
                     selectedYear={Number(selectedYear)}
                     onUpdate={handleAccountUpdate}
