@@ -4,8 +4,11 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import type { Transaction } from '../../../../../types/models/transaction';
 import { Fade } from '@mui/material';
+
+import { useUser } from '../../../../../contexts/UserContext';
+import type { Transaction } from '../../../../../types/models/transaction';
+import { formatCurrency } from '../../../../../utils/formatCurrency';
 
 interface AnnualChartProps {
     transactions: Transaction[];
@@ -14,6 +17,7 @@ interface AnnualChartProps {
 
 export default function AnnualChart({ transactions, loading }: AnnualChartProps) {
     const theme = useTheme();
+    const { user } = useUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const chartData = useMemo(() => {
@@ -65,11 +69,13 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                             data: chartData.map(item => item.income),
                             label: 'Income',
                             color: '#ff8e38',
+                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         },
                         {
                             data: chartData.map(item => item.expenses),
                             label: 'Expenses',
                             color: '#9d300f',
+                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         }
                     ]}
                     xAxis={[{
