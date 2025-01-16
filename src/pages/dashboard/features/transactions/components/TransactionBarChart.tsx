@@ -4,6 +4,9 @@ import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import { Fade } from '@mui/material';
 
+import { useUser } from '../../../../../contexts/UserContext';
+import { formatCurrency } from '../../../../../utils/formatCurrency';
+
 interface TransactionBarChartProps {
     loading: boolean;
     income: number;
@@ -15,6 +18,8 @@ export default function TransactionBarChart({
     income,
     expenses
 }: TransactionBarChartProps) {
+    const { user } = useUser();
+
     return (
         <Box sx={{
             flex: 1,
@@ -53,11 +58,13 @@ export default function TransactionBarChart({
                                         data: [income],
                                         label: 'Income',
                                         color: '#ff8e38',
+                                        valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                     },
                                     {
                                         data: [expenses],
                                         label: 'Expenses',
                                         color: '#9d300f',
+                                        valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                     }
                                 ]}
                                 borderRadius={5}
