@@ -21,19 +21,27 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
             case 'Accounts':
                 return <Accounts />;
             default:
-                return <Paper
-                    elevation={3}
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: '12px'
-                    }}
-                >
-                    <p style={{ fontSize: '2rem' }}>🚧{activeSection} is under construction🚧</p>
-                </Paper>
+                return (
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '12px',
+                            bgcolor: 'background.paper',
+                            backdropFilter: 'blur(10px)',
+                            '& p': {
+                                fontSize: '2rem',
+                                margin: 0
+                            }
+                        }}
+                    >
+                        <p>🚧{activeSection} is under construction🚧</p>
+                    </Paper>
+                );
         }
     };
 
@@ -42,13 +50,21 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
             gridArea: 'Content',
             width: '100%',
             minHeight: 'calc(100vh - 90px)',
-            paddingRight: '1rem',
-            paddingBottom: '1rem',
+            pr: { xs: 0, md: 2 },
+            pb: { xs: 0, md: 2 },
+            position: 'relative',
             '@media (max-width: 868px)': {
-                padding: '1rem',
-                marginBottom: '80px',
+                p: 2,
+                mb: '80px',
                 flex: 1,
-                marginTop: '80px'
+                mt: '80px'
+            },
+            '& .MuiPaper-root': {
+                transition: 'all 0.3s ease',
+                '&.scrolled': {
+                    bgcolor: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(10px)'
+                }
             }
         }}>
             <Suspense fallback={
@@ -59,7 +75,12 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                     height: '100%',
                     minHeight: '200px'
                 }}>
-                    <CircularProgress size="3rem" />
+                    <CircularProgress 
+                        size={48}
+                        sx={{
+                            color: 'primary.main'
+                        }}
+                    />
                 </Box>
             }>
                 {renderContent()}

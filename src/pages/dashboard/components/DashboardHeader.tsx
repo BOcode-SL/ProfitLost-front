@@ -19,8 +19,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user';
 
-import './DashboardHeader.scss';
-
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
@@ -95,16 +93,29 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
 
     return (
         <>
-            <Box className='dashboard__header'>
+            <Box sx={{
+                gridArea: 'Header',
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                left: { xs: 0, md: '280px' },
+                width: { xs: '100%', md: 'calc(100% - 280px)' },
+                padding: { xs: '1rem', md: '1rem 1rem 0 0' },
+                zIndex: 999
+            }}>
                 <Paper
-                    className='dashboard__header-container'
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                         gap: 2,
                         p: 1,
-                        borderRadius: 3
+                        borderRadius: 3,
+                        transition: 'all 0.3s ease',
+                        '&.scrolled': {
+                            bgcolor: 'rgba(255, 255, 255, 0.8)',
+                            backdropFilter: 'blur(10px)'
+                        }
                     }}
                 >
                     <Badge
@@ -143,7 +154,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 anchor="right"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                className="dashboard__header-drawer"
                 PaperProps={{
                     sx: {
                         width: {
@@ -156,14 +166,12 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 }}
             >
                 <Box>
-                    {/* Close Button */}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-start ', mb: 2 }}>
                         <IconButton onClick={() => setDrawerOpen(false)}>
                             <span className="material-symbols-rounded">close</span>
                         </IconButton>
                     </Box>
 
-                    {/* User Info Section */}
                     <Paper elevation={2} sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -187,12 +195,26 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             {user?.name?.[0]}
                         </Avatar>
                         <Box>
-                            <p className='dashboard__header-name'>{user?.name}</p>
-                            <p className='dashboard__header-email'>{user?.email}</p>
+                            <Typography
+                                sx={{
+                                    fontWeight: 500,
+                                    m: 0
+                                }}
+                            >
+                                {user?.name}
+                            </Typography>
+                            <Typography
+                                sx={{
+                                    fontSize: '0.8rem',
+                                    fontWeight: 400,
+                                    m: 0
+                                }}
+                            >
+                                {user?.email}
+                            </Typography>
                         </Box>
                     </Paper>
 
-                    {/* Menu Items 1*/}
                     <Paper
                         elevation={2}
                         sx={{
@@ -215,7 +237,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         </List>
                     </Paper>
 
-                    {/* Menu Items 2*/}
                     <Paper
                         elevation={2}
                         sx={{
@@ -238,7 +259,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                     </Paper>
                 </Box>
 
-                {/* Logout Button */}
                 <Box sx={{ mt: 'auto', mb: 2 }}>
                     <Button
                         fullWidth
@@ -256,7 +276,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 </Box>
             </Drawer>
 
-            {/* Drawer de Configuraciones */}
             <Drawer
                 anchor="right"
                 open={settingsDrawer.open}

@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Icon } from '@mui/material';
 
-import './DashboardNav.scss';
-
 interface DashboardNavProps {
     activeSection: string;
     handleMenuItemClick: (sectionName: string) => void;
@@ -31,17 +29,32 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
 
     return (
         <>
-            <Box className='dashboard__nav'>
+            <Box sx={{
+                gridArea: 'Nav',
+                position: 'fixed',
+                height: '100vh',
+                width: '280px',
+                p: 2,
+                zIndex: 999,
+                display: { xs: 'none', md: 'block' }
+            }}>
                 <Paper
                     elevation={2}
-                    className='dashboard__nav-container'
                     sx={{
                         height: '100%',
                         borderRadius: 3,
                         bgcolor: 'background.paper'
                     }}
                 >
-                    <Box className='dashboard__nav-img'>
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        py: 3,
+                        '& img': {
+                            width: '75%',
+                            userSelect: 'none'
+                        }
+                    }}>
                         <img
                             className="no-select"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
@@ -81,10 +94,16 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                 </Paper>
             </Box>
 
-            <Box className='dashboard__nav-mobile'>
+            <Box sx={{
+                display: { xs: 'block', md: 'none' },
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                zIndex: 999
+            }}>
                 <Paper
                     elevation={3}
-                    className='mobile-nav'
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-around',
