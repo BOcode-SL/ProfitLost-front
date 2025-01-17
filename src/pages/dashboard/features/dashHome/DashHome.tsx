@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+
 import HomeBalances from './components/HomeBalances';
 import HomeChart from './components/HomeChart';
 import HomeHistory from './components/HomeHistory';
