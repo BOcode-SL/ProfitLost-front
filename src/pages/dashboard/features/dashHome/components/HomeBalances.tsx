@@ -42,7 +42,7 @@ const BalanceCardSkeleton = ({ index }: { index: number }) => (
     </Paper>
 );
 
-const BalanceCard = ({ type, amount, percentage, index }: BalanceCardProps) => {
+const BalanceCard = ({ type, amount, percentage }: BalanceCardProps) => {
     const { user } = useUser();
 
     return (
@@ -53,10 +53,6 @@ const BalanceCard = ({ type, amount, percentage, index }: BalanceCardProps) => {
             gap: 1,
             borderRadius: 3,
             minHeight: { xs: '120px', sm: 'auto' },
-            display: {
-                xs: index === 2 ? 'none' : 'flex',
-                sm: 'flex'
-            }
         }}>
             <Typography variant="subtitle1" color="primary.light">
                 {type}

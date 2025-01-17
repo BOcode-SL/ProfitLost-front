@@ -122,7 +122,7 @@ export default function HomeChart() {
         <Paper sx={{
             gridArea: 'chart',
             p: 2,
-            borderRadius: 3,
+            borderRadius: 3
         }}>
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 Last 6 months balances

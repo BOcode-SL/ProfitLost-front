@@ -30,6 +30,8 @@
 }
 
 body {
+    overflow-x: hidden;
+
     .loading-container {
         display: flex;
         justify-content: center;
