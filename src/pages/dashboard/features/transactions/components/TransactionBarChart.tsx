@@ -69,7 +69,6 @@ export default function TransactionBarChart({
                                 ]}
                                 borderRadius={5}
                                 height={250}
-                                width={350}
                                 margin={{ top: 40, bottom: 40, left: 60, right: 20 }}
                                 slotProps={{
                                     legend: { hidden: true }
