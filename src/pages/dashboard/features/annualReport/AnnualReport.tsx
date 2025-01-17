@@ -1,24 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import { Fade } from '@mui/material';
 
-import { useUser } from '../../../../contexts/UserContext';
 import { transactionService } from '../../../../services/transaction.service';
-import { formatCurrency } from '../../../../utils/formatCurrency';
 import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
+import AnnualBalances from './components/AnnualBalances';
 
 export default function AnnualReport() {
-    const { user } = useUser();
     const currentYear = new Date().getFullYear().toString();
     const [year, setYear] = useState(currentYear);
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
@@ -99,23 +91,6 @@ export default function AnnualReport() {
         fetchTransactionsByYear();
     }, [year]);
 
-    const totals = useMemo(() => {
-        const { income, expenses } = transactions.reduce((acc, transaction) => {
-            if (transaction.amount > 0) {
-                acc.income += transaction.amount;
-            } else {
-                acc.expenses += Math.abs(transaction.amount);
-            }
-            return acc;
-        }, { income: 0, expenses: 0 });
-
-        return {
-            income,
-            expenses,
-            balance: income - expenses
-        };
-    }, [transactions]);
-
     return (
         <Box className="annual-report">
             <Fade in timeout={400}>
@@ -147,68 +122,7 @@ export default function AnnualReport() {
                         </Fade>
                     </Paper>
 
-                    <Fade in timeout={700}>
-                        <Box sx={{
-                            display: 'grid',
-                            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                            gap: 1,
-                            mt: 2
-                        }}>
-                            <Paper elevation={2} sx={{
-                                p: 1,
-                                borderRadius: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 2
-                            }}>
-                                <span className="material-symbols-rounded no-select" style={{ color: '#ff8e38', fontSize: '2rem' }}>
-                                    download
-                                </span>
-                                <span style={{ fontSize: '1.5rem' }}>
-                                    {formatCurrency(totals.income, user)}
-                                </span>
-                            </Paper>
-
-                            <Paper elevation={2} sx={{
-                                p: 1,
-                                borderRadius: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 2
-                            }}>
-                                <span className="material-symbols-rounded no-select" style={{ color: '#9d300f', fontSize: '2rem' }}>
-                                    upload
-                                </span>
-                                <span style={{ fontSize: '1.5rem' }}>
-                                    {formatCurrency(totals.expenses, user)}
-                                </span>
-                            </Paper>
-
-                            <Paper elevation={2} sx={{
-                                p: 1,
-                                borderRadius: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 2
-                            }}>
-                                {totals.balance > 0 ? (
-                                    <span className="material-symbols-rounded no-select" style={{ color: '#4CAF50', fontSize: '2rem' }}>
-                                        savings
-                                    </span>
-                                ) : (
-                                    <span className="material-symbols-rounded no-select" style={{ color: '#f44336', fontSize: '2rem' }}>
-                                        savings
-                                    </span>
-                                )}
-                                <span style={{ fontSize: '1.5rem' }}>
-                                    {formatCurrency(totals.balance, user)}
-                                </span>
-                            </Paper>
-                        </Box>
-                    </Fade>
+                    <AnnualBalances transactions={transactions} />
 
                     <Fade in timeout={800}>
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
