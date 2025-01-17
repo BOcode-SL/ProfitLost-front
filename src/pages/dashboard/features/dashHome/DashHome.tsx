@@ -3,7 +3,6 @@ import { Box } from '@mui/material';
 import HomeBalances from './components/HomeBalances';
 import HomeChart from './components/HomeChart';
 import HomeHistory from './components/HomeHistory';
-import HomeAdditionalContent from './components/HomeAdditionalContent';
 
 export default function DashHome() {
     return (
@@ -46,9 +45,6 @@ export default function DashHome() {
             <HomeBalances />
             <HomeChart />
             <HomeHistory />
-            {['first', 'second', 'categories'].map((area) => (
-                <HomeAdditionalContent key={area} area={area} />
-            ))}
         </Box>
     );
 }
