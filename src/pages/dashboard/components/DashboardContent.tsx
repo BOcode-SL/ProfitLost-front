@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 
+const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
@@ -14,6 +15,8 @@ interface DashboardContentProps {
 const DashboardContent = ({ activeSection }: DashboardContentProps) => {
     const renderContent = () => {
         switch (activeSection) {
+            case 'Dashboard':
+                return <DashHome />;
             case 'Annual Report':
                 return <AnnualReport />;
             case 'Transactions':
@@ -75,7 +78,7 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                     height: '100%',
                     minHeight: '200px'
                 }}>
-                    <CircularProgress 
+                    <CircularProgress
                         size={48}
                         sx={{
                             color: 'primary.main'
