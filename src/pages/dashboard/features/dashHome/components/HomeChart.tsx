@@ -92,7 +92,7 @@ export default function HomeChart() {
                 height: { xs: '300px', sm: 'auto' }
             }}>
                 <Skeleton width={200} height={24} sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" height={250} />
+                <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 280 }} />
             </Paper>
         );
     }

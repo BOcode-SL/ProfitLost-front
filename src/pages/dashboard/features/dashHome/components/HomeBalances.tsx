@@ -34,9 +34,9 @@ const BalanceCardSkeleton = ({ index }: { index: number }) => (
         }
     }}>
         <Skeleton width={80} height={24} />
-        <Skeleton width={120} height={40} />
+        <Skeleton width={120} height={35} />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Skeleton width={60} height={24} />
+            <Skeleton width={60} height={20} />
             <Skeleton width={100} height={20} />
         </Box>
     </Paper>

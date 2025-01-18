@@ -60,9 +60,7 @@ export default function HomeHistory() {
                 borderRadius: 3,
                 overflow: 'auto'
             }}>
-                <Typography variant="subtitle1" color="primary.light" gutterBottom>
-                    Last 8 transactions
-                </Typography>
+                <Skeleton width={200} height={24} sx={{ mb: 2 }} />
                 {[...Array(8)].map((_, index) => (
                     <Box key={index} sx={{ py: 1 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
