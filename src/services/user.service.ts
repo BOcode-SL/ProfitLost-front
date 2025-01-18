@@ -1,12 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
-import type { UserApiResponse, UserApiErrorResponse } from '../types/api/responses';
+import type { UserApiResponse } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleUserError = (error: unknown): UserApiErrorResponse => {
-    if ((error as UserApiErrorResponse).statusCode) {
-        return error as UserApiErrorResponse;
+const handleUserError = (error: unknown): UserApiResponse => {
+    if ((error as UserApiResponse).statusCode) {
+        return error as UserApiResponse;
     }
     return {
         success: false,
@@ -30,7 +30,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;
@@ -53,7 +53,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;
@@ -79,7 +79,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;
@@ -101,7 +101,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;
@@ -123,7 +123,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;
@@ -149,7 +149,7 @@ export const userService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as UserApiErrorResponse;
+                } as UserApiResponse;
             }
 
             return data as UserApiResponse;

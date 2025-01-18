@@ -1,13 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
-import { AccountErrorType, CommonErrorType } from '../types/api/errors';
-import type { AccountApiErrorResponse, AccountApiResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/api/responses';
-import type { Account } from '../types/models/account';
+import { CommonErrorType } from '../types/api/errors';
+import type { AccountApiResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleAccountError = (error: unknown): AccountApiErrorResponse => {
-    if ((error as AccountApiErrorResponse).statusCode) {
-        return error as AccountApiErrorResponse;
+const handleAccountError = (error: unknown): AccountApiResponse => {
+    if ((error as AccountApiResponse).statusCode) {
+        return error as AccountApiResponse;
     }
     return {
         success: false,
@@ -34,7 +33,7 @@ export const accountService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as AccountApiErrorResponse;
+                } as AccountApiResponse;
             }
 
             return data as AccountApiResponse;
@@ -53,30 +52,18 @@ export const accountService = {
                 }
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                return {
-                    success: false,
-                    message: 'Failed to fetch accounts by year',
-                    error: 'FETCH_ERROR' as AccountErrorType,
+                throw {
+                    ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as AccountApiResponse;
             }
 
-            const data = await response.json();
-            return {
-                success: true,
-                message: data.message,
-                data: data.data,
-                statusCode: 200 as HttpStatusCode
-            };
+            return data as AccountApiResponse;
         } catch (error) {
-            console.error('❌ Error fetching accounts by year:', error);
-            return {
-                success: false,
-                message: 'Network error',
-                error: 'NETWORK_ERROR' as AccountErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleAccountError(error);
         }
     },
 
@@ -94,28 +81,15 @@ export const accountService = {
             const data = await response.json();
 
             if (!response.ok) {
-                return {
-                    success: false,
-                    message: data.message || 'Failed to create account',
-                    error: data.error || 'CREATE_ERROR' as AccountErrorType,
+                throw {
+                    ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as AccountApiResponse;
             }
 
-            return {
-                success: true,
-                message: data.message,
-                data: data.data as Account,
-                statusCode: 201 as HttpStatusCode
-            };
+            return data as AccountApiResponse;
         } catch (error) {
-            console.error('❌ Error creating account:', error);
-            return {
-                success: false,
-                message: 'Network error',
-                error: 'NETWORK_ERROR' as AccountErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleAccountError(error);
         }
     },
 
@@ -136,7 +110,7 @@ export const accountService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as AccountApiErrorResponse;
+                } as AccountApiResponse;
             }
 
             return data as AccountApiResponse;
@@ -158,27 +132,15 @@ export const accountService = {
             const data = await response.json();
 
             if (!response.ok) {
-                return {
-                    success: false,
-                    message: data.message || 'Failed to delete account',
-                    error: data.error || 'DELETE_ERROR',
+                throw {
+                    ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as AccountApiResponse;
             }
 
-            return {
-                success: true,
-                message: data.message,
-                statusCode: 200 as HttpStatusCode
-            };
+            return data as AccountApiResponse;
         } catch (error) {
-            console.error('❌ Error deleting account:', error);
-            return {
-                success: false,
-                message: 'Network error',
-                error: 'NETWORK_ERROR' as AccountErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleAccountError(error);
         }
     }
 };

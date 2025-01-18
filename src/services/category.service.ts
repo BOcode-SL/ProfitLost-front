@@ -1,13 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
-import type { CategoryApiResponse, CategoryApiErrorResponse } from '../types/api/responses';
-import type { Category } from '../types/models/category';
+import type { CategoryApiResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleCategoryError = (error: unknown): CategoryApiErrorResponse => {
-    if ((error as CategoryApiErrorResponse).statusCode) {
-        return error as CategoryApiErrorResponse;
+const handleCategoryError = (error: unknown): CategoryApiResponse => {
+    if ((error as CategoryApiResponse).statusCode) {
+        return error as CategoryApiResponse;
     }
     return {
         success: false,
@@ -31,7 +30,7 @@ export const categoryService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as CategoryApiErrorResponse;
+                } as CategoryApiResponse;
             }
 
             return data as CategoryApiResponse;
@@ -40,7 +39,7 @@ export const categoryService = {
         }
     },
 
-    async createCategory(categoryData: Partial<Category>): Promise<CategoryApiResponse> {
+    async createCategory(categoryData: CreateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/create`, {
                 method: 'POST',
@@ -57,7 +56,7 @@ export const categoryService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as CategoryApiErrorResponse;
+                } as CategoryApiResponse;
             }
 
             return data as CategoryApiResponse;
@@ -66,7 +65,7 @@ export const categoryService = {
         }
     },
 
-    async updateCategory(id: string, categoryData: Partial<Category>): Promise<CategoryApiResponse> {
+    async updateCategory(id: string, categoryData: UpdateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
                 method: 'PUT',
@@ -83,7 +82,7 @@ export const categoryService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as CategoryApiErrorResponse;
+                } as CategoryApiResponse;
             }
 
             return data as CategoryApiResponse;
@@ -105,7 +104,7 @@ export const categoryService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as CategoryApiErrorResponse;
+                } as CategoryApiResponse;
             }
 
             return data as CategoryApiResponse;

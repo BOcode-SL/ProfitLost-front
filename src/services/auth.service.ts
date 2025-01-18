@@ -1,17 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
-import type {
-    LoginCredentials,
-    RegisterCredentials,
-    AuthApiErrorResponse,
-    AuthApiResponse
-} from '../types/api/responses';
+import type { AuthApiResponse, LoginCredentials, RegisterCredentials } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleAuthError = (error: unknown): AuthApiErrorResponse => {
-    if ((error as AuthApiErrorResponse).statusCode) {
-        return error as AuthApiErrorResponse;
+const handleAuthError = (error: unknown): AuthApiResponse => {
+    if ((error as AuthApiResponse).statusCode) {
+        return error as AuthApiResponse;
     }
     return {
         success: false,
@@ -26,11 +21,11 @@ export const authService = {
         try {
             const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(credentials),
-                credentials: 'include',
             });
 
             const data = await response.json();
@@ -39,7 +34,7 @@ export const authService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as AuthApiErrorResponse;
+                } as AuthApiResponse;
             }
 
             return data as AuthApiResponse;
@@ -56,15 +51,19 @@ export const authService = {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(credentials)
+                body: JSON.stringify(credentials),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const error = await response.json();
-                throw error;
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiResponse;
             }
 
-            return response.json();
+            return data as AuthApiResponse;
         } catch (error) {
             throw handleAuthError(error);
         }
@@ -83,7 +82,7 @@ export const authService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as AuthApiErrorResponse;
+                } as AuthApiResponse;
             }
 
             return data as AuthApiResponse;

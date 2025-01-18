@@ -10,24 +10,24 @@ const mockNotes: Note[] = [
         title: 'Monthly expenses',
         content: 'Remember to review your fixed monthly expenses: rent, electricity, water, internet...',
         user_id: 'user123',
-        created_at: '2024-03-15T10:00:00Z',
-        updated_at: '2024-03-15T10:00:00Z'
+        createdAt: '2024-03-15T10:00:00Z',
+        updatedAt: '2024-03-15T10:00:00Z'
     },
     {
         _id: '2',
         title: 'Financial goals 2024',
         content: 'Save 20% of your monthly salary\nInvest in indexed funds\nReduce unnecessary expenses',
         user_id: 'user123',
-        created_at: '2024-03-14T15:30:00Z',
-        updated_at: '2024-03-14T15:30:00Z'
+        createdAt: '2024-03-14T15:30:00Z',
+        updatedAt: '2024-03-14T15:30:00Z'
     },
     {
         _id: '3',
         title: 'Investment ideas',
         content: 'Research ETFs\nConsult with financial advisor\nReview current portfolio',
         user_id: 'user123',
-        created_at: '2024-03-13T09:15:00Z',
-        updated_at: '2024-03-13T09:15:00Z'
+        createdAt: '2024-03-13T09:15:00Z',
+        updatedAt: '2024-03-13T09:15:00Z'
     }
 ];
 
@@ -57,8 +57,8 @@ export default function Notes() {
             title: '',
             content: '',
             user_id: 'user123',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
         setNotes(prevNotes => [newNote, ...prevNotes]);
         setSelectedNote(newNote);

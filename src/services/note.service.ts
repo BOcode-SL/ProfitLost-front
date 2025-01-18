@@ -1,12 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
-import { CommonErrorType, NoteErrorType } from '../types/api/errors';
-import type { NoteApiResponse, NoteApiErrorResponse, CreateNoteRequest, UpdateNoteRequest } from '../types/api/responses';
+import { CommonErrorType } from '../types/api/errors';
+import type { NoteApiResponse, CreateNoteRequest, UpdateNoteRequest } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleNoteError = (error: unknown): NoteApiErrorResponse => {
-    if ((error as NoteApiErrorResponse).statusCode) {
-        return error as NoteApiErrorResponse;
+const handleNoteError = (error: unknown): NoteApiResponse => {
+    if ((error as NoteApiResponse).statusCode) {
+        return error as NoteApiResponse;
     }
     return {
         success: false,
@@ -30,7 +30,7 @@ export const noteService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as NoteApiErrorResponse;
+                } as NoteApiResponse;
             }
 
             return data as NoteApiResponse;
@@ -56,18 +56,12 @@ export const noteService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as NoteApiResponse;
             }
 
             return data as NoteApiResponse;
         } catch (error) {
-            console.error('❌ Error creating note:', error);
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR' as NoteErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleNoteError(error);
         }
     },
 
@@ -88,18 +82,12 @@ export const noteService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as NoteApiResponse;
             }
 
             return data as NoteApiResponse;
         } catch (error) {
-            console.error('❌ Error updating note:', error);
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR' as NoteErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleNoteError(error);
         }
     },
 
@@ -107,10 +95,7 @@ export const noteService = {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {
                 method: 'DELETE',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -119,18 +104,12 @@ export const noteService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                };
+                } as NoteApiResponse;
             }
 
             return data as NoteApiResponse;
         } catch (error) {
-            console.error('❌ Error deleting note:', error);
-            throw {
-                success: false,
-                message: 'Connection error. Please check your internet connection.',
-                error: 'CONNECTION_ERROR' as NoteErrorType,
-                statusCode: 0 as HttpStatusCode
-            };
+            throw handleNoteError(error);
         }
     }
 };

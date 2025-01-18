@@ -1,10 +1,10 @@
+import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from '../api/common';
 import type { AuthErrorType, TransactionErrorType, UserErrorType, CategoryErrorType, AccountErrorType, NoteErrorType } from '../api/errors';
 import type { User } from '../models/user';
 import type { Transaction } from '../models/transaction';
 import type { Category } from '../models/category';
-import type { Account, AccountRecord, AccountConfiguration } from '../models/account';
 import type { Note } from '../models/note';
-import type { ApiSuccessResponse, ApiErrorResponse } from '../api/common';
+import type { Account, AccountRecord, AccountConfiguration } from '../models/account';
 
 /**
  * Types for authentication API responses
@@ -88,7 +88,7 @@ export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]
 export type NoteApiResponse = NoteApiSuccessResponse | NoteApiErrorResponse;
 
 /**
- * Request Types
+ * Request Types for authentication
  */
 export interface LoginCredentials {
     identifier: string;
@@ -103,6 +103,41 @@ export interface RegisterCredentials {
     surname: string;
 }
 
+/**
+ * Request Types for category
+ */
+export interface CreateCategoryRequest {
+    name: string;
+    color: string;
+}
+
+export interface UpdateCategoryRequest {
+    name?: string;
+    color?: string;
+}
+
+/**
+ * Request Types for transaction
+ */
+export interface CreateTransactionRequest {
+    date: ISODateString;
+    description: string;
+    amount: number;
+    category: string;
+    isIncome?: boolean;
+}
+
+export interface UpdateTransactionRequest {
+    date?: ISODateString;
+    description?: string;
+    amount?: number;
+    category?: string;
+    isIncome?: boolean;
+}
+
+/**
+ * Request Types for account
+ */
 export interface CreateAccountRequest {
     accountName: string;
     configuration: AccountConfiguration;
@@ -115,6 +150,9 @@ export interface UpdateAccountRequest {
     configuration?: AccountConfiguration;
 }
 
+/**
+ * Request Types for note
+ */
 export interface CreateNoteRequest {
     title: string;
     content: string;

@@ -2,12 +2,10 @@ import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { UserProvider, useUser } from './contexts/UserContext';
 
-// Components
 import Home from "./pages/landing/Home";
 import AuthPage from "./pages/landing/AuthPage";
 const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
 
-// Types
 interface PrivateRouteProps {
   children: React.ReactNode;
 }

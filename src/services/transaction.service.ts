@@ -1,13 +1,12 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
-import type { TransactionApiResponse, TransactionApiErrorResponse } from '../types/api/responses';
-import type { Transaction } from '../types/models/transaction';
+import type { TransactionApiResponse, CreateTransactionRequest, UpdateTransactionRequest } from '../types/api/responses';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const handleTransactionError = (error: unknown): TransactionApiErrorResponse => {
-    if ((error as TransactionApiErrorResponse).statusCode) {
-        return error as TransactionApiErrorResponse;
+const handleTransactionError = (error: unknown): TransactionApiResponse => {
+    if ((error as TransactionApiResponse).statusCode) {
+        return error as TransactionApiResponse;
     }
     return {
         success: false,
@@ -31,7 +30,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
@@ -53,7 +52,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
@@ -75,7 +74,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
@@ -84,7 +83,7 @@ export const transactionService = {
         }
     },
 
-    async createTransaction(transactionData: Partial<Transaction>): Promise<TransactionApiResponse> {
+    async createTransaction(transactionData: CreateTransactionRequest): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/create`, {
                 method: 'POST',
@@ -101,7 +100,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
@@ -110,7 +109,7 @@ export const transactionService = {
         }
     },
 
-    async updateTransaction(id: string, updateData: Partial<Transaction>): Promise<TransactionApiResponse> {
+    async updateTransaction(id: string, updateData: UpdateTransactionRequest): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {
                 method: 'PUT',
@@ -127,7 +126,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
@@ -149,7 +148,7 @@ export const transactionService = {
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
-                } as TransactionApiErrorResponse;
+                } as TransactionApiResponse;
             }
 
             return data as TransactionApiResponse;
