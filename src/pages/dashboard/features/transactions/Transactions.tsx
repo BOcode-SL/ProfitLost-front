@@ -1,13 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import Fade from '@mui/material/Fade';
-import { useTheme } from '@mui/material/styles';
+import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, useTheme } from '@mui/material';
 
 import { useUser } from '../../../../contexts/UserContext';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
@@ -16,7 +9,6 @@ import { User } from '../../../../types/models/user';
 import type { Category } from '../../../../types/models/category';
 import { transactionService } from '../../../../services/transaction.service';
 import { categoryService } from '../../../../services/category.service';
-
 import TransactionPie from './components/TransactionPie';
 import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';

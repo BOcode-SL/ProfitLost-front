@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Box, Paper, Typography, Button, Drawer, Collapse } from '@mui/material';
-import { Fade } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer, Collapse, Fade } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account';

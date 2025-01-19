@@ -1,8 +1,4 @@
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+import { Box, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 
 import './Help.scss';
 

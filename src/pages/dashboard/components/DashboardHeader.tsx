@@ -1,24 +1,10 @@
 import React, { useEffect, useCallback, useState, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import Badge from '@mui/material/Badge';
-import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress } from '@mui/material';
 
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user';
-
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));

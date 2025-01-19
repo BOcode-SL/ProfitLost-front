@@ -1,4 +1,5 @@
 import { Typography, Box } from '@mui/material';
+
 import LegalLayout from './components/LegalLayout';
 
 export default function CookiePolicy() {

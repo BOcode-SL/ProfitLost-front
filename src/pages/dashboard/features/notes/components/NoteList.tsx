@@ -1,4 +1,5 @@
 import { List, Box, Typography, useTheme } from '@mui/material';
+
 import type { Note } from '../../../../../types/models/note';
 
 interface NoteListProps {

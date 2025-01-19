@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import { transactionService } from '../../../../services/transaction.service';
 import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
-
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
 import AnnualBalances from './components/AnnualBalances';

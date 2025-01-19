@@ -1,13 +1,11 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { Fade } from '@mui/material';
+import { Box, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 import type { Account } from '../../../../types/models/account';
 import type { User } from '../../../../types/models/user';
 import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
-
 import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { Icon } from '@mui/material';
+import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Icon } from '@mui/material';
 
 interface DashboardNavProps {
     activeSection: string;

@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import { Fade } from '@mui/material';
+import { Box, Skeleton, useMediaQuery, useTheme, Fade } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';

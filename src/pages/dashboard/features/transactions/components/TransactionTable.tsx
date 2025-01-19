@@ -1,17 +1,5 @@
 import { useState, useCallback } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import { useTheme } from '@mui/material/styles';
-import { Fade } from '@mui/material';
+import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, Fade, useTheme } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';

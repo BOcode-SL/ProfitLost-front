@@ -1,5 +1,6 @@
 import { Box, Button, Paper } from '@mui/material';
 import { useState } from 'react';
+
 import type { Note } from '../../../../types/models/note';
 import NoteList from './components/NoteList';
 import NoteEditor from './components/NoteEditor';

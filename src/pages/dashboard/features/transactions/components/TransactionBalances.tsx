@@ -1,6 +1,4 @@
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import { Fade } from '@mui/material';
+import { Box, Paper, Fade } from '@mui/material';
 
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import type { User } from '../../../../../types/models/user';

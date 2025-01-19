@@ -1,25 +1,9 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Slide from '@mui/material/Slide';
+import {
+    Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide
+} from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
-import { Fade, Skeleton } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';

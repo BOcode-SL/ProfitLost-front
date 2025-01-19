@@ -1,4 +1,5 @@
 import { Box, Typography, TextField, Button } from '@mui/material';
+
 import type { Note } from '../../../../../types/models/note';
 
 interface NoteEditorProps {

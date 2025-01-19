@@ -1,12 +1,4 @@
-import {
-    Box,
-    Container,
-    Stack,
-    List,
-    ListItem,
-    ListItemText,
-    Typography
-} from '@mui/material';
+import { Box, Container, Stack, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {

@@ -1,8 +1,5 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
-import { Fade } from '@mui/material';
+import { Box, Paper, Skeleton, Fade } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';

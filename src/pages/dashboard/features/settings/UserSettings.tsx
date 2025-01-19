@@ -1,13 +1,5 @@
 import { useState, useRef } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import toast from 'react-hot-toast';
 
 import { useUser } from '../../../../contexts/UserContext';

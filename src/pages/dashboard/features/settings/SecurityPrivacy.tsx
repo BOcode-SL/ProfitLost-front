@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Typography from '@mui/material/Typography';
+import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography } from '@mui/material';
 
 import { userService } from '../../../../services/user.service';
 import { useUser } from '../../../../contexts/UserContext';

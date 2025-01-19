@@ -1,22 +1,7 @@
 import { useState, useEffect, forwardRef } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import { toast } from 'react-hot-toast';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Slide from '@mui/material/Slide';
+import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typography, IconButton, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Slide, CircularProgress } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
-import CircularProgress from '@mui/material/CircularProgress';
+import { toast } from 'react-hot-toast';
 
 import { transactionService } from '../../../../../services/transaction.service';
 import type { Category } from '../../../../../types/models/category';

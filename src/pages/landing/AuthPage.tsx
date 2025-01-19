@@ -1,14 +1,7 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
+import { Box, TextField, Button, InputAdornment, IconButton, Typography, Container, Divider } from '@mui/material'
 
 import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../types/api/responses';
 import { AuthErrorType } from '../../types/api/errors';

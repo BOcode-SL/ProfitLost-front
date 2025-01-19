@@ -1,12 +1,6 @@
 import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import Paper from '@mui/material/Paper';
+import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
-import IconButton from '@mui/material/IconButton';
 
 import { categoryService } from '../../../../../services/category.service';
 import type { Category } from '../../../../../types/models/category';

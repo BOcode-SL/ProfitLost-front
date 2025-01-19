@@ -1,10 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
-    Box, IconButton, Typography, TextField, Paper, Button, Switch,
-    Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress,
-    FormControl, InputLabel, Select, MenuItem
+    Box, IconButton, Typography, TextField, Paper, Button, Switch, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
+
 import type { Account } from '../../../../../types/models/account';
 
 interface AccountsFormProps {
@@ -260,7 +259,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         variant="contained"
                         onClick={handleSubmit}
                         disabled={savingChanges}
-                        sx={{ flex: 1}}
+                        sx={{ flex: 1 }}
                     >
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
@@ -321,7 +320,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         color="error"
                         onClick={handleDelete}
                         disabled={savingChanges}
-                        sx={{ width: '120px'}}
+                        sx={{ width: '120px' }}
                     >
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />

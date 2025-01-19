@@ -1,9 +1,5 @@
 import { PieChart } from '@mui/x-charts/PieChart';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
-import Typography from '@mui/material/Typography';
-import { Fade } from '@mui/material';
+import { Box, Paper, Skeleton, Typography, Fade } from '@mui/material';
 
 interface PieChartData {
     id: string;

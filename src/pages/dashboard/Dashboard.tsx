@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import { useUser } from '../../contexts/UserContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { useUser } from '../../contexts/UserContext';
 import DashboardHeader from './components/DashboardHeader';
 import DashboardNav from './components/DashboardNav';
 import DashboardContent from './components/DashboardContent';

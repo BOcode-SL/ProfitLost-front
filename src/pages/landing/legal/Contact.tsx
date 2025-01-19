@@ -1,4 +1,5 @@
 import { Typography, Box, Link } from '@mui/material';
+
 import LegalLayout from './components/LegalLayout';
 
 export default function Contact() {

@@ -1,7 +1,5 @@
 import { Suspense, lazy } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, Paper, CircularProgress } from '@mui/material';
 
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
