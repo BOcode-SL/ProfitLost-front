@@ -14,8 +14,9 @@ import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from
 import { AuthErrorType } from '../../types/api/errors';
 import { authService } from '../../services/auth.service';
 import { useUser } from '../../contexts/UserContext';
+import Footer from './components/Footer';
 
-const AuthPage = () => {
+export default function AuthPage() {
     const navigate = useNavigate();
     const { loadUserData } = useUser();
     const [isLogin, setIsLogin] = useState(true);
@@ -146,195 +147,196 @@ const AuthPage = () => {
     };
 
     return (
-        <Box sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            p: { xs: 2, sm: 4 },
-            background: 'linear-gradient(135deg, rgba(255, 163, 106, 0.403) 0%, rgba(183, 79, 14, 0.501) 100%)'
-        }}>
-            <Container maxWidth="sm">
-                <Box sx={{
-                    bgcolor: 'white',
-                    borderRadius: 4,
-                    p: { xs: 3, sm: 5 },
-                    width: '100%',
-                    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)'
-                }}>
-                    <Box sx={{ textAlign: 'center', mb: 4 }}>
-                        <Box
-                            component="img"
-                            src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
-                            alt="logo"
-                            sx={{
-                                width: 200,
-                                cursor: 'pointer',
-                                mb: 2
-                            }}
-                            onClick={() => navigate('/')}
-                        />
-                        <Typography variant="h4" sx={{
-                            fontSize: '2rem',
-                            fontWeight: 700,
-                            color: '#333',
-                            mb: 0.5
-                        }}>
-                            {isLogin ? 'Login' : 'Register'}
-                        </Typography>
-                        <Typography sx={{
-                            color: '#666',
-                            fontSize: '1.1rem'
-                        }}>
-                            {isLogin ? 'Welcome back!' : 'Create an account to start'}
-                        </Typography>
-                    </Box>
+        <>
+            <Box sx={{
+                minHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: { xs: 2, sm: 4 },
+                background: 'linear-gradient(135deg, rgba(255, 163, 106, 0.403) 0%, rgba(183, 79, 14, 0.501) 100%)'
+            }}>
+                <Container maxWidth="sm">
+                    <Box sx={{
+                        bgcolor: 'white',
+                        borderRadius: 4,
+                        p: { xs: 3, sm: 5 },
+                        width: '100%',
+                        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)'
+                    }}>
+                        <Box sx={{ textAlign: 'center', mb: 4 }}>
+                            <Box
+                                component="img"
+                                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
+                                alt="logo"
+                                sx={{
+                                    width: 200,
+                                    cursor: 'pointer',
+                                    mb: 2
+                                }}
+                                onClick={() => navigate('/')}
+                            />
+                            <Typography variant="h4" sx={{
+                                fontSize: '2rem',
+                                fontWeight: 700,
+                                color: '#333',
+                                mb: 0.5
+                            }}>
+                                {isLogin ? 'Login' : 'Register'}
+                            </Typography>
+                            <Typography sx={{
+                                color: '#666',
+                                fontSize: '1.1rem'
+                            }}>
+                                {isLogin ? 'Welcome back!' : 'Create an account to start'}
+                            </Typography>
+                        </Box>
 
-                    <Box component="form" onSubmit={handleSubmit}>
-                        {!isLogin ? (
-                            <>
+                        <Box component="form" onSubmit={handleSubmit}>
+                            {!isLogin ? (
+                                <>
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="Name"
+                                        variant="outlined"
+                                        margin="normal"
+                                        name="name"
+                                        value={registerData.name}
+                                        onChange={handleChange}
+                                        placeholder="Your name"
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="Surname"
+                                        variant="outlined"
+                                        margin="normal"
+                                        name="surname"
+                                        value={registerData.surname}
+                                        onChange={handleChange}
+                                        placeholder="Your surname"
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="Username"
+                                        variant="outlined"
+                                        margin="normal"
+                                        name="username"
+                                        value={registerData.username}
+                                        onChange={handleChange}
+                                        placeholder="username"
+                                        helperText="Between 3 and 20 characters, only letters, numbers and hyphens"
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="Email"
+                                        type="email"
+                                        variant="outlined"
+                                        margin="normal"
+                                        name="email"
+                                        value={registerData.email}
+                                        onChange={handleChange}
+                                        placeholder="tu@email.com"
+                                    />
+                                </>
+                            ) : (
                                 <TextField
                                     fullWidth
                                     required
-                                    label="Name"
+                                    label="Email o username"
                                     variant="outlined"
                                     margin="normal"
-                                    name="name"
-                                    value={registerData.name}
+                                    name="identifier"
+                                    value={loginData.identifier}
                                     onChange={handleChange}
-                                    placeholder="Your name"
+                                    placeholder="email@example.com o username"
                                 />
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Surname"
-                                    variant="outlined"
-                                    margin="normal"
-                                    name="surname"
-                                    value={registerData.surname}
-                                    onChange={handleChange}
-                                    placeholder="Your surname"
-                                />
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Username"
-                                    variant="outlined"
-                                    margin="normal"
-                                    name="username"
-                                    value={registerData.username}
-                                    onChange={handleChange}
-                                    placeholder="username"
-                                    helperText="Between 3 and 20 characters, only letters, numbers and hyphens"
-                                />
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Email"
-                                    type="email"
-                                    variant="outlined"
-                                    margin="normal"
-                                    name="email"
-                                    value={registerData.email}
-                                    onChange={handleChange}
-                                    placeholder="tu@email.com"
-                                />
-                            </>
-                        ) : (
+                            )}
+
                             <TextField
                                 fullWidth
                                 required
-                                label="Email o username"
+                                label="Password"
                                 variant="outlined"
                                 margin="normal"
-                                name="identifier"
-                                value={loginData.identifier}
+                                type={showPassword ? 'text' : 'password'}
+                                name="password"
+                                value={isLogin ? loginData.password : registerData.password}
                                 onChange={handleChange}
-                                placeholder="email@example.com o username"
+                                placeholder="••••••••"
+                                helperText={!isLogin ? "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol" : ""}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                edge="end"
+                                            >
+                                                <span className="material-symbols-rounded">
+                                                    {showPassword ? 'visibility' : 'visibility_off'}
+                                                </span>
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
-                        )}
 
-                        <TextField
-                            fullWidth
-                            required
-                            label="Password"
-                            variant="outlined"
-                            margin="normal"
-                            type={showPassword ? 'text' : 'password'}
-                            name="password"
-                            value={isLogin ? loginData.password : registerData.password}
-                            onChange={handleChange}
-                            placeholder="••••••••"
-                            helperText={!isLogin ? "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol" : ""}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            edge="end"
-                                        >
-                                            <span className="material-symbols-rounded">
-                                                {showPassword ? 'visibility' : 'visibility_off'}
-                                            </span>
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            type="submit"
-                            disabled={!isFormValid() || loading}
-                            sx={{
-                                mt: 3,
-                                mb: 2,
-                                bgcolor: '#fe6f14',
-                                '&:hover': {
-                                    bgcolor: '#c84f03'
-                                }
-                            }}
-                        >
-                            {isLogin ? 'Login' : 'Register'}
-                        </Button>
-                    </Box>
-
-                    <Box sx={{
-                        position: 'relative',
-                        textAlign: 'center',
-                        my: 3
-                    }}>
-                        <Divider>
-                            <Typography sx={{ color: '#666', px: 2 }}>
-                                or
-                            </Typography>
-                        </Divider>
-                    </Box>
-
-                    <Box sx={{ textAlign: 'center', mt: 3, color: '#666' }}>
-                        <Typography>
-                            {isLogin ? "Don't have an account? " : "Already have an account? "}
-                            <Box
-                                component="span"
-                                onClick={() => setIsLogin(!isLogin)}
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                                disabled={!isFormValid() || loading}
                                 sx={{
-                                    color: '#fe6f14',
-                                    cursor: 'pointer',
+                                    mt: 3,
+                                    mb: 2,
+                                    bgcolor: '#fe6f14',
                                     '&:hover': {
-                                        textDecoration: 'underline'
+                                        bgcolor: '#c84f03'
                                     }
                                 }}
                             >
-                                {isLogin ? 'Register' : 'Login'}
-                            </Box>
-                        </Typography>
+                                {isLogin ? 'Login' : 'Register'}
+                            </Button>
+                        </Box>
+
+                        <Box sx={{
+                            position: 'relative',
+                            textAlign: 'center',
+                            my: 3
+                        }}>
+                            <Divider>
+                                <Typography sx={{ color: '#666', px: 2 }}>
+                                    or
+                                </Typography>
+                            </Divider>
+                        </Box>
+
+                        <Box sx={{ textAlign: 'center', mt: 3, color: '#666' }}>
+                            <Typography>
+                                {isLogin ? "Don't have an account? " : "Already have an account? "}
+                                <Box
+                                    component="span"
+                                    onClick={() => setIsLogin(!isLogin)}
+                                    sx={{
+                                        color: '#fe6f14',
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            textDecoration: 'underline'
+                                        }
+                                    }}
+                                >
+                                    {isLogin ? 'Register' : 'Login'}
+                                </Box>
+                            </Typography>
+                        </Box>
                     </Box>
-                </Box>
-            </Container>
-        </Box>
+                </Container>
+            </Box>
+            <Footer />
+        </>
     );
 };
-
-export default AuthPage;

@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 
+import Footer from './components/Footer';
 import './Home.scss';
 
-const Home = () => {
+export default function Home() {
 
     useEffect(() => {
         const handleScroll = () => {
@@ -111,31 +112,7 @@ const Home = () => {
             </section>
 
             {/* Footer */}
-            <footer className="footer">
-                <div className="footer-container">
-                    <div className="footer-content">
-                        <div className="footer-section">
-                            <img className="no-select" src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
-                            <p>Simplifying personal finance management for everyone.</p>
-                        </div>
-
-                        <div className="footer-section">
-                            <h4>Company</h4>
-                            <ul>
-                                <li>About Us</li>
-                                <li>Contact</li>
-                                <li>Privacy Policy</li>
-                                <li>Terms of Service</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="footer-bottom">
-                        <p>&copy; 2024 Profit&Lost. All rights reserved.</p>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };
-
-export default Home;
