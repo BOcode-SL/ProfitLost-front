@@ -24,18 +24,18 @@ export const formatDateTime = (date: string, user: User | null) => {
     // Default formats if user preferences not set
     const dateFormat = user?.dateFormat || 'MM/DD/YYYY';
     const timeFormat = user?.timeFormat || '12h';
-
+    
     // Format date based on user preference
     let formattedDate = '';
     if (dateFormat === 'DD/MM/YYYY') {
-        formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+        formattedDate = `${dateObj.getUTCDate().toString().padStart(2, '0')}/${(dateObj.getUTCMonth() + 1).toString().padStart(2, '0')}/${dateObj.getUTCFullYear()}`;
     } else {
-        formattedDate = `${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+        formattedDate = `${(dateObj.getUTCMonth() + 1).toString().padStart(2, '0')}/${dateObj.getUTCDate().toString().padStart(2, '0')}/${dateObj.getUTCFullYear()}`;
     }
 
     // Format time based on user preference
-    let hours = dateObj.getHours();
-    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+    let hours = dateObj.getUTCHours();
+    const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
     let timeStr = '';
 
     if (timeFormat === '12h') {
