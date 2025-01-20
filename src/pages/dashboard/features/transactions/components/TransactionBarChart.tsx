@@ -6,16 +6,24 @@ import { formatCurrency } from '../../../../../utils/formatCurrency';
 
 interface TransactionBarChartProps {
     loading: boolean;
+    month: string;
     income: number;
     expenses: number;
 }
 
 export default function TransactionBarChart({
     loading,
+    month,
     income,
     expenses
 }: TransactionBarChartProps) {
     const { user } = useUser();
+
+
+    function getMonthName(month: string) {
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        return months[parseInt(month) - 1];
+    }
 
     return (
         <Box sx={{
@@ -48,7 +56,7 @@ export default function TransactionBarChart({
                             <BarChart
                                 xAxis={[{
                                     scaleType: 'band',
-                                    data: ['Monthly Balance'],
+                                    data: [getMonthName(month)],
                                 }]}
                                 series={[
                                     {
@@ -66,7 +74,12 @@ export default function TransactionBarChart({
                                 ]}
                                 borderRadius={5}
                                 height={250}
-                                margin={{ top: 40, bottom: 40, left: 60, right: 20 }}
+                                margin={{
+                                    top: 20,
+                                    left: 60,
+                                    right: 20,
+                                    bottom: 20
+                                }}
                                 slotProps={{
                                     legend: { hidden: true }
                                 }}

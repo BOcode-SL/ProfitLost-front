@@ -188,6 +188,7 @@ export default function Transactions() {
                     />
                     <TransactionBarChart
                         loading={loading}
+                        month={month}
                         income={totalIncome}
                         expenses={totalExpenses}
                     />

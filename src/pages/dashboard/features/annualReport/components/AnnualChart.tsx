@@ -85,9 +85,13 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                     height={isMobile ? 300 : 350}
                     borderRadius={5}
                     margin={{
+                        top: 20,
                         left: 60,
-                        right: 20,
-                        bottom: 35
+                        right: 30,
+                        bottom: 30
+                    }}
+                    slotProps={{
+                        legend: { hidden: true }
                     }}
                     sx={{
                         '& .MuiXChart-tooltip': {
