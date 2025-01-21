@@ -112,7 +112,11 @@ export default function AnnualReport() {
                             alignItems: { xs: 'stretch', sm: 'center' }
                         }}>
                             <Fade in timeout={500}>
-                                <FormControl size="small" sx={{ flexGrow: 1, minWidth: { xs: '100%', sm: 200 } }}>
+                                <FormControl size="small"
+                                    sx={{
+                                        flexGrow: 1,
+                                        minWidth: { xs: '100%', sm: 200 },
+                                    }}>
                                     <InputLabel>Year</InputLabel>
                                     <Select
                                         value={year}
@@ -128,21 +132,27 @@ export default function AnnualReport() {
                                 </FormControl>
                             </Fade>
 
-                            <Fade in timeout={500}>
-                                <ToggleButtonGroup
-                                    value={viewMode}
-                                    exclusive
-                                    onChange={(_, newMode) => newMode && setViewMode(newMode)}
-                                    size="small"
-                                >
-                                    <ToggleButton value="yearToday">
-                                        Year Today
-                                    </ToggleButton>
-                                    <ToggleButton value="fullYear">
-                                        Full Year
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
-                            </Fade>
+                            {year === currentYear && (
+                                <Fade in timeout={500}>
+                                    <ToggleButtonGroup
+                                        value={viewMode}
+                                        exclusive
+                                        onChange={(_, newMode) => newMode && setViewMode(newMode)}
+                                        size="small"
+                                        fullWidth
+                                        sx={{
+                                            width: { xs: '100%', sm: 210 },
+                                        }}
+                                    >
+                                        <ToggleButton value="yearToday">
+                                            Year Today
+                                        </ToggleButton>
+                                        <ToggleButton value="fullYear">
+                                            Full Year
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                </Fade>
+                            )}
                         </Box>
                     </Paper>
 
