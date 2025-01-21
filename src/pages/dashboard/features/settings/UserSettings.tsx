@@ -110,6 +110,7 @@ export default function UserSettings() {
         const updateFormData = new FormData();
         updateFormData.append('name', formData.name);
         updateFormData.append('surname', formData.surname);
+        updateFormData.append('language', formData.language);
         updateFormData.append('currency', formData.currency);
         updateFormData.append('dateFormat', formData.dateFormat);
         updateFormData.append('timeFormat', formData.timeFormat);
