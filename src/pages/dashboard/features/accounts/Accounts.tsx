@@ -148,10 +148,10 @@ export default function Accounts() {
 
     const { activeAccounts, inactiveAccounts } = useMemo(() => {
         return {
-            activeAccounts: accounts.filter(account => account.configuration.isActive !== false),
-            inactiveAccounts: accounts.filter(account => account.configuration.isActive === false)
+            activeAccounts: orderedAccounts.filter(account => account.configuration.isActive !== false),
+            inactiveAccounts: orderedAccounts.filter(account => account.configuration.isActive === false)
         };
-    }, [accounts]);
+    }, [orderedAccounts]);
 
     return (
         <Fade in timeout={400}>
@@ -189,7 +189,7 @@ export default function Accounts() {
                     height: '400px'
                 }}>
                     <AccountsChart
-                        accounts={orderedAccounts}
+                        accounts={activeAccounts}
                         loading={loading}
                         selectedYear={Number(selectedYear)}
                     />
