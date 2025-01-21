@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade } from '@mui/material';
+import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 import { transactionService } from '../../../../services/transaction.service';
@@ -15,6 +15,7 @@ export default function AnnualReport() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
+    const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>('fullYear');
 
     useEffect(() => {
         const fetchAllTransactions = async () => {
@@ -26,9 +27,9 @@ export default function AnnualReport() {
                             new Date(transaction.date).getFullYear().toString()
                         )
                     );
-                    
+
                     transactionYears.add(currentYear);
-                    
+
                     const sortedYears = [...transactionYears].sort((a, b) => Number(b) - Number(a));
                     setYearsWithData(sortedYears);
                 }
@@ -90,43 +91,78 @@ export default function AnnualReport() {
         fetchTransactionsByYear();
     }, [year]);
 
+    const filteredTransactions = transactions.filter(transaction => {
+        if (viewMode === 'yearToday') {
+            const today = new Date();
+            const transactionDate = new Date(transaction.date);
+            return transactionDate <= today;
+        }
+        return true;
+    });
+
     return (
         <Box className="annual-report">
             <Fade in timeout={400}>
                 <Box className="annual-report__content">
                     <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
-                        <Fade in timeout={500}>
-                            <FormControl fullWidth size="small" sx={{ minWidth: { xs: '100%', sm: 200 } }}>
-                                <InputLabel>Year</InputLabel>
-                                <Select
-                                    value={year}
-                                    label="Year"
-                                    onChange={(e) => setYear(e.target.value)}
+                        <Box sx={{
+                            display: 'flex',
+                            gap: 2,
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            alignItems: { xs: 'stretch', sm: 'center' }
+                        }}>
+                            <Fade in timeout={500}>
+                                <FormControl size="small" sx={{ flexGrow: 1, minWidth: { xs: '100%', sm: 200 } }}>
+                                    <InputLabel>Year</InputLabel>
+                                    <Select
+                                        value={year}
+                                        label="Year"
+                                        onChange={(e) => setYear(e.target.value)}
+                                    >
+                                        {yearsWithData.map((yearOption) => (
+                                            <MenuItem key={yearOption} value={yearOption}>
+                                                {yearOption}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Fade>
+
+                            <Fade in timeout={500}>
+                                <ToggleButtonGroup
+                                    value={viewMode}
+                                    exclusive
+                                    onChange={(_, newMode) => newMode && setViewMode(newMode)}
+                                    size="small"
                                 >
-                                    {yearsWithData.map((yearOption) => (
-                                        <MenuItem key={yearOption} value={yearOption}>
-                                            {yearOption}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Fade>
+                                    <ToggleButton value="yearToday">
+                                        Year Today
+                                    </ToggleButton>
+                                    <ToggleButton value="fullYear">
+                                        Full Year
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Fade>
+                        </Box>
                     </Paper>
 
                     <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
                         <Fade in timeout={600}>
                             <Box>
-                                <AnnualChart transactions={transactions} loading={loading} />
+                                <AnnualChart
+                                    transactions={filteredTransactions}
+                                    loading={loading}
+                                />
                             </Box>
                         </Fade>
                     </Paper>
 
-                    <AnnualBalances transactions={transactions} />
+                    <AnnualBalances transactions={filteredTransactions} />
 
                     <Fade in timeout={800}>
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
-                            <AnnualCategories 
-                                transactions={transactions}
+                            <AnnualCategories
+                                transactions={filteredTransactions}
                                 loading={loading}
                             />
                         </Paper>

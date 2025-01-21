@@ -165,7 +165,45 @@ const themeOptions: ThemeOptions = {
                     borderRadius: '8px',
                 }
             }
-        }
+        },
+        MuiToggleButton: {
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    padding: '6px 16px',
+                    border: '1px solid rgba(0, 0, 0, 0.12)',
+                    '&.Mui-selected': {
+                        backgroundColor: '#fe6f14',
+                        color: '#ffffff',
+                        '&:hover': {
+                            backgroundColor: '#c84f03',
+                        },
+                    },
+                    '&:hover': {
+                        backgroundColor: 'rgba(254, 111, 20, 0.04)',
+                    },
+                },
+                sizeSmall: {
+                    padding: '4px 12px',
+                },
+            },
+        },
+        MuiToggleButtonGroup: {
+            styleOverrides: {
+                root: {
+                    '& .MuiToggleButton-root': {
+                        border: '1px solid rgba(0, 0, 0, 0.12)',
+                        '&:not(:first-of-type)': {
+                            borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
+                            marginLeft: '0',
+                        },
+                    },
+                },
+            },
+        },
     },
 };
 
