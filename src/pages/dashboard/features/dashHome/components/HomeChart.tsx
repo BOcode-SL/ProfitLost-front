@@ -152,6 +152,7 @@ export default function HomeChart() {
                     }]}
                     height={280}
                     margin={{
+                        top: 25,
                         left: 50,
                         right: 35,
                         bottom: 25
