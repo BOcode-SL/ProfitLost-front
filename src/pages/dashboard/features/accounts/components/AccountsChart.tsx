@@ -45,6 +45,17 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
+    const getMonthTotal = (month: string): number => {
+        const monthData = dataset.find(d => d.month === month);
+        if (!monthData) return 0;
+
+        const total = activeAccounts.reduce((total, account) => {
+            return total + (monthData[account.accountName] as number || 0);
+        }, 0);
+
+        return parseFloat(total.toFixed(2));
+    };
+
     return (
         <Box sx={{ width: '100%', height: '100%' }}>
             <BarChart
@@ -53,6 +64,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                 xAxis={[{
                     dataKey: 'month',
                     scaleType: 'band',
+                    valueFormatter: (month, context) =>
+                        context.location === 'tick'
+                            ? month
+                            : `${month}: ${formatCurrency(getMonthTotal(month), user)}`,
                     tickLabelStyle: {
                         angle: 45,
                         textAnchor: 'start',
