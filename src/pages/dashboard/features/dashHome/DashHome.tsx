@@ -11,9 +11,17 @@ export default function DashHome() {
             flexDirection: 'column',
             gap: 2,
         }}>
-            <HomeBalances />
+            <Box sx={{
+                display: 'flex',
+                gap: 2,
+                flexDirection: { xs: 'column', sm: 'row' }
+            }}>
+                <HomeBalances income />
+                <HomeBalances expenses />
+                <HomeBalances savings />
+            </Box>
             <HomeChart />
             <HomeHistory />
-        </Box >
+        </Box>
     );
 }

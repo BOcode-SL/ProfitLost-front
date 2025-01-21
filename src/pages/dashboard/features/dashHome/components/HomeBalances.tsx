@@ -7,20 +7,18 @@ import type { Transaction } from '../../../../../types/models/transaction';
 import { transactionService } from '../../../../../services/transaction.service';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
-interface BalanceData {
-    income: number;
-    expenses: number;
-    savings: number;
+interface HomeBalancesProps {
+    income?: boolean;
+    expenses?: boolean;
+    savings?: boolean;
 }
 
-interface BalanceCardProps {
-    type: 'Earnings' | 'Spendings' | 'Savings';
+interface BalanceData {
     amount: number;
     percentage: number;
-    index: number;
 }
 
-const BalanceCardSkeleton = ({ index }: { index: number }) => (
+const BalanceCardSkeleton = () => (
     <Paper sx={{
         flex: 1,
         p: 2,
@@ -28,10 +26,6 @@ const BalanceCardSkeleton = ({ index }: { index: number }) => (
         gap: 1,
         borderRadius: 3,
         minHeight: { xs: '120px', sm: 'auto' },
-        display: {
-            xs: index === 2 ? 'none' : 'flex',
-            sm: 'flex'
-        }
     }}>
         <Skeleton width={80} height={24} />
         <Skeleton width={120} height={35} />
@@ -42,7 +36,7 @@ const BalanceCardSkeleton = ({ index }: { index: number }) => (
     </Paper>
 );
 
-const BalanceCard = ({ type, amount, percentage }: BalanceCardProps) => {
+const BalanceCard = ({ type, amount, percentage }: { type: string; amount: number; percentage: number }) => {
     const { user } = useUser();
 
     return (
@@ -85,9 +79,8 @@ const BalanceCard = ({ type, amount, percentage }: BalanceCardProps) => {
     );
 };
 
-export default function HomeBalances() {
-    const [currentBalance, setCurrentBalance] = useState<BalanceData>({ income: 0, expenses: 0, savings: 0 });
-    const [percentages, setPercentages] = useState<BalanceData>({ income: 0, expenses: 0, savings: 0 });
+export default function HomeBalances({ income, expenses, savings }: HomeBalancesProps) {
+    const [balanceData, setBalanceData] = useState<BalanceData>({ amount: 0, percentage: 0 });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -115,38 +108,46 @@ export default function HomeBalances() {
                     return date.getFullYear() === previousYear && date.getMonth() + 1 === previousMonth;
                 });
 
-                const currentIncome = currentMonthTransactions
-                    .filter(t => t.amount > 0)
-                    .reduce((sum, t) => sum + t.amount, 0);
-                const currentExpenses = currentMonthTransactions
-                    .filter(t => t.amount < 0)
-                    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                const currentSavings = currentIncome - currentExpenses;
+                let currentAmount = 0;
+                let previousAmount = 0;
 
-                const previousIncome = previousMonthTransactions
-                    .filter(t => t.amount > 0)
-                    .reduce((sum, t) => sum + t.amount, 0);
-                const previousExpenses = previousMonthTransactions
-                    .filter(t => t.amount < 0)
-                    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                const previousSavings = previousIncome - previousExpenses;
+                if (income) {
+                    currentAmount = currentMonthTransactions
+                        .filter(t => t.amount > 0)
+                        .reduce((sum, t) => sum + t.amount, 0);
+                    previousAmount = previousMonthTransactions
+                        .filter(t => t.amount > 0)
+                        .reduce((sum, t) => sum + t.amount, 0);
+                } else if (expenses) {
+                    currentAmount = currentMonthTransactions
+                        .filter(t => t.amount < 0)
+                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                    previousAmount = previousMonthTransactions
+                        .filter(t => t.amount < 0)
+                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                } else if (savings) {
+                    const currentIncome = currentMonthTransactions
+                        .filter(t => t.amount > 0)
+                        .reduce((sum, t) => sum + t.amount, 0);
+                    const currentExpenses = currentMonthTransactions
+                        .filter(t => t.amount < 0)
+                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                    currentAmount = currentIncome - currentExpenses;
 
-                const calculatePercentage = (current: number, previous: number) => {
-                    if (previous === 0) return current === 0 ? 0 : 100;
-                    return ((current - previous) / previous) * 100;
-                };
+                    const previousIncome = previousMonthTransactions
+                        .filter(t => t.amount > 0)
+                        .reduce((sum, t) => sum + t.amount, 0);
+                    const previousExpenses = previousMonthTransactions
+                        .filter(t => t.amount < 0)
+                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+                    previousAmount = previousIncome - previousExpenses;
+                }
 
-                setCurrentBalance({
-                    income: currentIncome,
-                    expenses: currentExpenses,
-                    savings: currentSavings
-                });
+                const percentage = previousAmount === 0 
+                    ? currentAmount === 0 ? 0 : 100 
+                    : ((currentAmount - previousAmount) / previousAmount) * 100;
 
-                setPercentages({
-                    income: calculatePercentage(currentIncome, previousIncome),
-                    expenses: calculatePercentage(currentExpenses, previousExpenses),
-                    savings: calculatePercentage(currentSavings, previousSavings)
-                });
+                setBalanceData({ amount: currentAmount, percentage });
 
             } catch (error) {
                 console.error('Error fetching balances:', error);
@@ -157,44 +158,19 @@ export default function HomeBalances() {
         };
 
         fetchBalances();
-    }, []);
-
-    const balanceTypes: ['Earnings', 'Spendings', 'Savings'] = ['Earnings', 'Spendings', 'Savings'];
+    }, [income, expenses, savings]);
 
     if (isLoading) {
-        return (
-            <Box sx={{
-                gridArea: 'balances',
-                display: 'flex',
-                gap: '1rem',
-                flexDirection: { xs: 'column', sm: 'row' }
-            }}>
-                {[0, 1, 2].map((index) => (
-                    <BalanceCardSkeleton key={index} index={index} />
-                ))}
-            </Box>
-        );
+        return <BalanceCardSkeleton />;
     }
 
-    const amounts = [currentBalance.income, currentBalance.expenses, currentBalance.savings];
-    const percentageChanges = [percentages.income, percentages.expenses, percentages.savings];
+    const type = income ? 'Earnings' : expenses ? 'Spendings' : 'Savings';
 
     return (
-        <Box sx={{
-            gridArea: 'balances',
-            display: 'flex',
-            gap: '1rem',
-            flexDirection: { xs: 'column', sm: 'row' }
-        }}>
-            {balanceTypes.map((type, index) => (
-                <BalanceCard
-                    key={type}
-                    type={type}
-                    amount={amounts[index]}
-                    percentage={percentageChanges[index]}
-                    index={index}
-                />
-            ))}
-        </Box>
+        <BalanceCard 
+            type={type}
+            amount={balanceData.amount}
+            percentage={balanceData.percentage}
+        />
     );
 } 
