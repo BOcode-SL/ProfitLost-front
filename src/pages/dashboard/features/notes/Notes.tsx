@@ -16,7 +16,7 @@ export default function Notes() {
 
     useEffect(() => {
         const fetchNotes = async () => {
-            // For aboid 2 renders
+            // To avoid 2 renders
             if (!isFirstRender.current) return;
             isFirstRender.current = false;
 
@@ -127,11 +127,16 @@ export default function Notes() {
     };
 
     return (
-        <Box sx={{ height: '100%' }}>
+        <Box sx={{ 
+            height: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden'
+        }}>
             <Box sx={{
                 display: 'flex',
                 gap: 2,
                 height: '100%',
+                maxWidth: '100%',
                 '@media (max-width: 900px)': {
                     flexDirection: 'column'
                 }
@@ -139,7 +144,25 @@ export default function Notes() {
                 <Paper elevation={2} sx={{
                     p: 2,
                     borderRadius: 3,
-                    width: { xs: '100%', md: '30%' },
+                    width: { 
+                        xs: '100%', 
+                        sm: '100%', 
+                        md: '300px' 
+                    },
+                    minWidth: {
+                        xs: '100%',
+                        sm: '100%',
+                        md: '250px'
+                    },
+                    maxWidth: {
+                        xs: '100%',
+                        sm: '100%',
+                        md: '300px'
+                    },
+                    height: {
+                        xs: 'auto',
+                        md: '100%'
+                    }
                 }}>
                     <Button
                         variant="contained"
@@ -162,6 +185,12 @@ export default function Notes() {
                     p: 2,
                     flex: 1,
                     borderRadius: 3,
+                    minWidth: 0, 
+                    maxWidth: {
+                        xs: '100%',
+                        md: 'calc(100% - 332px)' 
+                    },
+                    overflow: 'hidden' 
                 }}>
                     <NoteEditor
                         note={selectedNote}

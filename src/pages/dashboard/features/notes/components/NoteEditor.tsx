@@ -47,13 +47,35 @@ export default function NoteEditor({
                     value={note.title}
                     onChange={(e) => onChange?.('title', e.target.value)}
                     disabled={isSaving}
+                    size="small"
                 />
+            </Box>
+
+            <TextField
+                multiline
+                fullWidth
+                minRows={4}
+                placeholder="Note content"
+                value={note.content}
+                onChange={(e) => onChange?.('content', e.target.value)}
+                disabled={isSaving}
+            />
+
+            <Box sx={{
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'flex-end'
+            }}>
                 <Button
                     variant="outlined"
                     color="primary"
                     startIcon={<span className="material-symbols-rounded">delete</span>}
                     onClick={onDelete}
                     disabled={isSaving}
+                    size="small"
+                    sx={{
+                        width: { xs: '100%', sm: 'auto' }
+                    }}
                 >
                     Delete
                 </Button>
@@ -67,20 +89,14 @@ export default function NoteEditor({
                     }
                     onClick={onSave}
                     disabled={isSaving}
+                    size="small"
+                    sx={{
+                        width: { xs: '100%', sm: 'auto' }
+                    }}
                 >
                     Save
                 </Button>
             </Box>
-
-            <TextField
-                multiline
-                fullWidth
-                minRows={4}
-                placeholder="Note content"
-                value={note.content}
-                onChange={(e) => onChange?.('content', e.target.value)}
-                disabled={isSaving}
-            />
         </Box>
     );
 }

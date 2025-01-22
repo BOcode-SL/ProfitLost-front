@@ -36,7 +36,15 @@ export default function NoteList({
     }
 
     return (
-        <List sx={{ mt: 2, overflow: 'auto', maxHeight: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <List sx={{ 
+            mt: 2, 
+            overflow: 'auto', 
+            maxHeight: 'calc(100vh - 200px)', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 1,
+            width: '100%'
+        }}>
             {notes.map((note) => (
                 <Box
                     key={note._id}
@@ -44,8 +52,9 @@ export default function NoteList({
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
-                        justifyContent: 'space-between',
                         width: '100%',
+                        minWidth: 0,
+                        maxWidth: '100%',
                         mb: 1,
                         p: 2,
                         cursor: 'pointer',
@@ -54,30 +63,40 @@ export default function NoteList({
                         borderRadius: 3,
                         borderLeft: selectedNote?._id === note._id ?
                             `4px solid ${theme.palette.primary.main}` :
-                            '4px solid transparent'
+                            '4px solid transparent',
+                        '&:hover': {
+                            backgroundColor: '#f0f0f0'
+                        }
                     }}>
-                    <Typography
-                        variant="subtitle1"
-                        noWrap
-                        sx={{
-                            fontWeight: selectedNote?._id === note._id ? 600 : 400
-                        }}
-                    >
-                        {note.title || 'No title'}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: theme.palette.text.secondary,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical'
-                        }}
-                    >
-                        {note.content || ''}
-                    </Typography>
+                    <Box sx={{ width: '100%', overflow: 'hidden' }}>
+                        <Typography
+                            variant="subtitle1"
+                            noWrap
+                            sx={{
+                                fontWeight: selectedNote?._id === note._id ? 600 : 400,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                        >
+                            {note.title || 'No title'}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: theme.palette.text.secondary,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                mt: 0.5,
+                                lineHeight: '1.4em',
+                                maxHeight: '2.8em'
+                            }}
+                        >
+                            {note.content || ''}
+                        </Typography>
+                    </Box>
                 </Box>
             ))}
         </List>
