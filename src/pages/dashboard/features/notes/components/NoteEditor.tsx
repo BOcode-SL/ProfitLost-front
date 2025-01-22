@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
 
 import type { Note } from '../../../../../types/models/note';
 
@@ -7,10 +7,16 @@ interface NoteEditorProps {
     onChange?: (key: keyof Note, value: string) => void;
     onSave?: () => void;
     onDelete?: () => void;
+    isSaving?: boolean;
 }
 
-export default function NoteEditor({ note, onChange, onSave, onDelete }: NoteEditorProps) {
-
+export default function NoteEditor({
+    note,
+    onChange,
+    onSave,
+    onDelete,
+    isSaving = false
+}: NoteEditorProps) {
     if (!note) {
         return (
             <Box sx={{
@@ -40,20 +46,27 @@ export default function NoteEditor({ note, onChange, onSave, onDelete }: NoteEdi
                     placeholder="Note title"
                     value={note.title}
                     onChange={(e) => onChange?.('title', e.target.value)}
+                    disabled={isSaving}
                 />
                 <Button
                     variant="outlined"
                     color="primary"
                     startIcon={<span className="material-symbols-rounded">delete</span>}
                     onClick={onDelete}
+                    disabled={isSaving}
                 >
                     Delete
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<span className="material-symbols-rounded">save</span>}
+                    startIcon={
+                        isSaving ?
+                            <CircularProgress size={20} color="inherit" /> :
+                            <span className="material-symbols-rounded">save</span>
+                    }
                     onClick={onSave}
+                    disabled={isSaving}
                 >
                     Save
                 </Button>
@@ -66,6 +79,7 @@ export default function NoteEditor({ note, onChange, onSave, onDelete }: NoteEdi
                 placeholder="Note content"
                 value={note.content}
                 onChange={(e) => onChange?.('content', e.target.value)}
+                disabled={isSaving}
             />
         </Box>
     );

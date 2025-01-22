@@ -79,15 +79,17 @@ export const noteService = {
             const data = await response.json();
 
             if (!response.ok) {
-                throw {
+                return {
                     ...data,
+                    success: false,
                     statusCode: response.status as HttpStatusCode
-                } as NoteApiResponse;
+                };
             }
 
-            return data as NoteApiResponse;
+            return data;
         } catch (error) {
-            throw handleNoteError(error);
+            console.error('Error en updateNote:', error);
+            return handleNoteError(error);
         }
     },
 

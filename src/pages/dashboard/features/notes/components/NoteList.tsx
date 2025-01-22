@@ -1,4 +1,4 @@
-import { List, Box, Typography, useTheme } from '@mui/material';
+import { List, Box, Typography, useTheme, CircularProgress } from '@mui/material';
 
 import type { Note } from '../../../../../types/models/note';
 
@@ -6,19 +6,37 @@ interface NoteListProps {
     notes: Note[];
     selectedNote: Note | null;
     onSelectNote: (note: Note) => void;
-    onDeleteNote?: (note: Note) => void;
     isLoading: boolean;
 }
 
 export default function NoteList({
     notes,
     selectedNote,
-    onSelectNote
+    onSelectNote,
+    isLoading
 }: NoteListProps) {
     const theme = useTheme();
 
+    if (isLoading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (notes.length === 0) {
+        return (
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Typography color="text.secondary">
+                    No notes created
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
-        <List sx={{ mt: 2, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <List sx={{ mt: 2, overflow: 'auto', maxHeight: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column', gap: 1 }}>
             {notes.map((note) => (
                 <Box
                     key={note._id}
@@ -58,7 +76,7 @@ export default function NoteList({
                             WebkitBoxOrient: 'vertical'
                         }}
                     >
-                        {note.content || 'No content'}
+                        {note.content || ''}
                     </Typography>
                 </Box>
             ))}
