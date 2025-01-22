@@ -52,7 +52,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!description.trim() || !amount || !category) {
+        if (!amount || !category) {
             toast.error('Please fill all required fields');
             return;
         }
@@ -63,6 +63,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 toast.error('Invalid amount');
                 return;
             }
+
+            const selectedCategory = categories.find(cat => cat._id === category);
+            const finalDescription = description.trim() || selectedCategory?.name || '';
 
             const localDate = new Date(date);
             const utcDate = new Date(Date.UTC(
@@ -76,7 +79,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             const transactionData = {
                 date: utcDate.toISOString(),
-                description: description.trim(),
+                description: finalDescription,
                 amount: numAmount * (isIncome ? 1 : -1),
                 category
             };
@@ -222,7 +225,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             fullWidth
-                            required
                         />
                     </Paper>
 
