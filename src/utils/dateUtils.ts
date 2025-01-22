@@ -36,15 +36,16 @@ export const formatDateTime = (date: string, user: User | null) => {
     // Format time based on user preference
     let hours = dateObj.getUTCHours();
     const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = dateObj.getUTCSeconds().toString().padStart(2, '0');
     let timeStr = '';
 
     if (timeFormat === '12h') {
         const period = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
         hours = hours ? hours : 12; // Convert 0 to 12
-        timeStr = `${hours}:${minutes} ${period}`;
+        timeStr = `${hours}:${minutes}:${seconds} ${period}`;
     } else {
-        timeStr = `${hours.toString().padStart(2, '0')}:${minutes}`;
+        timeStr = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
     }
 
     return `${formattedDate} ${timeStr}`;

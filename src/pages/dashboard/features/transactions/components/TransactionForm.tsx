@@ -25,8 +25,8 @@ const Transition = forwardRef(function Transition(
 
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
     const [date, setDate] = useState(transaction
-        ? new Date(transaction.date).toISOString().slice(0, 16)
-        : new Date().toISOString().slice(0, 16)
+        ? new Date(transaction.date).toISOString().slice(0, 19)
+        : new Date().toISOString().slice(0, 19)
     );
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
@@ -41,7 +41,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     useEffect(() => {
         if (transaction) {
             const localDate = new Date(transaction.date);
-            setDate(localDate.toISOString().slice(0, 16));
+            setDate(localDate.toISOString().slice(0, 19));
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
             setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
