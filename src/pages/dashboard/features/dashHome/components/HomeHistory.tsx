@@ -14,10 +14,10 @@ interface HomeHistoryProps {
 export default function HomeHistory({ transactions, isLoading }: HomeHistoryProps) {
     const theme = useTheme();
     const { user } = useUser();
-    
+
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
-        
+
         const now = new Date();
         return transactions
             .filter((transaction): transaction is Transaction => {
@@ -31,12 +31,14 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
 
     if (isLoading) {
         return (
-            <Paper sx={{
-                gridArea: 'history',
-                p: 2,
-                borderRadius: 3,
-                overflow: 'auto'
-            }}>
+            <Paper
+                elevation={3}
+                sx={{
+                    gridArea: 'history',
+                    p: 2,
+                    borderRadius: 3,
+                    overflow: 'auto'
+                }}>
                 <Skeleton width={200} height={24} sx={{ mb: 2 }} />
                 {[...Array(8)].map((_, index) => (
                     <Box key={index} sx={{ py: 1 }}>
@@ -55,12 +57,14 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
     }
 
     return (
-        <Paper sx={{
-            gridArea: 'history',
-            p: 2,
-            borderRadius: 3,
-            overflow: 'auto'
-        }}>
+        <Paper
+            elevation={3}
+            sx={{
+                gridArea: 'history',
+                p: 2,
+                borderRadius: 3,
+                overflow: 'auto'
+            }}>
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 Last transactions
             </Typography>

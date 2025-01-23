@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, Suspense, useContext } from 'react';
+import React, { useState, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress } from '@mui/material';
@@ -25,18 +25,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         open: false,
         component: ''
     });
-
-    const handleScroll = useCallback(() => {
-        const headerContainer = document.querySelector('.dashboard__header-container');
-        if (headerContainer) {
-            headerContainer.classList.toggle('scrolled', window.scrollY > 0);
-        }
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [handleScroll]);
 
     const handleLogout = async () => {
         try {
@@ -92,6 +80,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 zIndex: 999
             }}>
                 <Paper
+                    elevation={3}
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -100,10 +89,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         p: 1,
                         borderRadius: 3,
                         transition: 'all 0.3s ease',
-                        '&.scrolled': {
-                            bgcolor: 'rgba(255, 255, 255, 0.8)',
-                            backdropFilter: 'blur(10px)'
-                        }
                     }}
                 >
                     <Box >
@@ -156,6 +141,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
                 PaperProps={{
+                    elevation: 3,
                     sx: {
                         width: {
                             xs: '100%',
@@ -173,7 +159,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         </IconButton>
                     </Box>
 
-                    <Paper elevation={2} sx={{
+                    <Paper elevation={3} sx={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 2,
@@ -217,7 +203,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                     </Paper>
 
                     <Paper
-                        elevation={2}
+                        elevation={3}
                         sx={{
                             mb: 2,
                             borderRadius: 3,
@@ -239,7 +225,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                     </Paper>
 
                     <Paper
-                        elevation={2}
+                        elevation={3}
                         sx={{
                             borderRadius: 3,
                             overflow: 'hidden'

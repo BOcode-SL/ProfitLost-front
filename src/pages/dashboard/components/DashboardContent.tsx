@@ -35,7 +35,6 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: '12px',
-                            bgcolor: 'background.paper',
                             backdropFilter: 'blur(10px)',
                             '& p': {
                                 fontSize: '2rem',
@@ -62,13 +61,6 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                 mb: '80px',
                 flex: 1,
                 mt: '80px'
-            },
-            '& .MuiPaper-root': {
-                transition: 'all 0.3s ease',
-                '&.scrolled': {
-                    bgcolor: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(10px)'
-                }
             }
         }}>
             <Suspense fallback={

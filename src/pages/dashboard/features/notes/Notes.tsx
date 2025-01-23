@@ -16,7 +16,6 @@ export default function Notes() {
 
     useEffect(() => {
         const fetchNotes = async () => {
-            // To avoid 2 renders
             if (!isFirstRender.current) return;
             isFirstRender.current = false;
 
@@ -142,7 +141,7 @@ export default function Notes() {
                 height: '100%',
                 width: '100%',
             }}>
-                <Paper elevation={2} sx={{
+                <Paper elevation={3} sx={{
                     p: 2,
                     borderRadius: 3,
                     width: {
@@ -182,7 +181,8 @@ export default function Notes() {
                         isLoading={isLoading}
                     />
                 </Paper>
-                <Paper elevation={2} sx={{
+                
+                <Paper elevation={3} sx={{
                     p: 2,
                     flex: 1,
                     borderRadius: 3,

@@ -24,7 +24,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
     const monthlyDataMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
-        
+
         const today = new Date();
         const monthlyDataMap: { [key: string]: { income: number; expenses: number } } = {};
 
@@ -77,12 +77,14 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
     if (isLoading) {
         return (
-            <Paper sx={{
-                gridArea: 'chart',
-                p: 2,
-                borderRadius: 3,
-                height: { xs: '300px', sm: 'auto' }
-            }}>
+            <Paper
+                elevation={3}
+                sx={{
+                    gridArea: 'chart',
+                    p: 2,
+                    borderRadius: 3,
+                    height: { xs: '300px', sm: 'auto' }
+                }}>
                 <Skeleton width={200} height={24} sx={{ mb: 2 }} />
                 <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 280 }} />
             </Paper>
@@ -94,15 +96,17 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
     if (isDataEmpty) {
         return (
-            <Paper sx={{
-                gridArea: 'chart',
-                p: 2,
-                borderRadius: 3,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: { xs: '300px', sm: 'auto' }
-            }}>
+            <Paper
+                elevation={3}
+                sx={{
+                    gridArea: 'chart',
+                    p: 2,
+                    borderRadius: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: { xs: '300px', sm: 'auto' }
+                }}>
                 <Typography variant="body1" color="text.secondary">
                     No data available for the last 6 months
                 </Typography>
@@ -111,11 +115,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     }
 
     return (
-        <Paper sx={{
-            gridArea: 'chart',
-            p: 2,
-            borderRadius: 3
-        }}>
+        <Paper
+            elevation={3}
+            sx={{
+                gridArea: 'chart',
+                p: 2,
+                borderRadius: 3
+            }}>
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 Last 6 months balances
             </Typography>

@@ -38,7 +38,7 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                 gap: 1,
                 mt: 2
             }}>
-                <Paper elevation={2} sx={{
+                <Paper elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
                     display: 'flex',
@@ -54,7 +54,7 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                     </span>
                 </Paper>
 
-                <Paper elevation={2} sx={{
+                <Paper elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
                     display: 'flex',
@@ -70,7 +70,7 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                     </span>
                 </Paper>
 
-                <Paper elevation={2} sx={{
+                <Paper elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
                     display: 'flex',

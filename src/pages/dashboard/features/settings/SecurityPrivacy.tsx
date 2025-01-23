@@ -97,7 +97,7 @@ export default function SecurityPrivacy() {
         <Box className="security-privacy">
             <Box className="security-privacy__details">
                 {/* Two Factor Authentication Section */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Two-Factor Authentication <span className="soon-badge">SOON</span></h3>
                     <Box className="two-factor-section">
                         <p>Add an extra layer of security to your account by enabling two-factor authentication.</p>
@@ -129,7 +129,7 @@ export default function SecurityPrivacy() {
                 </Paper>
 
                 {/* Password Change Section */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Change Password</h3>
                     <form onSubmit={handlePasswordChange}>
                         <Box className="form-fields">
@@ -215,7 +215,7 @@ export default function SecurityPrivacy() {
                 </Paper>
 
                 {/* Delete Account Section */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Delete Account</h3>
                     <Typography variant="body1" color="error" sx={{ mb: 2 }}>
                         This action is irreversible. All your data will be deleted permanently.

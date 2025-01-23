@@ -133,7 +133,7 @@ export default function UserSettings() {
         <Box className="settings">
             <Box className="settings__details">
                 {/* Profile Image Paper */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Profile Picture</h3>
                     <Box className="image__section">
                         <Avatar
@@ -178,7 +178,7 @@ export default function UserSettings() {
                 </Paper>
 
                 {/* Personal Info Paper */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Personal Information</h3>
                     <Box className="form-fields">
                         <TextField
@@ -201,7 +201,7 @@ export default function UserSettings() {
                 </Paper>
 
                 {/* Preferences Paper */}
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <h3>Preferences</h3>
                     <Box className="form-fields">
                         <FormControl fullWidth size="small">

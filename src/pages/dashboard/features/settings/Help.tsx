@@ -8,7 +8,7 @@ export default function Help() {
             <Box className="help-content">
                 <h2>Frequently Asked Questions</h2>
 
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Accordion >
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <h3>How to start using Profit & Lost?</h3>

@@ -13,7 +13,7 @@ interface HomeBalancesProps {
 }
 
 const BalanceCardSkeleton = () => (
-    <Paper sx={{
+    <Paper elevation={3} sx={{
         flex: 1,
         p: 2,
         flexDirection: 'column',
@@ -35,7 +35,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     const { user } = useUser();
 
     return (
-        <Paper sx={{
+        <Paper elevation={3} sx={{
             flex: 1,
             p: 2,
             flexDirection: 'column',

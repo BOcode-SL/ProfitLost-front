@@ -47,7 +47,7 @@ const themeOptions: ThemeOptions = {
         },
         background: {
             default: '#21150e',
-            paper: '#231a13',
+            paper: '#2b221b',
         },
         chart: {
             income: '#d88d61',
@@ -166,19 +166,22 @@ const themeOptions: ThemeOptions = {
         MuiPaper: {
             styleOverrides: {
                 root: {
+                    backgroundColor: '#2b221b',
                     padding: '0.5rem 0rem',
-                    backgroundColor: '#231a13',
-                    boxShadow: 'rgba(0, 0, 0, 0.3) 0px 1px 4px',
+                    boxShadow: 'none',
                     transition: 'all 0.3s ease',
                 },
                 elevation0: {
                     boxShadow: 'none',
                 },
                 elevation1: {
-                    boxShadow: 'rgba(0, 0, 0, 0.3) 0px 1px 2px',
+                    boxShadow: 'rgba(0, 0, 0, 0.2) 0px 1px 2px',
                 },
                 elevation2: {
-                    boxShadow: 'rgba(0, 0, 0, 0.3) 0px 1px 4px',
+                    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 1px 4px',
+                },
+                elevation3: {
+                    boxShadow: 'rgba(0, 0, 0, 0.2) 0px 2px 6px',
                 },
             },
         },
@@ -191,7 +194,7 @@ const themeOptions: ThemeOptions = {
                     }
                 },
                 paper: {
-                    backgroundColor: '#231a13',
+                    backgroundColor: '#2b221b',
                 }
             }
         },

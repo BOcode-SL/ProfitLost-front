@@ -73,7 +73,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 handleSubmit();
             }}>
                 <Paper
-                    elevation={2}
+                    elevation={3}
                     sx={{
                         display: 'flex',
                         alignItems: 'center',

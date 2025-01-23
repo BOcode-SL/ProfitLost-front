@@ -298,6 +298,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
                 PaperProps={{
+                    elevation: 3,
                     sx: {
                         width: { xs: '100%', sm: 450 },
                         bgcolor: 'background.default'
@@ -315,6 +316,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 open={editCategory.isOpen}
                 onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
                 PaperProps={{
+                    elevation: 3,
                     sx: {
                         width: { xs: '100%', sm: 450 },
                         bgcolor: 'background.default'

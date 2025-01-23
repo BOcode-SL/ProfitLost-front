@@ -41,11 +41,10 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                 display: { xs: 'none', md: 'block' }
             }}>
                 <Paper
-                    elevation={2}
+                    elevation={3}
                     sx={{
                         height: '100%',
                         borderRadius: 3,
-                        bgcolor: 'background.paper'
                     }}
                 >
                     <Box sx={{
@@ -119,7 +118,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                         justifyContent: 'space-around',
                         py: 2,
                         px: 1,
-                        borderRadius: '15px 15px 0 0'
+                        borderRadius: '15px 15px 0 0',
                     }}
                 >
                     {mainMenuItems.map((item) => (

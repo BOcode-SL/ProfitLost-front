@@ -104,7 +104,7 @@ export default function AnnualReport() {
         <Box className="annual-report">
             <Fade in timeout={400}>
                 <Box className="annual-report__content">
-                    <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
+                    <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
                         <Box sx={{
                             display: 'flex',
                             gap: 2,
@@ -156,7 +156,7 @@ export default function AnnualReport() {
                         </Box>
                     </Paper>
 
-                    <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
+                    <Paper elevation={3} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
                         <Fade in timeout={600}>
                             <Box>
                                 <AnnualChart
@@ -170,7 +170,7 @@ export default function AnnualReport() {
                     <AnnualBalances transactions={filteredTransactions} />
 
                     <Fade in timeout={800}>
-                        <Paper elevation={2} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
+                        <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
                             <AnnualCategories
                                 transactions={filteredTransactions}
                                 loading={loading}
