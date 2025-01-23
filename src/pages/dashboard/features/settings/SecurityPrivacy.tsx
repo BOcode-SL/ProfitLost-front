@@ -5,7 +5,6 @@ import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography }
 
 import { userService } from '../../../../services/user.service';
 import { useUser } from '../../../../contexts/UserContext';
-import './SecurityPrivacy.scss';
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 
 export default function SecurityPrivacy() {
@@ -94,46 +93,39 @@ export default function SecurityPrivacy() {
     };
 
     return (
-        <Box className="security-privacy">
-            <Box className="security-privacy__details">
-                {/* Two Factor Authentication Section */}
-                <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Two-Factor Authentication <span className="soon-badge">SOON</span></h3>
-                    <Box className="two-factor-section">
-                        <p>Add an extra layer of security to your account by enabling two-factor authentication.</p>
-                        <Box className="two-factor-status">
-                            <Box className="status-indicator">
-                                <span className="material-symbols-rounded">
-                                    {/* {false ? 'lock' : 'lock_open'} */}
-                                    lock_open
-                                </span>
-                                {/* <p>2FA is currently {false ? 'enabled' : 'disabled'}</p> */}
-                                <p>2FA is currently disabled</p>
-                            </Box>
-                            <Button
-                                variant="outlined"
-                                disabled={true}
-                                onClick={() => {/* handle 2FA toggle */ }}
-                                startIcon={
-                                    <span className="material-symbols-rounded">
-                                        {/* {false ? 'lock_open' : 'lock'} */}
-                                        lock
-                                    </span>
-                                }
-                            >
-                                {/* {false ? 'Disable' : 'Enable'} 2FA */}
-                                Enable 2FA
-                            </Button>
-                        </Box>
-                    </Box>
-                </Paper>
-
+        <Box sx={{
+            width: '100%',
+            maxWidth: '600px',
+            margin: '0 auto'
+        }}>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3
+            }}>
                 {/* Password Change Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Change Password</h3>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                            mt: 0,
+                            mb: 2
+                        }}
+                    >
+                        Change Password <span className="soon-badge">SOON</span>
+                    </Typography>
                     <form onSubmit={handlePasswordChange}>
-                        <Box className="form-fields">
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                            width: '100%',
+                            mt: 2
+                        }}>
                             <TextField
+                                disabled
                                 size="small"
                                 label="Current Password"
                                 type={showPassword.current ? 'text' : 'password'}
@@ -157,6 +149,7 @@ export default function SecurityPrivacy() {
                             />
 
                             <TextField
+                                disabled
                                 size="small"
                                 label="New Password"
                                 type={showPassword.new ? 'text' : 'password'}
@@ -180,6 +173,7 @@ export default function SecurityPrivacy() {
                             />
 
                             <TextField
+                                disabled
                                 size="small"
                                 label="Confirm New Password"
                                 type={showPassword.confirm ? 'text' : 'password'}
@@ -203,6 +197,7 @@ export default function SecurityPrivacy() {
                             />
 
                             <Button
+                                disabled
                                 type="submit"
                                 variant="contained"
                                 color="primary"
@@ -216,8 +211,22 @@ export default function SecurityPrivacy() {
 
                 {/* Delete Account Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Delete Account</h3>
-                    <Typography variant="body1" color="error" sx={{ mb: 2 }}>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                            mt: 0,
+                            mb: 2
+                        }}
+                    >
+                        Delete Account
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="error"
+                        sx={{ mb: 2 }}
+                    >
                         This action is irreversible. All your data will be deleted permanently.
                     </Typography>
 
@@ -243,8 +252,7 @@ export default function SecurityPrivacy() {
                             <Box sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: 2,
-                                alignItems: 'flex-start'
+                                gap: 2
                             }}>
                                 <TextField
                                     fullWidth

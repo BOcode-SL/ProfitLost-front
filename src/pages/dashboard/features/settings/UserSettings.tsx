@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react';
-import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select, MenuItem, Typography, SelectChangeEvent } from '@mui/material';
 import toast from 'react-hot-toast';
 
 import { useUser } from '../../../../contexts/UserContext';
 import { userService } from '../../../../services/user.service';
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user';
-import './UserSettings.scss';
 
 const dateFormatOptions = [
     { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' as DateFormat },
@@ -130,12 +129,35 @@ export default function UserSettings() {
     };
 
     return (
-        <Box className="settings">
-            <Box className="settings__details">
+        <Box sx={{
+            width: '100%',
+            maxWidth: '600px',
+            margin: '0 auto'
+        }}>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3
+            }}>
                 {/* Profile Image Paper */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Profile Picture</h3>
-                    <Box className="image__section">
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                            mt: 0,
+                            mb: 2
+                        }}
+                    >
+                        Profile Picture
+                    </Typography>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2
+                    }}>
                         <Avatar
                             src={formData.profileImage ? URL.createObjectURL(formData.profileImage) : user?.profileImage}
                             alt={user?.name}
@@ -153,7 +175,10 @@ export default function UserSettings() {
                             }}
                             style={{ display: 'none' }}
                         />
-                        <Box className="image-buttons">
+                        <Box sx={{
+                            display: 'flex',
+                            gap: 1
+                        }}>
                             {user?.profileImage ? (
                                 <Button
                                     variant="text"
@@ -179,8 +204,23 @@ export default function UserSettings() {
 
                 {/* Personal Info Paper */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Personal Information</h3>
-                    <Box className="form-fields">
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                            mt: 0,
+                            mb: 2
+                        }}
+                    >
+                        Personal Information
+                    </Typography>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        width: '100%'
+                    }}>
                         <TextField
                             size="small"
                             label="Name"
@@ -202,8 +242,23 @@ export default function UserSettings() {
 
                 {/* Preferences Paper */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    <h3>Preferences</h3>
-                    <Box className="form-fields">
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                            mt: 0,
+                            mb: 2
+                        }}
+                    >
+                        Preferences
+                    </Typography>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        width: '100%'
+                    }}>
                         <FormControl fullWidth size="small">
                             <InputLabel>Language</InputLabel>
                             <Select<Language>
@@ -274,7 +329,7 @@ export default function UserSettings() {
                     variant="contained"
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="submit-button"
+                    fullWidth
                     size="medium"
                 >
                     {loading ? 'Saving...' : 'Save Changes'}

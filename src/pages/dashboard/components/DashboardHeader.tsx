@@ -141,14 +141,12 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
                 PaperProps={{
-                    elevation: 3,
                     sx: {
                         width: {
                             xs: '100%',
                             sm: 450
                         },
-                        p: 2,
-                        bgcolor: 'background.default'
+                        p: 2
                     }
                 }}
             >
@@ -273,7 +271,6 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             xs: '100%',
                             sm: 450
                         },
-                        bgcolor: 'background.default',
                         p: 2
                     }
                 }}
