@@ -46,11 +46,11 @@ const themeOptions: ThemeOptions = {
             main: '#ff6b22',
         },
         background: {
-            default: '#21150e',
-            paper: '#2b221b',
+            default: '#1A1A1A',
+            paper: '#231f1a',
         },
         chart: {
-            income: '#d88d61',
+            income: '#dd9d77',
             expenses: '#bf5626'
         },
         status: {
@@ -166,7 +166,6 @@ const themeOptions: ThemeOptions = {
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#2b221b',
                     padding: '0.5rem 0rem',
                     boxShadow: 'none',
                     transition: 'all 0.3s ease',
@@ -194,7 +193,7 @@ const themeOptions: ThemeOptions = {
                     }
                 },
                 paper: {
-                    backgroundColor: '#2b221b',
+                    backgroundColor: '#231b15',
                 }
             }
         },
