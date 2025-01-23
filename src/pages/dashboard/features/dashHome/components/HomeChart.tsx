@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Box, Paper, Typography, Skeleton, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { toast } from 'react-hot-toast';
 
 import { useUser } from '../../../../../contexts/UserContext';
-import { transactionService } from '../../../../../services/transaction.service';
 import type { Transaction } from '../../../../../types/models/transaction';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
@@ -14,75 +12,68 @@ interface MonthlyData {
     expenses: number;
 }
 
-export default function HomeChart() {
+interface HomeChartProps {
+    transactions: Transaction[];
+    isLoading: boolean;
+}
+
+export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
     const theme = useTheme();
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+
+    const monthlyDataMemo = useMemo(() => {
+        if (isLoading || transactions.length === 0) return [];
+        
+        const today = new Date();
+        const monthlyDataMap: { [key: string]: { income: number; expenses: number } } = {};
+
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const monthKey = date.toLocaleString('default', { month: 'short' });
+            monthlyDataMap[monthKey] = { income: 0, expenses: 0 };
+        }
+
+        const sixMonthsAgo = new Date(today);
+        sixMonthsAgo.setMonth(today.getMonth() - 5);
+        sixMonthsAgo.setDate(1);
+        sixMonthsAgo.setHours(0, 0, 0, 0);
+
+        const filteredTransactions = transactions.filter(transaction => {
+            const transactionDate = new Date(transaction.date);
+            return transactionDate >= sixMonthsAgo && transactionDate <= today;
+        });
+
+        filteredTransactions.forEach(transaction => {
+            const transactionDate = new Date(transaction.date);
+            const monthKey = transactionDate.toLocaleString('default', { month: 'short' });
+
+            if (monthlyDataMap[monthKey]) {
+                if (transaction.amount > 0) {
+                    monthlyDataMap[monthKey].income += transaction.amount;
+                } else {
+                    monthlyDataMap[monthKey].expenses += Math.abs(transaction.amount);
+                }
+            }
+        });
+
+        const chartData: MonthlyData[] = [];
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const monthKey = date.toLocaleString('default', { month: 'short' });
+            chartData.push({
+                month: monthKey,
+                income: Number(monthlyDataMap[monthKey].income.toFixed(2)),
+                expenses: Number(monthlyDataMap[monthKey].expenses.toFixed(2))
+            });
+        }
+
+        return chartData;
+    }, [transactions, isLoading]);
 
     useEffect(() => {
-        const fetchChartData = async () => {
-            try {
-                const response = await transactionService.getAllTransactions();
-                if (!response.success) {
-                    throw new Error('Failed to fetch transactions');
-                }
-
-                const transactions = response.data as Transaction[];
-                const today = new Date();
-                const monthlyDataMap: { [key: string]: { income: number; expenses: number } } = {};
-
-                for (let i = 5; i >= 0; i--) {
-                    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-                    const monthKey = date.toLocaleString('default', { month: 'short' });
-                    monthlyDataMap[monthKey] = { income: 0, expenses: 0 };
-                }
-
-                const sixMonthsAgo = new Date(today);
-                sixMonthsAgo.setMonth(today.getMonth() - 5);
-                sixMonthsAgo.setDate(1);
-                sixMonthsAgo.setHours(0, 0, 0, 0);
-
-                const filteredTransactions = transactions.filter(transaction => {
-                    const transactionDate = new Date(transaction.date);
-                    return transactionDate >= sixMonthsAgo && transactionDate <= today;
-                });
-
-                filteredTransactions.forEach(transaction => {
-                    const transactionDate = new Date(transaction.date);
-                    const monthKey = transactionDate.toLocaleString('default', { month: 'short' });
-
-                    if (monthlyDataMap[monthKey]) {
-                        if (transaction.amount > 0) {
-                            monthlyDataMap[monthKey].income += transaction.amount;
-                        } else {
-                            monthlyDataMap[monthKey].expenses += Math.abs(transaction.amount);
-                        }
-                    }
-                });
-
-                const chartData: MonthlyData[] = [];
-                for (let i = 5; i >= 0; i--) {
-                    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-                    const monthKey = date.toLocaleString('default', { month: 'short' });
-                    chartData.push({
-                        month: monthKey,
-                        income: Number(monthlyDataMap[monthKey].income.toFixed(2)),
-                        expenses: Number(monthlyDataMap[monthKey].expenses.toFixed(2))
-                    });
-                }
-
-                setMonthlyData(chartData);
-            } catch (error) {
-                console.error('Error fetching chart data:', error);
-                toast.error('Error loading chart data');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchChartData();
-    }, []);
+        setMonthlyData(monthlyDataMemo);
+    }, [monthlyDataMemo]);
 
     if (isLoading) {
         return (

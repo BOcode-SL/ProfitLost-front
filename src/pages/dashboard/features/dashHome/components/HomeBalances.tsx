@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
-import { toast } from 'react-hot-toast';
 
 import { useTheme } from '@mui/material';
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
-import { transactionService } from '../../../../../services/transaction.service';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
 interface HomeBalancesProps {
-    income?: boolean;
-    expenses?: boolean;
-    savings?: boolean;
-}
-
-interface BalanceData {
-    amount: number;
-    percentage: number;
+    type: 'income' | 'expenses' | 'savings';
+    transactions: Transaction[];
+    isLoading: boolean;
 }
 
 const BalanceCardSkeleton = () => (
@@ -85,96 +78,75 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     );
 };
 
-export default function HomeBalances({ income, expenses, savings }: HomeBalancesProps) {
-    const [balanceData, setBalanceData] = useState<BalanceData>({ amount: 0, percentage: 0 });
-    const [isLoading, setIsLoading] = useState(true);
+export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
+    const balanceData = useMemo(() => {
+        if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0 };
 
-    useEffect(() => {
-        const fetchBalances = async () => {
-            try {
-                const response = await transactionService.getAllTransactions();
-                if (!response.success) {
-                    throw new Error('Failed to fetch transactions');
-                }
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+        const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
 
-                const transactions = response.data as Transaction[];
-                const currentDate = new Date();
-                const currentYear = currentDate.getFullYear();
-                const currentMonth = currentDate.getMonth() + 1;
-                const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-                const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+        const currentMonthTransactions = transactions.filter(transaction => {
+            const date = new Date(transaction.date);
+            return date.getFullYear() === currentYear && date.getMonth() + 1 === currentMonth;
+        });
 
-                const currentMonthTransactions = transactions.filter(transaction => {
-                    const date = new Date(transaction.date);
-                    return date.getFullYear() === currentYear && date.getMonth() + 1 === currentMonth;
-                });
+        const previousMonthTransactions = transactions.filter(transaction => {
+            const date = new Date(transaction.date);
+            return date.getFullYear() === previousYear && date.getMonth() + 1 === previousMonth;
+        });
 
-                const previousMonthTransactions = transactions.filter(transaction => {
-                    const date = new Date(transaction.date);
-                    return date.getFullYear() === previousYear && date.getMonth() + 1 === previousMonth;
-                });
+        let currentAmount = 0;
+        let previousAmount = 0;
 
-                let currentAmount = 0;
-                let previousAmount = 0;
+        if (type === 'income') {
+            currentAmount = currentMonthTransactions
+                .filter(t => t.amount > 0)
+                .reduce((sum, t) => sum + t.amount, 0);
+            previousAmount = previousMonthTransactions
+                .filter(t => t.amount > 0)
+                .reduce((sum, t) => sum + t.amount, 0);
+        } else if (type === 'expenses') {
+            currentAmount = currentMonthTransactions
+                .filter(t => t.amount < 0)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            previousAmount = previousMonthTransactions
+                .filter(t => t.amount < 0)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+        } else if (type === 'savings') {
+            const currentIncome = currentMonthTransactions
+                .filter(t => t.amount > 0)
+                .reduce((sum, t) => sum + t.amount, 0);
+            const currentExpenses = currentMonthTransactions
+                .filter(t => t.amount < 0)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            currentAmount = currentIncome - currentExpenses;
 
-                if (income) {
-                    currentAmount = currentMonthTransactions
-                        .filter(t => t.amount > 0)
-                        .reduce((sum, t) => sum + t.amount, 0);
-                    previousAmount = previousMonthTransactions
-                        .filter(t => t.amount > 0)
-                        .reduce((sum, t) => sum + t.amount, 0);
-                } else if (expenses) {
-                    currentAmount = currentMonthTransactions
-                        .filter(t => t.amount < 0)
-                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                    previousAmount = previousMonthTransactions
-                        .filter(t => t.amount < 0)
-                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                } else if (savings) {
-                    const currentIncome = currentMonthTransactions
-                        .filter(t => t.amount > 0)
-                        .reduce((sum, t) => sum + t.amount, 0);
-                    const currentExpenses = currentMonthTransactions
-                        .filter(t => t.amount < 0)
-                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                    currentAmount = currentIncome - currentExpenses;
+            const previousIncome = previousMonthTransactions
+                .filter(t => t.amount > 0)
+                .reduce((sum, t) => sum + t.amount, 0);
+            const previousExpenses = previousMonthTransactions
+                .filter(t => t.amount < 0)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            previousAmount = previousIncome - previousExpenses;
+        }
 
-                    const previousIncome = previousMonthTransactions
-                        .filter(t => t.amount > 0)
-                        .reduce((sum, t) => sum + t.amount, 0);
-                    const previousExpenses = previousMonthTransactions
-                        .filter(t => t.amount < 0)
-                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-                    previousAmount = previousIncome - previousExpenses;
-                }
+        const percentage = previousAmount === 0 
+            ? currentAmount === 0 ? 0 : 100 
+            : ((currentAmount - previousAmount) / previousAmount) * 100;
 
-                const percentage = previousAmount === 0 
-                    ? currentAmount === 0 ? 0 : 100 
-                    : ((currentAmount - previousAmount) / previousAmount) * 100;
-
-                setBalanceData({ amount: currentAmount, percentage });
-
-            } catch (error) {
-                console.error('Error fetching balances:', error);
-                toast.error('Error loading balances');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchBalances();
-    }, [income, expenses, savings]);
+        return { amount: currentAmount, percentage };
+    }, [transactions, isLoading, type]);
 
     if (isLoading) {
         return <BalanceCardSkeleton />;
     }
 
-    const type = income ? 'Earnings' : expenses ? 'Spendings' : 'Savings';
-
     return (
         <BalanceCard 
-            type={type}
+            type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}
             amount={balanceData.amount}
             percentage={balanceData.percentage}
         />
