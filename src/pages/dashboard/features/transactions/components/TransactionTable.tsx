@@ -234,8 +234,8 @@ export default function TransactionTable({
                                             <Typography
                                                 sx={{
                                                     color: transaction.amount >= 0
-                                                        ? theme.palette.success.main
-                                                        : theme.palette.error.main,
+                                                        ? theme.palette.chart.income
+                                                        : theme.palette.chart.expenses,
                                                     width: { xs: '25%', md: '20%' },
                                                     textAlign: 'right'
                                                 }}

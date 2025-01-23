@@ -59,13 +59,17 @@ export default function NoteList({
                         p: 2,
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
-                        backgroundColor: '#f7f7f7',
+                        backgroundColor: theme.palette.mode === 'dark' ? 
+                            'rgba(255, 255, 255, 0.05)' : 
+                            'rgba(0, 0, 0, 0.03)',
                         borderRadius: 3,
                         borderLeft: selectedNote?._id === note._id ?
                             `4px solid ${theme.palette.primary.main}` :
                             '4px solid transparent',
                         '&:hover': {
-                            backgroundColor: '#f0f0f0'
+                            backgroundColor: theme.palette.mode === 'dark' ? 
+                                'rgba(255, 255, 255, 0.08)' : 
+                                'rgba(0, 0, 0, 0.05)'
                         }
                     }}>
                     <Box sx={{ width: '100%', overflow: 'hidden' }}>
@@ -75,7 +79,8 @@ export default function NoteList({
                             sx={{
                                 fontWeight: selectedNote?._id === note._id ? 600 : 400,
                                 overflow: 'hidden',
-                                textOverflow: 'ellipsis'
+                                textOverflow: 'ellipsis',
+                                color: theme.palette.text.primary
                             }}
                         >
                             {note.title || 'No title'}

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Box, Paper, Fade } from '@mui/material';
+import { Box, Paper, Fade, useTheme } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
@@ -11,6 +11,7 @@ interface AnnualBalancesProps {
 
 export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
     const { user } = useUser();
+    const theme = useTheme();
 
     const totals = useMemo(() => {
         const { income, expenses } = transactions.reduce((acc, transaction) => {
@@ -45,7 +46,7 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    <span className="material-symbols-rounded no-select" style={{ color: '#ff8e38', fontSize: '2rem' }}>
+                    <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.income, fontSize: '2rem' }}>
                         download
                     </span>
                     <span style={{ fontSize: '1.5rem' }}>
@@ -61,7 +62,7 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    <span className="material-symbols-rounded no-select" style={{ color: '#9d300f', fontSize: '2rem' }}>
+                    <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.expenses, fontSize: '2rem' }}>
                         upload
                     </span>
                     <span style={{ fontSize: '1.5rem' }}>
@@ -78,11 +79,11 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                     gap: 2
                 }}>
                     {totals.balance > 0 ? (
-                        <span className="material-symbols-rounded no-select" style={{ color: '#4CAF50', fontSize: '2rem' }}>
+                        <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.income, fontSize: '2rem' }}>
                             savings
                         </span>
                     ) : (
-                        <span className="material-symbols-rounded no-select" style={{ color: '#f44336', fontSize: '2rem' }}>
+                        <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.expenses, fontSize: '2rem' }}>
                             savings
                         </span>
                     )}

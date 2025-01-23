@@ -127,27 +127,28 @@ export default function Notes() {
     };
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             height: '100%',
             maxWidth: '100%',
             overflow: 'hidden'
         }}>
             <Box sx={{
                 display: 'flex',
+                flexDirection: {
+                    xs: 'column',
+                    md: 'row'
+                },
                 gap: 2,
                 height: '100%',
-                maxWidth: '100%',
-                '@media (max-width: 900px)': {
-                    flexDirection: 'column'
-                }
+                width: '100%',
             }}>
                 <Paper elevation={2} sx={{
                     p: 2,
                     borderRadius: 3,
-                    width: { 
-                        xs: '100%', 
-                        sm: '100%', 
-                        md: '300px' 
+                    width: {
+                        xs: '100%',
+                        sm: '100%',
+                        md: '300px'
                     },
                     minWidth: {
                         xs: '100%',
@@ -185,12 +186,9 @@ export default function Notes() {
                     p: 2,
                     flex: 1,
                     borderRadius: 3,
-                    minWidth: 0, 
-                    maxWidth: {
-                        xs: '100%',
-                        md: 'calc(100% - 332px)' 
-                    },
-                    overflow: 'hidden' 
+                    minWidth: 0,
+                    Width: '100%',
+                    overflow: 'hidden'
                 }}>
                     <NoteEditor
                         note={selectedNote}

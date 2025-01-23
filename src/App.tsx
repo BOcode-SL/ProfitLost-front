@@ -1,7 +1,8 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { UserProvider, useUser } from './contexts/UserContext';
 
+import { UserProvider, useUser } from './contexts/UserContext';
+import { DashboardThemeProvider } from './contexts/ThemeContext';
 import Home from "./pages/landing/Home";
 import AuthPage from "./pages/landing/AuthPage";
 const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
@@ -27,7 +28,11 @@ function App() {
       );
     }
 
-    return user ? <>{children}</> : <Navigate to='/login' replace />;
+    return user ? (
+      <DashboardThemeProvider>
+        {children}
+      </DashboardThemeProvider>
+    ) : <Navigate to='/login' replace />;
   };
 
   return (

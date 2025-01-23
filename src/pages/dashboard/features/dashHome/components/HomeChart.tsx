@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Skeleton } from '@mui/material';
+import { Box, Paper, Typography, Skeleton, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { toast } from 'react-hot-toast';
 
@@ -16,6 +16,7 @@ interface MonthlyData {
 
 export default function HomeChart() {
     const { user } = useUser();
+    const theme = useTheme();
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -136,13 +137,13 @@ export default function HomeChart() {
                         {
                             data: monthlyData.map(d => d.income),
                             label: 'Income',
-                            color: '#ff8e38',
+                            color: theme.palette.chart.income,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         },
                         {
                             data: monthlyData.map(d => d.expenses),
                             label: 'Expenses',
-                            color: '#9d300f',
+                            color: theme.palette.chart.expenses,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         }
                     ]}

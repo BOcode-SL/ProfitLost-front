@@ -64,13 +64,13 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                         {
                             data: chartData.map(item => item.income),
                             label: 'Income',
-                            color: '#ff8e38',
+                            color: theme.palette.chart.income,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         },
                         {
                             data: chartData.map(item => item.expenses),
                             label: 'Expenses',
-                            color: '#9d300f',
+                            color: theme.palette.chart.expenses,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         }
                     ]}

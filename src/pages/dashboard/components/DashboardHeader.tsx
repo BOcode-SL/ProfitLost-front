@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, useState, Suspense } from 'react';
+import React, { useEffect, useCallback, useState, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress } from '@mui/material';
 
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
@@ -14,6 +15,7 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader = ({ user }: DashboardHeaderProps) => {
+    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [settingsDrawer, setSettingsDrawer] = useState<{
@@ -104,20 +106,33 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         }
                     }}
                 >
-                    <Badge
-                        color="primary"
-                        variant="dot"
-                        sx={{
-                            cursor: 'pointer',
-                            '&:hover': {
-                                opacity: 0.8,
-                            }
-                        }}
-                    >
-                        <span className="material-symbols-rounded no-select">
-                            mail
-                        </span>
-                    </Badge>
+                    <Box >
+                        <IconButton
+                            onClick={toggleTheme}
+                        >
+                            {isDarkMode ? (
+                                <span className="material-symbols-rounded">
+                                    light_mode
+                                </span>
+                            ) : (
+                                <span className="material-symbols-rounded">
+                                    dark_mode
+                                </span>
+                            )}
+                        </IconButton>
+
+                        <IconButton>
+                            <Badge
+                                color="primary"
+                                variant="dot"
+                            >
+                                <span className="material-symbols-rounded no-select">
+                                    mail
+                                </span>
+                            </Badge>
+                        </IconButton>
+                    </Box>
+
                     <Avatar
                         variant="square"
                         onClick={() => setDrawerOpen(true)}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Divider, Skeleton } from '@mui/material';
+import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 import { useUser } from '../../../../../contexts/UserContext';
@@ -11,6 +11,7 @@ import { formatCurrency } from '../../../../../utils/formatCurrency';
 
 export default function HomeHistory() {
     const { user } = useUser();
+    const theme = useTheme();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -106,7 +107,7 @@ export default function HomeHistory() {
                         <Typography
                             variant="body1"
                             sx={{
-                                color: transaction.amount > 0 ? 'success.main' : 'error.main',
+                                color: transaction.amount > 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
                                 fontWeight: 'medium'
                             }}
                         >

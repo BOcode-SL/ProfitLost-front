@@ -1,5 +1,5 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Box, Paper, Skeleton, Fade } from '@mui/material';
+import { Box, Paper, Skeleton, Fade, useTheme } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
@@ -18,7 +18,7 @@ export default function TransactionBarChart({
     expenses
 }: TransactionBarChartProps) {
     const { user } = useUser();
-
+    const theme = useTheme();
 
     function getMonthName(month: string) {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -62,13 +62,13 @@ export default function TransactionBarChart({
                                     {
                                         data: [income],
                                         label: 'Income',
-                                        color: '#ff8e38',
+                                        color: theme.palette.chart.income,
                                         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                     },
                                     {
                                         data: [expenses],
                                         label: 'Expenses',
-                                        color: '#9d300f',
+                                        color: theme.palette.chart.expenses,
                                         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                     }
                                 ]}

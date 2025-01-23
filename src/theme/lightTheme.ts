@@ -1,5 +1,40 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+    interface Palette {
+        chart: {
+            income: string;
+            expenses: string;
+        };
+        status: {
+            success: {
+                bg: string;
+                text: string;
+            };
+            error: {
+                bg: string;
+                text: string;
+            };
+        };
+    }
+    interface PaletteOptions {
+        chart?: {
+            income: string;
+            expenses: string;
+        };
+        status?: {
+            success: {
+                bg: string;
+                text: string;
+            };
+            error: {
+                bg: string;
+                text: string;
+            };
+        };
+    }
+}
+
 const themeOptions: ThemeOptions = {
     palette: {
         mode: 'light',
@@ -13,6 +48,20 @@ const themeOptions: ThemeOptions = {
         background: {
             default: '#f7f7f7',
             paper: '#ffffff',
+        },
+        chart: {
+            income: '#ff8e38',
+            expenses: '#9d300f'
+        },
+        status: {
+            success: {
+                bg: '#e8f5e9',
+                text: '#2e7d32'
+            },
+            error: {
+                bg: '#ffebee',
+                text: '#d32f2f'
+            }
         },
         divider: 'rgba(0,0,0,0.11)',
         text: {
@@ -175,15 +224,18 @@ const themeOptions: ThemeOptions = {
                     fontWeight: 500,
                     padding: '6px 16px',
                     border: '1px solid rgba(0, 0, 0, 0.12)',
+                    transition: 'all 0.3s ease-in-out',
                     '&.Mui-selected': {
                         backgroundColor: '#fe6f14',
                         color: '#ffffff',
                         '&:hover': {
                             backgroundColor: '#c84f03',
+                            transition: 'all 0.3s ease-in-out',
                         },
                     },
                     '&:hover': {
                         backgroundColor: 'rgba(254, 111, 20, 0.04)',
+                        transition: 'all 0.3s ease-in-out',
                     },
                 },
                 sizeSmall: {
@@ -194,8 +246,10 @@ const themeOptions: ThemeOptions = {
         MuiToggleButtonGroup: {
             styleOverrides: {
                 root: {
+                    transition: 'all 0.3s ease-in-out',
                     '& .MuiToggleButton-root': {
                         border: '1px solid rgba(0, 0, 0, 0.12)',
+                        transition: 'all 0.3s ease-in-out',
                         '&:not(:first-of-type)': {
                             borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
                             marginLeft: '0',

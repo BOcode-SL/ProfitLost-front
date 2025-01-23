@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
+import { useTheme } from '@mui/material';
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 import { transactionService } from '../../../../../services/transaction.service';
@@ -37,6 +38,7 @@ const BalanceCardSkeleton = () => (
 );
 
 const BalanceCard = ({ type, amount, percentage }: { type: string; amount: number; percentage: number }) => {
+    const theme = useTheme();
     const { user } = useUser();
 
     return (
@@ -59,8 +61,12 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5,
-                    bgcolor: percentage > 0 ? '#e8f5e9' : '#ffebee',
-                    color: percentage > 0 ? '#2e7d32' : '#d32f2f',
+                    bgcolor: percentage > 0 
+                        ? theme.palette.status.success.bg
+                        : theme.palette.status.error.bg,
+                    color: percentage > 0 
+                        ? theme.palette.status.success.text
+                        : theme.palette.status.error.text,
                     px: 1,
                     py: 0.3,
                     borderRadius: 2,

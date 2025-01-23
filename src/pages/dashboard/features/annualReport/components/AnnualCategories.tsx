@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 import {
-    Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide
+    Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide, useTheme
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 
@@ -38,6 +38,7 @@ const Transition = forwardRef(function Transition(
 
 export default function AnnualCategories({ transactions, loading }: AnnualCategoriesProps) {
     const { user } = useUser();
+    const theme = useTheme();
     const [categories, setCategories] = useState<Category[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState<SortOption>('name_asc');
@@ -275,7 +276,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                         />
                                         <Box
                                             sx={{
-                                                color: balance >= 0 ? 'success.main' : 'error.main',
+                                                color: balance >= 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
                                                 fontWeight: 400,
                                                 fontSize: { xs: '0.9rem', sm: '1rem' },
                                                 textAlign: 'right',
