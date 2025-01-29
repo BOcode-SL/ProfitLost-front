@@ -159,7 +159,7 @@ export default function TransactionTable({
                                     <CircularProgress />
                                 </Box>
                             </Fade>
-                        ) : filteredAndSortedTransactions.length === 0 ? (
+                        ) : data.length === 0 ? (
                             <Fade in timeout={300}>
                                 <Box sx={{
                                     display: 'flex',
@@ -170,6 +170,20 @@ export default function TransactionTable({
                                 }}>
                                     <Typography variant="h5" color="text.secondary">
                                         💸 Add your first transaction of the month 💸
+                                    </Typography>
+                                </Box>
+                            </Fade>
+                        ) : filteredAndSortedTransactions.length === 0 ? (
+                            <Fade in timeout={300}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    p: 3,
+                                    minHeight: 200
+                                }}>
+                                    <Typography variant="h5" color="text.secondary">
+                                        🔍 No transactions found matching "{searchTerm}" 🔍
                                     </Typography>
                                 </Box>
                             </Fade>
