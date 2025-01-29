@@ -235,6 +235,20 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                 animation: 'pulse 1.5s ease-in-out infinite'
                             }} />
                         </Fade>
+                    ) : categoriesBalance.length === 0 ? (
+                        <Fade in timeout={300}>
+                            <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    p: 3,
+                                    minHeight: 200
+                                }}>
+                                    <Typography variant="h5" color="text.secondary">
+                                    📊 Create your first category to start tracking your finances 📊
+                                </Typography>
+                            </Box>
+                        </Fade>
                     ) : (
                         <Fade in timeout={500}>
                             <List sx={{ width: '100%' }}>
