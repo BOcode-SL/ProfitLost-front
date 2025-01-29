@@ -34,6 +34,10 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     const theme = useTheme();
     const { user } = useUser();
 
+    const isPositiveTrend = type === 'Spendings' 
+        ? percentage < 0
+        : percentage > 0;
+
     return (
         <Paper elevation={3} sx={{
             flex: 1,
@@ -54,10 +58,10 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5,
-                    bgcolor: percentage > 0 
+                    bgcolor: isPositiveTrend
                         ? theme.palette.status.success.bg
                         : theme.palette.status.error.bg,
-                    color: percentage > 0 
+                    color: isPositiveTrend
                         ? theme.palette.status.success.text
                         : theme.palette.status.error.text,
                     px: 1,
@@ -66,7 +70,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     fontSize: '0.8rem'
                 }}>
                     <span className="material-symbols-rounded">
-                        {percentage > 0 ? 'trending_up' : 'trending_down'}
+                        {isPositiveTrend ? 'trending_up' : 'trending_down'}
                     </span>
                     {percentage.toFixed(1)}%
                 </Box>
