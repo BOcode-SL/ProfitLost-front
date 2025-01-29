@@ -137,8 +137,7 @@ export default function AccountsTable({
                     anchor="right"
                     PaperProps={{
                         sx: {
-                            width: { xs: '100%', sm: 450 },
-                            bgcolor: 'background.default'
+                            width: { xs: '100%', sm: 450 }
                         }
                     }}
                 >

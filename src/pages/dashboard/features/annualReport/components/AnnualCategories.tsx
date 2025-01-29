@@ -328,8 +328,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 PaperProps={{
                     elevation: 3,
                     sx: {
-                        width: { xs: '100%', sm: 450 },
-                        bgcolor: 'background.default'
+                        width: { xs: '100%', sm: 450 }
                     }
                 }}
             >
@@ -346,8 +345,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 PaperProps={{
                     elevation: 3,
                     sx: {
-                        width: { xs: '100%', sm: 450 },
-                        bgcolor: 'background.default'
+                        width: { xs: '100%', sm: 450 }
                     }
                 }}
             >

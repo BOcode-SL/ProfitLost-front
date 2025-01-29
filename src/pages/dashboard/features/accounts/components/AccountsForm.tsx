@@ -225,8 +225,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </>
                 )}
 
-                <Paper elevation={2} sx={{ display: 'flex', alignItems: '', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Typography>Background color</Typography>
                         <input
                             type="color"
@@ -234,7 +234,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             onChange={(e) => setBackgroundColor(e.target.value)}
                         />
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 2 }}>
                         <Typography>Text color</Typography>
                         <input
                             type="color"

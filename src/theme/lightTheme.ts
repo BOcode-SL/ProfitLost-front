@@ -183,6 +183,9 @@ const themeOptions: ThemeOptions = {
         },
         MuiDrawer: {
             styleOverrides: {
+                paper: {
+                    backgroundColor: '#f7f7f7',
+                },
                 modal: {
                     '& .MuiBackdrop-root': {
                         backgroundColor: 'rgba(0, 0, 0, 0.25)',
