@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef } from 'react';
-import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typography, IconButton, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Slide, CircularProgress } from '@mui/material';
+import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typography, IconButton, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Slide, CircularProgress, Autocomplete } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 
@@ -31,8 +31,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
     const [category, setCategory] = useState(transaction
-        ? (categories.find(cat => cat.name === transaction.category)?._id || '')
-        : ''
+        ? categories.find(cat => cat.name === transaction.category) || null
+        : null
     );
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -44,10 +44,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setDate(localDate.toISOString().slice(0, 19));
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
-            setCategory(categories.find(cat => cat.name === transaction.category)?._id || '');
+            setCategory(categories.find(cat => cat.name === transaction.category) || null);
             setIsIncome(transaction.amount >= 0);
         }
-    }, [categories, transaction, transaction?._id]);
+    }, [categories, transaction]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,8 +64,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 return;
             }
 
-            const selectedCategory = categories.find(cat => cat._id === category);
-            const finalDescription = description.trim() || selectedCategory?.name || '';
+            const finalDescription = description.trim() || category.name || '';
 
             const localDate = new Date(date);
             const utcDate = new Date(Date.UTC(
@@ -81,7 +80,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 date: utcDate.toISOString(),
                 description: finalDescription,
                 amount: numAmount * (isIncome ? 1 : -1),
-                category
+                category: category._id
             };
 
             if (transaction) {
@@ -117,6 +116,11 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setDeleteDialog(false);
         }
     };
+
+    // Ordenar categorías por nombre
+    const sortedCategories = [...categories].sort((a, b) => 
+        a.name.localeCompare(b.name)
+    );
 
     return (
         <Box sx={{ p: 3 }}>
@@ -188,24 +192,41 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             p: 1,
                             borderRadius: 3,
                         }}>
-                        <FormControl
+                        <Autocomplete
                             fullWidth
-                            required
-                            size="small"
-                        >
-                            <InputLabel>Category</InputLabel>
-                            <Select
-                                value={category}
-                                label="Category"
-                                onChange={(e) => setCategory(e.target.value)}
-                            >
-                                {categories.map((cat) => (
-                                    <MenuItem key={cat._id} value={cat._id}>
-                                        {cat.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            value={category}
+                            onChange={(_, newValue) => setCategory(newValue)}
+                            options={sortedCategories}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    size="small"
+                                    label="Category"
+                                    required
+                                />
+                            )}
+                            renderOption={(props, option) => (
+                                <li {...props}>
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: 1,
+                                        width: '100%' 
+                                    }}>
+                                        <Box 
+                                            sx={{ 
+                                                width: 8, 
+                                                height: 8, 
+                                                borderRadius: '50%', 
+                                                bgcolor: option.color 
+                                            }} 
+                                        />
+                                        {option.name}
+                                    </Box>
+                                </li>
+                            )}
+                        />
                     </Paper>
 
                     <Paper
