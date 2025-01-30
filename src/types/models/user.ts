@@ -11,12 +11,14 @@ export interface User {
     currency?: Currency;
     dateFormat?: DateFormat;
     timeFormat?: TimeFormat;
+    theme?: Theme;
 }
 
 export type Language = 'enUS' | 'esES';
 export type Currency = 'USD' | 'EUR' | 'GBP';
 export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY';
 export type TimeFormat = '12h' | '24h';
+export type Theme = 'light' | 'dark';
 
 export interface UserContextType {
     user: User | null;

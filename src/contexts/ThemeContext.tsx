@@ -2,6 +2,9 @@ import { createContext, useState, useMemo, ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { lightTheme } from '../theme/lightTheme';
 import { darkTheme } from '../theme/darkTheme';
+import { useUser } from './UserContext';
+import { userService } from '../services/user.service';
+import { User } from '../types/models/user';
 
 interface ThemeContextType {
     toggleTheme: () => void;
@@ -13,7 +16,6 @@ export const ThemeContext = createContext<ThemeContextType>({
     isDarkMode: false,
 });
 
-// Proveedor de tema global (siempre tema claro)
 export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
     return (
         <ThemeProvider theme={lightTheme}>
@@ -22,20 +24,28 @@ export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// Proveedor de tema para el dashboard (puede alternar entre claro y oscuro)
 export const DashboardThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const savedTheme = localStorage.getItem('theme');
-        return savedTheme === 'dark';
-    });
+    const { user, setUser } = useUser();
+    const [isDarkMode, setIsDarkMode] = useState(() => user?.theme === 'dark');
 
-    const toggleTheme = () => {
-        setIsDarkMode(prev => !prev);
+    const toggleTheme = async () => {
+        try {
+            const newTheme = isDarkMode ? 'light' : 'dark';
+            
+            const response = await userService.updateTheme(newTheme);
+            
+            if (response.success && response.data) {
+                setUser(response.data as User);
+                setIsDarkMode(!isDarkMode);
+            }
+        } catch (error) {
+            console.error('Error updating theme:', error);
+        }
     };
 
     useEffect(() => {
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
+        setIsDarkMode(user?.theme === 'dark');
+    }, [user?.theme]);
 
     const theme = useMemo(() => (isDarkMode ? darkTheme : lightTheme), [isDarkMode]);
 

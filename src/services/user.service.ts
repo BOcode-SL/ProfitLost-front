@@ -62,6 +62,32 @@ export const userService = {
         }
     },
 
+    async updateTheme(theme: 'light' | 'dark'): Promise<UserApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/users/theme`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ theme })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as UserApiResponse;
+            }
+
+            return data as UserApiResponse;
+        } catch (error) {
+            throw handleUserError(error);
+        }
+    },
+
     async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/password`, {
