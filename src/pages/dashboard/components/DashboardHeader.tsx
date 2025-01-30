@@ -131,7 +131,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             bgcolor: 'primary.main'
                         }}
                     >
-                        {user?.name?.[0]}
+                        {user?.name?.[0].toUpperCase()}
                     </Avatar>
                 </Paper>
             </Box>

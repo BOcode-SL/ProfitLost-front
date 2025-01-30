@@ -35,12 +35,16 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     const { user } = useUser();
 
     const isPositiveTrend = type === 'Spendings'
-        ? percentage < 0
-        : percentage > 0;
+        ? percentage <= 0
+        : percentage >= 0;
 
     const trendIcon = type === 'Spendings'
-        ? isPositiveTrend ? 'trending_down' : 'trending_up'
-        : isPositiveTrend ? 'trending_up' : 'trending_down';
+        ? percentage === 0 ? 'trending_flat'
+        : isPositiveTrend ? 'trending_down'
+        : 'trending_up'
+        : percentage === 0 ? 'trending_flat'
+        : isPositiveTrend ? 'trending_up'
+        : 'trending_down';
 
     return (
         <Paper elevation={3} sx={{

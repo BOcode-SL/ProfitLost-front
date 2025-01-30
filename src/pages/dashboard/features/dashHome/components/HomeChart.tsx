@@ -95,21 +95,80 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         monthlyData.every(item => item.income === 0 && item.expenses === 0);
 
     if (isDataEmpty) {
+        const today = new Date();
+        const emptyMonths = [];
+        
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const monthKey = date.toLocaleString('default', { month: 'short' });
+            emptyMonths.push(monthKey);
+        }
+        
         return (
             <Paper
                 elevation={3}
                 sx={{
                     gridArea: 'chart',
                     p: 2,
-                    borderRadius: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: { xs: '300px', sm: 'auto' }
+                    borderRadius: 3
                 }}>
-                <Typography variant="body1" color="text.secondary">
-                    No data available for the last 6 months
+                <Typography variant="subtitle1" color="primary.light" gutterBottom>
+                    Last 6 months balances
                 </Typography>
+                <Box sx={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '280px'
+                }}>
+                    <LineChart
+                        series={[
+                            {
+                                data: [0, 0, 0, 0, 0, 0],
+                                label: 'Income',
+                                color: theme.palette.chart.income,
+                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                            },
+                            {
+                                data: [0, 0, 0, 0, 0, 0],
+                                label: 'Expenses',
+                                color: theme.palette.chart.expenses,
+                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                            }
+                        ]}
+                        xAxis={[{
+                            data: emptyMonths,
+                            scaleType: 'point'
+                        }]}
+                        height={280}
+                        margin={{
+                            top: 25,
+                            left: 50,
+                            right: 35,
+                            bottom: 25
+                        }}
+                        slotProps={{
+                            legend: {
+                                hidden: true
+                            }
+                        }}
+                    />
+                    <Typography 
+                        variant="body1" 
+                        color="text.secondary"
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            textAlign: 'center',
+                            bgcolor: 'background.paper',
+                            px: 2,
+                            py: 1,
+                            borderRadius: 1
+                        }}>
+                        No data available for the last 6 months
+                    </Typography>
+                </Box>
             </Paper>
         );
     }

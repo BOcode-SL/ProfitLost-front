@@ -44,7 +44,22 @@ export default function TransactionPie({
                         </Fade>
                     ) : data.length === 0 ? (
                         <Fade in timeout={300}>
-                            <Typography>No data to show</Typography>
+                            <Typography 
+                                variant="body1" 
+                                color="text.secondary"
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    textAlign: 'center',
+                                    bgcolor: 'background.paper',
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: 1
+                                }}>
+                                No data available
+                            </Typography>
                         </Fade>
                     ) : (
                         <Fade in timeout={500}>

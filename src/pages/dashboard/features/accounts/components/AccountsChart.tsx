@@ -1,4 +1,4 @@
-import { Box, Skeleton, useTheme } from '@mui/material';
+import { Box, Skeleton, useTheme, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 
 import { useUser } from '../../../../../contexts/UserContext';
@@ -27,6 +27,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     }
 
     const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
+    const isDataEmpty = activeAccounts.length === 0;
 
     const dataset: DataPoint[] = months.map(month => {
         const dataPoint: DataPoint = { month };
@@ -57,7 +58,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     };
 
     return (
-        <Box sx={{ width: '100%', height: '100%' }}>
+        <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
             <BarChart
                 dataset={dataset}
                 series={series}
@@ -93,6 +94,24 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     bottom: 70
                 }}
             />
+            {isDataEmpty && (
+                <Typography 
+                    variant="body1" 
+                    color="text.secondary"
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        textAlign: 'center',
+                        bgcolor: 'background.paper',
+                        px: 2,
+                        py: 1,
+                        borderRadius: 1
+                    }}>
+                    No data available
+                </Typography>
+            )}
         </Box>
     );
 } 

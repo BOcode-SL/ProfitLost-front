@@ -163,6 +163,22 @@ export default function AccountsTable({
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     {accounts.map(account => renderAccount(account))}
+                    
+                    {accounts.length === 0 && (
+                        <Fade in timeout={300}>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 3,
+                            minHeight: 200
+                        }}>
+                            <Typography variant="h5" color="text.secondary">
+                                🏦 Add your first account 🏦
+                            </Typography>
+                        </Box>
+                    </Fade>
+                    )}
 
                     {inactiveAccounts.length > 0 && (
                         <Box sx={{ mt: 2 }}>

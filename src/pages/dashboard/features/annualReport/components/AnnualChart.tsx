@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Box, Skeleton, useMediaQuery, useTheme, Fade } from '@mui/material';
+import { Box, Skeleton, useMediaQuery, useTheme, Fade, Typography } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
@@ -50,11 +50,14 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
         );
     }
 
+    const isDataEmpty = chartData.every(item => item.income === 0 && item.expenses === 0);
+
     return (
         <Fade in timeout={500}>
             <Box sx={{
                 width: '100%',
                 height: { xs: 300, sm: 350, pt: 1 },
+                position: 'relative',
                 '& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
                     fontSize: isMobile ? '0.75rem' : '0.875rem',
                 }
@@ -99,6 +102,24 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                         }
                     }}
                 />
+                {isDataEmpty && (
+                    <Typography 
+                        variant="body1" 
+                        color="text.secondary"
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            textAlign: 'center',
+                            bgcolor: 'background.paper',
+                            px: 2,
+                            py: 1,
+                            borderRadius: 1
+                        }}>
+                        No data available
+                    </Typography>
+                )}
             </Box>
         </Fade>
     );
