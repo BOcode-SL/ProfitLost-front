@@ -34,9 +34,13 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     const theme = useTheme();
     const { user } = useUser();
 
-    const isPositiveTrend = type === 'Spendings' 
+    const isPositiveTrend = type === 'Spendings'
         ? percentage < 0
         : percentage > 0;
+
+    const trendIcon = type === 'Spendings'
+        ? isPositiveTrend ? 'trending_down' : 'trending_up'
+        : isPositiveTrend ? 'trending_up' : 'trending_down';
 
     return (
         <Paper elevation={3} sx={{
@@ -70,7 +74,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     fontSize: '0.8rem'
                 }}>
                     <span className="material-symbols-rounded">
-                        {isPositiveTrend ? 'trending_up' : 'trending_down'}
+                        {trendIcon}
                     </span>
                     {percentage.toFixed(1)}%
                 </Box>
@@ -137,8 +141,8 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
             previousAmount = previousIncome - previousExpenses;
         }
 
-        const percentage = previousAmount === 0 
-            ? currentAmount === 0 ? 0 : 100 
+        const percentage = previousAmount === 0
+            ? currentAmount === 0 ? 0 : 100
             : ((currentAmount - previousAmount) / previousAmount) * 100;
 
         return { amount: currentAmount, percentage };
@@ -149,7 +153,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
     }
 
     return (
-        <BalanceCard 
+        <BalanceCard
             type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}
             amount={balanceData.amount}
             percentage={balanceData.percentage}
