@@ -278,6 +278,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                             px: { xs: 1, sm: 2 },
                                             borderRadius: 2,
                                             cursor: 'pointer',
+                                            transition: 'background-color 0.3s ease',
                                             '&:hover': {
                                                 bgcolor: `${category.color}20`
                                             }

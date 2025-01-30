@@ -28,7 +28,6 @@ export default function TransactionTable({
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
     const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const [hoveredTransactionId, setHoveredTransactionId] = useState<string | null>(null);
 
     const handleTransactionClick = useCallback((transaction: Transaction) => {
         setCreateDrawerOpen(false);
@@ -198,8 +197,6 @@ export default function TransactionTable({
                                         <Box
                                             key={transaction._id}
                                             onClick={() => handleTransactionClick(transaction)}
-                                            onMouseEnter={() => setHoveredTransactionId(transaction._id)}
-                                            onMouseLeave={() => setHoveredTransactionId(null)}
                                             sx={{
                                                 p: 1,
                                                 borderRadius: 3,
@@ -207,10 +204,10 @@ export default function TransactionTable({
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 gap: 1,
-                                                backgroundColor: hoveredTransactionId === transaction._id
-                                                    ? `${getCategoryColor(transaction.category)}25`
-                                                    : 'transparent',
-                                                transition: 'background-color 0.3s ease'
+                                                transition: 'background-color 0.3s ease',
+                                                '&:hover': {
+                                                    bgcolor: `${getCategoryColor(transaction.category)}20`
+                                                }
                                             }}
                                         >
                                             <Box sx={{
