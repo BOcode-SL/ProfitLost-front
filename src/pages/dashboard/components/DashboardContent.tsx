@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -13,19 +13,20 @@ interface DashboardContentProps {
 }
 
 const DashboardContent = ({ activeSection }: DashboardContentProps) => {
+    const { t } = useTranslation();
     const renderContent = () => {
         switch (activeSection) {
-            case 'Dashboard':
+            case t('dashboard.dashhome.title'):
                 return <DashHome />;
-            case 'Annual Report':
+            case t('dashboard.annualReport.title'):
                 return <AnnualReport />;
-            case 'Transactions':
+            case t('dashboard.transactions.title'):
                 return <Transactions />;
-            case 'Accounts':
+            case t('dashboard.accounts.title'):
                 return <Accounts />;
-            // case 'Goals':
+            // case t('dashboard.goals.title'):
             //     return <Goals />;
-            case 'Notes':
+            case t('dashboard.notes.title'):
                 return <Notes />;
             default:
                 return (
