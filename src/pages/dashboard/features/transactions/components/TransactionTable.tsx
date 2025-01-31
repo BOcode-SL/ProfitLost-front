@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, Fade, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
@@ -21,6 +22,7 @@ export default function TransactionTable({
     categories,
     onReload
 }: TransactionTableProps) {
+    const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
     const [searchTerm, setSearchTerm] = useState('');
@@ -58,7 +60,6 @@ export default function TransactionTable({
         return category?.color || theme.palette.grey[500];
     };
 
-    // Filter and sort transactions
     const filteredAndSortedTransactions = data
         .filter(transaction => {
             const searchLower = searchTerm.toLowerCase();
@@ -110,7 +111,7 @@ export default function TransactionTable({
                             }}>
                             <TextField
                                 size="small"
-                                placeholder="Search transactions..."
+                                placeholder={t('dashboard.transactions.filters.search')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 sx={{
@@ -129,17 +130,17 @@ export default function TransactionTable({
                                         height: '35px'
                                     }
                                 }}>
-                                <InputLabel>Sort by</InputLabel>
+                                <InputLabel>{t('dashboard.transactions.filters.sort.label')}</InputLabel>
                                 <Select
                                     size="small"
-                                    label="Sort by"
+                                    label={t('dashboard.transactions.filters.sort.label')}
                                     value={sortOption}
                                     onChange={(e) => setSortOption(e.target.value)}
                                 >
-                                    <MenuItem value="date_desc">Newest First</MenuItem>
-                                    <MenuItem value="date_asc">Oldest First</MenuItem>
-                                    <MenuItem value="amount_desc">Highest Amount</MenuItem>
-                                    <MenuItem value="amount_asc">Lowest Amount</MenuItem>
+                                    <MenuItem value="date_desc">{t('dashboard.transactions.filters.sort.dateDesc')}</MenuItem>
+                                    <MenuItem value="date_asc">{t('dashboard.transactions.filters.sort.dateAsc')}</MenuItem>
+                                    <MenuItem value="amount_desc">{t('dashboard.transactions.filters.sort.amountDesc')}</MenuItem>
+                                    <MenuItem value="amount_asc">{t('dashboard.transactions.filters.sort.amountAsc')}</MenuItem>
                                 </Select>
                             </FormControl>
                             <Button
@@ -148,7 +149,7 @@ export default function TransactionTable({
                                 startIcon={<span className="material-symbols-rounded">add</span>}
                                 size="small"
                             >
-                                New Transaction
+                                {t('dashboard.transactions.table.addTransaction')}
                             </Button>
                         </Box>
 
@@ -168,7 +169,7 @@ export default function TransactionTable({
                                     minHeight: 200
                                 }}>
                                     <Typography variant="h5" color="text.secondary">
-                                        💸 Add your first transaction of the month 💸
+                                        {t('dashboard.transactions.table.addTransactionBanner')}
                                     </Typography>
                                 </Box>
                             </Fade>
@@ -182,7 +183,7 @@ export default function TransactionTable({
                                     minHeight: 200
                                 }}>
                                     <Typography variant="h5" color="text.secondary">
-                                        🔍 No transactions found matching "{searchTerm}" 🔍
+                                        🔍 {t('dashboard.transactions.table.noTransactionsFound')} "{searchTerm}" 🔍
                                     </Typography>
                                 </Box>
                             </Fade>

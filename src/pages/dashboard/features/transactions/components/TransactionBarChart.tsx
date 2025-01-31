@@ -1,8 +1,10 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Paper, Skeleton, Fade, useTheme, Typography } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 interface TransactionBarChartProps {
     loading: boolean;
@@ -17,14 +19,16 @@ export default function TransactionBarChart({
     income,
     expenses
 }: TransactionBarChartProps) {
+    const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
 
     const isDataEmpty = income === 0 && expenses === 0;
 
-    function getMonthName(month: string) {
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        return months[parseInt(month) - 1];
+    // Función para obtener el nombre traducido del mes
+    const getMonthName = (month: string) => {
+        const monthIndex = parseInt(month) - 1;
+        return t(`dashboard.common.monthNames.${months[monthIndex]}`);
     }
 
     return (
@@ -65,13 +69,13 @@ export default function TransactionBarChart({
                                     series={[
                                         {
                                             data: [income],
-                                            label: 'Income',
+                                            label: t('dashboard.transactions.chart.income'),
                                             color: theme.palette.chart.income,
                                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                         },
                                         {
                                             data: [expenses],
-                                            label: 'Expenses',
+                                            label: t('dashboard.transactions.chart.expenses'),
                                             color: theme.palette.chart.expenses,
                                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                                         }
@@ -103,7 +107,7 @@ export default function TransactionBarChart({
                                             py: 1,
                                             borderRadius: 1
                                         }}>
-                                        No data available
+                                        {t('dashboard.common.noData')}
                                     </Typography>
                                 )}
                             </Box>

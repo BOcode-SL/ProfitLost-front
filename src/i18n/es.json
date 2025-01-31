@@ -2,6 +2,7 @@
     "dashboard": {
         "common": {
             "year": "Año",
+            "month": "Mes",
             "save": "Guardar",
             "update": "Actualizar",
             "create": "Crear",
@@ -93,7 +94,7 @@
             "viewMode": {
                 "yearToday": "Año actual",
                 "fullYear": "Año completo"
-            }	
+            }
         },
         "settings": {},
         "dashhome": {
@@ -227,7 +228,79 @@
             }
         },
         "transactions": {
-            "title": "Movimientos"
+            "title": "Movimientos",
+            "form": {
+                "title": {
+                    "edit": "Editar movimiento",
+                    "new": "Nuevo movimiento"
+                },
+                "fields": {
+                    "date": "Fecha",
+                    "description": "Descripción",
+                    "amount": "Cantidad",
+                    "category": "Categoría",
+                    "type": "Tipo",
+                    "income": "Ingreso",
+                    "expense": "Gasto"
+                },
+                "placeholders": {
+                    "description": "Ingrese descripción",
+                    "amount": "Ingrese cantidad",
+                    "selectCategory": "Seleccione categoría"
+                },
+                "validation": {
+                    "required": "Este campo es requerido",
+                    "invalidAmount": "Cantidad inválida"
+                },
+                "errors": {
+                    "requiredFields": "Por favor, complete todos los campos requeridos",
+                    "invalidAmount": "Cantidad inválida"
+                }
+            },
+            "delete": {
+                "title": "Eliminar movimiento",
+                "confirmMessage": "¿Estás seguro de que quieres eliminar este movimiento?",
+                "warning": "Esta acción no se puede deshacer"
+            },
+            "filters": {
+                "search": "Buscar movimientos",
+                "sort": {
+                    "label": "Ordenar por",
+                    "dateAsc": "Fecha (antiguo primero)",
+                    "dateDesc": "Fecha (nuevo primero)",
+                    "amountAsc": "Cantidad (menor primero)",
+                    "amountDesc": "Cantidad (mayor primero)"
+                }
+            },
+            "chart": {
+                "income": "Ingresos",
+                "expenses": "Gastos",
+                "noData": "No hay datos disponibles",
+                "monthlyBalance": "Balance mensual"
+            },
+            "table": {
+                "noTransactions": "No se encontraron movimientos",
+                "addTransaction": "Agregar movimiento",
+                "addTransactionBanner": "💰 Agrega tu primer movimiento del mes 💰",
+                "noTransactionsFound": "No se encontraron movimientos que coincidan"
+            },
+            "balances": {
+                "income": "Ingresos",
+                "expenses": "Gastos",
+                "balance": "Balance"
+            },
+            "success": {
+                "created": "Movimiento creado correctamente",
+                "updated": "Movimiento actualizado correctamente",
+                "deleted": "Movimiento eliminado correctamente"
+            },
+            "errors": {
+                "loadingError": "Error al cargar los movimientos",
+                "createError": "Error al crear el movimiento",
+                "updateError": "Error al actualizar el movimiento",
+                "deleteError": "Error al eliminar el movimiento",
+                "invalidData": "Datos de movimiento inválidos"
+            }
         },
         "goals": {
             "title": "Objetivos"

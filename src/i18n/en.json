@@ -2,6 +2,7 @@
     "dashboard": {
         "common": {
             "year": "Year",
+            "month": "Month",
             "save": "Save",
             "update": "Update",
             "create": "Create",
@@ -227,7 +228,79 @@
             }
         },
         "transactions": {
-            "title": "Transactions"
+            "title": "Transactions",
+            "form": {
+                "title": {
+                    "edit": "Edit Transaction",
+                    "new": "New Transaction"
+                },
+                "fields": {
+                    "date": "Date",
+                    "description": "Description",
+                    "amount": "Amount",
+                    "category": "Category",
+                    "type": "Type",
+                    "income": "Income",
+                    "expense": "Expense"
+                },
+                "placeholders": {
+                    "description": "Enter description",
+                    "amount": "Enter amount",
+                    "selectCategory": "Select category"
+                },
+                "validation": {
+                    "required": "This field is required",
+                    "invalidAmount": "Invalid amount"
+                },
+                "errors": {
+                    "requiredFields": "Please fill in all required fields",
+                    "invalidAmount": "Invalid amount"
+                }
+            },
+            "delete": {
+                "title": "Delete Transaction",
+                "confirmMessage": "Are you sure you want to delete this transaction?",
+                "warning": "This action cannot be undone"
+            },
+            "filters": {
+                "search": "Search transactions",
+                "sort": {
+                    "label": "Sort by",
+                    "dateAsc": "Date (oldest first)",
+                    "dateDesc": "Date (newest first)",
+                    "amountAsc": "Amount (lowest first)",
+                    "amountDesc": "Amount (highest first)"
+                }
+            },
+            "chart": {
+                "income": "Income",
+                "expenses": "Expenses",
+                "noData": "No data available",
+                "monthlyBalance": "Monthly Balance"
+            },
+            "table": {
+                "noTransactions": "No transactions found",
+                "addTransaction": "Add transaction",
+                "addTransactionBanner": "💰 Add your first transaction of the month 💰",
+                "noTransactionsFound": "No transactions found matching"
+            },
+            "balances": {
+                "income": "Income",
+                "expenses": "Expenses",
+                "balance": "Balance"
+            },
+            "success": {
+                "created": "Transaction created successfully",
+                "updated": "Transaction updated successfully",
+                "deleted": "Transaction deleted successfully"
+            },
+            "errors": {
+                "loadingError": "Error loading transactions",
+                "createError": "Error creating transaction",
+                "updateError": "Error updating transaction",
+                "deleteError": "Error deleting transaction",
+                "invalidData": "Invalid transaction data"
+            }
         },
         "goals": {
             "title": "Goals"

@@ -2,6 +2,7 @@ import { useState, useEffect, forwardRef } from 'react';
 import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typography, IconButton, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Slide, CircularProgress, Autocomplete } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { transactionService } from '../../../../../services/transaction.service';
 import type { Category } from '../../../../../types/models/category';
@@ -24,6 +25,7 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
+    const { t } = useTranslation();
     const [date, setDate] = useState(transaction
         ? new Date(transaction.date).toISOString().slice(0, 19)
         : new Date().toISOString().slice(0, 19)
@@ -53,14 +55,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         e.preventDefault();
 
         if (!amount || !category) {
-            toast.error('Please fill all required fields');
+            toast.error(t('dashboard.transactions.form.errors.requiredFields'));
             return;
         }
 
         try {
             const numAmount = parseFloat(amount);
             if (isNaN(numAmount)) {
-                toast.error('Invalid amount');
+                toast.error(t('dashboard.transactions.form.errors.invalidAmount'));
                 return;
             }
 
@@ -85,16 +87,16 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             if (transaction) {
                 await transactionService.updateTransaction(transaction._id, transactionData);
-                toast.success('Transaction updated successfully');
+                toast.success(t('dashboard.transactions.success.updated'));
             } else {
                 await transactionService.createTransaction(transactionData);
-                toast.success('Transaction created successfully');
+                toast.success(t('dashboard.transactions.success.created'));
             }
 
             onSubmit();
         } catch (error) {
             console.error('Error details:', error);
-            toast.error(transaction ? 'Failed to update transaction' : 'Failed to create transaction');
+            toast.error(transaction ? t('dashboard.transactions.errors.updateError') : t('dashboard.transactions.errors.createError'));
         }
     };
 
@@ -106,11 +108,11 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         try {
             setIsDeleting(true);
             await transactionService.deleteTransaction(transaction!._id);
-            toast.success('Transaction deleted successfully');
+            toast.success(t('dashboard.transactions.success.deleted'));
             onSubmit();
         } catch (error) {
             console.error('Error deleting transaction:', error);
-            toast.error('Failed to delete transaction');
+            toast.error(t('dashboard.transactions.errors.deleteError'));
         } finally {
             setIsDeleting(false);
             setDeleteDialog(false);
@@ -128,7 +130,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
                 </IconButton>
-                <Typography variant="h6">{transaction ? 'Edit Transaction' : 'New Transaction'}</Typography>
+                <Typography variant="h6">{transaction ? t('dashboard.transactions.form.title.edit') : t('dashboard.transactions.form.title.new')}</Typography>
             </Box>
 
             <form onSubmit={handleSubmit}>
@@ -146,7 +148,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         }}>
                         <TextField
                             size="small"
-                            label="Date"
+                            label={t('dashboard.transactions.form.fields.date')}
                             type="datetime-local"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
@@ -170,14 +172,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             size="small"
                             required
                         >
-                            <InputLabel>Type</InputLabel>
+                            <InputLabel>{t('dashboard.transactions.form.fields.type')}</InputLabel>
                             <Select
                                 value={isIncome}
-                                label="Type"
+                                label={t('dashboard.transactions.form.fields.type')}
                                 onChange={(e) => setIsIncome(e.target.value === 'true')}
                             >
-                                <MenuItem value="false">Expense</MenuItem>
-                                <MenuItem value="true">Income</MenuItem>
+                                <MenuItem value="false">{t('dashboard.transactions.form.fields.expense')}</MenuItem>
+                                <MenuItem value="true">{t('dashboard.transactions.form.fields.income')}</MenuItem>
                             </Select>
                         </FormControl>
                     </Paper>
@@ -202,7 +204,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 <TextField
                                     {...params}
                                     size="small"
-                                    label="Category"
+                                    label={t('dashboard.transactions.form.fields.category')}
                                     required
                                 />
                             )}
@@ -242,7 +244,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
                         <TextField
                             size="small"
-                            label="Description"
+                            label={t('dashboard.transactions.form.fields.description')}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             fullWidth
@@ -261,7 +263,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         }}>
                         <TextField
                             size="small"
-                            label="Amount"
+                            label={t('dashboard.transactions.form.fields.amount')}
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
@@ -280,14 +282,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                     disabled={isDeleting}
                                     fullWidth
                                 >
-                                    Delete
+                                    {t('dashboard.common.delete')}
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
                                     fullWidth
                                 >
-                                    Update
+                                    {t('dashboard.common.update')}
                                 </Button>
                             </>
                         ) : (
@@ -297,14 +299,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                     variant="outlined"
                                     fullWidth
                                 >
-                                    Cancel
+                                    {t('dashboard.common.cancel')}
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
                                     fullWidth
                                 >
-                                    Create
+                                    {t('dashboard.common.create')}
                                 </Button>
                             </>
                         )}
@@ -330,17 +332,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     pt: 3,
                     pb: 1
                 }}>
-                    Delete Transaction
+                    {t('dashboard.transactions.delete.title')}
                 </DialogTitle>
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
                 }}>
                     <Typography>
-                        Are you sure you want to delete this transaction?
+                        {t('dashboard.transactions.delete.confirmMessage')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        This action cannot be undone.
+                        {t('dashboard.transactions.delete.warning')}
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{
@@ -355,7 +357,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             width: '120px'
                         }}
                     >
-                        Cancel
+                        {t('dashboard.common.cancel')}
                     </Button>
                     <Button
                         variant="contained"
@@ -369,7 +371,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         {isDeleting ? (
                             <CircularProgress size={24} color="inherit" />
                         ) : (
-                            'Delete'
+                            t('dashboard.common.delete')
                         )}
                     </Button>
                 </DialogActions>

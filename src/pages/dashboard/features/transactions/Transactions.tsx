@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../contexts/UserContext';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
@@ -14,7 +15,10 @@ import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
 import TransactionTable from './components/TransactionTable';
 
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 export default function Transactions() {
+    const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
     const currentYear = new Date().getFullYear().toString();
@@ -63,17 +67,19 @@ export default function Transactions() {
     const handleError = (error: TransactionApiErrorResponse) => {
         switch (error.error) {
             case 'UNAUTHORIZED':
-                toast.error('Session expired. Please log in again.');
+                toast.error(t('dashboard.common.error.UNAUTHORIZED'));
                 break;
             case 'CONNECTION_ERROR':
-                toast.error('Connection error. Please check your internet connection.');
+                toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
                 break;
             case 'DATABASE_ERROR':
+                toast.error(t('dashboard.common.error.DATABASE_ERROR'));
+                break;
             case 'SERVER_ERROR':
-                toast.error('Server error. Please try again later.');
+                toast.error(t('dashboard.common.error.SERVER_ERROR'));
                 break;
             default:
-                toast.error('Error loading data');
+                toast.error(t('dashboard.common.error.loading'));
         }
     };
 
@@ -135,10 +141,10 @@ export default function Transactions() {
                         width: '100%'
                     }}>
                         <FormControl size="small" sx={{ width: '100%' }}>
-                            <InputLabel>Year</InputLabel>
+                            <InputLabel>{t('dashboard.common.year')}</InputLabel>
                             <Select
                                 value={year}
-                                label="Year"
+                                label={t('dashboard.common.year')}
                                 onChange={(e) => setYear(e.target.value)}
                             >
                                 {yearsWithData.map(y => (
@@ -154,17 +160,17 @@ export default function Transactions() {
                         width: '100%'
                     }}>
                         <FormControl size="small" sx={{ width: '100%' }}>
-                            <InputLabel>Month</InputLabel>
+                            <InputLabel>{t('dashboard.common.month')}</InputLabel>
                             <Select
                                 value={month}
-                                label="Month"
+                                label={t('dashboard.common.month')}
                                 onChange={(e) => setMonth(e.target.value)}
                             >
                                 {Array.from({ length: 12 }, (_, i) => {
                                     const monthNum = (i + 1).toString().padStart(2, '0');
                                     return (
                                         <MenuItem key={monthNum} value={monthNum}>
-                                            {new Date(2000, i).toLocaleString('default', { month: 'long' })}
+                                            {t(`dashboard.common.monthNames.${months[i]}`)}
                                         </MenuItem>
                                     );
                                 })}

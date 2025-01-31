@@ -1,6 +1,6 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Box, Paper, Skeleton, Typography, Fade } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 interface PieChartData {
     id: string;
     value: number;
@@ -17,6 +17,8 @@ export default function TransactionPie({
     loading,
     data
 }: TransactionPieProps) {
+    const { t } = useTranslation();
+
     return (
         <Box sx={{
             flex: 1,
@@ -58,7 +60,7 @@ export default function TransactionPie({
                                     py: 1,
                                     borderRadius: 1
                                 }}>
-                                No data available
+                                {t('dashboard.common.noData')}
                             </Typography>
                         </Fade>
                     ) : (
