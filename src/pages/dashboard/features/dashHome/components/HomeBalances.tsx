@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
+
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
 
 interface HomeBalancesProps {
     type: 'income' | 'expenses' | 'savings';
@@ -33,6 +35,7 @@ const BalanceCardSkeleton = () => (
 const BalanceCard = ({ type, amount, percentage }: { type: string; amount: number; percentage: number }) => {
     const theme = useTheme();
     const { user } = useUser();
+    const { t } = useTranslation();
 
     const isPositiveTrend = type === 'Spendings'
         ? percentage <= 0
@@ -56,7 +59,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
             minHeight: { xs: '120px', sm: 'auto' },
         }}>
             <Typography variant="subtitle1" color="primary.light">
-                {type}
+                {t(`dashboard.dashhome.balance.${type.toLowerCase()}`)}
             </Typography>
             <Typography sx={{ fontWeight: '450', fontSize: '1.7rem' }}>
                 {formatCurrency(amount, user)}
@@ -83,7 +86,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     {percentage.toFixed(1)}%
                 </Box>
                 <Typography variant="body2" color="text.secondary">
-                    than last month
+                    {t('dashboard.dashhome.balance.thanLastMonth')}
                 </Typography>
             </Box>
         </Paper>

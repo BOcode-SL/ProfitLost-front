@@ -24,7 +24,43 @@
                 "generic": "Ocurrió un error",
                 "saving": "Error al guardar",
                 "deleting": "Error al eliminar",
-                "required": "Este campo es requerido"
+                "required": "Este campo es requerido",
+                "loading": "Error al cargar los datos",
+                "UNAUTHORIZED": "Sesión expirada. Por favor, inicia sesión de nuevo.",
+                "CONNECTION_ERROR": "Error de conexión. Por favor, verifica tu conexión a internet.",
+                "SERVER_ERROR": "Error del servidor. Por favor, inténtalo de nuevo más tarde.",
+                "DATABASE_ERROR": "Error de base de datos. Por favor, inténtalo de nuevo más tarde.",
+                "NETWORK_ERROR": "Error de red. Por favor, verifica tu conexión.",
+                "FETCH_ERROR": "Error al obtener los datos. Por favor, inténtalo de nuevo.",
+                "MISSING_FIELDS": "Faltan campos requeridos",
+                "INVALID_FORMAT": "Formato inválido",
+                "INVALID_ID_FORMAT": "Formato de ID inválido",
+                "EMAIL_EXISTS": "El email ya existe",
+                "USERNAME_EXISTS": "El nombre de usuario ya existe",
+                "PASSWORD_TOO_WEAK": "La contraseña es demasiado débil",
+                "INVALID_CREDENTIALS": "Email o contraseña inválidos",
+                "ACCOUNT_INACTIVE": "Cuenta inactiva",
+                "ACCOUNT_LOCKED": "Cuenta bloqueada",
+                "LOGOUT_ERROR": "Error al cerrar sesión",
+                "USER_NOT_FOUND": "Usuario no encontrado",
+                "INVALID_DATE_FORMAT": "Formato de fecha inválido",
+                "INVALID_TIME_FORMAT": "Formato de tiempo inválido",
+                "IMAGE_UPLOAD_ERROR": "Error al subir la imagen",
+                "NO_CHANGES": "No se detectaron cambios",
+                "INVALID_PASSWORD": "Contraseña inválida",
+                "ACCOUNT_NOT_FOUND": "Cuenta no encontrada",
+                "DUPLICATE_ACCOUNT": "Cuenta ya existe",
+                "INVALID_ACCOUNT_DATA": "Datos de cuenta inválidos",
+                "INVALID_CONFIGURATION": "Configuración inválida",
+                "INVALID_RECORDS": "Registros inválidos",
+                "INVALID_DATA": "Datos inválidos",
+                "INVALID_AMOUNT": "Cantidad inválida",
+                "INVALID_DESCRIPTION": "Descripción inválida",
+                "TRANSACTION_NOT_FOUND": "Transacción no encontrada",
+                "DUPLICATE_CATEGORY": "Categoría ya existe",
+                "CATEGORY_IN_USE": "Categoría en uso y no puede ser eliminada",
+                "CATEGORY_NOT_FOUND": "Categoría no encontrada",
+                "NOTE_NOT_FOUND": "Nota no encontrada"
             },
             "monthNames": {
                 "Jan": "Enero",
@@ -53,14 +89,83 @@
                 "Oct": "Oct",
                 "Nov": "Nov",
                 "Dec": "Dic"
-            }
+            },
+            "viewMode": {
+                "yearToday": "Año actual",
+                "fullYear": "Año completo"
+            }	
         },
         "settings": {},
         "dashhome": {
-            "title": "Dashboard"
+            "title": "Dashboard",
+            "balance": {
+                "earnings": "Ingresos",
+                "spendings": "Gastos",
+                "savings": "Ahorros"
+            },
+            "chart": {
+                "income": "Ingresos",
+                "expenses": "Gastos",
+                "last6MonthsBalance": "Balance últimos 6 meses",
+                "noDataLast6Months": "No hay datos disponibles para los últimos 6 meses"
+            },
+            "history": {
+                "lastTransactions": "Últimas transacciones"
+            },
+            "thanLastMonth": "que el mes anterior"
         },
         "annualReport": {
-            "title": "Reporte anual"
+            "title": "Reporte anual",
+            "chart": {
+                "income": "Ingresos",
+                "expenses": "Gastos",
+                "noData": "No hay datos disponibles"
+            },
+            "categories": {
+                "title": "Categorías",
+                "search": "Buscar categorías",
+                "searchPlaceholder": "Buscar categoría...",
+                "addCategoryBanner": "📊 Crea tu primera categoría para empezar a rastrear tus finanzas 📊",
+                "noCategoriesFound": "No se encontraron categorías que coincidan",
+                "sort": {
+                    "label": "Ordenar por",
+                    "nameAsc": "Nombre (A-Z)",
+                    "nameDesc": "Nombre (Z-A)",
+                    "balanceAsc": "Balance (Bajo a Alto)",
+                    "balanceDesc": "Balance (Alto a Bajo)"
+                },
+                "addCategory": "Agregar categoría",
+                "addFirstCategory": "Agrega tu primera categoría",
+                "editCategory": "Editar categoría",
+                "form": {
+                    "categoryName": "Nombre de la categoría",
+                    "categoryNameRequired": "El nombre de la categoría es requerido",
+                    "color": "Color"
+                },
+                "delete": {
+                    "title": "Delete Category",
+                    "confirmMessage": "¿Estás seguro de que quieres eliminar la categoría ",
+                    "warning": "Las categorías con transacciones asociadas no se pueden eliminar. Debes reasignar o eliminar esas transacciones primero.",
+                    "cannotUndo": "Esta acción no se puede deshacer"
+                },
+                "errors": {
+                    "loadingError": "Error al cargar las categorías",
+                    "createError": "Error al crear la categoría",
+                    "updateError": "Error al actualizar la categoría",
+                    "deleteError": "Error al eliminar la categoría"
+                },
+                "success": {
+                    "created": "Categoría creada correctamente",
+                    "updated": "Categoría actualizada correctamente",
+                    "deleted": "Categoría eliminada correctamente"
+                },
+                "noCategories": "No se encontraron categorías"
+            },
+            "balances": {
+                "income": "Ingresos",
+                "expenses": "Gastos",
+                "balance": "Balance"
+            }
         },
         "accounts": {
             "title": "Cuentas",

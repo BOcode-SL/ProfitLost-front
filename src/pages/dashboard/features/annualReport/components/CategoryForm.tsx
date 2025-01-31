@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { categoryService } from '../../../../../services/category.service';
 import type { Category } from '../../../../../types/models/category';
@@ -13,6 +14,7 @@ interface CategoryFormProps {
 }
 
 export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
+    const { t } = useTranslation();
     const [name, setName] = useState(category?.name || '');
     const [color, setColor] = useState(category?.color || '#ff8e38');
     const [saving, setSaving] = useState(false);
@@ -26,32 +28,30 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         setSaving(true);
         try {
             if (category) {
-                // Update
                 const response = await categoryService.updateCategory(category._id, {
                     name: name.trim(),
                     color
                 });
 
                 if (response.success) {
-                    toast.success('Category updated successfully');
+                    toast.success(t('dashboard.annualReport.categories.success.updated'));
                     onSubmit();
                     onClose();
                 }
             } else {
-                // Create
                 const response = await categoryService.createCategory({
                     name: name.trim(),
                     color
                 });
 
                 if (response.success) {
-                    toast.success('Category created successfully');
+                    toast.success(t('dashboard.annualReport.categories.success.created'));
                     onSubmit();
                     onClose();
                 }
             }
         } catch {
-            toast.error(category ? 'Failed to update category' : 'Failed to create category');
+            toast.error(category ? t('dashboard.annualReport.categories.errors.updateError') : t('dashboard.annualReport.categories.errors.createError'));
         } finally {
             setSaving(false);
         }
@@ -64,7 +64,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     <span className="material-symbols-rounded">close</span>
                 </IconButton>
                 <Typography variant="h6">
-                    {category ? 'Edit Category' : 'Add your first category'}
+                    {category ? t('dashboard.annualReport.categories.editCategory') : t('dashboard.annualReport.categories.addFirstCategory')}
                 </Typography>
             </Box>
 
@@ -90,7 +90,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         style={{ width: '60px', height: '40px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                     />
                     <TextField
-                        label="Category Name"
+                        label={t('dashboard.annualReport.categories.form.categoryName')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         fullWidth
@@ -107,7 +107,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                             disabled={saving}
                             fullWidth
                         >
-                            Delete
+                            {t('dashboard.common.delete')}
                         </Button>
                     )}
                     <Button
@@ -116,7 +116,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         disabled={saving}
                         fullWidth
                     >
-                        {saving ? <CircularProgress size={24} /> : (category ? 'Update' : 'Create')}
+                        {saving ? <CircularProgress size={24} /> : (category ? t('dashboard.common.update') : t('dashboard.common.create'))}
                     </Button>
                 </Box>
             </Box>

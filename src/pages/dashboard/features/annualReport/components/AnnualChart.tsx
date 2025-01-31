@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Skeleton, useMediaQuery, useTheme, Fade, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
@@ -11,10 +12,19 @@ interface AnnualChartProps {
     loading: boolean;
 }
 
+// Meses en inglés para el backend
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 export default function AnnualChart({ transactions, loading }: AnnualChartProps) {
+    const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    // Función para obtener el nombre traducido del mes
+    const getMonthShortName = (monthKey: string) => {
+        return t(`dashboard.common.monthNamesShort.${monthKey}`);
+    };
 
     const chartData = useMemo(() => {
         const monthsData = Array.from({ length: 12 }, (_, i) => ({
@@ -66,19 +76,19 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                     series={[
                         {
                             data: chartData.map(item => item.income),
-                            label: 'Income',
+                            label: t('dashboard.annualReport.chart.income'),
                             color: theme.palette.chart.income,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         },
                         {
                             data: chartData.map(item => item.expenses),
-                            label: 'Expenses',
+                            label: t('dashboard.annualReport.chart.expenses'),
                             color: theme.palette.chart.expenses,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                         }
                     ]}
                     xAxis={[{
-                        data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        data: months.map(month => getMonthShortName(month)),
                         scaleType: 'band',
                         tickLabelStyle: {
                             angle: isMobile ? 45 : 0,
@@ -117,7 +127,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                             py: 1,
                             borderRadius: 1
                         }}>
-                        No data available
+                        {t('dashboard.annualReport.chart.noData')}
                     </Typography>
                 )}
             </Box>

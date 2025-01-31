@@ -24,7 +24,43 @@
                 "generic": "An error occurred",
                 "saving": "Error saving changes",
                 "deleting": "Error deleting",
-                "required": "This field is required"
+                "required": "This field is required",
+                "loading": "Error loading data",
+                "UNAUTHORIZED": "Expired session. Please log in again.",
+                "CONNECTION_ERROR": "Connection error. Please check your internet connection.",
+                "SERVER_ERROR": "Server error. Please try again later.",
+                "DATABASE_ERROR": "Database error. Please try again later.",
+                "NETWORK_ERROR": "Network error. Please check your connection",
+                "FETCH_ERROR": "Error fetching data. Please try again",
+                "MISSING_FIELDS": "Required fields are missing",
+                "INVALID_FORMAT": "Invalid format",
+                "INVALID_ID_FORMAT": "Invalid ID format",
+                "EMAIL_EXISTS": "Email already exists",
+                "USERNAME_EXISTS": "Username already exists",
+                "PASSWORD_TOO_WEAK": "Password is too weak",
+                "INVALID_CREDENTIALS": "Invalid email or password",
+                "ACCOUNT_INACTIVE": "Account is inactive",
+                "ACCOUNT_LOCKED": "Account is locked",
+                "LOGOUT_ERROR": "Error logging out",
+                "USER_NOT_FOUND": "User not found",
+                "INVALID_DATE_FORMAT": "Invalid date format",
+                "INVALID_TIME_FORMAT": "Invalid time format",
+                "IMAGE_UPLOAD_ERROR": "Error uploading image",
+                "NO_CHANGES": "No changes detected",
+                "INVALID_PASSWORD": "Invalid password",
+                "ACCOUNT_NOT_FOUND": "Account not found",
+                "DUPLICATE_ACCOUNT": "Account already exists",
+                "INVALID_ACCOUNT_DATA": "Invalid account data",
+                "INVALID_CONFIGURATION": "Invalid configuration",
+                "INVALID_RECORDS": "Invalid records",
+                "INVALID_DATA": "Invalid data",
+                "INVALID_AMOUNT": "Invalid amount",
+                "INVALID_DESCRIPTION": "Invalid description",
+                "TRANSACTION_NOT_FOUND": "Transaction not found",
+                "DUPLICATE_CATEGORY": "Category already exists",
+                "CATEGORY_IN_USE": "Category is in use and cannot be deleted",
+                "CATEGORY_NOT_FOUND": "Category not found",
+                "NOTE_NOT_FOUND": "Note not found"
             },
             "monthNames": {
                 "Jan": "January",
@@ -53,14 +89,83 @@
                 "Oct": "Oct",
                 "Nov": "Nov",
                 "Dec": "Dec"
+            },
+            "viewMode": {
+                "yearToday": "Year Today",
+                "fullYear": "Full Year"
             }
         },
         "settings": {},
         "dashhome": {
-            "title": "Dashboard"
+            "title": "Dashboard",
+            "balance": {
+                "earnings": "Earnings",
+                "spendings": "Spendings",
+                "savings": "Savings",
+                "thanLastMonth": "than last month"
+            },
+            "chart": {
+                "income": "Income",
+                "expenses": "Expenses",
+                "last6MonthsBalance": "Last 6 months balances",
+                "noDataLast6Months": "No data available for the last 6 months"
+            },
+            "history": {
+                "lastTransactions": "Last transactions"
+            }
         },
         "annualReport": {
-            "title": "Annual Report"
+            "title": "Annual Report",
+            "chart": {
+                "income": "Income",
+                "expenses": "Expenses",
+                "noData": "No data available"
+            },
+            "categories": {
+                "title": "Categories",
+                "search": "Search categories",
+                "searchPlaceholder": "Find category...",
+                "addCategoryBanner": "📊 Create your first category to start tracking your finances 📊",
+                "noCategoriesFound": "No categories found matching",
+                "sort": {
+                    "label": "Sort by",
+                    "nameAsc": "Name (A-Z)",
+                    "nameDesc": "Name (Z-A)",
+                    "balanceAsc": "Balance (Low to High)",
+                    "balanceDesc": "Balance (High to Low)"
+                },
+                "addCategory": "Add Category",
+                "addFirstCategory": "Add your first category",
+                "editCategory": "Edit Category",
+                "form": {
+                    "categoryName": "Category Name",
+                    "categoryNameRequired": "Category name is required",
+                    "color": "Color"
+                },
+                "delete": {
+                    "title": "Delete Category",
+                    "confirmMessage": "Are you sure you want to delete the category ",
+                    "warning": "Note: Categories with associated transactions cannot be deleted. You must first reassign or delete those transactions.",
+                    "cannotUndo": "This action cannot be undone"
+                },
+                "errors": {
+                    "loadingError": "Error loading categories",
+                    "createError": "Error creating category",
+                    "updateError": "Error updating category",
+                    "deleteError": "Error deleting category"
+                },
+                "success": {
+                    "created": "Category created successfully",
+                    "updated": "Category updated successfully",
+                    "deleted": "Category deleted successfully"
+                },
+                "noCategories": "No categories found"
+            },
+            "balances": {
+                "income": "Income",
+                "expenses": "Expenses",
+                "balance": "Balance"
+            }
         },
         "accounts": {
             "title": "Accounts",

@@ -4,6 +4,7 @@ import {
     Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide, useTheme
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
@@ -37,6 +38,7 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function AnnualCategories({ transactions, loading }: AnnualCategoriesProps) {
+    const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -63,12 +65,12 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     setCategories(response.data);
                 }
             } catch {
-                toast.error('Error loading categories');
+                toast.error(t('dashboard.annualReport.categories.errors.loadingError'));
             }
         };
 
         fetchCategories();
-    }, []);
+    }, [t]);
 
     const categoriesBalance = useMemo(() => {
         if (!categories.length) {
@@ -76,12 +78,10 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
 
         const balances = categories.map(category => {
-            // Filter transactions for this category
             const categoryTransactions = transactions.filter(
                 transaction => transaction.category === category.name
             );
 
-            // Calculate total balance (income - expenses)
             const balance = categoryTransactions.reduce((acc, transaction) => {
                 return acc + transaction.amount;
             }, 0);
@@ -92,11 +92,9 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
             };
         });
 
-        // Filter by search
         const filtered = balances
             .filter(item => item.category.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-        // Sort by selected option
         return filtered.sort((a, b) => {
             switch (sortOption) {
                 case 'name_asc':
@@ -144,7 +142,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
             const response = await categoryService.deleteCategory(editCategory.category._id);
 
             if (response.success) {
-                toast.success('Category deleted successfully');
+                toast.success(t('dashboard.annualReport.categories.success.deleted'));
                 const categoriesResponse = await categoryService.getAllCategories();
                 if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
                     setCategories(categoriesResponse.data);
@@ -155,16 +153,16 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
             const categoryError = error as CategoryApiErrorResponse;
             switch (categoryError.error) {
                 case 'CATEGORY_IN_USE':
-                    toast.error('Cannot delete a category with associated transactions');
+                    toast.error(t('dashboard.common.error.CATEGORY_IN_USE'));
                     break;
                 case 'CATEGORY_NOT_FOUND':
-                    toast.error('Category not found');
+                    toast.error(t('dashboard.common.error.CATEGORY_NOT_FOUND'));
                     break;
                 case 'INVALID_ID_FORMAT':
-                    toast.error('Invalid category format');
+                    toast.error(t('dashboard.common.error.INVALID_ID_FORMAT'));
                     break;
                 default:
-                    toast.error('Error deleting category');
+                    toast.error(t('dashboard.common.error.DELETE_ERROR'));
             }
         } finally {
             setSavingChanges(false);
@@ -185,7 +183,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     }}>
                         <TextField
                             size="small"
-                            placeholder="Find category..."
+                            placeholder={t('dashboard.annualReport.categories.searchPlaceholder')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             sx={{
@@ -205,17 +203,17 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                     height: '35px'
                                 }
                             }}>
-                            <InputLabel>Sort by</InputLabel>
+                            <InputLabel>{t('dashboard.annualReport.categories.sort.label')}</InputLabel>
                             <Select
                                 size="small"
-                                label="Sort by"
+                                label={t('dashboard.annualReport.categories.sort.label')}
                                 value={sortOption}
                                 onChange={(e) => setSortOption(e.target.value as SortOption)}
                             >
-                                <MenuItem value="name_asc">Name (A-Z)</MenuItem>
-                                <MenuItem value="name_desc">Name (Z-A)</MenuItem>
-                                <MenuItem value="balance_desc">Balance (Higher)</MenuItem>
-                                <MenuItem value="balance_asc">Balance (Lower)</MenuItem>
+                                <MenuItem value="name_asc">{t('dashboard.annualReport.categories.sort.nameAsc')}</MenuItem>
+                                <MenuItem value="name_desc">{t('dashboard.annualReport.categories.sort.nameDesc')}</MenuItem>
+                                <MenuItem value="balance_desc">{t('dashboard.annualReport.categories.sort.balanceDesc')}</MenuItem>
+                                <MenuItem value="balance_asc">{t('dashboard.annualReport.categories.sort.balanceAsc')}</MenuItem>
                             </Select>
                         </FormControl>
                         <Button
@@ -224,7 +222,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             startIcon={<span className="material-symbols-rounded">add</span>}
                             size="small"
                         >
-                            New Category
+                            {t('dashboard.annualReport.categories.addCategory')}
                         </Button>
                     </Box>
 
@@ -238,28 +236,28 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     ) : categories.length === 0 ? (
                         <Fade in timeout={300}>
                             <Box sx={{
-                               display: 'flex',
-                               justifyContent: 'center',
-                               alignItems: 'center',
-                               p: 3,
-                               minHeight: 200
-                           }}>
-                               <Typography variant="h5" color="text.secondary">
-                               📊 Create your first category to start tracking your finances 📊
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                p: 3,
+                                minHeight: 200
+                            }}>
+                                <Typography variant="h5" color="text.secondary">
+                                    {t('dashboard.annualReport.categories.addCategoryBanner')}
                                 </Typography>
                             </Box>
                         </Fade>
                     ) : categoriesBalance.length === 0 ? (
                         <Fade in timeout={300}>
                             <Box sx={{
-                               display: 'flex',
-                               justifyContent: 'center',
-                               alignItems: 'center',
-                               p: 3,
-                               minHeight: 200
-                           }}>
-                               <Typography variant="h5" color="text.secondary">
-                                    🔍 No categories found matching "{searchTerm}" 🔍
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                p: 3,
+                                minHeight: 200
+                            }}>
+                                <Typography variant="h5" color="text.secondary">
+                                    🔍 {t('dashboard.annualReport.categories.noCategoriesFound')} "{searchTerm}" 🔍
                                 </Typography>
                             </Box>
                         </Fade>
@@ -383,25 +381,24 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                     pt: 3,
                     pb: 1
                 }}>
-                    Delete Category
+                    {t('dashboard.annualReport.categories.delete.title')}
                 </DialogTitle>
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
                 }}>
                     <Typography>
-                        Are you sure you want to delete the category{' '}
+                        {t('dashboard.annualReport.categories.delete.confirmMessage')}
                         <Typography component="span" fontWeight="bold" color="primary">
                             {deleteDialog.categoryName}
                         </Typography>
                         ?
                     </Typography>
                     <Typography variant="body2" color="warning.main" sx={{ mt: 2 }}>
-                        Note: Categories with associated transactions cannot be deleted.
-                        You must first reassign or delete those transactions.
+                        {t('dashboard.annualReport.categories.delete.warning')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        This action cannot be undone.
+                        {t('dashboard.annualReport.categories.delete.cannotUndo')}
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{
@@ -416,7 +413,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             width: '120px'
                         }}
                     >
-                        Cancel
+                        {t('dashboard.common.cancel')}
                     </Button>
                     <Button
                         variant="contained"
@@ -430,7 +427,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
                         ) : (
-                            'Delete'
+                            t('dashboard.common.delete')
                         )}
                     </Button>
                 </DialogActions>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { transactionService } from '../../../../services/transaction.service';
 import type { Transaction } from '../../../../types/models/transaction';
@@ -11,6 +12,7 @@ import HomeHistory from './components/HomeHistory';
 export default function DashHome() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -22,14 +24,14 @@ export default function DashHome() {
                 setTransactions(response.data as Transaction[]);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
-                toast.error('Error loading dashboard data');
+                toast.error(t('dashboard.common.error.loading'));
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchTransactions();
-    }, []);
+    }, [t]);
 
     return (
         <Box sx={{

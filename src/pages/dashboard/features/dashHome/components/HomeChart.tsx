@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Box, Paper, Typography, Skeleton, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
@@ -21,6 +22,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
     const theme = useTheme();
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+    const { t } = useTranslation();
 
     const monthlyDataMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
@@ -113,7 +115,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     borderRadius: 3
                 }}>
                 <Typography variant="subtitle1" color="primary.light" gutterBottom>
-                    Last 6 months balances
+                    {t('dashboard.dashhome.chart.last6MonthsBalance')}
                 </Typography>
                 <Box sx={{
                     position: 'relative',
@@ -124,13 +126,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                         series={[
                             {
                                 data: [0, 0, 0, 0, 0, 0],
-                                label: 'Income',
+                                label: t('dashboard.dashhome.chart.income'),
                                 color: theme.palette.chart.income,
                                 valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                             },
                             {
                                 data: [0, 0, 0, 0, 0, 0],
-                                label: 'Expenses',
+                                label: t('dashboard.dashhome.chart.expenses'),
                                 color: theme.palette.chart.expenses,
                                 valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                             }
@@ -166,7 +168,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             py: 1,
                             borderRadius: 1
                         }}>
-                        No data available for the last 6 months
+                        {t('dashboard.dashhome.chart.noDataLast6Months')}
                     </Typography>
                 </Box>
             </Paper>
@@ -182,7 +184,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                 borderRadius: 3
             }}>
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
-                Last 6 months balances
+                {t('dashboard.dashhome.chart.last6MonthsBalance')}
             </Typography>
             <Box sx={{
                 width: '100%',
@@ -192,13 +194,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     series={[
                         {
                             data: monthlyData.map(d => d.income),
-                            label: 'Income',
+                            label: t('dashboard.dashhome.chart.income'),
                             color: theme.palette.chart.income,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         },
                         {
                             data: monthlyData.map(d => d.expenses),
-                            label: 'Expenses',
+                            label: t('dashboard.dashhome.chart.expenses'),
                             color: theme.palette.chart.expenses,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         }

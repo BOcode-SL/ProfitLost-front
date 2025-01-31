@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
@@ -14,6 +15,7 @@ interface HomeHistoryProps {
 export default function HomeHistory({ transactions, isLoading }: HomeHistoryProps) {
     const theme = useTheme();
     const { user } = useUser();
+    const { t } = useTranslation();
 
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
@@ -66,7 +68,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                 overflow: 'auto'
             }}>
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
-                Last transactions
+                {t('dashboard.dashhome.history.lastTransactions')}
             </Typography>
             {recentTransactionsMemo.map((transaction, index) => (
                 <Box key={transaction._id}>
