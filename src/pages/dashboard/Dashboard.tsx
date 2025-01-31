@@ -57,7 +57,7 @@ export default function Dashboard() {
         { label: 'Dashboard', icon: 'home' },
         { label: 'Annual Report', icon: 'bar_chart_4_bars' },
         { label: 'Transactions', icon: 'receipt_long' },
-        { label: 'Accounts', icon: 'credit_card' },
+        { label: 'Accounts', icon: 'account_balance' },
         { label: 'Goals', icon: 'task_alt' },
         { label: 'Notes', icon: 'description' }
     ];

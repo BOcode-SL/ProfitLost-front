@@ -50,3 +50,17 @@ export const formatDateTime = (date: string, user: User | null) => {
 
     return `${formattedDate} ${timeStr}`;
 };
+
+export const formatDate = (date: string, user: User | null) => {
+    const dateObj = new Date(date);
+    
+    // Default format if user preferences not set
+    const dateFormat = user?.dateFormat || 'MM/DD/YYYY';
+    
+    // Format date based on user preference
+    if (dateFormat === 'DD/MM/YYYY') {
+        return `${dateObj.getUTCDate().toString().padStart(2, '0')}/${(dateObj.getUTCMonth() + 1).toString().padStart(2, '0')}/${dateObj.getUTCFullYear()}`;
+    }
+    
+    return `${(dateObj.getUTCMonth() + 1).toString().padStart(2, '0')}/${dateObj.getUTCDate().toString().padStart(2, '0')}/${dateObj.getUTCFullYear()}`;
+};
