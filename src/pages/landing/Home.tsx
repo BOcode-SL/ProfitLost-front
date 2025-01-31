@@ -68,7 +68,7 @@ export default function Home() {
             <section className="features-section">
                 <div className="features-container bento-grid">
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded no-select">query_stats</span>
+                        <span className="material-symbols-rounded no-select">bar_chart_4_bars</span>
                         <h4>Annual Report</h4>
                         <p>Visualize your annual expenses with monthly graphs and detailed category analysis</p>
                     </article>
@@ -80,8 +80,8 @@ export default function Home() {
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">savings</span>
-                        <h4>Goals</h4>
+                        <span className="material-symbols-rounded no-select">task_alt</span>
+                        <h4>Goals <span className="soon-badge">Soon</span></h4>
                         <p>Set and achieve your financial goals with smart tracking</p>
                     </article>
 

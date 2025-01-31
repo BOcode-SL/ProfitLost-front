@@ -5,7 +5,7 @@ const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
-const Goals = lazy(() => import('../features/goals/Goals'));
+// const Goals = lazy(() => import('../features/goals/Goals'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 
 interface DashboardContentProps {
@@ -23,8 +23,8 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                 return <Transactions />;
             case 'Accounts':
                 return <Accounts />;
-            case 'Goals':
-                return <Goals />;
+            // case 'Goals':
+            //     return <Goals />;
             case 'Notes':
                 return <Notes />;
             default:

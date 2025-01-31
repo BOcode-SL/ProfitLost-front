@@ -58,8 +58,8 @@ export default function Dashboard() {
         { label: 'Annual Report', icon: 'bar_chart_4_bars' },
         { label: 'Transactions', icon: 'receipt_long' },
         { label: 'Accounts', icon: 'account_balance' },
-        { label: 'Goals', icon: 'task_alt' },
-        { label: 'Notes', icon: 'description' }
+        // { label: 'Goals', icon: 'task_alt' },
+        { label: 'Notes', icon: 'note_alt' },
     ];
 
     return (
