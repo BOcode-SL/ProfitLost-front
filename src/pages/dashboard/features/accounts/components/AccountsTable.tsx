@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Paper, Typography, Button, Drawer, Collapse, Fade } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgress } from '@mui/material';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account';
@@ -20,6 +20,7 @@ interface AccountsTableProps {
 export default function AccountsTable({
     accounts,
     inactiveAccounts,
+    loading,
     selectedYear,
     onUpdate,
     onCreate,
@@ -128,6 +129,58 @@ export default function AccountsTable({
                     </Button>
                 </Box>
 
+                {loading ? (
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: 200
+                    }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {accounts.map(account => renderAccount(account))}
+                        
+                        {accounts.length === 0 && (
+                            <Fade in timeout={300}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    p: 3,
+                                    minHeight: 200
+                                }}>
+                                    <Typography variant="h5" color="text.secondary">
+                                        🏦 Add your first account 🏦
+                                    </Typography>
+                                </Box>
+                            </Fade>
+                        )}
+
+                        {inactiveAccounts.length > 0 && (
+                            <Box sx={{ mt: 2 }}>
+                                <Button
+                                    onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
+                                    startIcon={
+                                        <span className="material-symbols-rounded">
+                                            {showInactiveAccounts ? 'expand_less' : 'expand_more'}
+                                        </span>
+                                    }
+                                    sx={{ mb: 1, color: 'text.primary' }}
+                                >
+                                    Inactive Accounts ({inactiveAccounts.length})
+                                </Button>
+                                <Collapse in={showInactiveAccounts}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        {inactiveAccounts.map(account => renderAccount(account, true))}
+                                    </Box>
+                                </Collapse>
+                            </Box>
+                        )}
+                    </Box>
+                )}
+
                 <Drawer
                     open={isDrawerOpen}
                     onClose={() => {
@@ -160,47 +213,6 @@ export default function AccountsTable({
                         account={selectedAccount}
                     />
                 </Drawer>
-
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {accounts.map(account => renderAccount(account))}
-                    
-                    {accounts.length === 0 && (
-                        <Fade in timeout={300}>
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: 3,
-                            minHeight: 200
-                        }}>
-                            <Typography variant="h5" color="text.secondary">
-                                🏦 Add your first account 🏦
-                            </Typography>
-                        </Box>
-                    </Fade>
-                    )}
-
-                    {inactiveAccounts.length > 0 && (
-                        <Box sx={{ mt: 2 }}>
-                            <Button
-                                onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
-                                startIcon={
-                                    <span className="material-symbols-rounded">
-                                        {showInactiveAccounts ? 'expand_less' : 'expand_more'}
-                                    </span>
-                                }
-                                sx={{ mb: 1, color: 'text.primary' }}
-                            >
-                                Inactive Accounts ({inactiveAccounts.length})
-                            </Button>
-                            <Collapse in={showInactiveAccounts}>
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                    {inactiveAccounts.map(account => renderAccount(account, true))}
-                                </Box>
-                            </Collapse>
-                        </Box>
-                    )}
-                </Box>
             </Paper>
         </Fade>
     );
