@@ -56,6 +56,12 @@
             }
         },
         "settings": {},
+        "dashhome": {
+            "title": "Dashboard"
+        },
+        "annualReport": {
+            "title": "Reporte anual"
+        },
         "accounts": {
             "title": "Cuentas",
             "newAccount": "Nueva cuenta",
@@ -116,10 +122,13 @@
             }
         },
         "transactions": {
+            "title": "Movimientos"
         },
         "goals": {
+            "title": "Objetivos"
         },
         "notes": {
+            "title": "Notas"
         }
     }
 }

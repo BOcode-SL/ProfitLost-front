@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../contexts/UserContext';
 import DashboardHeader from './components/DashboardHeader';
@@ -8,6 +9,7 @@ import DashboardNav from './components/DashboardNav';
 import DashboardContent from './components/DashboardContent';
 
 export default function Dashboard() {
+    const { t } = useTranslation();
     const [activeSection, setActiveSection] = useState('Dashboard');
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
@@ -54,12 +56,12 @@ export default function Dashboard() {
     }
 
     const menuItems = [
-        { label: 'Dashboard', icon: 'home' },
-        { label: 'Annual Report', icon: 'bar_chart_4_bars' },
-        { label: 'Transactions', icon: 'receipt_long' },
-        { label: 'Accounts', icon: 'account_balance' },
+        { label: t('dashboard.dashhome.title'), icon: 'home' },
+        { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars' },
+        { label: t('dashboard.transactions.title'), icon: 'receipt_long' },
+        { label: t('dashboard.accounts.title'), icon: 'account_balance' },
         // { label: 'Goals', icon: 'task_alt' },
-        { label: 'Notes', icon: 'note_alt' },
+        { label: t('dashboard.notes.title'), icon: 'note_alt' },
     ];
 
     return (

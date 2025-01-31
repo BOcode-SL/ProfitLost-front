@@ -56,6 +56,12 @@
             }
         },
         "settings": {},
+        "dashhome": {
+            "title": "Dashboard"
+        },
+        "annualReport": {
+            "title": "Annual Report"
+        },
         "accounts": {
             "title": "Accounts",
             "newAccount": "New Account",
@@ -116,62 +122,13 @@
             }
         },
         "transactions": {
-            "title": "Transactions",
-            "newTransaction": "New Transaction",
-            "editTransaction": "Edit Transaction",
-            "date": "Date",
-            "description": "Description",
-            "amount": "Amount",
-            "category": "Category",
-            "type": "Type",
-            "income": "Income",
-            "expense": "Expense",
-            "deleteTransaction": "Delete Transaction",
-            "deleteConfirm": "Are you sure you want to delete this transaction?",
-            "deleteWarning": "This action cannot be undone",
-            "noTransactions": "No transactions found",
-            "search": "Search transactions",
-            "sort": {
-                "dateDesc": "Date (newest)",
-                "dateAsc": "Date (oldest)",
-                "amountDesc": "Amount (highest)",
-                "amountAsc": "Amount (lowest)"
-            }
+            "title": "Transactions"
         },
         "goals": {
-            "title": "Goals",
-            "newGoal": "New Goal",
-            "editGoal": "Edit Goal",
-            "name": "Goal Name",
-            "type": "Type",
-            "targetAmount": "Target Amount",
-            "currentAmount": "Current Amount",
-            "deadline": "Deadline",
-            "newEntry": "New Entry",
-            "history": "History",
-            "noEntries": "No entries yet",
-            "deleteGoal": "Delete Goal",
-            "deleteConfirm": "Are you sure you want to delete this goal?",
-            "deleteWarning": "This action cannot be undone",
-            "noGoals": "No goals found",
-            "types": {
-                "saving": "Saving",
-                "investment": "Investment",
-                "goal": "Goal",
-                "debt": "Debt"
-            }
+            "title": "Goals"
         },
         "notes": {
-            "title": "Notes",
-            "newNote": "New Note",
-            "editNote": "Edit Note",
-            "noteTitle": "Title",
-            "content": "Content",
-            "deleteNote": "Delete Note",
-            "deleteConfirm": "Are you sure you want to delete this note?",
-            "deleteWarning": "This action cannot be undone",
-            "noNotes": "No notes found",
-            "selectNote": "Select a note to view its content"
+            "title": "Notes"
         }
     }
 }
