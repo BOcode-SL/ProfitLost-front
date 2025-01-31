@@ -234,8 +234,8 @@ export default function TransactionTable({
                                                 flex: 1
                                             }}>
                                                 <Box sx={{
-                                                    width: 12,
-                                                    height: 12,
+                                                    width: 15,
+                                                    height: 15,
                                                     borderRadius: '50%',
                                                     bgcolor: getCategoryColor(transaction.category)
                                                 }} />
