@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { transactionService } from '../../../../services/transaction.service';
 import type { Transaction } from '../../../../types/models/transaction';
@@ -10,6 +11,7 @@ import AnnualCategories from './components/AnnualCategories';
 import AnnualBalances from './components/AnnualBalances';
 
 export default function AnnualReport() {
+    const { t } = useTranslation();
     const currentYear = new Date().getFullYear().toString();
     const [year, setYear] = useState(currentYear);
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
@@ -37,23 +39,25 @@ export default function AnnualReport() {
                 const transactionError = error as TransactionApiErrorResponse;
                 switch (transactionError.error) {
                     case 'UNAUTHORIZED':
-                        toast.error('Expired session. Please log in again.');
+                        toast.error(t('dashboard.common.error.UNAUTHORIZED'));
                         break;
                     case 'CONNECTION_ERROR':
-                        toast.error('Connection error. Please check your internet connection.');
+                        toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
                         break;
                     case 'DATABASE_ERROR':
+                        toast.error(t('dashboard.common.error.DATABASE_ERROR'));
+                        break;
                     case 'SERVER_ERROR':
-                        toast.error('Server error. Please try again later.');
+                        toast.error(t('dashboard.common.error.SERVER_ERROR'));
                         break;
                     default:
-                        toast.error('Error loading years');
+                        toast.error(t('dashboard.common.error.loading'));
                 }
             }
         };
 
         fetchAllTransactions();
-    }, [currentYear]);
+    }, [currentYear, t]);
 
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
@@ -67,20 +71,22 @@ export default function AnnualReport() {
                 const transactionError = error as TransactionApiErrorResponse;
                 switch (transactionError.error) {
                     case 'INVALID_DATE_FORMAT':
-                        toast.error('Invalid date format');
+                        toast.error(t('dashboard.common.error.INVALID_DATE_FORMAT'));
                         break;
                     case 'UNAUTHORIZED':
-                        toast.error('Expired session. Please log in again.');
+                        toast.error(t('dashboard.common.error.UNAUTHORIZED'));
                         break;
                     case 'CONNECTION_ERROR':
-                        toast.error('Connection error. Please check your internet connection.');
+                        toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
                         break;
                     case 'DATABASE_ERROR':
+                        toast.error(t('dashboard.common.error.DATABASE_ERROR'));
+                        break;
                     case 'SERVER_ERROR':
-                        toast.error('Server error. Please try again later.');
+                        toast.error(t('dashboard.common.error.SERVER_ERROR'));
                         break;
                     default:
-                        toast.error('Error loading transactions');
+                        toast.error(t('dashboard.common.error.loading'));
                 }
                 setTransactions([]);
             } finally {
@@ -117,10 +123,10 @@ export default function AnnualReport() {
                                         flexGrow: 1,
                                         minWidth: { xs: '100%', sm: 200 },
                                     }}>
-                                    <InputLabel>Year</InputLabel>
+                                    <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                     <Select
                                         value={year}
-                                        label="Year"
+                                        label={t('dashboard.common.year')}
                                         onChange={(e) => setYear(e.target.value)}
                                     >
                                         {yearsWithData.map((yearOption) => (
@@ -141,14 +147,14 @@ export default function AnnualReport() {
                                         size="small"
                                         fullWidth
                                         sx={{
-                                            width: { xs: '100%', sm: 210 },
+                                            width: { xs: '100%', sm: 250 },
                                         }}
                                     >
                                         <ToggleButton value="yearToday">
-                                            Year Today
+                                            {t('dashboard.common.viewMode.yearToday')}
                                         </ToggleButton>
                                         <ToggleButton value="fullYear">
-                                            Full Year
+                                            {t('dashboard.common.viewMode.fullYear')}
                                         </ToggleButton>
                                     </ToggleButtonGroup>
                                 </Fade>
