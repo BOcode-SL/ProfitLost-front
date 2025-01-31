@@ -3,6 +3,7 @@ import {
     Box, IconButton, Typography, TextField, Paper, Button, Switch, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import type { Account } from '../../../../../types/models/account';
 
@@ -13,36 +14,14 @@ interface AccountsFormProps {
     account?: Account | null;
 }
 
+// Estos son los meses que usamos para el backend (siempre en inglés)
 const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
-const monthNames = {
-    Jan: 'January',
-    Feb: 'February',
-    Mar: 'March',
-    Apr: 'April',
-    May: 'May',
-    Jun: 'June',
-    Jul: 'July',
-    Aug: 'August',
-    Sep: 'September',
-    Oct: 'October',
-    Nov: 'November',
-    Dec: 'December'
-};
 
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
+    const { t } = useTranslation();
     const [accountName, setAccountName] = useState(account?.accountName || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
@@ -77,9 +56,15 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     }, [account, selectedYear]);
 
+    // Función para obtener el nombre traducido del mes
+    const getMonthName = (monthKey: string, short: boolean = false) => {
+        const path = short ? 'dashboard.common.monthNamesShort.' : 'dashboard.common.monthNames.';
+        return t(path + monthKey);
+    };
+
     const handleSubmit = async () => {
         if (!accountName.trim()) {
-            toast.error('Account name is required');
+            toast.error(t('dashboard.accounts.errors.nameRequired'));
             return;
         }
 
@@ -92,7 +77,6 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             }));
 
             if (account) {
-                // Update
                 const updatedAccount: Account = {
                     ...account,
                     accountName: accountName.trim(),
@@ -111,7 +95,6 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     onClose();
                 }
             } else {
-                // Create
                 const newAccount: Account = {
                     _id: '',
                     user_id: '',
@@ -132,7 +115,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             }
         } catch (error) {
             console.error('❌ Error saving changes:', error);
-            toast.error('Error saving changes');
+            toast.error(t('dashboard.accounts.errors.savingError'));
         } finally {
             setSavingChanges(false);
         }
@@ -146,7 +129,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             onDelete?.(account._id);
             onClose();
         } catch {
-            toast.error('Failed to delete account');
+            toast.error(t('dashboard.accounts.errors.deleteError'));
         } finally {
             setSavingChanges(false);
             setDeleteDialog(false);
@@ -160,18 +143,19 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     <span className="material-symbols-rounded">close</span>
                 </IconButton>
                 <Typography variant="h6">
-                    {account ? 'Edit account' : 'New account'}
+                    {account ? t('dashboard.accounts.editAccount') : t('dashboard.accounts.newAccount')}
                 </Typography>
             </Box>
 
             <Box component="form">
                 <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
-                        label="Account name"
+                        label={t('dashboard.accounts.form.fields.name.label')}
                         fullWidth
                         size="small"
                         value={accountName}
                         onChange={(e) => setAccountName(e.target.value)}
+                        placeholder={t('dashboard.accounts.form.fields.name.placeholder')}
                     />
                 </Paper>
 
@@ -179,10 +163,10 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     <>
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                             <FormControl size="small" fullWidth>
-                                <InputLabel>Year</InputLabel>
+                                <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                 <Select
                                     value={selectedYear}
-                                    label="Year"
+                                    label={t('dashboard.common.year')}
                                     onChange={(e) => setSelectedYear(Number(e.target.value))}
                                 >
                                     {availableYears.map(year => (
@@ -198,7 +182,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                 {months.map(month => (
                                     <Box key={month} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Typography>{monthNames[month as keyof typeof monthNames]}</Typography>
+                                        <Typography>{getMonthName(month)}</Typography>
                                         <TextField
                                             size="small"
                                             type="number"
@@ -215,7 +199,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Typography>Active account</Typography>
+                                <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
                                 <Switch
                                     checked={isActive}
                                     onChange={(e) => setIsActive(e.target.checked)}
@@ -227,7 +211,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
                 <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                        <Typography>Background color</Typography>
+                        <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
                         <input
                             type="color"
                             value={backgroundColor}
@@ -235,7 +219,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 2 }}>
-                        <Typography>Text color</Typography>
+                        <Typography>{t('dashboard.accounts.form.fields.textColor')}</Typography>
                         <input
                             type="color"
                             value={textColor}
@@ -252,7 +236,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             onClick={() => setDeleteDialog(true)}
                             sx={{ flex: 1 }}
                         >
-                            Delete
+                            {t('dashboard.common.delete')}
                         </Button>
                     )}
                     <Button
@@ -264,7 +248,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
                         ) : (
-                            account ? 'Update' : 'Create'
+                            account ? t('dashboard.common.update') : t('dashboard.common.create')
                         )}
                     </Button>
                 </Box>
@@ -286,21 +270,21 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     pt: 3,
                     pb: 1
                 }}>
-                    Delete Account
+                    {t('dashboard.accounts.form.delete.title')}
                 </DialogTitle>
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
                 }}>
                     <Typography>
-                        Are you sure you want to delete the account{' '}
+                        {t('dashboard.accounts.form.delete.message')}{' '}
                         <Typography component="span" fontWeight="bold" color="primary">
                             {accountName}
                         </Typography>
                         ?
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        This action cannot be undone.
+                        {t('dashboard.accounts.form.delete.warning')}
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{
@@ -313,7 +297,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         onClick={() => setDeleteDialog(false)}
                         sx={{ width: '120px' }}
                     >
-                        Cancel
+                        {t('dashboard.common.cancel')}
                     </Button>
                     <Button
                         variant="contained"
@@ -325,7 +309,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
                         ) : (
-                            'Delete'
+                            t('dashboard.common.delete')
                         )}
                     </Button>
                 </DialogActions>

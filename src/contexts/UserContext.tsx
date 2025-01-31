@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import type { User, UserContextType } from '../types/models/user';
 import type { UserApiErrorResponse } from '../types/api/responses';
@@ -10,12 +11,28 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { i18n } = useTranslation();
+
+    const convertLanguageFormat = (userLanguage: string | undefined) => {
+        switch (userLanguage) {
+            case 'enUS':
+                return 'en';
+            case 'esES':
+                return 'es';
+            default:
+                return 'en';
+        }
+    };
 
     const loadUserData = useCallback(async () => {
         try {
             const response = await userService.getUserData();
             if (response.success && response.data) {
-                setUser(response.data as User);
+                const userData = response.data as User;
+                setUser(userData);
+                
+                const userLanguage = convertLanguageFormat(userData.language);
+                await i18n.changeLanguage(userLanguage);
             }
         } catch (error) {
             console.error('Error loading user data:', error);
@@ -27,7 +44,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [i18n]);
 
     useEffect(() => {
         loadUserData();

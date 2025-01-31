@@ -1,0 +1,125 @@
+{
+    "dashboard": {
+        "common": {
+            "year": "Año",
+            "save": "Guardar",
+            "update": "Actualizar",
+            "create": "Crear",
+            "delete": "Eliminar",
+            "cancel": "Cancelar",
+            "close": "Cerrar",
+            "loading": "Cargando...",
+            "noData": "No hay datos disponibles",
+            "colors": {
+                "background": "Color de fondo",
+                "text": "Color de texto"
+            },
+            "success": {
+                "saved": "Cambios guardados correctamente",
+                "deleted": "Eliminado correctamente",
+                "created": "Creado correctamente",
+                "updated": "Actualizado correctamente"
+            },
+            "error": {
+                "generic": "Ocurrió un error",
+                "saving": "Error al guardar",
+                "deleting": "Error al eliminar",
+                "required": "Este campo es requerido"
+            },
+            "monthNames": {
+                "Jan": "Enero",
+                "Feb": "Febrero",
+                "Mar": "Marzo",
+                "Apr": "Abril",
+                "May": "Mayo",
+                "Jun": "Junio",
+                "Jul": "Julio",
+                "Aug": "Agosto",
+                "Sep": "Septiembre",
+                "Oct": "Octubre",
+                "Nov": "Noviembre",
+                "Dec": "Diciembre"
+            },
+            "monthNamesShort": {
+                "Jan": "Ene",
+                "Feb": "Feb",
+                "Mar": "Mar",
+                "Apr": "Abr",
+                "May": "May",
+                "Jun": "Jun",
+                "Jul": "Jul",
+                "Aug": "Ago",
+                "Sep": "Sep",
+                "Oct": "Oct",
+                "Nov": "Nov",
+                "Dec": "Dic"
+            }
+        },
+        "settings": {},
+        "accounts": {
+            "title": "Cuentas",
+            "newAccount": "Nueva cuenta",
+            "editAccount": "Editar cuenta",
+            "accountName": "Nombre de la cuenta",
+            "backgroundColor": "Color de fondo",
+            "textColor": "Color de texto",
+            "isActive": "Cuenta activa",
+            "deleteAccount": "Eliminar cuenta",
+            "deleteConfirm": "¿Estás seguro de que quieres eliminar la cuenta?",
+            "deleteWarning": "Esta acción no se puede deshacer",
+            "noAccounts": "No se encontraron cuentas",
+            "success": {
+                "accountCreated": "Cuenta creada correctamente",
+                "accountUpdated": "Cuenta actualizada correctamente",
+                "accountDeleted": "Cuenta eliminada correctamente",
+                "accountsOrderUpdated": "Orden de cuentas actualizado correctamente"
+            },
+            "errors": {
+                "nameRequired": "El nombre de la cuenta es requerido",
+                "savingError": "Error al guardar",
+                "loadingError": "Error al cargar las cuentas",
+                "createError": "Error al crear la cuenta",
+                "updateError": "Error al actualizar la cuenta",
+                "deleteError": "Error al eliminar la cuenta",
+                "accountsOrderError": "Error al actualizar el orden de las cuentas"
+            },
+            "form": {
+                "title": {
+                    "edit": "Editar cuenta",
+                    "new": "Nueva cuenta"
+                },
+                "fields": {
+                    "name": {
+                        "label": "Nombre de la cuenta",
+                        "placeholder": "Ingrese el nombre de la cuenta"
+                    },
+                    "year": "Año",
+                    "active": "Cuenta activa",
+                    "backgroundColor": "Color de fondo",
+                    "textColor": "Color de texto",
+                    "monthlyValues": "Valores mensuales"
+                },
+                "delete": {
+                    "title": "Eliminar cuenta",
+                    "message": "¿Estás seguro de que quieres eliminar la cuenta?",
+                    "warning": "Esta acción no se puede deshacer"
+                },
+                "validation": {
+                    "nameRequired": "El nombre de la cuenta es requerido"
+                }
+            },
+            "table": {
+                "noAccounts": "No se encontraron cuentas",
+                "addAccount": "Agregar cuenta",
+                "inactiveAccounts": "Cuentas inactivas",
+                "addAccountBanner": "🏦 Agrega tu primera cuenta 🏦"
+            }
+        },
+        "transactions": {
+        },
+        "goals": {
+        },
+        "notes": {
+        }
+    }
+}

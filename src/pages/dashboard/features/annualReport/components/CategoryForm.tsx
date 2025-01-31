@@ -116,7 +116,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         disabled={saving}
                         fullWidth
                     >
-                        {saving ? <CircularProgress size={24} /> : (category ? 'Save Changes' : 'Create')}
+                        {saving ? <CircularProgress size={24} /> : (category ? 'Update' : 'Create')}
                     </Button>
                 </Box>
             </Box>

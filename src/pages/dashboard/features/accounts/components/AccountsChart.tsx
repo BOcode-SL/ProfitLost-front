@@ -1,5 +1,6 @@
 import { Box, Skeleton, useTheme, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
@@ -13,14 +14,22 @@ interface AccountsChartProps {
 
 interface DataPoint {
     month: string;
+    monthDisplay: string;
     [key: string]: number | string;
 }
 
+// Meses en inglés para el backend
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export default function AccountsChart({ accounts, loading, selectedYear }: AccountsChartProps) {
     const theme = useTheme();
     const { user } = useUser();
+    const { t } = useTranslation();
+
+    // Función para obtener el nombre corto traducido del mes
+    const getMonthShortName = (monthKey: string) => {
+        return t(`dashboard.common.monthNamesShort.${monthKey}`);
+    };
 
     if (loading) {
         return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
@@ -30,7 +39,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const isDataEmpty = activeAccounts.length === 0;
 
     const dataset: DataPoint[] = months.map(month => {
-        const dataPoint: DataPoint = { month };
+        const dataPoint: DataPoint = { 
+            month,  
+            monthDisplay: getMonthShortName(month)  
+        };
         activeAccounts.forEach(account => {
             const record = account.records.find(r => r.year === selectedYear && r.month === month);
             dataPoint[account.accountName] = record?.value || 0;
@@ -65,10 +77,12 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                 xAxis={[{
                     dataKey: 'month',
                     scaleType: 'band',
-                    valueFormatter: (month, context) =>
-                        context.location === 'tick'
-                            ? month
-                            : `${month}: ${formatCurrency(getMonthTotal(month), user)}`,
+                    valueFormatter: (month, context) => {
+                        const dataPoint = dataset.find(d => d.month === month);
+                        return context.location === 'tick'
+                            ? dataPoint?.monthDisplay || month
+                            : `${dataPoint?.monthDisplay}: ${formatCurrency(getMonthTotal(month), user)}`;
+                    },
                     tickLabelStyle: {
                         angle: 45,
                         textAnchor: 'start',
@@ -109,7 +123,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                         py: 1,
                         borderRadius: 1
                     }}>
-                    No data available
+                    {t('dashboard.common.noData')}
                 </Typography>
             )}
         </Box>

@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import type { Account } from '../../../../types/models/account';
 import type { User } from '../../../../types/models/user';
@@ -10,6 +11,7 @@ import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 
 export default function Accounts() {
+    const { t } = useTranslation();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
@@ -41,7 +43,7 @@ export default function Accounts() {
         if (response.success && response.data) {
             setAccounts(response.data as Account[]);
         } else {
-            toast.error(response.message || 'Error loading accounts');
+            toast.error(t('dashboard.accounts.errors.loadingError'));
         }
         setLoading(false);
     };
@@ -83,16 +85,16 @@ export default function Accounts() {
                 setAccounts(prev => prev.map(acc =>
                     acc._id === updatedAccount._id ? response.data as Account : acc
                 ));
-                toast.success('Account updated successfully');
+                toast.success(t('dashboard.accounts.success.accountUpdated'));
                 return true;
             } else {
-                toast.error(response.message || 'Error updating account');
+                toast.error(t('dashboard.accounts.errors.updateError'));
                 await fetchAccounts();
                 return false;
             }
         } catch (error) {
             console.error('❌ Error updating account:', error);
-            toast.error('Error updating account');
+            toast.error(t('dashboard.accounts.errors.updateError'));
             await fetchAccounts();
             return false;
         }
@@ -107,10 +109,10 @@ export default function Accounts() {
 
         if (response.success && response.data) {
             setAccounts(prev => [...prev, response.data as Account]);
-            toast.success('Account created successfully');
+            toast.success(t('dashboard.accounts.success.accountCreated'));
             return true;
         } else {
-            toast.error(response.message || 'Error creating account');
+            toast.error(t('dashboard.accounts.errors.createError'));
             return false;
         }
     };
@@ -120,10 +122,10 @@ export default function Accounts() {
 
         if (response.success) {
             setAccounts(prev => prev.filter(acc => acc._id !== accountId));
-            toast.success('Account deleted successfully');
+            toast.success(t('dashboard.accounts.success.accountDeleted'));
             return true;
         } else {
-            toast.error(response.message || 'Error deleting account');
+            toast.error(t('dashboard.accounts.errors.deleteError'));
             return false;
         }
     };
@@ -136,13 +138,13 @@ export default function Accounts() {
                     ...prev,
                     accountsOrder: newOrder
                 } : null);
-                toast.success('Accounts order updated successfully');
+                toast.success(t('dashboard.accounts.success.accountsOrderUpdated'));
             } else {
-                toast.error(response.message || 'Error updating accounts order');
+                toast.error(t('dashboard.accounts.errors.accountsOrderError'));
             }
         } catch (error) {
             console.error('❌ Error updating accounts order:', error);
-            toast.error('Error updating accounts order');
+            toast.error(t('dashboard.accounts.errors.accountsOrderError'));
         }
     };
 
@@ -167,10 +169,10 @@ export default function Accounts() {
                     width: '100%'
                 }}>
                     <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
-                        <InputLabel>Year</InputLabel>
+                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
                         <Select
                             value={selectedYear}
-                            label="Year"
+                            label={t('dashboard.common.year')}
                             onChange={(e) => setSelectedYear(e.target.value)}
                         >
                             {availableYears.map(year => (

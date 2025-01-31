@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Account } from '../../../../../types/models/account';
@@ -32,6 +33,7 @@ export default function AccountsTable({
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
     const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
+    const { t } = useTranslation();
 
     const getCurrentBalance = (account: Account): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
@@ -125,7 +127,7 @@ export default function AccountsTable({
                         startIcon={<span className="material-symbols-rounded">add</span>}
                         size="small"
                     >
-                        New Account
+                        {t('dashboard.accounts.newAccount')}
                     </Button>
                 </Box>
 
@@ -152,7 +154,7 @@ export default function AccountsTable({
                                     minHeight: 200
                                 }}>
                                     <Typography variant="h5" color="text.secondary">
-                                        🏦 Add your first account 🏦
+                                        {t('dashboard.accounts.table.addAccountBanner')}
                                     </Typography>
                                 </Box>
                             </Fade>
@@ -169,7 +171,7 @@ export default function AccountsTable({
                                     }
                                     sx={{ mb: 1, color: 'text.primary' }}
                                 >
-                                    Inactive Accounts ({inactiveAccounts.length})
+                                    {t('dashboard.accounts.table.inactiveAccounts')} ({inactiveAccounts.length})
                                 </Button>
                                 <Collapse in={showInactiveAccounts}>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
