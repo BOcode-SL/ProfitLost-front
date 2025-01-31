@@ -95,7 +95,7 @@ export default function AnnualReport() {
         };
 
         fetchTransactionsByYear();
-    }, [year]);
+    }, [year, t]);
 
     const filteredTransactions = transactions.filter(transaction => {
         if (viewMode === 'yearToday') {
