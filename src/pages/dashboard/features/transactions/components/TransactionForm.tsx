@@ -26,10 +26,16 @@ const Transition = forwardRef(function Transition(
 
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
     const { t } = useTranslation();
-    const [date, setDate] = useState(transaction
-        ? new Date(transaction.date).toISOString().slice(0, 19)
-        : new Date().toISOString().slice(0, 19)
-    );
+    const [date, setDate] = useState(() => {
+        if (transaction) {
+            const txDate = new Date(transaction.date);
+            return txDate.toISOString().slice(0, 19);
+        }
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        const localDate = new Date(now.getTime() - offset);
+        return localDate.toISOString().slice(0, 19);
+    });
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
     const [category, setCategory] = useState(transaction
@@ -42,8 +48,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     useEffect(() => {
         if (transaction) {
-            const localDate = new Date(transaction.date);
-            setDate(localDate.toISOString().slice(0, 19));
+            const txDate = new Date(transaction.date);
+            setDate(txDate.toISOString().slice(0, 19));
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
             setCategory(categories.find(cat => cat.name === transaction.category) || null);
@@ -69,17 +75,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             const finalDescription = description.trim() || category.name || '';
 
             const localDate = new Date(date);
-            const utcDate = new Date(Date.UTC(
-                localDate.getFullYear(),
-                localDate.getMonth(),
-                localDate.getDate(),
-                localDate.getHours(),
-                localDate.getMinutes(),
-                localDate.getSeconds()
-            ));
+            const utcDate = new Date(
+                localDate.getTime() - localDate.getTimezoneOffset() * 60000
+            ).toISOString();
 
             const transactionData = {
-                date: utcDate.toISOString(),
+                date: utcDate,
                 description: finalDescription,
                 amount: numAmount * (isIncome ? 1 : -1),
                 category: category._id
