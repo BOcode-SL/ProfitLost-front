@@ -1,7 +1,7 @@
 import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Slide } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import type { Note } from '../../../../../types/models/note';
 
 const Transition = forwardRef(function Transition(
@@ -28,6 +28,7 @@ export default function NoteEditor({
     onDelete,
     isSaving = false
 }: NoteEditorProps) {
+    const { t } = useTranslation();
     const [deleteDialog, setDeleteDialog] = useState(false);
 
     const handleDeleteClick = () => {
@@ -43,7 +44,7 @@ export default function NoteEditor({
                 justifyContent: 'center'
             }}>
                 <Typography color="text.secondary">
-                    Select a note to view its content
+                    {t('dashboard.notes.list.selectNote')}
                 </Typography>
             </Box>
         );
@@ -61,7 +62,7 @@ export default function NoteEditor({
                     <TextField
                         fullWidth
                         variant="outlined"
-                        placeholder="Note title"
+                        placeholder={t('dashboard.notes.form.fields.title.placeholder')}
                         value={note.title}
                         onChange={(e) => onChange?.('title', e.target.value)}
                         disabled={isSaving}
@@ -73,7 +74,7 @@ export default function NoteEditor({
                     multiline
                     fullWidth
                     minRows={4}
-                    placeholder="Note content"
+                    placeholder={t('dashboard.notes.form.fields.content.placeholder')}
                     value={note.content}
                     onChange={(e) => onChange?.('content', e.target.value)}
                     disabled={isSaving}
@@ -95,7 +96,7 @@ export default function NoteEditor({
                             width: { xs: '100%', sm: 'auto' }
                         }}
                     >
-                        Delete
+                        {t('dashboard.common.delete')}
                     </Button>
                     <Button
                         variant="contained"
@@ -112,7 +113,7 @@ export default function NoteEditor({
                             width: { xs: '100%', sm: 'auto' }
                         }}
                     >
-                        Save
+                        {t('dashboard.common.save')}
                     </Button>
                 </Box>
             </Box>
@@ -135,17 +136,17 @@ export default function NoteEditor({
                     pt: 3,
                     pb: 1
                 }}>
-                    Delete Note
+                    {t('dashboard.notes.delete.title')}
                 </DialogTitle>
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
                 }}>
                     <Typography>
-                        Are you sure you want to delete this note?
+                        {t('dashboard.notes.delete.confirmMessage')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        This action cannot be undone.
+                        {t('dashboard.notes.delete.warning')}
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{
@@ -158,7 +159,7 @@ export default function NoteEditor({
                         onClick={() => setDeleteDialog(false)}
                         sx={{ width: '120px' }}
                     >
-                        Cancel
+                        {t('dashboard.common.cancel')}
                     </Button>
                     <Button
                         variant="contained"
@@ -173,7 +174,7 @@ export default function NoteEditor({
                         {isSaving ? (
                             <CircularProgress size={24} color="inherit" />
                         ) : (
-                            'Delete'
+                            t('dashboard.common.delete')
                         )}
                     </Button>
                 </DialogActions>

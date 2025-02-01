@@ -306,7 +306,45 @@
             "title": "Objetivos"
         },
         "notes": {
-            "title": "Notas"
+            "title": "Notas",
+            "form": {
+                "title": {
+                    "edit": "Editar nota",
+                    "new": "Nueva nota"
+                },
+                "fields": {
+                    "title": {
+                        "label": "Título",
+                        "placeholder": "Título de la nota"
+                    },
+                    "content": {
+                        "label": "Contenido",
+                        "placeholder": "Contenido de la nota"
+                    }
+                }
+            },
+            "delete": {
+                "title": "Eliminar nota",
+                "confirmMessage": "¿Estás seguro de que quieres eliminar esta nota?",
+                "warning": "Esta acción no se puede deshacer"
+            },
+            "list": {
+                "noNotes": "No hay notas creadas",
+                "selectNote": "Selecciona una nota para ver su contenido",
+                "createNote": "Crear nota",
+                "noTitle": "Sin título"
+            },
+            "success": {
+                "created": "Nota creada correctamente",
+                "updated": "Nota guardada correctamente",
+                "deleted": "Nota eliminada correctamente"
+            },
+            "errors": {
+                "loadingError": "Error al cargar las notas",
+                "createError": "Error al crear la nota",
+                "updateError": "Error al guardar la nota",
+                "deleteError": "Error al eliminar la nota"
+            }
         }
     }
 }

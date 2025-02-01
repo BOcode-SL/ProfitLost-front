@@ -1,4 +1,5 @@
 import { List, Box, Typography, useTheme, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import type { Note } from '../../../../../types/models/note';
 
@@ -15,6 +16,7 @@ export default function NoteList({
     onSelectNote,
     isLoading
 }: NoteListProps) {
+    const { t } = useTranslation();
     const theme = useTheme();
 
     if (isLoading) {
@@ -29,7 +31,7 @@ export default function NoteList({
         return (
             <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Typography color="text.secondary">
-                    No notes created
+                    {t('dashboard.notes.list.noNotes')}
                 </Typography>
             </Box>
         );
@@ -83,7 +85,7 @@ export default function NoteList({
                                 color: theme.palette.text.primary
                             }}
                         >
-                            {note.title || 'No title'}
+                            {note.title || t('dashboard.notes.list.noTitle')}
                         </Typography>
                         <Typography
                             variant="body2"

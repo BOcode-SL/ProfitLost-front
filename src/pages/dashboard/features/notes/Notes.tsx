@@ -1,6 +1,7 @@
 import { Box, Button, Paper, CircularProgress } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import type { Note } from '../../../../types/models/note';
 import { noteService } from '../../../../services/note.service';
@@ -8,6 +9,7 @@ import NoteList from './components/NoteList';
 import NoteEditor from './components/NoteEditor';
 
 export default function Notes() {
+    const { t } = useTranslation();
     const [notes, setNotes] = useState<Note[]>([]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -29,14 +31,14 @@ export default function Notes() {
                     }
                 }
             } catch {
-                toast.error('Error loading notes');
+                toast.error(t('dashboard.notes.errors.loadingError'));
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchNotes();
-    }, []);
+    }, [t]);
 
     const handleSelectNote = (note: Note) => {
         setSelectedNote(note);
@@ -53,7 +55,7 @@ export default function Notes() {
         try {
             setIsSaving(true);
             const response = await noteService.createNote({
-                title: 'New Note',
+                title: t('dashboard.notes.form.title.new'),
                 content: ''
             });
 
@@ -63,7 +65,7 @@ export default function Notes() {
                 setSelectedNote(newNote);
             }
         } catch {
-            toast.error('Error creating note');
+            toast.error(t('dashboard.notes.errors.createError'));
         } finally {
             setIsSaving(false);
         }
@@ -88,17 +90,17 @@ export default function Notes() {
                     )
                 );
                 setSelectedNote(updatedNote);
-                toast.success('Note saved successfully');
+                toast.success(t('dashboard.notes.success.updated'));
             } else {
                 console.error('Error in response:', response);
-                toast.error(response.message || 'Error saving note');
+                toast.error(response.message || t('dashboard.notes.errors.updateError'));
             }
         } catch (error) {
             console.error('Error saving note:', error);
             if (error && typeof error === 'object' && 'message' in error) {
                 toast.error(error.message as string);
             } else {
-                toast.error('Error saving note');
+                toast.error(t('dashboard.notes.errors.updateError'));
             }
         } finally {
             setIsSaving(false);
@@ -116,10 +118,10 @@ export default function Notes() {
                 setNotes(prevNotes => prevNotes.filter(note => note._id !== selectedNote._id));
                 const remainingNotes = notes.filter(note => note._id !== selectedNote._id);
                 setSelectedNote(remainingNotes.length > 0 ? remainingNotes[0] : null);
-                toast.success('Note deleted successfully');
+                toast.success(t('dashboard.notes.success.deleted'));
             }
         } catch {
-            toast.error('Error deleting note');
+            toast.error(t('dashboard.notes.errors.deleteError'));
         } finally {
             setIsSaving(false);
         }
@@ -172,7 +174,7 @@ export default function Notes() {
                         disabled={isSaving}
                         startIcon={<span className="material-symbols-rounded">add</span>}
                     >
-                        {isSaving ? <CircularProgress size={24} /> : 'Create note'}
+                        {isSaving ? <CircularProgress size={24} /> : t('dashboard.notes.list.createNote')}
                     </Button>
                     <NoteList
                         notes={notes}
