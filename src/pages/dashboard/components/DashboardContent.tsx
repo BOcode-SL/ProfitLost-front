@@ -1,6 +1,5 @@
 import { Suspense, lazy } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -13,20 +12,17 @@ interface DashboardContentProps {
 }
 
 const DashboardContent = ({ activeSection }: DashboardContentProps) => {
-    const { t } = useTranslation();
     const renderContent = () => {
         switch (activeSection) {
-            case t('dashboard.dashhome.title'):
+            case 'dashhome':
                 return <DashHome />;
-            case t('dashboard.annualReport.title'):
+            case 'annualReport':
                 return <AnnualReport />;
-            case t('dashboard.transactions.title'):
+            case 'transactions':
                 return <Transactions />;
-            case t('dashboard.accounts.title'):
+            case 'accounts':
                 return <Accounts />;
-            // case t('dashboard.goals.title'):
-            //     return <Goals />;
-            case t('dashboard.notes.title'):
+            case 'notes':
                 return <Notes />;
             default:
                 return (
@@ -46,7 +42,7 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
                             }
                         }}
                     >
-                        <p>🚧{activeSection} is under construction🚧</p>
+                        <p>🚧 {activeSection} is under construction 🚧</p>
                     </Paper>
                 );
         }

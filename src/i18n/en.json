@@ -9,12 +9,14 @@
             "delete": "Delete",
             "cancel": "Cancel",
             "close": "Close",
+            "confirm": "Confirm",
             "loading": "Loading...",
             "noData": "No data available",
             "colors": {
                 "background": "Background color",
                 "text": "Text color"
             },
+            "logout": "Log out",
             "success": {
                 "saved": "Changes saved successfully",
                 "deleted": "Deleted successfully",
@@ -96,7 +98,88 @@
                 "fullYear": "Full Year"
             }
         },
-        "settings": {},
+        "settings": {
+            "userSettings": {
+                "title": "User Settings",
+                "profileImage": "Profile Image",
+                "profileImageError": "Image size must be less than 8MB",
+                "profileImageSuccess": "Profile image updated successfully",
+                "uploadImage": "Upload Image",
+                "uploadImageError": "Error uploading image",
+                "deleteImage": "Delete Image",
+                "deleteImageSuccess": "Profile image deleted successfully",
+                "deleteImageError": "Error deleting profile image",
+                "changeImage": "Change Image",
+                "settingsUpdatedSuccess": "Settings updated successfully",
+                "settingsUpdatedError": "Error updating settings",
+                "preferences": "Preferences",
+                "personalInformation": "Personal Information",
+                "name": "Name",
+                "surname": "Surname",
+                "language": "Language",
+                "currency": "Currency",
+                "dateFormat": "Date Format",
+                "timeFormat": "Time Format",
+                "saveChanges": "Save Changes",
+                "saving": "Saving..."
+            },
+            "help": {
+                "title": "Help",
+                "faq": "Frequently Asked Questions",                
+                "howToStart": "How to start using Profit & Lost?",
+                "howToStartDescription": "Starting with Profit & Lost is very easy:",
+                "howToStartStep1": "1. Personalize your initial preferences to adapt them to your needs.",
+                "howToStartStep2": "2. Go to the 'Annual Report' section and create your categories to organize your financial movements.",
+                "howToStartStep3": "3. In 'Transactions', start recording your income and expenses to keep a detailed control.",                
+                "manageAccounts": "How to manage my accounts?",
+                "manageAccountsDescription": "In the 'Accounts' section, you have full control over your accounts. You can:",
+                "manageAccountsStep1": "1. Create new accounts for different purposes (e.g. bank accounts, savings, etc.).",
+                "manageAccountsStep2": "2. Edit existing accounts to adjust details like name or configuration.",
+                "manageAccountsStep3": "3. Customize each account with unique colors to easily identify it.",
+                "manageAccountsStep4": "4. Delete accounts that you no longer need.",
+                "manageAccountsStep5": "5. Hide accounts that you don't want to see in your reports.",
+                "categoriesWork": "How do categories work?",
+                "categoriesWorkDescription": "Categories are the key to keeping your finances organized. With them you can:",
+                "categoriesWorkStep1": "1. Create custom categories according to your needs.",
+                "categoriesWorkStep2": "2. Assign colors to them to easily identify them in your graphs and reports.",
+                "categoriesWorkStep3": "3. Use them to classify and analyze your financial movements effectively.",
+                "protectData": "How do I protect my data in Profit & Lost?",
+                "protectDataDescription": "Profit & Lost prioritizes the security of your data:",
+                "protectDataStep1": "1. All information is encrypted to ensure its protection.",
+                "protectDataStep2": "2. You can change your password at any time from the 'Security & Privacy' section.",
+                "protectDataStep3": "3. Activate two-factor authentication for greater security.",                
+                "viewReports": "How do I view my financial reports?",
+                "viewReportsDescription": "In the 'Reports' section, you can generate detailed reports that include:",
+                "viewReportsStep1": "1. Monthly or annual summaries of your movements.",
+                "viewReportsStep2": "2. Graphical analysis of your expenses and income by category.",
+                "viewReportsStep3": "3. Download reports in formats like PDF or Excel for review at any time.",
+                "mobileUsage": "Can I use Profit & Lost on my mobile?",
+                "mobileUsageDescription": "Yes! Profit & Lost is optimized for mobile devices. You just need to access our platform from your mobile browser entering profit-lost.com to enjoy all the features.",
+                "mobileUsageStep1": "You can put the direct access to our web on your home screen so it appears as an app on your device.",
+                "contactSupport": "How do I contact support?",
+                "contactSupportDescription": "Our support team is here to help you. You can contact us through:",
+                "contactSupportStep1": "Email: support@profit-lost.com",
+                "contactSupportStep2": "Consult our online documentation to find detailed guides and quick solutions."
+            },
+            "securityPrivacy": {
+                "title": "Security & Privacy",
+                "passwordsDoNotMatch": "The passwords do not match",
+                "passwordUpdatedSuccess": "Password updated successfully",
+                "passwordUpdatedError": "Error updating password",
+                "usernameDoesNotMatch": "The username does not match",
+                "changePassword": "Change Password",
+                "currentPassword": "Current Password",
+                "newPassword": "New Password",
+                "confirmNewPassword": "Confirm New Password",
+                "updatePassword": "Update Password",
+                "deleteAccount": "Delete Account",
+                "deleteAccountConfirmation": "This action is irreversible. All your data will be deleted permanently.",
+                "deleteConfirmation": "To confirm, write your username:",
+                "deleteAccountSuccess": "Account deleted successfully",
+                "deleteAccountError": "Error deleting account",
+                "username": "Username"
+            }
+        },
         "dashhome": {
             "title": "Dashboard",
             "balance": {
@@ -301,9 +384,6 @@
                 "deleteError": "Error deleting transaction",
                 "invalidData": "Invalid transaction data"
             }
-        },
-        "goals": {
-            "title": "Goals"
         },
         "notes": {
             "title": "Notes",

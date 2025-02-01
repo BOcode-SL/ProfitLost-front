@@ -2,6 +2,7 @@ import React, { useState, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user';
@@ -15,6 +16,7 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader = ({ user }: DashboardHeaderProps) => {
+    const { t } = useTranslation();
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -38,12 +40,12 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
     };
 
     const menuItems1 = [
-        { icon: 'person', text: 'Profile Settings' },
-        { icon: 'security', text: 'Security and Privacy' },
+        { icon: 'person', text: t('dashboard.settings.userSettings.title') },
+        { icon: 'security', text: t('dashboard.settings.securityPrivacy.title') },
     ];
 
     const menuItems2 = [
-        { icon: 'help', text: 'Help' },
+        { icon: 'help', text: t('dashboard.settings.help.title') },
     ];
 
     const handleSettingsClick = (component: string) => {
@@ -54,13 +56,17 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         });
     };
 
+    const handleCloseSettingsDrawer = () => {
+        setSettingsDrawer({ open: false, component: '' });
+    };
+
     const renderSettingsComponent = () => {
         switch (settingsDrawer.component) {
-            case 'Profile Settings':
-                return <UserSettings />;
-            case 'Security and Privacy':
-                return <SecurityPrivacy />;
-            case 'Help':
+            case t('dashboard.settings.userSettings.title'):
+                return <UserSettings onSuccess={handleCloseSettingsDrawer} />;
+            case t('dashboard.settings.securityPrivacy.title'):
+                return <SecurityPrivacy onSuccess={handleCloseSettingsDrawer} />;
+            case t('dashboard.settings.help.title'):
                 return <Help />;
             default:
                 return null;
@@ -256,7 +262,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             </span>
                         }
                     >
-                        Log out
+                        {t('dashboard.common.logout')}
                     </Button>
                 </Box>
             </Drawer>
@@ -286,9 +292,9 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         <span className="material-symbols-rounded">arrow_back</span>
                     </IconButton>
                     <Typography variant="h6">
-                        {settingsDrawer.component === 'Profile Settings' && 'Profile Settings'}
-                        {settingsDrawer.component === 'Security and Privacy' && 'Security & Privacy'}
-                        {settingsDrawer.component === 'Help' && 'Help'}
+                        {settingsDrawer.component === t('dashboard.settings.userSettings.title') && t('dashboard.settings.userSettings.title')}
+                        {settingsDrawer.component === t('dashboard.settings.securityPrivacy.title') && t('dashboard.settings.securityPrivacy.title')}
+                        {settingsDrawer.component === t('dashboard.settings.help.title') && t('dashboard.settings.help.title')}
                     </Typography>
                 </Box>
                 <Suspense fallback={

@@ -2,12 +2,18 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import { userService } from '../../../../services/user.service';
 import { useUser } from '../../../../contexts/UserContext';
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 
-export default function SecurityPrivacy() {
+interface SecurityPrivacyProps {
+    onSuccess?: () => void;
+}
+
+export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, setUser } = useUser();
     const [showPassword, setShowPassword] = useState({
@@ -26,67 +32,69 @@ export default function SecurityPrivacy() {
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
         if (formData.newPassword !== formData.confirmPassword) {
-            toast.error('The passwords do not match');
+            toast.error(t('dashboard.settings.securityPrivacy.passwordsDoNotMatch'));
             return;
         }
 
         try {
             await userService.changePassword(formData.currentPassword, formData.newPassword);
-            toast.success('Password updated successfully');
+            toast.success(t('dashboard.settings.securityPrivacy.passwordUpdatedSuccess'));
             setFormData({
                 currentPassword: '',
                 newPassword: '',
                 confirmPassword: '',
             });
+            onSuccess?.();
         } catch (error) {
             const apiError = error as UserApiErrorResponse;
             switch (apiError.error) {
                 case 'INVALID_PASSWORD':
-                    toast.error('The current password is incorrect');
+                    toast.error(t('dashboard.common.error.INVALID_PASSWORD'));
                     break;
                 case 'CONNECTION_ERROR':
-                    toast.error('Connection error. Please check your internet connection');
+                    toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
                     break;
                 case 'UNAUTHORIZED':
-                    toast.error('Session expired. Please login again');
+                    toast.error(t('dashboard.common.error.UNAUTHORIZED'));
                     setUser(null);
                     navigate('/login');
                     break;
                 default:
-                    toast.error('Error changing password');
+                    toast.error(t('dashboard.settings.securityPrivacy.passwordUpdatedError'));
             }
         }
     };
 
     const handleDeleteAccount = async () => {
         if (!user || deleteConfirmation !== user.username) {
-            toast.error('The username does not match');
+            toast.error(t('dashboard.settings.securityPrivacy.usernameDoesNotMatch'));
             return;
         }
 
         try {
             await userService.deleteAccount();
             setUser(null);
-            toast.success('Account deleted successfully');
+            toast.success(t('dashboard.settings.securityPrivacy.deleteAccountSuccess'));
+            onSuccess?.();
             navigate('/');
         } catch (error) {
             const apiError = error as UserApiErrorResponse;
             switch (apiError.error) {
                 case 'CONNECTION_ERROR':
-                    toast.error('Connection error. Please check your internet connection');
+                    toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
                     break;
                 case 'UNAUTHORIZED':
-                    toast.error('Session expired. Please login again');
+                    toast.error(t('dashboard.common.error.UNAUTHORIZED'));
                     setUser(null);
                     navigate('/login');
                     break;
                 case 'USER_NOT_FOUND':
-                    toast.error('User not found');
+                    toast.error(t('dashboard.common.error.USER_NOT_FOUND'));
                     setUser(null);
                     navigate('/login');
                     break;
                 default:
-                    toast.error('Error deleting account');
+                    toast.error(t('dashboard.settings.securityPrivacy.deleteAccountError'));
             }
             setShowDeleteConfirmation(false);
         }
@@ -114,7 +122,7 @@ export default function SecurityPrivacy() {
                             mb: 2
                         }}
                     >
-                        Change Password <span className="soon-badge">SOON</span>
+                        {t('dashboard.settings.securityPrivacy.changePassword')}<span className="soon-badge">SOON</span>
                     </Typography>
                     <form onSubmit={handlePasswordChange}>
                         <Box sx={{
@@ -127,7 +135,7 @@ export default function SecurityPrivacy() {
                             <TextField
                                 disabled
                                 size="small"
-                                label="Current Password"
+                                label={t('dashboard.settings.securityPrivacy.currentPassword')}
                                 type={showPassword.current ? 'text' : 'password'}
                                 value={formData.currentPassword}
                                 onChange={() => {/* handle current password */ }}
@@ -151,7 +159,7 @@ export default function SecurityPrivacy() {
                             <TextField
                                 disabled
                                 size="small"
-                                label="New Password"
+                                label={t('dashboard.settings.securityPrivacy.newPassword')}
                                 type={showPassword.new ? 'text' : 'password'}
                                 value={formData.newPassword}
                                 onChange={() => {/* handle new password */ }}
@@ -175,7 +183,7 @@ export default function SecurityPrivacy() {
                             <TextField
                                 disabled
                                 size="small"
-                                label="Confirm New Password"
+                                label={t('dashboard.settings.securityPrivacy.confirmNewPassword')}
                                 type={showPassword.confirm ? 'text' : 'password'}
                                 value={formData.confirmPassword}
                                 onChange={() => {/* handle confirm password */ }}
@@ -203,7 +211,7 @@ export default function SecurityPrivacy() {
                                 color="primary"
                                 fullWidth
                             >
-                                Update Password
+                                {t('dashboard.settings.securityPrivacy.updatePassword')}
                             </Button>
                         </Box>
                     </form>
@@ -220,14 +228,14 @@ export default function SecurityPrivacy() {
                             mb: 2
                         }}
                     >
-                        Delete Account
+                        {t('dashboard.settings.securityPrivacy.deleteAccount')}
                     </Typography>
                     <Typography
                         variant="body2"
                         color="error"
                         sx={{ mb: 2 }}
                     >
-                        This action is irreversible. All your data will be deleted permanently.
+                        {t('dashboard.settings.securityPrivacy.deleteAccountConfirmation')}
                     </Typography>
 
                     {!showDeleteConfirmation ? (
@@ -242,12 +250,12 @@ export default function SecurityPrivacy() {
                                 width: '100%'
                             }}
                         >
-                            Delete my account
+                            {t('dashboard.settings.securityPrivacy.deleteAccount')}
                         </Button>
                     ) : (
                         <Box sx={{ mt: 2 }}>
                             <Typography sx={{ mb: 2 }}>
-                                To confirm, write your username: <strong>{user?.username}</strong>
+                                {t('dashboard.settings.securityPrivacy.deleteConfirmation')}: <strong>{user?.username}</strong>
                             </Typography>
                             <Box sx={{
                                 display: 'flex',
@@ -259,7 +267,7 @@ export default function SecurityPrivacy() {
                                     size="small"
                                     value={deleteConfirmation}
                                     onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                    placeholder="Username"
+                                    placeholder={t('dashboard.settings.securityPrivacy.username')}
                                 />
                                 <Button
                                     variant="outlined"
@@ -275,7 +283,7 @@ export default function SecurityPrivacy() {
                                         }
                                     }}
                                 >
-                                    Confirm
+                                    {t('dashboard.common.confirm')}
                                 </Button>
                             </Box>
                         </Box>

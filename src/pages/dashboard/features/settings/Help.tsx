@@ -1,6 +1,8 @@
 import { Box, Paper, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function Help() {
+    const { t } = useTranslation();
     return (
         <Box sx={{
             width: '100%',
@@ -20,12 +22,12 @@ export default function Help() {
                         fontWeight: 500
                     }}
                 >
-                    Frequently Asked Questions
+                    {t('dashboard.settings.help.faq')}
                 </Typography>
 
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Accordion>
-                        <AccordionSummary 
+                        <AccordionSummary
                             expandIcon={<span className="material-symbols-rounded">expand_more</span>}
                         >
                             <Typography
@@ -36,21 +38,21 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How to start using Profit & Lost?
+                                {t('dashboard.settings.help.howToStart')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                Starting with Profit & Lost is very easy:
+                                {t('dashboard.settings.help.howToStartDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                1. Personalize your initial preferences to adapt them to your needs.
+                                {t('dashboard.settings.help.howToStartStep1')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                2. Go to the "Annual Report" section and create your categories to organize your financial movements.
+                                {t('dashboard.settings.help.howToStartStep2')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6 }}>
-                                3. In "Transactions", start recording your income and expenses to keep a detailed control.
+                                {t('dashboard.settings.help.howToStartStep3')}
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
@@ -65,20 +67,20 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How to manage my accounts?
+                                {t('dashboard.settings.help.manageAccounts')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                In the "Accounts" section, you have full control over your accounts. You can:
+                                {t('dashboard.settings.help.manageAccountsDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
                                 <ul>
-                                    <li>Create new accounts for different purposes (e.g. bank accounts, savings, etc.).</li>
-                                    <li>Edit existing accounts to adjust details like name or configuration.</li>
-                                    <li>Customize each account with unique colors to easily identify it.</li>
-                                    <li>Delete accounts that you no longer need.</li>
-                                    <li>Hide accounts that you don't want to see in your reports.</li>
+                                    <li>{t('dashboard.settings.help.manageAccountsStep1')}</li>
+                                    <li>{t('dashboard.settings.help.manageAccountsStep2')}</li>
+                                    <li>{t('dashboard.settings.help.manageAccountsStep3')}</li>
+                                    <li>{t('dashboard.settings.help.manageAccountsStep4')}</li>
+                                    <li>{t('dashboard.settings.help.manageAccountsStep5')}</li>
                                 </ul>
                             </Typography>
                         </AccordionDetails>
@@ -94,18 +96,18 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How do categories work?
+                                {t('dashboard.settings.help.categoriesWork')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                Categories are the key to keeping your finances organized. With them you can:
+                                {t('dashboard.settings.help.categoriesWorkDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
                                 <ul>
-                                    <li>Create custom categories according to your needs.</li>
-                                    <li>Assign colors to them to easily identify them in your graphs and reports.</li>
-                                    <li>Use them to classify and analyze your financial movements effectively.</li>
+                                    <li>{t('dashboard.settings.help.categoriesWorkStep1')}</li>
+                                    <li>{t('dashboard.settings.help.categoriesWorkStep2')}</li>
+                                    <li>{t('dashboard.settings.help.categoriesWorkStep3')}</li>
                                 </ul>
                             </Typography>
                         </AccordionDetails>
@@ -121,18 +123,18 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How do I protect my data in Profit & Lost?
+                                {t('dashboard.settings.help.protectData')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                Profit & Lost prioritizes the security of your data:
+                                {t('dashboard.settings.help.protectDataDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
                                 <ul>
-                                    <li>All information is encrypted to ensure its protection.</li>
-                                    <li>You can change your password at any time from the "Security & Privacy" section.</li>
-                                    <li>Activate two-factor authentication for greater security. <span className="soon-badge">SOON</span></li>
+                                    <li>{t('dashboard.settings.help.protectDataStep1')}</li>
+                                    <li>{t('dashboard.settings.help.protectDataStep2')}</li>
+                                    <li>{t('dashboard.settings.help.protectDataStep3')}<span className="soon-badge">SOON</span></li>
                                 </ul>
                             </Typography>
                         </AccordionDetails>
@@ -148,18 +150,18 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How do I view my financial reports?
+                                {t('dashboard.settings.help.viewReports')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                In the "Reports" section, you can generate detailed reports that include:
+                                {t('dashboard.settings.help.viewReportsDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6 }}>
                                 <ul>
-                                    <li>Monthly or annual summaries of your movements.</li>
-                                    <li>Graphical analysis of your expenses and income by category.</li>
-                                    <li>Download reports in formats like PDF or Excel for review at any time.</li>
+                                    <li>{t('dashboard.settings.help.viewReportsStep1')}</li>
+                                    <li>{t('dashboard.settings.help.viewReportsStep2')}</li>
+                                    <li>{t('dashboard.settings.help.viewReportsStep3')}</li>
                                 </ul>
                             </Typography>
                         </AccordionDetails>
@@ -175,34 +177,18 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                Can I use Profit & Lost on my mobile?
+                                {t('dashboard.settings.help.mobileUsage')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                Yes! Profit & Lost is optimized for mobile devices. You just need to access our platform from your mobile browser entering profit-lost.com to enjoy all the features.
+                                {t('dashboard.settings.help.mobileUsageDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6 }}>
-                                <span className="soon-badge">You can put the direct access to our web on your home screen so it appears as an app on your device.</span>
+                               {t('dashboard.settings.help.mobileUsageStep1')}
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
-
-                    {/* <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
-                            <h3>How do I update my subscription?</h3>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <p>To update your subscription, follow these steps:</p>
-                            <ul>
-                                <li>Access the "Billing" section in your profile.</li>
-                                <li>Select the plan that best suits your needs.</li>
-                                <li>Confirm the change and enjoy the additional benefits.</li>
-                            </ul>
-                        </AccordionDetails>
-                    </Accordion> */}
-
-
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -213,17 +199,17 @@ export default function Help() {
                                     margin: 0
                                 }}
                             >
-                                How do I contact support?
+                                {t('dashboard.settings.help.contactSupport')}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography sx={{ lineHeight: 1.6, mb: 1 }}>
-                                Our support team is here to help you. You can contact us through:
+                                {t('dashboard.settings.help.contactSupportDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6 }}>
                                 <ul>
-                                    <li>Email: support@profit-lost.com</li>
-                                    <li>Consult our online documentation to find detailed guides and quick solutions.</li>
+                                    <li>{t('dashboard.settings.help.contactSupportStep1')}</li>
+                                    <li>{t('dashboard.settings.help.contactSupportStep2')}</li>
                                 </ul>
                             </Typography>
                         </AccordionDetails>

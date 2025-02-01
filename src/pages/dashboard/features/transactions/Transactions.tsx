@@ -31,10 +31,28 @@ export default function Transactions() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const handleError = useCallback((error: TransactionApiErrorResponse) => {
+        switch (error.error) {
+            case 'UNAUTHORIZED':
+                toast.error(t('dashboard.common.error.UNAUTHORIZED'));
+                break;
+            case 'CONNECTION_ERROR':
+                toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
+                break;
+            case 'DATABASE_ERROR':
+                toast.error(t('dashboard.common.error.DATABASE_ERROR'));
+                break;
+            case 'SERVER_ERROR':
+                toast.error(t('dashboard.common.error.SERVER_ERROR'));
+                break;
+            default:
+                toast.error(t('dashboard.common.error.loading'));
+        }
+    }, [t]);
+
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-
             const [transactionsResponse, categoriesResponse, allTransactionsResponse] =
                 await Promise.all([
                     transactionService.getTransactionsByYearAndMonth(year, month),
@@ -62,26 +80,7 @@ export default function Transactions() {
         } finally {
             setLoading(false);
         }
-    }, [year, month, currentYear]);
-
-    const handleError = (error: TransactionApiErrorResponse) => {
-        switch (error.error) {
-            case 'UNAUTHORIZED':
-                toast.error(t('dashboard.common.error.UNAUTHORIZED'));
-                break;
-            case 'CONNECTION_ERROR':
-                toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
-                break;
-            case 'DATABASE_ERROR':
-                toast.error(t('dashboard.common.error.DATABASE_ERROR'));
-                break;
-            case 'SERVER_ERROR':
-                toast.error(t('dashboard.common.error.SERVER_ERROR'));
-                break;
-            default:
-                toast.error(t('dashboard.common.error.loading'));
-        }
-    };
+    }, [year, month, currentYear, handleError]);
 
     useEffect(() => {
         fetchData();

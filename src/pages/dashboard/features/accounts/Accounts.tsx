@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -31,14 +31,14 @@ export default function Accounts() {
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [accounts]);
 
-    const fetchUserData = async () => {
+    const fetchUserData = useCallback(async () => {
         const response = await userService.getUserData();
         if (response.success && response.data) {
             setUser(response.data as User);
         }
-    };
+    }, []);
 
-    const fetchAccounts = async () => {
+    const fetchAccounts = useCallback(async () => {
         const response = await accountService.getAllAccounts();
         if (response.success && response.data) {
             setAccounts(response.data as Account[]);
@@ -46,11 +46,11 @@ export default function Accounts() {
             toast.error(t('dashboard.accounts.errors.loadingError'));
         }
         setLoading(false);
-    };
+    }, [t]);
 
     useEffect(() => {
         Promise.all([fetchUserData(), fetchAccounts()]);
-    }, []);
+    }, [fetchUserData, fetchAccounts]);
 
     const orderedAccounts = useMemo(() => {
         if (!user?.accountsOrder || !accounts.length) return accounts;

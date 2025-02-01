@@ -10,7 +10,7 @@ import DashboardContent from './components/DashboardContent';
 
 export default function Dashboard() {
     const { t } = useTranslation();
-    const [activeSection, setActiveSection] = useState('Dashboard');
+    const [activeSection, setActiveSection] = useState('dashhome');
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -25,12 +25,14 @@ export default function Dashboard() {
         const section = searchParams.get('section');
         if (section) {
             setActiveSection(section);
+        } else {
+            setActiveSection('dashhome');
         }
     }, [searchParams]);
 
-    const handleMenuItemClick = (sectionName: string) => {
-        setActiveSection(sectionName);
-        setSearchParams(sectionName === 'Dashboard' ? {} : { section: sectionName });
+    const handleMenuItemClick = (sectionKey: string) => {
+        setActiveSection(sectionKey);
+        setSearchParams(sectionKey === 'dashhome' ? {} : { section: sectionKey });
     };
 
     if (isLoading) {
@@ -56,12 +58,12 @@ export default function Dashboard() {
     }
 
     const menuItems = [
-        { label: t('dashboard.dashhome.title'), icon: 'home' },
-        { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars' },
-        { label: t('dashboard.transactions.title'), icon: 'receipt_long' },
-        { label: t('dashboard.accounts.title'), icon: 'account_balance' },
-        // { label: 'Goals', icon: 'task_alt' },
-        { label: t('dashboard.notes.title'), icon: 'note_alt' },
+        { label: t('dashboard.dashhome.title'), icon: 'home', key: 'dashhome' },
+        { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars', key: 'annualReport' },
+        { label: t('dashboard.transactions.title'), icon: 'receipt_long', key: 'transactions' },
+        { label: t('dashboard.accounts.title'), icon: 'account_balance', key: 'accounts' },
+        // { label: 'Goals', icon: 'task_alt', key: 'goals' },
+        { label: t('dashboard.notes.title'), icon: 'note_alt', key: 'notes' },
     ];
 
     return (

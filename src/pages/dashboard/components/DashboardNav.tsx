@@ -5,8 +5,8 @@ import { ThemeContext } from '../../../contexts/ThemeContext';
 
 interface DashboardNavProps {
     activeSection: string;
-    handleMenuItemClick: (sectionName: string) => void;
-    menuItems: { label: string; icon: string; }[];
+    handleMenuItemClick: (sectionKey: string) => void;
+    menuItems: { label: string; icon: string; key: string; }[];
 }
 
 const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) => {
@@ -75,7 +75,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                         {menuItems.map((item) => (
                             <ListItem
                                 key={item.label}
-                                onClick={() => handleMenuItemClick(item.label)}
+                                onClick={() => handleMenuItemClick(item.key)}
                                 sx={{
                                     borderRadius: 3,
                                     mb: 0.5,
@@ -84,7 +84,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                                     '&:hover': {
                                         color: 'primary.main'
                                     },
-                                    ...(activeSection === item.label && {
+                                    ...(activeSection === item.key && {
                                         bgcolor: 'primary.main',
                                         color: 'primary.contrastText',
                                         '&:hover': {
@@ -124,14 +124,14 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                     {mainMenuItems.map((item) => (
                         <Box
                             key={item.label}
-                            onClick={() => handleMenuItemClick(item.label)}
+                            onClick={() => handleMenuItemClick(item.key)}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 gap: 0.5,
                                 cursor: 'pointer',
-                                color: activeSection === item.label ? 'primary.main' : 'text.primary'
+                                color: activeSection === item.key ? 'primary.main' : 'text.primary'
                             }}
                         >
                             <Icon className="material-symbols-rounded">{item.icon}</Icon>
@@ -146,7 +146,7 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                             alignItems: 'center',
                             gap: 0.5,
                             cursor: 'pointer',
-                            color: moreMenuItems.some(item => activeSection === item.label) ? 'primary.main' : 'text.primary'
+                            color: moreMenuItems.some(item => activeSection === item.key) ? 'primary.main' : 'text.primary'
                         }}
                     >
                         <Icon className="material-symbols-rounded">more_horiz</Icon>
@@ -170,9 +170,9 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                     {moreMenuItems.map((item) => (
                         <MenuItem
                             key={item.label}
-                            onClick={() => handleMoreItemClick(item.label)}
+                            onClick={() => handleMoreItemClick(item.key)}
                             sx={{
-                                color: activeSection === item.label ? 'primary.main' : 'text.primary',
+                                color: activeSection === item.key ? 'primary.main' : 'text.primary',
                                 gap: 2
                             }}
                         >

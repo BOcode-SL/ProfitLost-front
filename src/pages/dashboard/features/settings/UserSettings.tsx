@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select, MenuItem, Typography, SelectChangeEvent } from '@mui/material';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../contexts/UserContext';
 import { userService } from '../../../../services/user.service';
@@ -34,7 +35,12 @@ const languageOptions = [
     }
 ];
 
-export default function UserSettings() {
+interface UserSettingsProps {
+    onSuccess?: () => void;
+}
+
+export default function UserSettings({ onSuccess }: UserSettingsProps) {
+    const { t } = useTranslation();
     const { user, loadUserData } = useUser();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
@@ -66,7 +72,7 @@ export default function UserSettings() {
 
     const handleImageUpload = async (file: File) => {
         if (file.size > 8 * 1024 * 1024) {
-            toast.error('Image size must be less than 8MB');
+            toast.error(t('dashboard.settings.userSettings.profileImageError'));
             return;
         }
 
@@ -78,11 +84,11 @@ export default function UserSettings() {
             const response = await userService.updateProfile(formData);
             if (response.success) {
                 await loadUserData();
-                toast.success('Profile image updated successfully');
+                toast.success(t('dashboard.settings.userSettings.profileImageSuccess'));
             }
         } catch (error) {
             console.error('Error uploading image:', error);
-            toast.error((error as UserApiErrorResponse).message || 'Error uploading image');
+            toast.error((error as UserApiErrorResponse).message || t('dashboard.settings.userSettings.uploadImageError'));
         } finally {
             setLoading(false);
         }
@@ -94,11 +100,11 @@ export default function UserSettings() {
             const response = await userService.deleteProfileImage();
             if (response.success) {
                 await loadUserData();
-                toast.success('Profile image deleted successfully');
+                toast.success(t('dashboard.settings.userSettings.deleteImageSuccess'));
             }
         } catch (error) {
             console.error('Error deleting image:', error);
-            toast.error((error as UserApiErrorResponse).message || 'Error deleting image');
+            toast.error((error as UserApiErrorResponse).message || t('dashboard.settings.userSettings.deleteImageError'));
         } finally {
             setLoading(false);
         }
@@ -118,11 +124,12 @@ export default function UserSettings() {
             const response = await userService.updateProfile(updateFormData);
             if (response.success) {
                 await loadUserData();
-                toast.success('Settings updated successfully');
+                toast.success(t('dashboard.common.success.saved'));
+                onSuccess?.();
             }
         } catch (error) {
             console.error('Error updating settings:', error);
-            toast.error((error as UserApiErrorResponse).message || 'Error updating settings');
+            toast.error((error as UserApiErrorResponse).message || t('dashboard.settings.userSettings.settingsUpdatedError'));
         } finally {
             setLoading(false);
         }
@@ -150,7 +157,7 @@ export default function UserSettings() {
                             mb: 2
                         }}
                     >
-                        Profile Picture
+                        {t('dashboard.settings.userSettings.profileImage')}
                     </Typography>
                     <Box sx={{
                         display: 'flex',
@@ -186,7 +193,7 @@ export default function UserSettings() {
                                     disabled={loading}
                                     size="small"
                                 >
-                                    Delete Image
+                                    {t('dashboard.settings.userSettings.deleteImage')}
                                 </Button>
                             ) : (
                                 <Button
@@ -195,7 +202,7 @@ export default function UserSettings() {
                                     disabled={loading}
                                     size="small"
                                 >
-                                    Change Image
+                                    {t('dashboard.settings.userSettings.changeImage')}
                                 </Button>
                             )}
                         </Box>
@@ -213,7 +220,7 @@ export default function UserSettings() {
                             mb: 2
                         }}
                     >
-                        Personal Information
+                        {t('dashboard.settings.userSettings.personalInformation')}
                     </Typography>
                     <Box sx={{
                         display: 'flex',
@@ -223,7 +230,7 @@ export default function UserSettings() {
                     }}>
                         <TextField
                             size="small"
-                            label="Name"
+                            label={t('dashboard.settings.userSettings.name')}
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
@@ -231,7 +238,7 @@ export default function UserSettings() {
                         />
                         <TextField
                             size="small"
-                            label="Surname"
+                            label={t('dashboard.settings.userSettings.surname')}
                             name="surname"
                             value={formData.surname}
                             onChange={handleInputChange}
@@ -251,7 +258,7 @@ export default function UserSettings() {
                             mb: 2
                         }}
                     >
-                        Preferences
+                        {t('dashboard.settings.userSettings.preferences')}
                     </Typography>
                     <Box sx={{
                         display: 'flex',
@@ -260,11 +267,11 @@ export default function UserSettings() {
                         width: '100%'
                     }}>
                         <FormControl fullWidth size="small">
-                            <InputLabel>Language</InputLabel>
+                            <InputLabel>{t('dashboard.settings.userSettings.language')}</InputLabel>
                             <Select<Language>
                                 name="language"
                                 value={formData.language}
-                                label="Language"
+                                label={t('dashboard.settings.userSettings.language')}
                                 onChange={handleSelectChange}
                             >
                                 {languageOptions.map(option => (
@@ -276,11 +283,11 @@ export default function UserSettings() {
                         </FormControl>
 
                         <FormControl fullWidth size="small">
-                            <InputLabel>Currency</InputLabel>
+                            <InputLabel>{t('dashboard.settings.userSettings.currency')}</InputLabel>
                             <Select<Currency>
                                 name="currency"
                                 value={formData.currency}
-                                label="Currency"
+                                label={t('dashboard.settings.userSettings.currency')}
                                 onChange={handleSelectChange}
                             >
                                 {currencyOptions.map(option => (
@@ -292,11 +299,11 @@ export default function UserSettings() {
                         </FormControl>
 
                         <FormControl fullWidth size="small">
-                            <InputLabel>Date Format</InputLabel>
+                            <InputLabel>{t('dashboard.settings.userSettings.dateFormat')}</InputLabel>
                             <Select<DateFormat>
                                 name="dateFormat"
                                 value={formData.dateFormat}
-                                label="Date Format"
+                                label={t('dashboard.settings.userSettings.dateFormat')}
                                 onChange={handleSelectChange}
                             >
                                 {dateFormatOptions.map(option => (
@@ -308,11 +315,11 @@ export default function UserSettings() {
                         </FormControl>
 
                         <FormControl fullWidth size="small">
-                            <InputLabel>Time Format</InputLabel>
+                            <InputLabel>{t('dashboard.settings.userSettings.timeFormat')}</InputLabel>
                             <Select<TimeFormat>
                                 name="timeFormat"
                                 value={formData.timeFormat}
-                                label="Time Format"
+                                label={t('dashboard.settings.userSettings.timeFormat')}
                                 onChange={handleSelectChange}
                             >
                                 {timeFormatOptions.map(option => (
@@ -332,7 +339,7 @@ export default function UserSettings() {
                     fullWidth
                     size="medium"
                 >
-                    {loading ? 'Saving...' : 'Save Changes'}
+                    {loading ? t('dashboard.settings.userSettings.saving') : t('dashboard.settings.userSettings.saveChanges')}
                 </Button>
             </Box>
         </Box>
