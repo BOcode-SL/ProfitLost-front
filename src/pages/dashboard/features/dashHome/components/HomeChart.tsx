@@ -63,15 +63,16 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = date.toLocaleString('default', { month: 'short' });
+            const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             chartData.push({
-                month: monthKey,
+                month: translatedMonth,
                 income: Number(monthlyDataMap[monthKey].income.toFixed(2)),
                 expenses: Number(monthlyDataMap[monthKey].expenses.toFixed(2))
             });
         }
 
         return chartData;
-    }, [transactions, isLoading]);
+    }, [transactions, isLoading, t]);
 
     useEffect(() => {
         setMonthlyData(monthlyDataMemo);
@@ -103,7 +104,8 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = date.toLocaleString('default', { month: 'short' });
-            emptyMonths.push(monthKey);
+            const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
+            emptyMonths.push(translatedMonth);
         }
         
         return (
@@ -115,7 +117,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     borderRadius: 3
                 }}>
                 <Typography variant="subtitle1" color="primary.light" gutterBottom>
-                    {t('dashboard.dashhome.chart.last6MonthsBalance')}
+                    {t('dashboard.transactions.chart.monthlyBalance')}
                 </Typography>
                 <Box sx={{
                     position: 'relative',
@@ -126,13 +128,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                         series={[
                             {
                                 data: [0, 0, 0, 0, 0, 0],
-                                label: t('dashboard.dashhome.chart.income'),
+                                label: t('dashboard.transactions.chart.income'),
                                 color: theme.palette.chart.income,
                                 valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                             },
                             {
                                 data: [0, 0, 0, 0, 0, 0],
-                                label: t('dashboard.dashhome.chart.expenses'),
+                                label: t('dashboard.transactions.chart.expenses'),
                                 color: theme.palette.chart.expenses,
                                 valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                             }
@@ -194,13 +196,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     series={[
                         {
                             data: monthlyData.map(d => d.income),
-                            label: t('dashboard.dashhome.chart.income'),
+                            label: t('dashboard.transactions.chart.income'),
                             color: theme.palette.chart.income,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         },
                         {
                             data: monthlyData.map(d => d.expenses),
-                            label: t('dashboard.dashhome.chart.expenses'),
+                            label: t('dashboard.transactions.chart.expenses'),
                             color: theme.palette.chart.expenses,
                             valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
                         }
