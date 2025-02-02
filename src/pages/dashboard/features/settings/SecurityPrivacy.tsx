@@ -31,13 +31,24 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
 
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (formData.newPassword !== formData.confirmPassword) {
             toast.error(t('dashboard.settings.securityPrivacy.passwordsDoNotMatch'));
             return;
         }
 
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(formData.newPassword)) {
+            toast.error(t('dashboard.common.error.PASSWORD_TOO_WEAK'));
+            return;
+        }
+
         try {
-            await userService.changePassword(formData.currentPassword, formData.newPassword);
+            await userService.changePassword(
+                formData.currentPassword, 
+                formData.newPassword,
+                user?.language || 'esES'
+            );
             toast.success(t('dashboard.settings.securityPrivacy.passwordUpdatedSuccess'));
             setFormData({
                 currentPassword: '',
@@ -50,6 +61,12 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
             switch (apiError.error) {
                 case 'INVALID_PASSWORD':
                     toast.error(t('dashboard.common.error.INVALID_PASSWORD'));
+                    break;
+                case 'PASSWORD_TOO_WEAK':
+                    toast.error(t('dashboard.common.error.PASSWORD_TOO_WEAK'));
+                    break;
+                case 'MISSING_FIELDS':
+                    toast.error(t('dashboard.common.error.MISSING_FIELDS'));
                     break;
                 case 'CONNECTION_ERROR':
                     toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
@@ -72,7 +89,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         }
 
         try {
-            await userService.deleteAccount();
+            await userService.deleteAccount(user?.language || 'enUS');
             setUser(null);
             toast.success(t('dashboard.settings.securityPrivacy.deleteAccountSuccess'));
             onSuccess?.();
@@ -122,9 +139,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             mb: 2
                         }}
                     >
-                        {t('dashboard.settings.securityPrivacy.changePassword')}<span className="soon-badge">SOON</span>
+                        {t('dashboard.settings.securityPrivacy.changePassword')}
                     </Typography>
-                    <form onSubmit={handlePasswordChange}>
+                    <Box component="form" onSubmit={handlePasswordChange} sx={{ width: '100%' }}>
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -133,23 +150,20 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             mt: 2
                         }}>
                             <TextField
-                                disabled
+                                fullWidth
                                 size="small"
-                                label={t('dashboard.settings.securityPrivacy.currentPassword')}
                                 type={showPassword.current ? 'text' : 'password'}
+                                label={t('dashboard.settings.securityPrivacy.currentPassword')}
                                 value={formData.currentPassword}
-                                onChange={() => {/* handle current password */ }}
-                                fullWidth
+                                onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <IconButton
-                                                onClick={() => setShowPassword(prev => ({ ...prev, current: !prev.current }))}
+                                                onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
                                                 edge="end"
                                             >
-                                                <span className="material-symbols-rounded">
-                                                    {showPassword.current ? 'visibility_off' : 'visibility'}
-                                                </span>
+                                                {showPassword.current ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
                                             </IconButton>
                                         </InputAdornment>
                                     ),
@@ -157,23 +171,20 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             />
 
                             <TextField
-                                disabled
+                                fullWidth
                                 size="small"
-                                label={t('dashboard.settings.securityPrivacy.newPassword')}
                                 type={showPassword.new ? 'text' : 'password'}
+                                label={t('dashboard.settings.securityPrivacy.newPassword')}
                                 value={formData.newPassword}
-                                onChange={() => {/* handle new password */ }}
-                                fullWidth
+                                onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <IconButton
-                                                onClick={() => setShowPassword(prev => ({ ...prev, new: !prev.new }))}
+                                                onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
                                                 edge="end"
                                             >
-                                                <span className="material-symbols-rounded">
-                                                    {showPassword.new ? 'visibility_off' : 'visibility'}
-                                                </span>
+                                                {showPassword.new ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
                                             </IconButton>
                                         </InputAdornment>
                                     ),
@@ -181,23 +192,20 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             />
 
                             <TextField
-                                disabled
-                                size="small"
-                                label={t('dashboard.settings.securityPrivacy.confirmNewPassword')}
-                                type={showPassword.confirm ? 'text' : 'password'}
-                                value={formData.confirmPassword}
-                                onChange={() => {/* handle confirm password */ }}
                                 fullWidth
+                                size="small"
+                                type={showPassword.confirm ? 'text' : 'password'}
+                                label={t('dashboard.settings.securityPrivacy.confirmNewPassword')}
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <IconButton
-                                                onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
+                                                onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
                                                 edge="end"
                                             >
-                                                <span className="material-symbols-rounded">
-                                                    {showPassword.confirm ? 'visibility_off' : 'visibility'}
-                                                </span>
+                                                {showPassword.confirm ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
                                             </IconButton>
                                         </InputAdornment>
                                     ),
@@ -205,16 +213,14 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             />
 
                             <Button
-                                disabled
                                 type="submit"
                                 variant="contained"
-                                color="primary"
-                                fullWidth
+                                disabled={!formData.currentPassword || !formData.newPassword || !formData.confirmPassword}
                             >
                                 {t('dashboard.settings.securityPrivacy.updatePassword')}
                             </Button>
                         </Box>
-                    </form>
+                    </Box>
                 </Paper>
 
                 {/* Delete Account Section */}

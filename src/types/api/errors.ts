@@ -45,6 +45,7 @@ export type UserErrorType =
     | 'INVALID_TIME_FORMAT'
     | 'IMAGE_UPLOAD_ERROR'
     | 'NO_CHANGES'
+    | 'PASSWORD_TOO_WEAK'
     | 'INVALID_PASSWORD';
 
 /**

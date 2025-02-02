@@ -88,7 +88,7 @@ export const userService = {
         }
     },
 
-    async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
+    async changePassword(currentPassword: string, newPassword: string, language: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/password`, {
                 method: 'POST',
@@ -96,7 +96,7 @@ export const userService = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ currentPassword, newPassword })
+                body: JSON.stringify({ currentPassword, newPassword, language })
             });
 
             const data = await response.json();
@@ -136,11 +136,15 @@ export const userService = {
         }
     },
 
-    async deleteAccount(): Promise<UserApiResponse> {
+    async deleteAccount(language: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/account`, {
                 method: 'DELETE',
                 credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ language })
             });
 
             const data = await response.json();

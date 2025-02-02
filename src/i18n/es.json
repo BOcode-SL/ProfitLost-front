@@ -174,7 +174,7 @@
                 "updatePassword": "Actualizar contraseña",
                 "deleteAccount": "Eliminar cuenta",
                 "deleteAccountConfirmation": "Esta acción es irreversible. Todos tus datos serán eliminados permanentemente.",
-                "deleteConfirmation": "Para confirmar, escribe tu nombre de usuario:",
+                "deleteConfirmation": "Para confirmar, escribe tu nombre de usuario",
                 "deleteAccountSuccess": "Cuenta eliminada correctamente",
                 "deleteAccountError": "Error al eliminar la cuenta",
                 "username": "Nombre de usuario"
