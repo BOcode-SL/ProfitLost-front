@@ -37,7 +37,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
             return;
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         if (!passwordRegex.test(formData.newPassword)) {
             toast.error(t('dashboard.common.error.PASSWORD_TOO_WEAK'));
             return;
@@ -46,8 +46,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         try {
             await userService.changePassword(
                 formData.currentPassword, 
-                formData.newPassword,
-                user?.language || 'esES'
+                formData.newPassword
             );
             toast.success(t('dashboard.settings.securityPrivacy.passwordUpdatedSuccess'));
             setFormData({
@@ -89,7 +88,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         }
 
         try {
-            await userService.deleteAccount(user?.language || 'enUS');
+            await userService.deleteAccount();
             setUser(null);
             toast.success(t('dashboard.settings.securityPrivacy.deleteAccountSuccess'));
             onSuccess?.();
