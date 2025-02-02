@@ -4,7 +4,7 @@ import type { User } from '../models/user';
 import type { Transaction } from '../models/transaction';
 import type { Category } from '../models/category';
 import type { Note } from '../models/note';
-import type { Account, AccountRecord, AccountConfiguration } from '../models/account';
+import type { Account, YearRecord, AccountConfiguration } from '../models/account';
 
 /**
  * Types for authentication API responses
@@ -141,13 +141,13 @@ export interface UpdateTransactionRequest {
 export interface CreateAccountRequest {
     accountName: string;
     configuration: AccountConfiguration;
-    records: AccountRecord[];
+    records: Record<string, YearRecord>;
 }
 
 export interface UpdateAccountRequest {
     accountName?: string;
-    records?: AccountRecord[];
     configuration?: AccountConfiguration;
+    records?: Record<string, YearRecord>;
 }
 
 /**

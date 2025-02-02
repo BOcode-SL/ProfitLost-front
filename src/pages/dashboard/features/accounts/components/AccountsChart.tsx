@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
-import type { Account } from '../../../../../types/models/account';
+import type { Account, YearRecord } from '../../../../../types/models/account';
 
 interface AccountsChartProps {
     accounts: Account[];
@@ -39,14 +39,17 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const isDataEmpty = activeAccounts.length === 0;
 
     const dataset: DataPoint[] = months.map(month => {
+        const monthLower = month.toLowerCase();
         const dataPoint: DataPoint = { 
             month,  
             monthDisplay: getMonthShortName(month)  
         };
+        
         activeAccounts.forEach(account => {
-            const record = account.records.find(r => r.year === selectedYear && r.month === month);
-            dataPoint[account.accountName] = record?.value || 0;
+            const yearRecord = account.records[selectedYear.toString()];
+            dataPoint[account.accountName] = yearRecord ? yearRecord[monthLower as keyof YearRecord] : 0;
         });
+        
         return dataPoint;
     });
 

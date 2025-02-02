@@ -125,12 +125,12 @@
             },
             "help": {
                 "title": "Ayuda",
-                "faq": "Preguntas frecuentes",                
+                "faq": "Preguntas frecuentes",
                 "howToStart": "¿Cómo empezar a usar Profit & Lost?",
                 "howToStartDescription": "Empezar con Profit & Lost es muy fácil:",
                 "howToStartStep1": "1. Personaliza tus preferencias iniciales para adaptarlas a tus necesidades.",
                 "howToStartStep2": "2. Ve a la sección 'Informes anuales' y crea tus categorías para organizar tus movimientos financieros.",
-                "howToStartStep3": "3. En 'Movimientos', comienza a registrar tus ingresos y gastos para mantener un control detallado.",                
+                "howToStartStep3": "3. En 'Movimientos', comienza a registrar tus ingresos y gastos para mantener un control detallado.",
                 "manageAccounts": "¿Cómo gestionar mis cuentas?",
                 "manageAccountsDescription": "En la sección 'Cuentas', tienes control total sobre tus cuentas. Puedes:",
                 "manageAccountsStep1": "1. Crear nuevas cuentas para diferentes propósitos (e.g. cuentas bancarias, ahorros, etc.).",
@@ -147,7 +147,7 @@
                 "protectDataDescription": "Profit & Lost prioriza la seguridad de tus datos:",
                 "protectDataStep1": "1. Todas las informaciones están encriptadas para garantizar su protección.",
                 "protectDataStep2": "2. Puedes cambiar tu contraseña en cualquier momento desde la sección 'Seguridad y privacidad'.",
-                "protectDataStep3": "3. Activa la autenticación en dos pasos para mayor seguridad.",                
+                "protectDataStep3": "3. Activa la autenticación en dos pasos para mayor seguridad.",
                 "viewReports": "¿Cómo ver mis informes financieros?",
                 "viewReportsDescription": "En la sección 'Informes', puedes generar informes detallados que incluyen:",
                 "viewReportsStep1": "1. Resúmenes mensuales o anuales de tus movimientos.",
@@ -276,7 +276,9 @@
                 "createError": "Error al crear la cuenta",
                 "updateError": "Error al actualizar la cuenta",
                 "deleteError": "Error al eliminar la cuenta",
-                "accountsOrderError": "Error al actualizar el orden de las cuentas"
+                "accountsOrderError": "Error al actualizar el orden de las cuentas",
+                "invalidYear": "Año inválido. Debe estar entre 1900 y 9999",
+                "yearExists": "Este año ya existe en la cuenta"
             },
             "form": {
                 "title": {
@@ -294,6 +296,8 @@
                     "textColor": "Color de texto",
                     "monthlyValues": "Valores mensuales"
                 },
+                "addYear": "Añadir año",
+                "enterYear": "Ingrese el año",
                 "delete": {
                     "title": "Eliminar cuenta",
                     "message": "¿Estás seguro de que quieres eliminar la cuenta?",

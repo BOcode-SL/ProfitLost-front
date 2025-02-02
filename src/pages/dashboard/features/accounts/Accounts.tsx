@@ -23,8 +23,8 @@ export default function Accounts() {
         years.add(currentYear);
 
         accounts.forEach(account => {
-            account.records.forEach(record => {
-                years.add(record.year);
+            Object.keys(account.records).forEach(year => {
+                years.add(parseInt(year));
             });
         });
 

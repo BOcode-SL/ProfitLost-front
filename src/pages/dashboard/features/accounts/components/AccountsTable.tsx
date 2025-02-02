@@ -3,7 +3,7 @@ import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgres
 import { useTranslation } from 'react-i18next';
 
 import { useUser } from '../../../../../contexts/UserContext';
-import type { Account } from '../../../../../types/models/account';
+import type { Account, YearRecord } from '../../../../../types/models/account';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 import AccountsForm from './AccountsForm';
 
@@ -36,11 +36,9 @@ export default function AccountsTable({
     const { t } = useTranslation();
 
     const getCurrentBalance = (account: Account): number => {
-        const currentMonth = new Date().toLocaleString('en-US', { month: 'short' });
-        const record = account.records.find(r =>
-            r.year === selectedYear && r.month === currentMonth
-        );
-        return record?.value || 0;
+        const currentMonth = new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase();
+        const yearRecord = account.records[selectedYear.toString()];
+        return yearRecord ? yearRecord[currentMonth as keyof YearRecord] : 0;
     };
 
     const handleDragStart = (accountId: string) => {

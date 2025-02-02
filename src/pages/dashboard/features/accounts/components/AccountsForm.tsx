@@ -5,7 +5,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import type { Account } from '../../../../../types/models/account';
+import type { Account, YearRecord } from '../../../../../types/models/account';
 
 interface AccountsFormProps {
     onClose: () => void;
@@ -14,7 +14,6 @@ interface AccountsFormProps {
     account?: Account | null;
 }
 
-// Estos son los meses que usamos para el backend (siempre en inglés)
 const months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -26,10 +25,12 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
     const [isActive, setIsActive] = useState(account?.configuration.isActive ?? true);
-    const [monthlyValues, setMonthlyValues] = useState<{ [key: string]: number }>({});
+    const [monthlyValues, setMonthlyValues] = useState<Record<string, number>>({});
     const [savingChanges, setSavingChanges] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+    const [showYearInput, setShowYearInput] = useState(false);
+    const [newYear, setNewYear] = useState<string>('');
 
     const availableYears = useMemo(() => {
         const years = new Set<number>();
@@ -37,22 +38,23 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         years.add(currentYear);
 
         if (account) {
-            account.records.forEach(record => years.add(record.year));
+            Object.keys(account.records).forEach(year => years.add(parseInt(year)));
         }
 
-        return Array.from(years).sort((a, b) => b - a);
+        return Array.from(years).sort((a: number, b: number) => b - a);
     }, [account]);
 
     useEffect(() => {
         if (account) {
-            const values: { [key: string]: number } = {};
-            months.forEach(month => {
-                const record = account.records.find(r =>
-                    r.year === selectedYear && r.month === month
-                );
-                values[month] = record?.value || 0;
-            });
-            setMonthlyValues(values);
+            const yearRecord = account.records[selectedYear.toString()];
+            if (yearRecord) {
+                const values: Record<string, number> = {};
+                months.forEach(month => {
+                    const monthKey = month.toLowerCase();
+                    values[month] = yearRecord[monthKey as keyof YearRecord];
+                });
+                setMonthlyValues(values);
+            }
         }
     }, [account, selectedYear]);
 
@@ -70,35 +72,45 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
         setSavingChanges(true);
         try {
-            const records = months.map(month => ({
-                year: selectedYear,
-                month,
-                value: monthlyValues[month] || 0
-            }));
+            const yearRecord: YearRecord = {
+                jan: monthlyValues["Jan"] || 0,
+                feb: monthlyValues["Feb"] || 0,
+                mar: monthlyValues["Mar"] || 0,
+                apr: monthlyValues["Apr"] || 0,
+                may: monthlyValues["May"] || 0,
+                jun: monthlyValues["Jun"] || 0,
+                jul: monthlyValues["Jul"] || 0,
+                aug: monthlyValues["Aug"] || 0,
+                sep: monthlyValues["Sep"] || 0,
+                oct: monthlyValues["Oct"] || 0,
+                nov: monthlyValues["Nov"] || 0,
+                dec: monthlyValues["Dec"] || 0
+            };
+
+            const records: Record<string, YearRecord> = {
+                [selectedYear.toString()]: yearRecord
+            };
 
             if (account) {
                 const updatedAccount: Account = {
                     ...account,
-                    accountName: accountName.trim(),
+                    accountName,
+                    records: {
+                        ...account.records,
+                        [selectedYear.toString()]: yearRecord
+                    },
                     configuration: {
                         backgroundColor,
                         color: textColor,
                         isActive
-                    },
-                    records: [
-                        ...account.records.filter(r => r.year !== selectedYear),
-                        ...records
-                    ]
+                    }
                 };
-                const success = await onSuccess(updatedAccount);
-                if (success) {
-                    onClose();
-                }
+                await onSuccess(updatedAccount);
             } else {
                 const newAccount: Account = {
                     _id: '',
                     user_id: '',
-                    accountName: accountName.trim(),
+                    accountName,
                     configuration: {
                         backgroundColor,
                         color: textColor,
@@ -108,10 +120,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
-                const success = await onSuccess(newAccount);
-                if (success) {
-                    onClose();
-                }
+                await onSuccess(newAccount);
             }
         } catch (error) {
             console.error('❌ Error saving changes:', error);
@@ -134,6 +143,39 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             setSavingChanges(false);
             setDeleteDialog(false);
         }
+    };
+
+    const handleAddYear = () => {
+        const yearNumber = parseInt(newYear);
+        if (isNaN(yearNumber) || yearNumber < 1900 || yearNumber > 9999) {
+            toast.error(t('dashboard.accounts.errors.invalidYear'));
+            return;
+        }
+
+        if (account?.records[yearNumber.toString()]) {
+            toast.error(t('dashboard.accounts.errors.yearExists'));
+            return;
+        }
+
+        const initialYearRecord: YearRecord = {
+            jan: 0, feb: 0, mar: 0, apr: 0,
+            may: 0, jun: 0, jul: 0, aug: 0,
+            sep: 0, oct: 0, nov: 0, dec: 0
+        };
+
+        const updatedAccount: Account = {
+            ...account!,
+            records: {
+                ...account!.records,
+                [yearNumber.toString()]: initialYearRecord
+            }
+        };
+
+        onSuccess(updatedAccount).then(() => {
+            setShowYearInput(false);
+            setNewYear('');
+            setSelectedYear(yearNumber);
+        });
     };
 
     return (
@@ -165,17 +207,60 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             <FormControl size="small" fullWidth>
                                 <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                 <Select
-                                    value={selectedYear}
+                                    value={showYearInput ? '' : selectedYear}
                                     label={t('dashboard.common.year')}
-                                    onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === 'add') {
+                                            setShowYearInput(true);
+                                        } else {
+                                            setSelectedYear(Number(value));
+                                        }
+                                    }}
                                 >
                                     {availableYears.map(year => (
                                         <MenuItem key={year} value={year}>
                                             {year}
                                         </MenuItem>
                                     ))}
+                                    <MenuItem value="add">
+                                        <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>
+                                            add
+                                        </span>
+                                        {t('dashboard.accounts.form.addYear')}
+                                    </MenuItem>
                                 </Select>
                             </FormControl>
+                            
+                            {showYearInput && (
+                                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                    <TextField
+                                        size="small"
+                                        type="number"
+                                        value={newYear}
+                                        onChange={(e) => setNewYear(e.target.value)}
+                                        placeholder={t('dashboard.accounts.form.enterYear')}
+                                        fullWidth
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleAddYear}
+                                        sx={{ minWidth: 'auto', px: 2 }}
+                                    >
+                                        <span className="material-symbols-rounded">add</span>
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => {
+                                            setShowYearInput(false);
+                                            setNewYear('');
+                                        }}
+                                        sx={{ minWidth: 'auto', px: 2 }}
+                                    >
+                                        <span className="material-symbols-rounded">close</span>
+                                    </Button>
+                                </Box>
+                            )}
                         </Paper>
 
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>

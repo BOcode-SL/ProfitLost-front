@@ -276,7 +276,9 @@
                 "createError": "Error creating account",
                 "updateError": "Error updating account",
                 "deleteError": "Error deleting account",
-                "accountsOrderError": "Error updating accounts order"
+                "accountsOrderError": "Error updating accounts order",
+                "invalidYear": "Invalid year. Must be between 1900 and 9999",
+                "yearExists": "This year already exists in the account"
             },
             "form": {
                 "title": {
@@ -294,6 +296,8 @@
                     "textColor": "Text color",
                     "monthlyValues": "Monthly values"
                 },
+                "addYear": "Add year",
+                "enterYear": "Enter year",
                 "delete": {
                     "title": "Delete Account",
                     "message": "Are you sure you want to delete the account",
