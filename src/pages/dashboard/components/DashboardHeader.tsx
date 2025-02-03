@@ -32,7 +32,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         try {
             await authService.logout();
             toast.success('See you soon!');
-            navigate('/login');
+            navigate('/auth');
         } catch (error) {
             toast.error('Logout error');
             console.error('Logout error:', error);

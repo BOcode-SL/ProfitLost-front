@@ -32,14 +32,14 @@ function App() {
       <DashboardThemeProvider>
         {children}
       </DashboardThemeProvider>
-    ) : <Navigate to='/login' replace />;
+    ) : <Navigate to='/auth' replace />;
   };
 
   return (
     <UserProvider>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<AuthPage />} />
+        <Route path='/auth' element={<AuthPage />} />
         <Route path='/legal' element={<LegalNotice />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/cookies' element={<CookiePolicy />} />

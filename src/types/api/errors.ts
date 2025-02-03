@@ -23,7 +23,10 @@ export type AuthErrorType =
     | 'INVALID_CREDENTIALS'
     | 'ACCOUNT_INACTIVE'
     | 'ACCOUNT_LOCKED'
-    | 'LOGOUT_ERROR';
+    | 'LOGOUT_ERROR'
+    | 'EMAIL_NOT_FOUND'
+    | 'INVALID_RESET_TOKEN'
+    | 'EXPIRED_RESET_TOKEN';
 
 export type RegisterErrorType = Extract<
     AuthErrorType,

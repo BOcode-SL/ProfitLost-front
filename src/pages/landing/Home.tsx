@@ -30,7 +30,7 @@ export default function Home() {
                     <div className="nav-buttons">
                         <button
                             className="cta-button"
-                            onClick={() => window.location.href = '/login'}>
+                            onClick={() => window.location.href = '/auth'}>
                             Login
                         </button>
                     </div>
@@ -50,7 +50,7 @@ export default function Home() {
                         <Button
                             variant="contained"
                             className="cta-button"
-                            onClick={() => window.location.href = '/login'}>
+                            onClick={() => window.location.href = '/auth'}>
                             Start Now
                         </Button>
                     </div>

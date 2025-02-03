@@ -162,3 +162,16 @@ export interface UpdateNoteRequest {
     title?: string;
     content?: string;
 }
+
+export interface ResetPasswordRequest {
+    email: string;
+}
+
+export interface VerifyResetTokenRequest {
+    token: string;
+}
+
+export interface UpdateForgottenPasswordRequest {
+    token: string;
+    newPassword: string;
+}

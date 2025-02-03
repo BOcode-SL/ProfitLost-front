@@ -19,13 +19,18 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
         try {
+            const modifiedCredentials = {
+                ...credentials,
+                username: credentials.username.toLowerCase()
+            };
+
             const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(credentials),
+                body: JSON.stringify(modifiedCredentials),
             });
 
             const data = await response.json();
@@ -74,6 +79,81 @@ export const authService = {
             const response = await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiResponse;
+            }
+
+            return data as AuthApiResponse;
+        } catch (error) {
+            throw handleAuthError(error);
+        }
+    },
+
+    async forgotPassword(email: string): Promise<AuthApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiResponse;
+            }
+
+            return data as AuthApiResponse;
+        } catch (error) {
+            throw handleAuthError(error);
+        }
+    },
+
+    async verifyResetToken(token: string): Promise<AuthApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/verify-reset-token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiResponse;
+            }
+
+            return data as AuthApiResponse;
+        } catch (error) {
+            throw handleAuthError(error);
+        }
+    },
+
+    async resetPassword(token: string, newPassword: string): Promise<AuthApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token, newPassword }),
             });
 
             const data = await response.json();
