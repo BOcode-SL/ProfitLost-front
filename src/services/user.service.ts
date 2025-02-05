@@ -17,11 +17,14 @@ const handleUserError = (error: unknown): UserApiResponse => {
 };
 
 export const userService = {
-    async getUserData(): Promise<UserApiResponse> {
+    async getUserData(headers?: HeadersInit): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/me`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: headers || {
+                    'Content-Type': 'application/json'
+                }
             });
 
             const data = await response.json();

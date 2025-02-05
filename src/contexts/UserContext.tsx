@@ -26,7 +26,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const loadUserData = useCallback(async () => {
         try {
-            const response = await userService.getUserData();
+            const token = localStorage.getItem('auth_token');
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json'
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const response = await userService.getUserData(headers);
             if (response.success && response.data) {
                 const userData = response.data as User;
                 setUser(userData);

@@ -191,6 +191,10 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            if (data.token) {
+                localStorage.setItem('auth_token', data.token);
+            }
+
             return data as AuthApiResponse;
         } catch (error) {
             throw handleAuthError(error);
