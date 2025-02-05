@@ -26,7 +26,8 @@ export type AuthErrorType =
     | 'LOGOUT_ERROR'
     | 'EMAIL_NOT_FOUND'
     | 'INVALID_RESET_TOKEN'
-    | 'EXPIRED_RESET_TOKEN';
+    | 'EXPIRED_RESET_TOKEN'
+    | 'GOOGLE_AUTH_ERROR';
 
 export type RegisterErrorType = Extract<
     AuthErrorType,

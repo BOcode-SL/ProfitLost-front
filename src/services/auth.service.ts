@@ -169,5 +169,31 @@ export const authService = {
         } catch (error) {
             throw handleAuthError(error);
         }
+    },
+
+    async googleLogin(token: string): Promise<AuthApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/google`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as AuthApiResponse;
+            }
+
+            return data as AuthApiResponse;
+        } catch (error) {
+            throw handleAuthError(error);
+        }
     }
 }; 

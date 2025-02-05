@@ -63,7 +63,8 @@
                 "DUPLICATE_CATEGORY": "Categoría ya existe",
                 "CATEGORY_IN_USE": "Categoría en uso y no puede ser eliminada",
                 "CATEGORY_NOT_FOUND": "Categoría no encontrada",
-                "NOTE_NOT_FOUND": "Nota no encontrada"
+                "NOTE_NOT_FOUND": "Nota no encontrada",
+                "GOOGLE_AUTH_ERROR": "Error de autenticación de Google"
             },
             "monthNames": {
                 "Jan": "Enero",

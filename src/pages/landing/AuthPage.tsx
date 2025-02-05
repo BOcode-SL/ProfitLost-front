@@ -1,7 +1,9 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Box, TextField, Button, InputAdornment, IconButton, Typography, Container, Divider } from '@mui/material'
+import { Box, TextField, Button, InputAdornment, IconButton, Typography, Container, Divider, Link } from '@mui/material'
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { useTranslation } from 'react-i18next';
 
 import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../types/api/responses';
 import { AuthErrorType } from '../../types/api/errors';
@@ -123,7 +125,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
     );
 };
 
-const LoginForm: React.FC<{
+interface LoginFormProps {
     loginData: LoginCredentials;
     loading: boolean;
     showPassword: boolean;
@@ -132,73 +134,107 @@ const LoginForm: React.FC<{
     setShowResetPassword: (show: boolean) => void;
     isFormValid: () => boolean;
     handleSubmit: (e: FormEvent) => void;
-}> = ({ loginData, loading, showPassword, handleChange, setShowPassword, setShowResetPassword, isFormValid, handleSubmit }) => (
-    <Box component="form" onSubmit={handleSubmit}>
-        <TextField
-            fullWidth
-            required
-            label="Email o username"
-            variant="outlined"
-            margin="normal"
-            name="identifier"
-            value={loginData.identifier}
-            onChange={handleChange}
-            placeholder="email@example.com o username"
-        />
-        <TextField
-            fullWidth
-            required
-            type={showPassword ? 'text' : 'password'}
-            label="Password"
-            variant="outlined"
-            margin="normal"
-            name="password"
-            value={loginData.password}
-            onChange={handleChange}
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                            <span className="material-symbols-rounded">
-                                {showPassword ? 'visibility' : 'visibility_off'}
-                            </span>
-                        </IconButton>
-                    </InputAdornment>
-                )
-            }}
-        />
-        <Box sx={{ textAlign: 'right', mt: 1 }}>
-            <Button
-                onClick={() => setShowResetPassword(true)}
+    handleGoogleSuccess: (credentialResponse: CredentialResponse) => Promise<void>;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({
+    loginData,
+    loading,
+    showPassword,
+    handleChange,
+    setShowPassword,
+    setShowResetPassword,
+    isFormValid,
+    handleSubmit,
+    handleGoogleSuccess
+}) => {
+    const { t } = useTranslation();
+    
+    return (
+        <Box component="form" onSubmit={handleSubmit}>
+            <Box sx={{ width: '100%', mb: 2 }}>
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => {
+                        toast.error(t('dashboard.common.error.GOOGLE_AUTH_ERROR'));
+                    }}
+                    useOneTap
+                    width="100%"
+                    text="continue_with"
+                    shape="rectangular"
+                />
+            </Box>
+
+            <Divider sx={{ my: 2 }}>
+                <Typography sx={{ color: '#666', px: 2 }}>
+                    or
+                </Typography>
+            </Divider>
+
+            <TextField
+                fullWidth
+                required
+                label="Email o username"
                 variant="outlined"
+                margin="normal"
+                name="identifier"
+                value={loginData.identifier}
+                onChange={handleChange}
+                placeholder="email@example.com o username"
+            />
+            <TextField
+                fullWidth
+                required
+                type={showPassword ? 'text' : 'password'}
+                label="Password"
+                variant="outlined"
+                margin="normal"
+                name="password"
+                value={loginData.password}
+                onChange={handleChange}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                <span className="material-symbols-rounded">
+                                    {showPassword ? 'visibility' : 'visibility_off'}
+                                </span>
+                            </IconButton>
+                        </InputAdornment>
+                    )
+                }}
+            />
+
+            <Box sx={{ mt: 2 }}>
+                <Link
+                    sx={{
+                        color: '#666',
+                        cursor: 'pointer',
+                        textDecoration: 'none'
+                    }}
+                    onClick={() => setShowResetPassword(true)}
+                >
+                    Forgot password?
+                </Link>
+            </Box>
+
+            <Button
+                fullWidth
+                variant="contained"
+                type="submit"
+                disabled={!isFormValid() || loading}
                 sx={{
-                    border: 0,
-                    color: 'grey',
-                    '&:hover': {
-                        border: 0,
-                        color: '#fe6f14'
-                    }
+                    mt: 3,
+                    mb: 2,
+                    bgcolor: '#fe6f14',
+                    '&:hover': { bgcolor: '#c84f03' }
                 }}
             >
-                Forgot Password?
+                Login
             </Button>
         </Box>
-        <Button
-            fullWidth
-            variant="contained"
-            type="submit"
-            disabled={!isFormValid() || loading}
-            sx={{
-                mt: 3,
-                mb: 2,
-                bgcolor: '#fe6f14',
-                '&:hover': { bgcolor: '#c84f03' }
-            }}
-        >
-            Login
-        </Button>
-    </Box>
-);
+    );
+};
 
 const RegisterForm: React.FC<{
     registerData: RegisterCredentials;
@@ -239,14 +275,13 @@ const RegisterForm: React.FC<{
             variant="outlined"
             margin="normal"
             name="username"
-            value={registerData.username.toLowerCase()}
+            value={registerData.username}
             onChange={(e) => {
                 const value = e.target.value.toLowerCase();
                 if (/^[a-z0-9]*$/.test(value)) {
                     handleChange({
-                        ...e,
                         target: {
-                            ...e.target,
+                            name: 'username',
                             value: value
                         }
                     } as ChangeEvent<HTMLInputElement>);
@@ -663,6 +698,33 @@ export default function AuthPage() {
         }
     };
 
+    const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+        setLoading(true);
+        try {
+            if (!credentialResponse.credential) {
+                toast.error('Invalid Google token');
+                return;
+            }
+
+            const response = await authService.googleLogin(credentialResponse.credential);
+            
+            if (response.success) {
+                await loadUserData();
+                toast.success('Welcome!');
+                navigate('/dashboard', { replace: true });
+            }
+        } catch (error) {
+            const authError = error as AuthApiErrorResponse;
+            if (authError.error === 'GOOGLE_AUTH_ERROR') {
+                toast.error('Error authenticating with Google');
+            } else {
+                toast.error('An error occurred');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <AuthLayout
             title={showResetPassword ? 'Reset Password' : (isLogin ? 'Login' : 'Register')}
@@ -705,6 +767,7 @@ export default function AuthPage() {
                     setShowResetPassword={setShowResetPassword}
                     isFormValid={isFormValid}
                     handleSubmit={handleSubmit}
+                    handleGoogleSuccess={handleGoogleSuccess}
                 />
             ) : (
                 <RegisterForm
