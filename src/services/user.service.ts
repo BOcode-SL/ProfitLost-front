@@ -43,11 +43,18 @@ export const userService = {
 
     async updateProfile(formData: FormData): Promise<UserApiResponse> {
         try {
+            const token = localStorage.getItem('auth_token');
+            const headers: HeadersInit = {};
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'POST',
                 credentials: 'include',
                 body: formData,
-                headers: getAuthHeaders()
+                headers
             });
 
             const data = await response.json();
