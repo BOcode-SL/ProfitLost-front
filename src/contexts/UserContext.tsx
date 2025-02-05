@@ -35,7 +35,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
-            const response = await userService.getUserData(headers);
+            const response = await userService.getUserData();
             if (response.success && response.data) {
                 const userData = response.data as User;
                 setUser(userData);

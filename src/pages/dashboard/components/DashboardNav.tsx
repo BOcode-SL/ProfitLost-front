@@ -116,8 +116,9 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-around',
-                        py: 2,
+                        pt: 2,
                         px: 1,
+                        pb: 4,
                         borderRadius: '15px 15px 0 0',
                     }}
                 >

@@ -48,7 +48,7 @@ export default function Dashboard() {
                     component="img"
                     src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg"
                     alt="logo"
-                    sx={{ 
+                    sx={{
                         width: 200,
                         userSelect: 'none'
                     }}

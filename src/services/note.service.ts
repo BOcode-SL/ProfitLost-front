@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { NoteApiResponse, CreateNoteRequest, UpdateNoteRequest } from '../types/api/responses';
+import { getAuthHeaders } from '../utils/apiHeaders';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,7 +22,8 @@ export const noteService = {
         try {
             const response = await fetch(`${API_URL}/api/notes`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -44,10 +46,8 @@ export const noteService = {
             const response = await fetch(`${API_URL}/api/notes`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(noteData)
+                body: JSON.stringify(noteData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -70,10 +70,8 @@ export const noteService = {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify(updateData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -97,7 +95,8 @@ export const noteService = {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();

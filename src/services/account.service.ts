@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { AccountApiResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/api/responses';
-
+import { getAuthHeaders } from '../utils/apiHeaders';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const handleAccountError = (error: unknown): AccountApiResponse => {
@@ -22,9 +22,7 @@ export const accountService = {
             const response = await fetch(`${API_URL}/api/accounts/all`, {
                 method: 'GET',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -47,9 +45,7 @@ export const accountService = {
             const response = await fetch(`${API_URL}/api/accounts/${year}`, {
                 method: 'GET',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -72,10 +68,8 @@ export const accountService = {
             const response = await fetch(`${API_URL}/api/accounts/create`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(accountData)
+                 body: JSON.stringify(accountData),
+                 headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -98,10 +92,8 @@ export const accountService = {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify(updateData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -124,9 +116,7 @@ export const accountService = {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();

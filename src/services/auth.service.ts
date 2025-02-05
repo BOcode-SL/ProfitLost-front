@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { AuthApiResponse, LoginCredentials, RegisterCredentials } from '../types/api/responses';
+import { isIOS } from '../utils/deviceDetection';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -66,6 +67,10 @@ export const authService = {
                     ...data,
                     statusCode: response.status as HttpStatusCode
                 } as AuthApiResponse;
+            }
+
+            if (isIOS() && data.token) {
+                localStorage.setItem('auth_token', data.token);
             }
 
             return data as AuthApiResponse;
@@ -191,7 +196,7 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
-            if (data.token) {
+            if (isIOS() && data.token) {
                 localStorage.setItem('auth_token', data.token);
             }
 

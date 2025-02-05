@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
+import { getAuthHeaders } from '../utils/apiHeaders';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -17,14 +18,12 @@ const handleUserError = (error: unknown): UserApiResponse => {
 };
 
 export const userService = {
-    async getUserData(headers?: HeadersInit): Promise<UserApiResponse> {
+    async getUserData(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/me`, {
                 method: 'GET',
                 credentials: 'include',
-                headers: headers || {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -47,7 +46,8 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'POST',
                 credentials: 'include',
-                body: formData
+                body: formData,
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -70,10 +70,8 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/theme`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ theme })
+                body: JSON.stringify({ theme }),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -96,10 +94,8 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/password`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ currentPassword, newPassword })
+                body: JSON.stringify({ currentPassword, newPassword }),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -122,6 +118,7 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/profile-image`, {
                 method: 'DELETE',
                 credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -144,6 +141,7 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/account`, {
                 method: 'DELETE',
                 credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -166,10 +164,8 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/accounts-order`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ accountsOrder })
+                body: JSON.stringify({ accountsOrder }),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();

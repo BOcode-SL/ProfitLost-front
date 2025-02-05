@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { CategoryApiResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types/api/responses';
+import { getAuthHeaders } from '../utils/apiHeaders';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,7 +22,8 @@ export const categoryService = {
         try {
             const response = await fetch(`${API_URL}/api/categories/all`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -44,10 +46,8 @@ export const categoryService = {
             const response = await fetch(`${API_URL}/api/categories/create`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(categoryData)
+                body: JSON.stringify(categoryData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -70,10 +70,8 @@ export const categoryService = {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(categoryData)
+                body: JSON.stringify(categoryData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -95,7 +93,8 @@ export const categoryService = {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();

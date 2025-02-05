@@ -1,6 +1,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { TransactionApiResponse, CreateTransactionRequest, UpdateTransactionRequest } from '../types/api/responses';
+import { getAuthHeaders } from '../utils/apiHeaders';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,7 +22,8 @@ export const transactionService = {
         try {
             const response = await fetch(`${API_URL}/api/transactions/all`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -43,7 +45,8 @@ export const transactionService = {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${year}`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -65,7 +68,8 @@ export const transactionService = {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${year}/${month}`, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -88,10 +92,8 @@ export const transactionService = {
             const response = await fetch(`${API_URL}/api/transactions/create`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(transactionData)
+                body: JSON.stringify(transactionData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -114,10 +116,8 @@ export const transactionService = {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify(updateData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -139,7 +139,8 @@ export const transactionService = {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                credentials: 'include',
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
