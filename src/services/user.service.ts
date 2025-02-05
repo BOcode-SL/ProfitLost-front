@@ -2,6 +2,7 @@ import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
 import { getAuthHeaders } from '../utils/apiHeaders';
+import { isIOS } from '../utils/deviceDetection';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -46,7 +47,7 @@ export const userService = {
             const token = localStorage.getItem('auth_token');
             const headers: HeadersInit = {};
             
-            if (token) {
+            if (isIOS() && token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
@@ -68,6 +69,7 @@ export const userService = {
 
             return data as UserApiResponse;
         } catch (error) {
+            console.error('Error in updateProfile:', error);
             throw handleUserError(error);
         }
     },

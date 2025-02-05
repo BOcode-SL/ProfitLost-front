@@ -116,6 +116,7 @@
                 "preferences": "Preferencias",
                 "personalInformation": "Información personal",
                 "name": "Nombre",
+                "nameRequired": "El nombre es requerido",
                 "surname": "Apellido",
                 "language": "Idioma",
                 "currency": "Moneda",

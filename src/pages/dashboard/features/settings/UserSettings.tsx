@@ -51,11 +51,16 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         currency: user?.currency || 'USD' as Currency,
         dateFormat: user?.dateFormat || 'DD/MM/YYYY' as DateFormat,
         timeFormat: user?.timeFormat || '12h' as TimeFormat,
-        profileImage: null as File | null
+        profileImage: null as File | null,
+        previewUrl: user?.profileImage || '',
+        deleteImage: false
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        if (name === 'name' && !value.trim()) {
+            return;
+        }
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -70,64 +75,61 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    const handleImageUpload = async (file: File) => {
+    const handleImageUpload = (file: File) => {
         if (file.size > 8 * 1024 * 1024) {
             toast.error(t('dashboard.settings.userSettings.profileImageError'));
             return;
         }
 
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('profileImage', file);
-
-        try {
-            const response = await userService.updateProfile(formData);
-            if (response.success) {
-                await loadUserData();
-                toast.success(t('dashboard.settings.userSettings.profileImageSuccess'));
-            }
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            toast.error((error as UserApiErrorResponse).message || t('dashboard.settings.userSettings.uploadImageError'));
-        } finally {
-            setLoading(false);
-        }
+        setFormData(prev => ({
+            ...prev,
+            profileImage: file,
+            previewUrl: URL.createObjectURL(file),
+            deleteImage: false
+        }));
     };
 
-    const handleDeleteImage = async () => {
-        setLoading(true);
-        try {
-            const response = await userService.deleteProfileImage();
-            if (response.success) {
-                await loadUserData();
-                toast.success(t('dashboard.settings.userSettings.deleteImageSuccess'));
-            }
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            toast.error((error as UserApiErrorResponse).message || t('dashboard.settings.userSettings.deleteImageError'));
-        } finally {
-            setLoading(false);
+    const handleDeleteImage = () => {
+        if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
+            URL.revokeObjectURL(formData.previewUrl);
         }
+        setFormData(prev => ({
+            ...prev,
+            profileImage: null,
+            previewUrl: '',
+            deleteImage: true
+        }));
     };
 
     const handleSubmit = async () => {
+        if (!formData.name.trim()) {
+            toast.error(t('dashboard.settings.userSettings.nameRequired'));
+            return;
+        }
+
         setLoading(true);
         const updateFormData = new FormData();
-
-        updateFormData.append('name', formData.name);
+        
+        updateFormData.append('name', formData.name.trim());
         updateFormData.append('surname', formData.surname);
         updateFormData.append('language', formData.language);
         updateFormData.append('currency', formData.currency);
         updateFormData.append('dateFormat', formData.dateFormat);
         updateFormData.append('timeFormat', formData.timeFormat);
 
-        if (formData.profileImage) {
+        if (formData.deleteImage) {
+            updateFormData.append('deleteImage', 'true');
+        }
+        else if (formData.profileImage) {
             updateFormData.append('profileImage', formData.profileImage);
         }
 
         try {
             const response = await userService.updateProfile(updateFormData);
             if (response.success) {
+                if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
+                    URL.revokeObjectURL(formData.previewUrl);
+                }
                 await loadUserData();
                 toast.success(t('dashboard.common.success.saved'));
                 onSuccess?.();
@@ -171,7 +173,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                         gap: 2
                     }}>
                         <Avatar
-                            src={formData.profileImage ? URL.createObjectURL(formData.profileImage) : user?.profileImage}
+                            src={formData.deleteImage ? undefined : (formData.previewUrl || user?.profileImage)}
                             alt={user?.name}
                             sx={{ width: 150, height: 150, bgcolor: 'primary.main' }}
                         />
@@ -191,7 +193,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                             display: 'flex',
                             gap: 1
                         }}>
-                            {user?.profileImage ? (
+                            {(user?.profileImage || formData.profileImage) && !formData.deleteImage ? (
                                 <Button
                                     variant="text"
                                     onClick={handleDeleteImage}

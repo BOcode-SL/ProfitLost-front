@@ -116,6 +116,7 @@
                 "preferences": "Preferences",
                 "personalInformation": "Personal Information",
                 "name": "Name",
+                "nameRequired": "The name is required",
                 "surname": "Surname",
                 "language": "Language",
                 "currency": "Currency",
