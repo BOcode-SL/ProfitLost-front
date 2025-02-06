@@ -12,6 +12,7 @@ export interface User {
     dateFormat?: DateFormat;
     timeFormat?: TimeFormat;
     theme?: Theme;
+    viewMode?: 'yearToday' | 'fullYear';
 }
 
 export type Language = 'enUS' | 'esES';

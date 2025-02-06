@@ -31,6 +31,7 @@
             "error": {
                 "generic": "Ocurrió un error",
                 "saving": "Error al guardar",
+                "updating": "Error al actualizar",
                 "deleting": "Error al eliminar",
                 "required": "Este campo es requerido",
                 "loading": "Error al cargar los datos",

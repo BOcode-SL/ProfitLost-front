@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { useUser } from '../../../../contexts/UserContext';
+import { userService } from '../../../../services/user.service';
 
 import { transactionService } from '../../../../services/transaction.service';
 import type { Transaction } from '../../../../types/models/transaction';
@@ -17,7 +19,8 @@ export default function AnnualReport() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
-    const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>('fullYear');
+    const { user } = useUser();
+    const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.viewMode || 'fullYear');
 
     useEffect(() => {
         const fetchAllTransactions = async () => {
@@ -106,6 +109,18 @@ export default function AnnualReport() {
         return true;
     });
 
+    const handleViewModeChange = async (newMode: 'yearToday' | 'fullYear') => {
+        if (newMode === viewMode) return;
+        
+        setViewMode(newMode);
+        try {
+            await userService.updateViewMode(newMode);
+        } catch {
+            toast.error(t('dashboard.common.error.updating'));
+            setViewMode(viewMode);
+        }
+    };
+
     return (
         <Box className="annual-report">
             <Fade in timeout={400}>
@@ -143,7 +158,7 @@ export default function AnnualReport() {
                                     <ToggleButtonGroup
                                         value={viewMode}
                                         exclusive
-                                        onChange={(_, newMode) => newMode && setViewMode(newMode)}
+                                        onChange={(_, newMode) => newMode && handleViewModeChange(newMode)}
                                         size="small"
                                         fullWidth
                                         sx={{

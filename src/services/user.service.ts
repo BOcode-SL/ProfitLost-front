@@ -98,6 +98,33 @@ export const userService = {
         }
     },
 
+    async updateViewMode(viewMode: 'yearToday' | 'fullYear'): Promise<UserApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/users/view-mode`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ viewMode })
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as UserApiResponse;
+            }
+    
+            return data as UserApiResponse;
+        } catch (error) {
+            throw handleUserError(error);
+        }
+    },
+
     async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/password`, {
