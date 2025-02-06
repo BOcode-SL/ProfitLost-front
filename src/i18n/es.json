@@ -95,7 +95,7 @@
                 "Dec": "Dic"
             },
             "viewMode": {
-                "yearToday": "Año actual",
+                "yearToday": "Hasta hoy",
                 "fullYear": "Año completo"
             }
         },
