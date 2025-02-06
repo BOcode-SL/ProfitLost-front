@@ -20,7 +20,7 @@ export default function AnnualReport() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useUser();
-    const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.viewMode || 'fullYear');
+    const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
 
     useEffect(() => {
         const fetchAllTransactions = async () => {

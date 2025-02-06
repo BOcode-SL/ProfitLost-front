@@ -22,8 +22,8 @@ export const formatDateTime = (date: string, user: User | null) => {
     const dateObj = new Date(date);
     
     // Default formats if user preferences not set
-    const dateFormat = user?.dateFormat || 'MM/DD/YYYY';
-    const timeFormat = user?.timeFormat || '12h';
+    const dateFormat = user?.preferences.dateFormat || 'MM/DD/YYYY';
+    const timeFormat = user?.preferences.timeFormat || '12h';
     
     // Format date based on user preference
     let formattedDate = '';
@@ -55,7 +55,7 @@ export const formatDate = (date: string, user: User | null) => {
     const dateObj = new Date(date);
     
     // Default format if user preferences not set
-    const dateFormat = user?.dateFormat || 'MM/DD/YYYY';
+    const dateFormat = user?.preferences.dateFormat || 'MM/DD/YYYY';
     
     // Format date based on user preference
     if (dateFormat === 'DD/MM/YYYY') {

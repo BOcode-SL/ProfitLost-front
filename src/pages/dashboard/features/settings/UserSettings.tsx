@@ -47,10 +47,12 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
     const [formData, setFormData] = useState({
         name: user?.name || '',
         surname: user?.surname || '',
-        language: user?.language || 'enUS' as Language,
-        currency: user?.currency || 'USD' as Currency,
-        dateFormat: user?.dateFormat || 'DD/MM/YYYY' as DateFormat,
-        timeFormat: user?.timeFormat || '12h' as TimeFormat,
+        language: user?.preferences?.language || 'enUS',
+        currency: user?.preferences?.currency || 'USD',
+        dateFormat: user?.preferences?.dateFormat || 'DD/MM/YYYY',
+        timeFormat: user?.preferences?.timeFormat || '12h',
+        theme: user?.preferences?.theme || 'light',
+        viewMode: user?.preferences?.viewMode || 'fullYear',
         profileImage: null as File | null,
         previewUrl: user?.profileImage || '',
         deleteImage: false

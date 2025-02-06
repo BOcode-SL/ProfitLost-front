@@ -26,7 +26,9 @@ export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
 
 export const DashboardThemeProvider = ({ children }: { children: ReactNode }) => {
     const { user, setUser } = useUser();
-    const [isDarkMode, setIsDarkMode] = useState(() => user?.theme === 'dark');
+    const [isDarkMode, setIsDarkMode] = useState(() => 
+        user?.preferences?.theme === 'dark'
+    );
 
     const toggleTheme = async () => {
         try {
@@ -44,8 +46,8 @@ export const DashboardThemeProvider = ({ children }: { children: ReactNode }) =>
     };
 
     useEffect(() => {
-        setIsDarkMode(user?.theme === 'dark');
-    }, [user?.theme]);
+        setIsDarkMode(user?.preferences.theme === 'dark');
+    }, [user?.preferences.theme]);
 
     const theme = useMemo(() => (isDarkMode ? darkTheme : lightTheme), [isDarkMode]);
 

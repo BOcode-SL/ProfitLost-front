@@ -2,11 +2,21 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import type { User, UserContextType } from '../types/models/user';
+import type { User, UserContextType, UserPreferences } from '../types/models/user';
 import type { UserApiErrorResponse } from '../types/api/responses';
 import { userService } from '../services/user.service';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
+
+// Preferencias por defecto
+const defaultPreferences: UserPreferences = {
+    language: 'enUS',
+    currency: 'USD',
+    dateFormat: 'DD/MM/YYYY',
+    timeFormat: '24h',
+    theme: 'light',
+    viewMode: 'fullYear'
+};
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -26,21 +36,23 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const loadUserData = useCallback(async () => {
         try {
-            const token = localStorage.getItem('auth_token');
-            const headers: HeadersInit = {
-                'Content-Type': 'application/json'
-            };
-            
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-
             const response = await userService.getUserData();
+            
             if (response.success && response.data) {
                 const userData = response.data as User;
-                setUser(userData);
                 
-                const userLanguage = convertLanguageFormat(userData.language);
+                // Asegurarse de que las preferencias estén definidas
+                const userWithPreferences: User = {
+                    ...userData,
+                    preferences: {
+                        ...defaultPreferences,
+                        ...userData.preferences
+                    }
+                };
+                
+                setUser(userWithPreferences);
+                
+                const userLanguage = convertLanguageFormat(userWithPreferences.preferences.language);
                 await i18n.changeLanguage(userLanguage);
             }
         } catch (error) {

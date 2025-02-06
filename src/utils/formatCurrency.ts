@@ -1,7 +1,7 @@
 import { User } from '../types/models/user';
 
 export const formatCurrency = (amount: number, user: User | null): string => {
-    const currency = user?.currency || 'USD';
+    const currency = user?.preferences.currency || 'USD';
     const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
 
     try {
