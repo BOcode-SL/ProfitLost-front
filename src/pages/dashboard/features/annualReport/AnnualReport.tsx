@@ -19,8 +19,14 @@ export default function AnnualReport() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
-    const { user } = useUser();
+    const { user,loadUserData } = useUser();
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
+
+    useEffect(() => {
+        if (user?.preferences.viewMode) {
+            setViewMode(user.preferences.viewMode);
+        }
+    }, [user?.preferences.viewMode]);
 
     useEffect(() => {
         const fetchAllTransactions = async () => {
@@ -114,7 +120,10 @@ export default function AnnualReport() {
         
         setViewMode(newMode);
         try {
-            await userService.updateViewMode(newMode);
+            const response = await userService.updateViewMode(newMode);
+            if (response.success && response.data) {
+                loadUserData();
+            }
         } catch {
             toast.error(t('dashboard.common.error.updating'));
             setViewMode(viewMode);
