@@ -1,5 +1,10 @@
 {
     "dashboard": {
+        "tooltips": {
+            "dark_mode": "Modo oscuro",
+            "light_mode": "Modo claro",
+            "inbox": "Bandeja de entrada"
+        },
         "common": {
             "year": "Año",
             "month": "Mes",

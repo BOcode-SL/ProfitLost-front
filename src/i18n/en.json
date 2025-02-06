@@ -1,5 +1,10 @@
 {
     "dashboard": {
+        "tooltips": {
+            "dark_mode":"Dark mode",
+            "light_mode":"Light mode",
+            "inbox":"Inbox"
+        },
         "common": {
             "year": "Year",
             "month": "Month",
@@ -127,12 +132,12 @@
             },
             "help": {
                 "title": "Help",
-                "faq": "Frequently Asked Questions",                
+                "faq": "Frequently Asked Questions",
                 "howToStart": "How to start using Profit & Lost?",
                 "howToStartDescription": "Starting with Profit & Lost is very easy:",
                 "howToStartStep1": "1. Personalize your initial preferences to adapt them to your needs.",
                 "howToStartStep2": "2. Go to the 'Annual Report' section and create your categories to organize your financial movements.",
-                "howToStartStep3": "3. In 'Transactions', start recording your income and expenses to keep a detailed control.",                
+                "howToStartStep3": "3. In 'Transactions', start recording your income and expenses to keep a detailed control.",
                 "manageAccounts": "How to manage my accounts?",
                 "manageAccountsDescription": "In the 'Accounts' section, you have full control over your accounts. You can:",
                 "manageAccountsStep1": "1. Create new accounts for different purposes (e.g. bank accounts, savings, etc.).",
@@ -149,7 +154,7 @@
                 "protectDataDescription": "Profit & Lost prioritizes the security of your data:",
                 "protectDataStep1": "1. All information is encrypted to ensure its protection.",
                 "protectDataStep2": "2. You can change your password at any time from the 'Security & Privacy' section.",
-                "protectDataStep3": "3. Activate two-factor authentication for greater security.",                
+                "protectDataStep3": "3. Activate two-factor authentication for greater security.",
                 "viewReports": "How do I view my financial reports?",
                 "viewReportsDescription": "In the 'Reports' section, you can generate detailed reports that include:",
                 "viewReportsStep1": "1. Monthly or annual summaries of your movements.",

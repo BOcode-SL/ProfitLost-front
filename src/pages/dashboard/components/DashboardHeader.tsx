@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress } from '@mui/material';
+import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { authService } from '../../../services/auth.service';
@@ -102,13 +102,17 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                             onClick={toggleTheme}
                         >
                             {isDarkMode ? (
-                                <span className="material-symbols-rounded">
-                                    light_mode
-                                </span>
+                                <Tooltip title={t('dashboard.tooltips.light_mode')}>
+                                    <span className="material-symbols-rounded">
+                                        light_mode
+                                    </span>
+                                </Tooltip>
                             ) : (
-                                <span className="material-symbols-rounded">
-                                    dark_mode
-                                </span>
+                                <Tooltip title={t('dashboard.tooltips.dark_mode')}>
+                                    <span className="material-symbols-rounded">
+                                        dark_mode
+                                    </span>
+                                </Tooltip>
                             )}
                         </IconButton>
 
@@ -117,9 +121,11 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                                 color="primary"
                                 variant="dot"
                             >
-                                <span className="material-symbols-rounded no-select">
-                                    mail
-                                </span>
+                                <Tooltip title={t('dashboard.tooltips.inbox')}>
+                                    <span className="material-symbols-rounded no-select">
+                                        mail
+                                    </span>
+                                </Tooltip>
                             </Badge>
                         </IconButton>
                     </Box>
@@ -139,8 +145,8 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                     >
                         {user?.name?.[0].toUpperCase()}
                     </Avatar>
-                </Paper>
-            </Box>
+                </Paper >
+            </Box >
 
             <Drawer
                 anchor="right"
