@@ -1,9 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
 import type { User, UserContextType, UserPreferences } from '../types/models/user';
-import type { UserApiErrorResponse } from '../types/api/responses';
 import { userService } from '../services/user.service';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -37,11 +35,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const loadUserData = useCallback(async () => {
         try {
             const response = await userService.getUserData();
-            
+
             if (response.success && response.data) {
                 const userData = response.data as User;
-                
-                // Asegurarse de que las preferencias estén definidas
                 const userWithPreferences: User = {
                     ...userData,
                     preferences: {
@@ -49,18 +45,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                         ...userData.preferences
                     }
                 };
-                
                 setUser(userWithPreferences);
-                
+
                 const userLanguage = convertLanguageFormat(userWithPreferences.preferences.language);
                 await i18n.changeLanguage(userLanguage);
+            } else {
+                setUser(null);
             }
         } catch (error) {
             console.error('Error loading user data:', error);
-            if (location.pathname.startsWith('/dashboard') &&
-                (error as UserApiErrorResponse).error !== 'UNAUTHORIZED') {
-                toast.error('Error loading user data');
-            }
             setUser(null);
         } finally {
             setIsLoading(false);

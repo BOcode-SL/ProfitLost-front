@@ -95,6 +95,10 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            if (isIOS()) {
+                localStorage.removeItem('auth_token');
+            }
+
             return data as AuthApiResponse;
         } catch (error) {
             throw handleAuthError(error);

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { authService } from '../../../services/auth.service';
 import { User } from '../../../types/models/user';
 import { ThemeContext } from '../../../contexts/ThemeContext';
+import { useUser } from '../../../contexts/UserContext';
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
@@ -27,12 +28,14 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         open: false,
         component: ''
     });
+    const { setUser } = useUser();
 
     const handleLogout = async () => {
         try {
             await authService.logout();
+            setUser(null);
             toast.success('See you soon!');
-            navigate('/auth');
+            navigate('/auth', { replace: true });
         } catch (error) {
             toast.error('Logout error');
             console.error('Logout error:', error);
