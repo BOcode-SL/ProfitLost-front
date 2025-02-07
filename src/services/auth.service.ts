@@ -9,11 +9,19 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
     if ((error as AuthApiResponse).statusCode) {
         return error as AuthApiResponse;
     }
+    if (error instanceof TypeError) {
+        return {
+            success: false,
+            message: 'Network error. Please check your connection.',
+            error: 'NETWORK_ERROR' as CommonErrorType,
+            statusCode: 0 as HttpStatusCode
+        };
+    }
     return {
         success: false,
-        message: 'Connection error. Please check your internet connection.',
-        error: 'CONNECTION_ERROR' as CommonErrorType,
-        statusCode: 0 as HttpStatusCode
+        message: 'An unexpected error occurred. Please try again.',
+        error: 'SERVER_ERROR' as CommonErrorType,
+        statusCode: 500 as HttpStatusCode
     };
 };
 
