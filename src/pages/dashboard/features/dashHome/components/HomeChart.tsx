@@ -86,10 +86,10 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     gridArea: 'chart',
                     p: 2,
                     borderRadius: 3,
-                    height: { xs: '300px', sm: 'auto' }
+                    height: { xs: 'auto', sm: 'auto' }
                 }}>
-                <Skeleton width={200} height={24} sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 280 }} />
+                <Skeleton width="100%" height="100%" sx={{ mb: 2 }} /> 
+                <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 270 }} />
             </Paper>
         );
     }

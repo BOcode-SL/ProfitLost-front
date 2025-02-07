@@ -58,7 +58,7 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
             position: 'relative',
             '@media (max-width: 868px)': {
                 p: 2,
-                mb: '80px',
+                mb: '100px',
                 flex: 1,
                 mt: '80px'
             }
