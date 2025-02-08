@@ -336,7 +336,14 @@
                     "category": "Category",
                     "type": "Type",
                     "income": "Income",
-                    "expense": "Expense"
+                    "expense": "Expense",
+                    "recurrenceSettings": "Recurrence Settings",
+                    "isRecurrent": "Is recurrent?",
+                    "recurrenceType": "Recurrence type",
+                    "recurrenceEndDate": "End date",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "yearly": "Yearly"
                 },
                 "placeholders": {
                     "description": "Enter description",
@@ -348,14 +355,36 @@
                     "invalidAmount": "Invalid amount"
                 },
                 "errors": {
-                    "requiredFields": "Please fill in all required fields",
-                    "invalidAmount": "Invalid amount"
+                    "requiredFields": "Please, complete all required fields",
+                    "invalidAmount": "Invalid amount",
+                    "recurrenceRequired": "You must specify the recurrence type and end date",
+                    "invalidDateRange": "End date must be after start date"
+                },
+                "delete": {
+                    "title": "Delete transaction",
+                    "message": "Are you sure you want to delete the transaction",
+                    "thisTransaction": "this transaction",
+                    "recurrentWarning": "This is a recurrent transaction. Do you want to delete all future occurrences?",
+                    "deleteAll": "Delete all"
+                },
+                "editRecurrent": {
+                    "title": "Edit recurrent transaction",
+                    "message": "Do you want to update all future occurrences of this series?",
+                    "updateAll": "Update all"
+                },
+                "recurrentUpdate": {
+                    "title": "Update recurrent",
+                    "single": "Delete this recurrence",
+                    "all": "Delete all recurrences"
                 }
             },
             "delete": {
                 "title": "Delete Transaction",
                 "confirmMessage": "Are you sure you want to delete this transaction?",
-                "warning": "This action cannot be undone"
+                "warning": "This action cannot be undone",
+                "thisTransaction": "this transaction",
+                "recurrentWarning": "This is a recurrent transaction. Do you want to delete all future occurrences?",
+                "deleteAll": "Delete all future occurrences"
             },
             "filters": {
                 "search": "Search transactions",

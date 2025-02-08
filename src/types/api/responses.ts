@@ -1,7 +1,7 @@
 import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from '../api/common';
 import type { AuthErrorType, TransactionErrorType, UserErrorType, CategoryErrorType, AccountErrorType, NoteErrorType } from '../api/errors';
 import type { User } from '../models/user';
-import type { Transaction } from '../models/transaction';
+import type { RecurrenceType, Transaction } from '../models/transaction';
 import type { Category } from '../models/category';
 import type { Note } from '../models/note';
 import type { Account, YearRecord, AccountConfiguration } from '../models/account';
@@ -125,6 +125,9 @@ export interface CreateTransactionRequest {
     amount: number;
     category: string;
     isIncome?: boolean;
+    isRecurrent?: boolean;
+    recurrenceType?: RecurrenceType;
+    recurrenceEndDate?: ISODateString;
 }
 
 export interface UpdateTransactionRequest {
@@ -133,6 +136,10 @@ export interface UpdateTransactionRequest {
     amount?: number;
     category?: string;
     isIncome?: boolean;
+    updateAll?: boolean;
+    isRecurrent?: boolean;
+    recurrenceType?: RecurrenceType;
+    recurrenceEndDate?: ISODateString;
 }
 
 /**

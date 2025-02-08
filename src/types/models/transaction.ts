@@ -9,4 +9,11 @@ export interface Transaction {
     category: string;
     createdAt: ISODateString;
     updatedAt: ISODateString;
+    isRecurrent: boolean;
+    recurrenceType?: RecurrenceType;
+    recurrenceEndDate?: ISODateString;
+    recurrenceId?: string;
+    isOriginalRecurrence?: boolean;
 } 
+
+export type RecurrenceType = 'weekly' | 'monthly' | 'yearly' | null;

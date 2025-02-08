@@ -135,12 +135,13 @@ export const transactionService = {
         }
     },
 
-    async deleteTransaction(id: string): Promise<TransactionApiResponse> {
+    async deleteTransaction(id: string, deleteAll?: boolean): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
-                headers: getAuthHeaders()
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ deleteAll })
             });
 
             const data = await response.json();

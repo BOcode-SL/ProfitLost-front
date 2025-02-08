@@ -268,7 +268,7 @@
             "textColor": "Color de texto",
             "isActive": "Cuenta activa",
             "deleteAccount": "Eliminar cuenta",
-            "deleteConfirm": "¿Estás seguro de que quieres eliminar la cuenta?",
+            "deleteConfirm": "¿Estás seguro de que quieres eliminar la cuenta",
             "deleteWarning": "Esta acción no se puede deshacer",
             "noAccounts": "No se encontraron cuentas",
             "success": {
@@ -336,7 +336,14 @@
                     "category": "Categoría",
                     "type": "Tipo",
                     "income": "Ingreso",
-                    "expense": "Gasto"
+                    "expense": "Gasto",
+                    "recurrenceSettings": "Configuración de recurrencia",
+                    "isRecurrent": "¿Es recurrente?",
+                    "recurrenceType": "Tipo de recurrencia",
+                    "recurrenceEndDate": "Fecha final",
+                    "weekly": "Semanal",
+                    "monthly": "Mensual",
+                    "yearly": "Anual"
                 },
                 "placeholders": {
                     "description": "Ingrese descripción",
@@ -349,7 +356,26 @@
                 },
                 "errors": {
                     "requiredFields": "Por favor, complete todos los campos requeridos",
-                    "invalidAmount": "Cantidad inválida"
+                    "invalidAmount": "Cantidad inválida",
+                    "recurrenceRequired": "Debes especificar el tipo de recurrencia y la fecha de finalización",
+                    "invalidDateRange": "La fecha final debe ser posterior a la fecha inicial"
+                },
+                "delete": {
+                    "title": "Eliminar movimiento",
+                    "message": "¿Estás seguro de que deseas eliminar el movimiento",
+                    "thisTransaction": "esta transacción",
+                    "recurrentWarning": "Esta es una transacción recurrente. ¿Deseas eliminar todas las recurrencias futuras?",
+                    "deleteAll": "Eliminar todas"
+                },
+                "recurrentUpdate": {
+                    "title": "Actualizar recurrente",
+                    "single": "Eliminar esta recurrencia",
+                    "all": "Eliminar todas las recurrencias"
+                },
+                "editRecurrent": {
+                    "title": "Editar transacción recurrente",
+                    "message": "¿Deseas actualizar todas las transacciones futuras de esta serie?",
+                    "updateAll": "Actualizar todas"
                 }
             },
             "delete": {
