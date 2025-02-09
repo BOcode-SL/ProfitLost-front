@@ -50,15 +50,48 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                     borderRadius: 3,
                     overflow: 'auto'
                 }}>
-                <Skeleton width={200} height={24} sx={{ mb: 2 }} />
+                <Skeleton
+                    variant="text"
+                    width={200}
+                    height={24}
+                    sx={{
+                        mb: 2,
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                />
                 {[...Array(8)].map((_, index) => (
                     <Box key={index} sx={{ py: 1 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
                             <Box>
-                                <Skeleton width={120} height={19} />
-                                <Skeleton width={80} height={18} />
+                                <Skeleton
+                                    variant="text"
+                                    width={120}
+                                    height={19}
+                                    sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }}
+                                />
+                                <Skeleton
+                                    variant="text"
+                                    width={80}
+                                    height={18}
+                                    sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }}
+                                />
                             </Box>
-                            <Skeleton width={60} height={19} />
+                            <Skeleton
+                                variant="text"
+                                width={60}
+                                height={19}
+                                sx={{
+                                    animation: 'pulse 1.5s ease-in-out infinite'
+                                }}
+                            />
                         </Box>
                         {index < 7 && <Divider sx={{ mt: 1 }} />}
                     </Box>

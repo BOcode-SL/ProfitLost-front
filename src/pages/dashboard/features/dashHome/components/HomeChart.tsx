@@ -90,16 +90,29 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     // If the transactions are loading, show a skeleton
     if (isLoading) {
         return (
-            <Paper
-                elevation={3}
-                sx={{
-                    gridArea: 'chart',
-                    p: 2,
-                    borderRadius: 3,
-                    height: { xs: 'auto', sm: 'auto' }
-                }}>
-                <Skeleton width="100%" height="100%" sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 270 }} />
+            <Paper elevation={3} sx={{
+                gridArea: 'chart',
+                p: 2,
+                borderRadius: 3,
+                height: { xs: 'auto', sm: 'auto' }
+            }}>
+                <Skeleton
+                    variant="text"
+                    width={200}
+                    height={24}
+                    sx={{
+                        mb: 2,
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                />
+                <Skeleton
+                    variant="rectangular"
+                    sx={{
+                        borderRadius: 3,
+                        height: 275,
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                />
             </Paper>
         );
     }

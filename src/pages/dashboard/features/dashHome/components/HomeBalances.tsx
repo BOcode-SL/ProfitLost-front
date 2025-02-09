@@ -157,14 +157,44 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                 borderRadius: 3,
                 minHeight: { xs: '120px', sm: 'auto' },
             }}>
-                <Skeleton width={80} height={30} />
-                <Skeleton width={120} height={45} />
+                <Skeleton
+                    variant="text"
+                    width={80}
+                    height={30}
+                    sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                />
+                <Skeleton
+                    variant="text"
+                    width={120}
+                    height={45}
+                    sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                />
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Skeleton width={60} height={25} />
-                    <Skeleton width={100} height={25} />
+                    <Skeleton
+                        variant="rectangular"
+                        width={60}
+                        height={20}
+                        sx={{
+                            borderRadius: 2,
+                            animation: 'pulse 1.5s ease-in-out infinite'
+                        }}
+                    />
+                    <Skeleton
+                        variant="text"
+                        width={100}
+                        height={24}
+                        sx={{
+                            borderRadius: 2,
+                            animation: 'pulse 1.5s ease-in-out infinite'
+                        }}
+                    />
                 </Box>
             </Paper>
-        )
+        );
     }
 
     // Return the balance card
