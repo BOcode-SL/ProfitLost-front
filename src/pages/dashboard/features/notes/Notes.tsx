@@ -3,19 +3,27 @@ import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Types
 import type { Note } from '../../../../types/models/note';
+
+// Services
 import { noteService } from '../../../../services/note.service';
+
+// Components
 import NoteList from './components/NoteList';
 import NoteEditor from './components/NoteEditor';
 
+// Notes component
 export default function Notes() {
     const { t } = useTranslation();
+
     const [notes, setNotes] = useState<Note[]>([]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const isFirstRender = useRef(true);
 
+    // Fetch the notes
     useEffect(() => {
         const fetchNotes = async () => {
             if (!isFirstRender.current) return;
@@ -40,10 +48,12 @@ export default function Notes() {
         fetchNotes();
     }, [t]);
 
+    // Handle the note selection
     const handleSelectNote = (note: Note) => {
         setSelectedNote(note);
     };
 
+    // Handle the note change
     const handleNoteChange = (key: keyof Note, value: string) => {
         if (selectedNote) {
             const updatedNote = { ...selectedNote, [key]: value };
@@ -51,6 +61,7 @@ export default function Notes() {
         }
     };
 
+    // Handle the note creation
     const handleCreateNote = async () => {
         try {
             setIsSaving(true);
@@ -71,6 +82,7 @@ export default function Notes() {
         }
     };
 
+    // Handle the note saving
     const handleSaveNote = async () => {
         if (!selectedNote) return;
 
@@ -107,6 +119,7 @@ export default function Notes() {
         }
     };
 
+    // Handle the note deletion
     const handleDeleteNote = async () => {
         if (!selectedNote) return;
 
@@ -183,7 +196,7 @@ export default function Notes() {
                         isLoading={isLoading}
                     />
                 </Paper>
-                
+
                 <Paper elevation={3} sx={{
                     p: 2,
                     flex: 1,

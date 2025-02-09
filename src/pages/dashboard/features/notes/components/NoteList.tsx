@@ -1,15 +1,18 @@
 import { List, Box, Typography, useTheme, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Types
 import type { Note } from '../../../../../types/models/note';
 
+// Interface for the props of the NoteList component
 interface NoteListProps {
-    notes: Note[];
-    selectedNote: Note | null;
-    onSelectNote: (note: Note) => void;
-    isLoading: boolean;
+    notes: Note[]; // Array of notes
+    selectedNote: Note | null; // Currently selected note or null if none is selected
+    onSelectNote: (note: Note) => void; // Function to handle note selection
+    isLoading: boolean; // Flag to indicate if notes are being loaded
 }
 
+// NoteList component
 export default function NoteList({
     notes,
     selectedNote,
@@ -19,6 +22,7 @@ export default function NoteList({
     const { t } = useTranslation();
     const theme = useTheme();
 
+    // If the notes are loading, show a loading indicator
     if (isLoading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
@@ -27,6 +31,7 @@ export default function NoteList({
         );
     }
 
+    // If there are no notes, show a message
     if (notes.length === 0) {
         return (
             <Box sx={{ mt: 2, textAlign: 'center' }}>
@@ -38,12 +43,12 @@ export default function NoteList({
     }
 
     return (
-        <List sx={{ 
-            mt: 2, 
-            overflow: 'auto', 
-            maxHeight: 'calc(100vh - 200px)', 
-            display: 'flex', 
-            flexDirection: 'column', 
+        <List sx={{
+            mt: 2,
+            overflow: 'auto',
+            maxHeight: 'calc(100vh - 200px)',
+            display: 'flex',
+            flexDirection: 'column',
             gap: 1,
             width: '100%'
         }}>
@@ -61,16 +66,16 @@ export default function NoteList({
                         p: 2,
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
-                        backgroundColor: theme.palette.mode === 'dark' ? 
-                            'rgba(255, 255, 255, 0.05)' : 
+                        backgroundColor: theme.palette.mode === 'dark' ?
+                            'rgba(255, 255, 255, 0.05)' :
                             'rgba(0, 0, 0, 0.03)',
                         borderRadius: 3,
                         borderLeft: selectedNote?._id === note._id ?
                             `4px solid ${theme.palette.primary.main}` :
                             '4px solid transparent',
                         '&:hover': {
-                            backgroundColor: theme.palette.mode === 'dark' ? 
-                                'rgba(255, 255, 255, 0.08)' : 
+                            backgroundColor: theme.palette.mode === 'dark' ?
+                                'rgba(255, 255, 255, 0.08)' :
                                 'rgba(0, 0, 0, 0.05)'
                         }
                     }}>

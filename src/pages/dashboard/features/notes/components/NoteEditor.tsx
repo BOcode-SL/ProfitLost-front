@@ -2,39 +2,49 @@ import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTit
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+// Types
 import type { Note } from '../../../../../types/models/note';
 
+// Interface for the props of the NoteEditor component
+interface NoteEditorProps {
+    note: Note | null; // The note object or null if no note is selected
+    onChange?: (key: keyof Note, value: string) => void; // Optional callback for when a note property changes
+    onSave?: () => void; // Optional callback for when the note is saved
+    onDelete?: () => void; // Optional callback for when the note is deleted
+    isSaving?: boolean; // Optional flag to indicate if the note is currently being saved
+}
+
+// Transition component
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
+
     },
     ref: React.Ref<unknown>,
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-interface NoteEditorProps {
-    note: Note | null;
-    onChange?: (key: keyof Note, value: string) => void;
-    onSave?: () => void;
-    onDelete?: () => void;
-    isSaving?: boolean;
-}
-
+// NoteEditor component
 export default function NoteEditor({
     note,
     onChange,
     onSave,
     onDelete,
     isSaving = false
+
 }: NoteEditorProps) {
     const { t } = useTranslation();
+
     const [deleteDialog, setDeleteDialog] = useState(false);
 
+    // Handle the delete click
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
+    // If the note is not found, show a message
     if (!note) {
         return (
             <Box sx={{
