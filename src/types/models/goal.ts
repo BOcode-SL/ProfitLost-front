@@ -1,7 +1,5 @@
 import type { ISODateString } from '../api/common';
 
-export type GoalType = 'Saving' | 'Investment' | 'Goal' | 'Debt';
-
 export interface Goal {
     _id: string;
     user_id: string;
@@ -14,6 +12,8 @@ export interface Goal {
     createdAt: ISODateString;
     updatedAt: ISODateString;
 }
+
+export type GoalType = 'Saving' | 'Investment' | 'Goal' | 'Debt';
 
 export interface GoalHistory {
     date: ISODateString;

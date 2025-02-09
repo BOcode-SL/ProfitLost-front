@@ -3,12 +3,16 @@ import { CommonErrorType } from '../types/api/errors';
 import type { NoteApiResponse, CreateNoteRequest, UpdateNoteRequest } from '../types/api/responses';
 import { getAuthHeaders } from '../utils/apiHeaders';
 
+// Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Function to handle note errors
 const handleNoteError = (error: unknown): NoteApiResponse => {
+    // Check if the error has a statusCode
     if ((error as NoteApiResponse).statusCode) {
         return error as NoteApiResponse;
     }
+    // Handle network errors
     return {
         success: false,
         message: 'Connection error. Please check your internet connection.',
@@ -18,6 +22,7 @@ const handleNoteError = (error: unknown): NoteApiResponse => {
 };
 
 export const noteService = {
+    // Method to get all notes
     async getAllNotes(): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes`, {
@@ -41,6 +46,7 @@ export const noteService = {
         }
     },
 
+    // Method to create a new note
     async createNote(noteData: CreateNoteRequest): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes`, {
@@ -65,6 +71,7 @@ export const noteService = {
         }
     },
 
+    // Method to update an existing note
     async updateNote(id: string, updateData: UpdateNoteRequest): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {
@@ -91,6 +98,7 @@ export const noteService = {
         }
     },
 
+    // Method to delete a note
     async deleteNote(id: string): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {

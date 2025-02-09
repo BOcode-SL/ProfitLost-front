@@ -4,19 +4,24 @@ import Button from '@mui/material/Button';
 import Footer from './components/Footer';
 import './Home.scss';
 
+// Home component for the landing page
 export default function Home() {
 
     useEffect(() => {
+        // Function to handle scroll events
         const handleScroll = () => {
             const header = document.querySelector('.nav-container');
+            // Check if the scroll position is greater than 50
             if (window.scrollY > 50) {
-                header?.classList.add('scrolled');
+                header?.classList.add('scrolled'); // Add 'scrolled' class if true
             } else {
-                header?.classList.remove('scrolled');
+                header?.classList.remove('scrolled'); // Remove 'scrolled' class if false
             }
         };
 
+        // Add scroll event listener
         window.addEventListener('scroll', handleScroll);
+        // Cleanup function to remove the event listener
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -106,7 +111,7 @@ export default function Home() {
                     <article className="feature-card soon">
                         <span className="material-symbols-rounded no-select">inbox</span>
                         <h4>Inbox <span className="soon-badge">Soon</span></h4>
-                        <p>Recive notifications and stay up to date with your personal finances</p>
+                        <p>Receive notifications and stay up to date with your personal finances</p>
                     </article>
                 </div>
             </section>

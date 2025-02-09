@@ -3,12 +3,16 @@ import { CommonErrorType } from '../types/api/errors';
 import type { AuthApiResponse, LoginCredentials, RegisterCredentials } from '../types/api/responses';
 import { isIOS } from '../utils/deviceDetection';
 
+// Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Function to handle authentication errors
 const handleAuthError = (error: unknown): AuthApiResponse => {
+    // Check if the error has a statusCode
     if ((error as AuthApiResponse).statusCode) {
         return error as AuthApiResponse;
     }
+    // Handle network errors
     if (error instanceof TypeError) {
         return {
             success: false,
@@ -17,6 +21,7 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
             statusCode: 0 as HttpStatusCode
         };
     }
+    // Return a default error response
     return {
         success: false,
         message: 'An unexpected error occurred. Please try again.',
@@ -26,8 +31,10 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
 };
 
 export const authService = {
+    // Method to register a new user
     async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
         try {
+            // Modifying credentials to ensure username is lowercase
             const modifiedCredentials = {
                 ...credentials,
                 username: credentials.username.toLowerCase()
@@ -57,6 +64,7 @@ export const authService = {
         }
     },
 
+    // Method to log in a user
     async login(credentials: LoginCredentials): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -77,6 +85,7 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            // Store the token in local storage if on iOS
             if (isIOS() && data.token) {
                 localStorage.setItem('auth_token', data.token);
             }
@@ -87,6 +96,7 @@ export const authService = {
         }
     },
 
+    // Method to log out a user
     async logout(): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/logout`, {
@@ -103,6 +113,7 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            // Remove the token from local storage if on iOS
             if (isIOS()) {
                 localStorage.removeItem('auth_token');
             }
@@ -113,6 +124,7 @@ export const authService = {
         }
     },
 
+    // Method to initiate password recovery
     async forgotPassword(email: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
@@ -138,6 +150,7 @@ export const authService = {
         }
     },
 
+    // Method to verify the reset token
     async verifyResetToken(token: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/verify-reset-token`, {
@@ -163,6 +176,7 @@ export const authService = {
         }
     },
 
+    // Method to reset the password
     async resetPassword(token: string, newPassword: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/reset-password`, {
@@ -188,6 +202,7 @@ export const authService = {
         }
     },
 
+    // Method to log in using Google
     async googleLogin(token: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/google`, {
@@ -208,6 +223,7 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            // Store the token in local storage if on iOS
             if (isIOS() && data.token) {
                 localStorage.setItem('auth_token', data.token);
             }

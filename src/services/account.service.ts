@@ -2,12 +2,17 @@ import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { AccountApiResponse, CreateAccountRequest, UpdateAccountRequest } from '../types/api/responses';
 import { getAuthHeaders } from '../utils/apiHeaders';
+
+// Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Function to handle account errors
 const handleAccountError = (error: unknown): AccountApiResponse => {
+    // Check if the error has a statusCode
     if ((error as AccountApiResponse).statusCode) {
         return error as AccountApiResponse;
     }
+    // Return a default error response
     return {
         success: false,
         message: 'Connection error. Please check your internet connection.',
@@ -17,6 +22,7 @@ const handleAccountError = (error: unknown): AccountApiResponse => {
 };
 
 export const accountService = {
+    // Fetch all accounts
     async getAllAccounts(): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/all`, {
@@ -40,6 +46,7 @@ export const accountService = {
         }
     },
 
+    // Fetch accounts by year
     async getAccountsByYear(year: number): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${year}`, {
@@ -63,13 +70,14 @@ export const accountService = {
         }
     },
 
+    // Create a new account
     async createAccount(accountData: CreateAccountRequest): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/create`, {
                 method: 'POST',
                 credentials: 'include',
-                 body: JSON.stringify(accountData),
-                 headers: getAuthHeaders()
+                body: JSON.stringify(accountData),
+                headers: getAuthHeaders()
             });
 
             const data = await response.json();
@@ -87,6 +95,7 @@ export const accountService = {
         }
     },
 
+    // Update an existing account
     async updateAccount(id: string, updateData: UpdateAccountRequest): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {
@@ -111,6 +120,7 @@ export const accountService = {
         }
     },
 
+    // Delete an account
     async deleteAccount(id: string): Promise<AccountApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/accounts/${id}`, {

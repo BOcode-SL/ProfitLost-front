@@ -4,12 +4,16 @@ import type { UserApiResponse } from '../types/api/responses';
 import { getAuthHeaders } from '../utils/apiHeaders';
 import { isIOS } from '../utils/deviceDetection';
 
+// Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Function to handle user errors
 const handleUserError = (error: unknown): UserApiResponse => {
+    // Check if the error has a statusCode
     if ((error as UserApiResponse).statusCode) {
         return error as UserApiResponse;
     }
+    // Handle network errors
     return {
         success: false,
         message: 'Connection error. Please check your internet connection.',
@@ -18,7 +22,9 @@ const handleUserError = (error: unknown): UserApiResponse => {
     };
 };
 
+// User service object
 export const userService = {
+    // Method to get user data
     async getUserData(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/me`, {
@@ -29,6 +35,7 @@ export const userService = {
 
             const data = await response.json();
 
+            // Check if the response is not ok
             if (!response.ok) {
                 throw {
                     ...data,
@@ -42,11 +49,13 @@ export const userService = {
         }
     },
 
+    // Method to update user profile
     async updateProfile(formData: FormData): Promise<UserApiResponse> {
         try {
             const token = localStorage.getItem('auth_token');
             const headers: HeadersInit = {};
             
+            // If the device is iOS and token exists, set authorization header
             if (isIOS() && token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
@@ -74,6 +83,7 @@ export const userService = {
         }
     },
 
+    // Method to update user theme
     async updateTheme(theme: 'light' | 'dark'): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/theme`, {
@@ -98,6 +108,7 @@ export const userService = {
         }
     },
 
+    // Method to update user view mode
     async updateViewMode(viewMode: 'yearToday' | 'fullYear'): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/view-mode`, {
@@ -125,6 +136,7 @@ export const userService = {
         }
     },
 
+    // Method to change user password
     async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/password`, {
@@ -149,6 +161,7 @@ export const userService = {
         }
     },
 
+    // Method to delete user profile image
     async deleteProfileImage(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/profile-image`, {
@@ -172,6 +185,7 @@ export const userService = {
         }
     },
 
+    // Method to delete user account
     async deleteAccount(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/account`, {
@@ -195,6 +209,7 @@ export const userService = {
         }
     },
 
+    // Method to update the order of user accounts
     async updateAccountsOrder(accountsOrder: string[]): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/accounts-order`, {

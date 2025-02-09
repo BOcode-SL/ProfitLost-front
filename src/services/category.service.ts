@@ -3,12 +3,16 @@ import { CommonErrorType } from '../types/api/errors';
 import type { CategoryApiResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types/api/responses';
 import { getAuthHeaders } from '../utils/apiHeaders';
 
+// Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Function to handle category errors
 const handleCategoryError = (error: unknown): CategoryApiResponse => {
+    // Check if the error has a statusCode
     if ((error as CategoryApiResponse).statusCode) {
         return error as CategoryApiResponse;
     }
+    // Handle network errors
     return {
         success: false,
         message: 'Connection error. Please check your internet connection.',
@@ -18,6 +22,7 @@ const handleCategoryError = (error: unknown): CategoryApiResponse => {
 };
 
 export const categoryService = {
+    // Method to get all categories
     async getAllCategories(): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/all`, {
@@ -41,6 +46,7 @@ export const categoryService = {
         }
     },
 
+    // Method to create a new category
     async createCategory(categoryData: CreateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/create`, {
@@ -65,6 +71,7 @@ export const categoryService = {
         }
     },
 
+    // Method to update an existing category
     async updateCategory(id: string, categoryData: UpdateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
@@ -89,6 +96,7 @@ export const categoryService = {
         }
     },
 
+    // Method to delete a category
     async deleteCategory(id: string): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
