@@ -167,6 +167,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                 gap: 3
             }}>
                 {/* Profile Image Paper */}
+                {/* Profile Image Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -229,7 +230,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* Personal Info Paper */}
+                {/* Personal Information Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -267,7 +268,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* Preferences Paper */}
+                {/* Preferences Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"

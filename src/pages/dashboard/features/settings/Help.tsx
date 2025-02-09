@@ -6,17 +6,19 @@ export default function Help() {
     const { t } = useTranslation();
 
     return (
+        // Main container
         <Box sx={{
-
             width: '100%',
             maxWidth: '1200px',
             margin: '0 auto'
         }}>
+            {/* Inner container with flex layout */}
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 3
             }}>
+                {/* FAQ title */}
                 <Typography
                     variant="h2"
                     sx={{
@@ -28,7 +30,9 @@ export default function Help() {
                     {t('dashboard.settings.help.faq')}
                 </Typography>
 
+                {/* Accordion container */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+                    {/* Accordion for How to Start */}
                     <Accordion>
                         <AccordionSummary
                             expandIcon={<span className="material-symbols-rounded">expand_more</span>}
@@ -60,6 +64,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
+                    {/* Accordion for Manage Accounts */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -89,6 +94,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
+                    {/* Accordion for Categories Work */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -116,6 +122,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
+                    {/* Accordion for Protect Data */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -143,6 +150,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
+                    {/* Accordion for View Reports */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -170,6 +178,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
+                    {/* Accordion for Mobile Usage */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography
@@ -192,6 +201,8 @@ export default function Help() {
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
+
+                    {/* Accordion for Contact Support */}
                     <Accordion>
                         <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
                             <Typography

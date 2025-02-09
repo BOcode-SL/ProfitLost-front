@@ -137,7 +137,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                 flexDirection: 'column',
                 gap: 3
             }}>
-                {/* Password Change Section */}
+                {/* Section for handling password changes */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -151,6 +151,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                         {t('dashboard.settings.securityPrivacy.changePassword')}
                     </Typography>
                     <Box component="form" onSubmit={handlePasswordChange} sx={{ width: '100%' }}>
+                        {/* Form fields for password change */}
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -158,6 +159,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             width: '100%',
                             mt: 2
                         }}>
+                            {/* Current Password Input */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -179,6 +181,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 }}
                             />
 
+                            {/* New Password Input */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -200,6 +203,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 }}
                             />
 
+                            {/* Confirm New Password Input */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -233,6 +237,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                 </Paper>
 
                 {/* Delete Account Section */}
+                {/* Section for handling account deletion */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -277,6 +282,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 flexDirection: 'column',
                                 gap: 2
                             }}>
+                                {/* Input field to confirm username */}
                                 <TextField
                                     fullWidth
                                     size="small"
