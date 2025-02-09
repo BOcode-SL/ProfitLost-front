@@ -7,7 +7,7 @@ import { DashboardThemeProvider } from './contexts/ThemeContext';
 
 // Components
 import Home from "./pages/landing/Home";
-import AuthPage from "./pages/landing/AuthPage";
+import AuthPage from "./pages/landing/auth/AuthPage";
 const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
 const LegalNotice = React.lazy(() => import('./pages/landing/legal/LegalNotice'));
 const PrivacyPolicy = React.lazy(() => import('./pages/landing/legal/PrivacyPolicy'));

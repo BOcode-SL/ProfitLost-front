@@ -4,17 +4,17 @@ import toast from 'react-hot-toast';
 import { CredentialResponse } from '@react-oauth/google';
 
 // Types
-import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../types/api/responses';
-import { AuthErrorType } from '../../types/api/errors';
+import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../../types/api/responses';
+import { AuthErrorType } from '../../../types/api/errors';
 
 // Services
-import { authService } from '../../services/auth.service';
+import { authService } from '../../../services/auth.service';
 
 // Contexts
-import { useUser } from '../../contexts/UserContext';
+import { useUser } from '../../../contexts/UserContext';
 
 // Components
-import Footer from './components/Footer';
+import Footer from '../components/Footer';
 import AuthLayout from './components/AuthLayout';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';

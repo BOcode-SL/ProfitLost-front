@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 
 // Types
-import type { RegisterCredentials } from '../../../types/api/responses';
+import type { RegisterCredentials } from '../../../../types/api/responses';
 interface RegisterFormProps {
     registerData: RegisterCredentials; // Data for registration
     loading: boolean; // Loading state for the button

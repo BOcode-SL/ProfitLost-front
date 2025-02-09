@@ -3,7 +3,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 
 // Types
-import type { LoginCredentials } from '../../../types/api/responses';
+import type { LoginCredentials } from '../../../../types/api/responses';
 interface LoginFormProps {
     loginData: LoginCredentials; // User login data
     loading: boolean; // Loading state for the button
