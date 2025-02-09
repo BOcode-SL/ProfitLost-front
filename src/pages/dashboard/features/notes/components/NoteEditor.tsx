@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Slide } from '@mui/material';
+import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Slide, Skeleton, Fade } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,65 @@ export default function NoteEditor({
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
+
+    // If saving, show skeleton
+    if (isSaving) {
+        return (
+            <Fade in timeout={500}>
+                <Box sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2
+                }}>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Skeleton 
+                            variant="rectangular" 
+                            width="100%" 
+                            height={40} 
+                            sx={{ 
+                                borderRadius: 1,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                    </Box>
+                    <Skeleton 
+                        variant="rectangular" 
+                        width="100%" 
+                        height={200}
+                        sx={{ 
+                            borderRadius: 1,
+                            animation: 'pulse 1.5s ease-in-out infinite'
+                        }}
+                    />
+                    <Box sx={{
+                        display: 'flex',
+                        gap: 2,
+                        justifyContent: 'flex-end'
+                    }}>
+                        <Skeleton 
+                            variant="rectangular" 
+                            width={100} 
+                            height={36}
+                            sx={{ 
+                                borderRadius: 1,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                        <Skeleton 
+                            variant="rectangular" 
+                            width={100} 
+                            height={36}
+                            sx={{ 
+                                borderRadius: 1,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                    </Box>
+                </Box>
+            </Fade>
+        );
+    }
 
     // If the note is not found, show a message
     if (!note) {
