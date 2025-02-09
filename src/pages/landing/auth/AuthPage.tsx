@@ -262,6 +262,7 @@ export default function AuthPage() {
         }
     };
 
+    // Render the authentication layout with appropriate title and subtitle based on the state
     return (
         <>
             <AuthLayout
@@ -274,6 +275,7 @@ export default function AuthPage() {
                 alternativeActionText={isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
                 onAlternativeActionClick={() => setIsLogin(!isLogin)}
             >
+                {/* Conditional rendering for the form based on the reset password state */}
                 {showResetPassword ? (
                     <ResetPasswordForm
                         resetStep={resetStep}
@@ -295,6 +297,7 @@ export default function AuthPage() {
                         handleResetPassword={handleResetPassword}
                     />
                 ) : isLogin ? (
+                    // Render the login form if in login mode
                     <LoginForm
                         loginData={loginData}
                         loading={loading}
@@ -307,6 +310,7 @@ export default function AuthPage() {
                         handleGoogleSuccess={handleGoogleSuccess}
                     />
                 ) : (
+                    // Render the registration form if in registration mode
                     <RegisterForm
                         registerData={registerData}
                         loading={loading}
@@ -318,6 +322,7 @@ export default function AuthPage() {
                     />
                 )}
             </AuthLayout>
+            {/* Render the footer component */}
             <Footer />
         </>
     );

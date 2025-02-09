@@ -66,6 +66,7 @@ export default function Footer() {
                         </List>
                     </Box>
                 </Stack>
+                {/* Copyright section */}
                 <Box
                     sx={{
                         mt: 4,
