@@ -1,18 +1,26 @@
 import { useMemo } from 'react';
 import { Box, Paper, Fade, useTheme } from '@mui/material';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+// Types
 import type { Transaction } from '../../../../../types/models/transaction';
 
+// Interface for the props of the AnnualBalances component
 interface AnnualBalancesProps {
-    transactions: Transaction[];
+    transactions: Transaction[]; // Array of transactions
 }
 
+// AnnualBalances component
 export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
     const { user } = useUser();
     const theme = useTheme();
 
+    // Calculate the totals of the transactions
     const totals = useMemo(() => {
         const { income, expenses } = transactions.reduce((acc, transaction) => {
             if (transaction.amount > 0) {
@@ -30,6 +38,13 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
         };
     }, [transactions]);
 
+    // Calculate the balance items
+    const balanceItems = [
+        { label: 'download', value: totals.income, color: theme.palette.chart.income },
+        { label: 'upload', value: totals.expenses, color: theme.palette.chart.expenses },
+        { label: 'savings', value: totals.balance, color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses }
+    ];
+
     return (
         <Fade in timeout={700}>
             <Box sx={{
@@ -38,59 +53,19 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                 gap: 1,
                 mt: 2
             }}>
-                <Paper elevation={3} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2
-                }}>
-                    <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.income, fontSize: '2rem' }}>
-                        download
-                    </span>
-                    <span style={{ fontSize: '1.5rem' }}>
-                        {formatCurrency(totals.income, user)}
-                    </span>
-                </Paper>
-
-                <Paper elevation={3} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2
-                }}>
-                    <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.expenses, fontSize: '2rem' }}>
-                        upload
-                    </span>
-                    <span style={{ fontSize: '1.5rem' }}>
-                        {formatCurrency(totals.expenses, user)}
-                    </span>
-                </Paper>
-
-                <Paper elevation={3} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2
-                }}>
-                    {totals.balance > 0 ? (
-                        <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.income, fontSize: '2rem' }}>
-                            savings
-                        </span>
-                    ) : (
-                        <span className="material-symbols-rounded no-select" style={{ color: theme.palette.chart.expenses, fontSize: '2rem' }}>
-                            savings
-                        </span>
-                    )}
-                    <span style={{ fontSize: '1.5rem' }}>
-                        {formatCurrency(totals.balance, user)}
-                    </span>
-                </Paper>
+                {balanceItems.map(({ label, value, color }, index) => (
+                    <Paper key={index} elevation={3} sx={{
+                        p: 1,
+                        borderRadius: 3,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 2
+                    }}>
+                        <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
+                        <span style={{ fontSize: '1.5rem' }}>{formatCurrency(value, user)}</span>
+                    </Paper>
+                ))}
             </Box>
         </Fade>
     );

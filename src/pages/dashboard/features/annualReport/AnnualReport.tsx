@@ -2,32 +2,43 @@ import { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+
+// Contexts
 import { useUser } from '../../../../contexts/UserContext';
+
+// Services
+import { transactionService } from '../../../../services/transaction.service';
 import { userService } from '../../../../services/user.service';
 
-import { transactionService } from '../../../../services/transaction.service';
+// Types
 import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
+
+// Components
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
 import AnnualBalances from './components/AnnualBalances';
 
+// AnnualReport component
 export default function AnnualReport() {
     const { t } = useTranslation();
+    const { user, loadUserData } = useUser();
+
     const currentYear = new Date().getFullYear().toString();
     const [year, setYear] = useState(currentYear);
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
-    const { user,loadUserData } = useUser();
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
 
+    // Set the view mode from the user preferences
     useEffect(() => {
         if (user?.preferences.viewMode) {
             setViewMode(user.preferences.viewMode);
         }
     }, [user?.preferences.viewMode]);
 
+    // Fetch all transactions
     useEffect(() => {
         const fetchAllTransactions = async () => {
             try {
@@ -68,6 +79,7 @@ export default function AnnualReport() {
         fetchAllTransactions();
     }, [currentYear, t]);
 
+    // Fetch transactions by year
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
             setLoading(true);
@@ -106,6 +118,7 @@ export default function AnnualReport() {
         fetchTransactionsByYear();
     }, [year, t]);
 
+    // Filter transactions by view mode
     const filteredTransactions = transactions.filter(transaction => {
         if (viewMode === 'yearToday') {
             const today = new Date();
@@ -115,9 +128,10 @@ export default function AnnualReport() {
         return true;
     });
 
+    // Handle view mode change
     const handleViewModeChange = async (newMode: 'yearToday' | 'fullYear') => {
         if (newMode === viewMode) return;
-        
+
         setViewMode(newMode);
         try {
             const response = await userService.updateViewMode(newMode);

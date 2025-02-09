@@ -3,25 +3,33 @@ import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Services
 import { categoryService } from '../../../../../services/category.service';
+
+// Types
 import type { Category } from '../../../../../types/models/category';
 
+// Interface for the props of the CategoryForm component
+// Interface for the props of the CategoryForm component
 interface CategoryFormProps {
-    category?: Category;
-    onSubmit: () => void;
-    onClose: () => void;
-    onDelete?: () => void;
+    category?: Category; // Optional category prop
+    onSubmit: () => void; // Function to call on form submission
+    onClose: () => void; // Function to call to close the form
+    onDelete?: () => void; // Optional function to call on delete
 }
 
+// CategoryForm component
 export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
     const { t } = useTranslation();
+
     const [name, setName] = useState(category?.name || '');
     const [color, setColor] = useState(category?.color || '#ff8e38');
     const [saving, setSaving] = useState(false);
 
+    // Handle the submit of the form
     const handleSubmit = async () => {
         if (!name.trim()) {
-            toast.error('Category name is required');
+            toast.error(t('dashboard.annualReport.categories.form.categoryNameRequired'));
             return;
         }
 

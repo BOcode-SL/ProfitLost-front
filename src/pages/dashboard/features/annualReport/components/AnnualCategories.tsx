@@ -1,26 +1,23 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
-import {
-    Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide, useTheme
-} from '@mui/material';
+import { Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Fade, Skeleton, Slide, useTheme } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Services
 import { categoryService } from '../../../../../services/category.service';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+// Types
 import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
-import { CategoryApiErrorResponse } from '../../../../../types/api/responses';
-import CategoryForm from './CategoryForm';
-
-interface AnnualCategoriesProps {
-    transactions: Transaction[];
-    loading: boolean;
-}
-
+import type { CategoryApiErrorResponse } from '../../../../../types/api/responses';
 type SortOption = 'name_asc' | 'name_desc' | 'balance_asc' | 'balance_desc';
-
 interface EditCategoryState {
     isOpen: boolean;
     category: Category | null;
@@ -28,6 +25,16 @@ interface EditCategoryState {
     color: string;
 }
 
+// Components
+import CategoryForm from './CategoryForm';
+
+// Interface for the props of the AnnualCategories component
+interface AnnualCategoriesProps {
+    transactions: Transaction[]; // Array of transactions
+    loading: boolean; // Loading state
+}
+
+// Transition component
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -37,10 +44,12 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// AnnualCategories component
 export default function AnnualCategories({ transactions, loading }: AnnualCategoriesProps) {
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
+
     const [categories, setCategories] = useState<Category[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState<SortOption>('name_asc');
@@ -57,6 +66,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         categoryName: ''
     });
 
+    // Fetch all categories
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -72,6 +82,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         fetchCategories();
     }, [t]);
 
+    // Calculate the balance of each category
     const categoriesBalance = useMemo(() => {
         if (!categories.length) {
             return [];
@@ -111,6 +122,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         });
     }, [categories, transactions, searchTerm, sortOption]);
 
+    // Handle the creation of a category
     const handleCreateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -118,6 +130,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
+    // Handle the click of a category
     const handleCategoryClick = (category: Category) => {
         setEditCategory({
             isOpen: true,
@@ -127,6 +140,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         });
     };
 
+    // Handle the update of a category
     const handleUpdateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -134,6 +148,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
+    // Handle the deletion of a category
     const confirmDelete = async () => {
         if (!editCategory.category) return;
 

@@ -3,25 +3,33 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Skeleton, useMediaQuery, useTheme, Fade, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Types
 import type { Transaction } from '../../../../../types/models/transaction';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
+// Interface for the props of the AnnualChart component
 interface AnnualChartProps {
-    transactions: Transaction[];
-    loading: boolean;
+    transactions: Transaction[]; // Array of transactions
+    loading: boolean; // Loading state
 }
 
-// Meses en inglés para el backend
+// Months in English for the backend
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// AnnualChart component
 export default function AnnualChart({ transactions, loading }: AnnualChartProps) {
     const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
+
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    // Función para obtener el nombre traducido del mes
+    // Function to get the translated month name
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
@@ -45,6 +53,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
         return monthsData;
     }, [transactions]);
 
+    // If the data is loading, show a skeleton
     if (loading) {
         return (
             <Fade in timeout={300}>
@@ -60,6 +69,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
         );
     }
 
+    // If the data is empty, show a message
     const isDataEmpty = chartData.every(item => item.income === 0 && item.expenses === 0);
 
     return (
@@ -113,8 +123,8 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                     }}
                 />
                 {isDataEmpty && (
-                    <Typography 
-                        variant="body1" 
+                    <Typography
+                        variant="body1"
                         color="text.secondary"
                         sx={{
                             position: 'absolute',
