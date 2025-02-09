@@ -30,6 +30,7 @@ export default function AnnualReport() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
+    const [isUpdatingViewMode, setIsUpdatingViewMode] = useState(false);
 
     // Set the view mode from the user preferences
     useEffect(() => {
@@ -132,15 +133,17 @@ export default function AnnualReport() {
     const handleViewModeChange = async (newMode: 'yearToday' | 'fullYear') => {
         if (newMode === viewMode) return;
 
-        setViewMode(newMode);
+        setIsUpdatingViewMode(true);
         try {
             const response = await userService.updateViewMode(newMode);
             if (response.success && response.data) {
+                setViewMode(newMode);
                 loadUserData();
             }
         } catch {
             toast.error(t('dashboard.common.error.updating'));
-            setViewMode(viewMode);
+        } finally {
+            setIsUpdatingViewMode(false);
         }
     };
 
@@ -211,21 +214,24 @@ export default function AnnualReport() {
                             <Box>
                                 <AnnualChart
                                     transactions={filteredTransactions}
-                                    loading={loading}
+                                    loading={loading && !isUpdatingViewMode}
                                 />
                             </Box>
                         </Fade>
                     </Paper>
 
                     {/* Component displaying annual balances */}
-                    <AnnualBalances transactions={filteredTransactions} />
+                    <AnnualBalances 
+                        transactions={filteredTransactions} 
+                        loading={loading && !isUpdatingViewMode} 
+                    />
 
                     {/* Categories paper displaying annual categories */}
                     <Fade in timeout={800}>
                         <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
                             <AnnualCategories
                                 transactions={filteredTransactions}
-                                loading={loading}
+                                loading={loading && !isUpdatingViewMode}
                             />
                         </Paper>
                     </Fade>
