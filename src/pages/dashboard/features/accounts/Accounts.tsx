@@ -3,20 +3,28 @@ import { Box, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mu
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import type { Account } from '../../../../types/models/account';
-import type { User } from '../../../../types/models/user';
+// Services
 import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
+
+// Types
+import type { Account } from '../../../../types/models/account';
+import type { User } from '../../../../types/models/user';
+
+// Components
 import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 
+// Accounts component
 export default function Accounts() {
     const { t } = useTranslation();
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
-    const [user, setUser] = useState<User | null>(null);
 
+    const [loading, setLoading] = useState(true);
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [user, setUser] = useState<User | null>(null);
+    const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
+
+    // Memoized available years based on accounts records
     const availableYears = useMemo(() => {
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
@@ -31,6 +39,7 @@ export default function Accounts() {
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [accounts]);
 
+    // Fetch user data from the user service
     const fetchUserData = useCallback(async () => {
         const response = await userService.getUserData();
         if (response.success && response.data) {
@@ -38,6 +47,7 @@ export default function Accounts() {
         }
     }, []);
 
+    // Fetch all accounts from the account service
     const fetchAccounts = useCallback(async () => {
         const response = await accountService.getAllAccounts();
         if (response.success && response.data) {
@@ -48,10 +58,12 @@ export default function Accounts() {
         setLoading(false);
     }, [t]);
 
+    // useEffect to fetch user data and accounts on component mount
     useEffect(() => {
         Promise.all([fetchUserData(), fetchAccounts()]);
     }, [fetchUserData, fetchAccounts]);
 
+    // Memoized ordered accounts based on user accounts order
     const orderedAccounts = useMemo(() => {
         if (!user?.accountsOrder || !accounts.length) return accounts;
 
@@ -73,6 +85,7 @@ export default function Accounts() {
         return orderedAccounts;
     }, [accounts, user?.accountsOrder]);
 
+    // Handle account update
     const handleAccountUpdate = async (updatedAccount: Account) => {
         try {
             const response = await accountService.updateAccount(updatedAccount._id, {
@@ -100,6 +113,7 @@ export default function Accounts() {
         }
     };
 
+    // Handle account creation
     const handleAccountCreate = async (newAccount: Account): Promise<boolean> => {
         const response = await accountService.createAccount({
             accountName: newAccount.accountName,
@@ -117,6 +131,7 @@ export default function Accounts() {
         }
     };
 
+    // Handle account deletion
     const handleAccountDelete = async (accountId: string): Promise<boolean> => {
         const response = await accountService.deleteAccount(accountId);
 
@@ -130,6 +145,7 @@ export default function Accounts() {
         }
     };
 
+    // Handle order change of accounts
     const handleOrderChange = async (newOrder: string[]) => {
         try {
             const response = await userService.updateAccountsOrder(newOrder);
@@ -148,6 +164,7 @@ export default function Accounts() {
         }
     };
 
+    // Memoized active and inactive accounts
     const { activeAccounts, inactiveAccounts } = useMemo(() => {
         return {
             activeAccounts: orderedAccounts.filter(account => account.configuration.isActive !== false),

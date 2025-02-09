@@ -2,22 +2,31 @@ import { useState } from 'react';
 import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+// Components
 import AccountsForm from './AccountsForm';
 
+// Interface for the props of the AccountsTable component
 interface AccountsTableProps {
-    accounts: Account[];
-    inactiveAccounts: Account[];
-    loading: boolean;
-    selectedYear: number;
-    onUpdate: (account: Account) => Promise<boolean>;
-    onCreate: (account: Account) => Promise<boolean>;
-    onDelete: (accountId: string) => void;
-    onOrderChange: (newOrder: string[]) => void;
+    accounts: Account[]; // List of active accounts
+    inactiveAccounts: Account[]; // List of inactive accounts
+    loading: boolean; // Loading state indicator
+    selectedYear: number; // Currently selected year
+    onUpdate: (account: Account) => Promise<boolean>; // Function to update an account
+    onCreate: (account: Account) => Promise<boolean>; // Function to create a new account
+    onDelete: (accountId: string) => void; // Function to delete an account by ID
+    onOrderChange: (newOrder: string[]) => void; // Function to change the order of accounts
 }
 
+// AccountsTable component
 export default function AccountsTable({
     accounts,
     inactiveAccounts,
@@ -29,22 +38,26 @@ export default function AccountsTable({
     onOrderChange
 }: AccountsTableProps) {
     const { user } = useUser();
+    const { t } = useTranslation();
+    
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
     const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
-    const { t } = useTranslation();
 
+    // Function to get the current balance of an account
     const getCurrentBalance = (account: Account): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase();
         const yearRecord = account.records[selectedYear.toString()];
         return yearRecord ? yearRecord[currentMonth as keyof YearRecord] : 0;
     };
 
+    // Function to handle the start of dragging an account
     const handleDragStart = (accountId: string) => {
         setDraggedAccountId(accountId);
     };
 
+    // Function to handle dropping an account
     const handleDrop = (targetAccountId: string) => {
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
             const draggedIndex = accounts.findIndex(acc => acc._id === draggedAccountId);
@@ -58,6 +71,7 @@ export default function AccountsTable({
         setDraggedAccountId(null);
     };
 
+    // Function to render an account
     const renderAccount = (account: Account, isInactive: boolean = false) => (
         <Paper
             key={account._id}

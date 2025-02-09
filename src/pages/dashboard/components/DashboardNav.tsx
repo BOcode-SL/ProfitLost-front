@@ -4,7 +4,7 @@ import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem,
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
 
-// Types
+// Interface for the props of the DashboardNav component
 interface DashboardNavProps {
     activeSection: string; // The currently active section
     handleMenuItemClick: (sectionKey: string) => void; // Function to handle menu item clicks

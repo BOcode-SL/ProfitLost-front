@@ -5,22 +5,24 @@ import {
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
 
+// Interface for the props of the AccountsForm component
 interface AccountsFormProps {
-    onClose: () => void;
-    onSuccess: (account: Account) => Promise<boolean>;
-    onDelete?: (accountId: string) => void;
-    account?: Account | null;
+    onClose: () => void; // Function to close the form
+    onSuccess: (account: Account) => Promise<boolean>; // Function to handle successful account creation or update
+    onDelete?: (accountId: string) => void; // Optional function to handle account deletion
+    account?: Account | null; // Optional account object
 }
 
-const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+// Months array
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// AccountsForm component
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
+    
     const [accountName, setAccountName] = useState(account?.accountName || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
@@ -32,6 +34,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [showYearInput, setShowYearInput] = useState(false);
     const [newYear, setNewYear] = useState<string>('');
 
+    // Memoized available years based on account records
     const availableYears = useMemo(() => {
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
@@ -44,6 +47,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [account]);
 
+    // useEffect to get the monthly values for the selected year
     useEffect(() => {
         if (account) {
             const yearRecord = account.records[selectedYear.toString()];
@@ -58,12 +62,13 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     }, [account, selectedYear]);
 
-    // Función para obtener el nombre traducido del mes
+    // Function to get the translated month name
     const getMonthName = (monthKey: string, short: boolean = false) => {
         const path = short ? 'dashboard.common.monthNamesShort.' : 'dashboard.common.monthNames.';
         return t(path + monthKey);
     };
 
+    // Function to handle the form submission
     const handleSubmit = async () => {
         if (!accountName.trim()) {
             toast.error(t('dashboard.accounts.errors.nameRequired'));
@@ -130,6 +135,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
+    // Function to handle the delete action
     const handleDelete = async () => {
         if (!account) return;
 
@@ -145,6 +151,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
+    // Function to handle the addition of a new year
     const handleAddYear = () => {
         const yearNumber = parseInt(newYear);
         if (isNaN(yearNumber) || yearNumber < 1900 || yearNumber > 9999) {
@@ -231,7 +238,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                     </MenuItem>
                                 </Select>
                             </FormControl>
-                            
+
                             {showYearInput && (
                                 <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                                     <TextField

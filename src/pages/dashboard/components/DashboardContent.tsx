@@ -9,6 +9,7 @@ const Accounts = lazy(() => import('../features/accounts/Accounts'));
 // const Goals = lazy(() => import('../features/goals/Goals'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 
+// Interface for the props of the DashboardContent component
 interface DashboardContentProps {
     activeSection: string; // The currently active section
 }

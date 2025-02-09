@@ -2,57 +2,70 @@ import { Box, Skeleton, useTheme, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+// Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
 
+// Interface for the props of the AccountsChart component
 interface AccountsChartProps {
     accounts: Account[];
     loading: boolean;
     selectedYear: number;
 }
 
+// Interface for the data point
 interface DataPoint {
     month: string;
     monthDisplay: string;
     [key: string]: number | string;
 }
 
-// Meses en inglés para el backend
+// Months in English for the backend
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export default function AccountsChart({ accounts, loading, selectedYear }: AccountsChartProps) {
-    const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
+    const theme = useTheme();
 
-    // Función para obtener el nombre corto traducido del mes
+    // Function to get the short translated name of the month
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
+    // Skeleton loading
     if (loading) {
         return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
     }
 
+    // Filter active accounts
     const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
+
+    // Check if there is no data 
     const isDataEmpty = activeAccounts.length === 0;
 
+    // Create the dataset for the chart
     const dataset: DataPoint[] = months.map(month => {
         const monthLower = month.toLowerCase();
-        const dataPoint: DataPoint = { 
-            month,  
-            monthDisplay: getMonthShortName(month)  
+        const dataPoint: DataPoint = {
+            month,
+            monthDisplay: getMonthShortName(month)
         };
-        
+
         activeAccounts.forEach(account => {
             const yearRecord = account.records[selectedYear.toString()];
             dataPoint[account.accountName] = yearRecord ? yearRecord[monthLower as keyof YearRecord] : 0;
         });
-        
+
         return dataPoint;
     });
 
+    // Create the series for the chart
     const series = activeAccounts.map(account => ({
         dataKey: account.accountName,
         label: account.accountName,
@@ -61,6 +74,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
+    // Function to get the total for a specific month
     const getMonthTotal = (month: string): number => {
         const monthData = dataset.find(d => d.month === month);
         if (!monthData) return 0;
@@ -112,8 +126,8 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                 }}
             />
             {isDataEmpty && (
-                <Typography 
-                    variant="body1" 
+                <Typography
+                    variant="body1"
                     color="text.secondary"
                     sx={{
                         position: 'absolute',
