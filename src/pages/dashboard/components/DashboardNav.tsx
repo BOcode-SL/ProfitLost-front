@@ -20,21 +20,26 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
     const mainMenuItems = menuItems.slice(0, 3); // Get the first three menu items for the main menu
     const moreMenuItems = menuItems.slice(3); // Get the remaining menu items for the "more" menu
 
+    // Function to handle more click
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setMoreAnchorEl(event.currentTarget);
     };
 
+    // Function to handle more close
     const handleMoreClose = () => {
         setMoreAnchorEl(null);
     };
 
+    // Function to handle more item click
     const handleMoreItemClick = (label: string) => {
         handleMenuItemClick(label);
         handleMoreClose();
     };
 
+    // Return the main navigation component
     return (
         <>
+            {/* Box for the fixed navigation on larger screens */}
             <Box sx={{
                 gridArea: 'Nav',
                 position: 'fixed',
@@ -44,6 +49,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                 zIndex: 999,
                 display: { xs: 'none', md: 'block' }
             }}>
+                {/* Paper component to hold the navigation items */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -51,6 +57,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                         borderRadius: 3,
                     }}
                 >
+                    {/* Box for the logo display */}
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -60,6 +67,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                             userSelect: 'none'
                         }
                     }}>
+                        {/* Conditional rendering of logo based on dark mode */}
                         {isDarkMode ? (
                             <img
                                 className="no-select"
@@ -75,6 +83,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                         )}
                     </Box>
 
+                    {/* List of menu items */}
                     <List sx={{ px: 2 }}>
                         {menuItems.map((item) => (
                             <ListItem
@@ -97,9 +106,11 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                                     })
                                 }}
                             >
+                                {/* Icon for the menu item */}
                                 <ListItemIcon sx={{ color: 'inherit' }}>
                                     <Icon className="material-symbols-rounded">{item.icon}</Icon>
                                 </ListItemIcon>
+                                {/* Text for the menu item */}
                                 <ListItemText primary={item.label} />
                             </ListItem>
                         ))}
@@ -107,6 +118,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                 </Paper>
             </Box>
 
+            {/* Box for the bottom navigation on smaller screens */}
             <Box sx={{
                 display: { xs: 'block', md: 'none' },
                 position: 'fixed',
@@ -115,6 +127,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                 width: '100%',
                 zIndex: 999
             }}>
+                {/* Paper component for the bottom navigation items */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -126,6 +139,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                         borderRadius: '15px 15px 0 0',
                     }}
                 >
+                    {/* List of main menu items */}
                     {mainMenuItems.map((item) => (
                         <Box
                             key={item.label}
@@ -139,10 +153,13 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                                 color: activeSection === item.key ? 'primary.main' : 'text.primary'
                             }}
                         >
+                            {/* Icon for the bottom menu item */}
                             <Icon className="material-symbols-rounded">{item.icon}</Icon>
+                            {/* Text for the bottom menu item */}
                             <Box sx={{ fontSize: '0.75rem' }}>{item.label}</Box>
                         </Box>
                     ))}
+                    {/* Box for the "More" menu item */}
                     <Box
                         onClick={handleMoreClick}
                         sx={{
@@ -159,6 +176,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                     </Box>
                 </Paper>
 
+                {/* Menu for additional items */}
                 <Menu
                     anchorEl={moreAnchorEl}
                     open={Boolean(moreAnchorEl)}
@@ -172,6 +190,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                         horizontal: 'center',
                     }}
                 >
+                    {/* List of additional menu items */}
                     {moreMenuItems.map((item) => (
                         <MenuItem
                             key={item.label}
@@ -181,7 +200,9 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                                 gap: 2
                             }}
                         >
+                            {/* Icon for the additional menu item */}
                             <Icon className="material-symbols-rounded">{item.icon}</Icon>
+                            {/* Text for the additional menu item */}
                             {item.label}
                         </MenuItem>
                     ))}

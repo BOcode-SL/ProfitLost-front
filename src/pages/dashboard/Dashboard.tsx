@@ -75,6 +75,7 @@ export default function Dashboard() {
         { label: t('dashboard.notes.title'), icon: 'note_alt', key: 'notes' },
     ];
 
+    // Main container for the dashboard layout
     return (
         <Box sx={{
             display: {
@@ -92,19 +93,22 @@ export default function Dashboard() {
             },
             gridTemplateAreas: {
                 md: `
-                    "Nav Header"
-                    "Nav Content"
+                    "Nav Header" 
+                    "Nav Content" 
                 `
             },
             minHeight: '100vh',
             bgcolor: 'background.default'
         }}>
+            {/* Header component for the dashboard */}
             <DashboardHeader user={user} />
+            {/* Navigation component for the dashboard */}
             <DashboardNav
                 activeSection={activeSection}
                 handleMenuItemClick={handleMenuItemClick}
                 menuItems={menuItems}
             />
+            {/* Content component for the dashboard */}
             <DashboardContent activeSection={activeSection} />
         </Box>
     );

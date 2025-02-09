@@ -16,10 +16,13 @@ interface DashboardContentProps {
 
 // DashboardContent component
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
+
+    // Render the content based on the active section
     const renderContent = () => {
         switch (activeSection) {
             case 'dashhome':
                 return <DashHome />;
+
             case 'annualReport':
                 return <AnnualReport />;
             case 'transactions':
@@ -52,6 +55,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
         }
     };
 
+    // Main container for the dashboard content
     return (
         <Box sx={{
             gridArea: 'Content',
@@ -67,6 +71,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
                 mt: '80px'
             }
         }}>
+            {/* Suspense component to handle loading state */}
             <Suspense fallback={
                 <Box sx={{
                     display: 'flex',
@@ -75,6 +80,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
                     height: '100%',
                     minHeight: '200px'
                 }}>
+                    {/* Circular progress indicator for loading state */}
                     <CircularProgress
                         size={48}
                         sx={{
@@ -83,6 +89,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
                     />
                 </Box>
             }>
+                {/* Render the content based on the active section */}
                 {renderContent()}
             </Suspense>
         </Box>

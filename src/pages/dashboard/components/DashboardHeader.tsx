@@ -91,8 +91,10 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         }
     };
 
+    // Main return statement for the DashboardHeader component
     return (
         <>
+            {/* Box container for the header section */}
             <Box sx={{
                 gridArea: 'Header',
                 position: 'fixed',
@@ -103,6 +105,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 padding: { xs: '1rem', md: '1rem 1rem 0 0' },
                 zIndex: 999
             }}>
+                {/* Paper component for the header content */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -115,7 +118,9 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         transition: 'all 0.3s ease',
                     }}
                 >
+                    {/* Box for theme toggle and notifications */}
                     <Box >
+                        {/* IconButton for toggling theme */}
                         <IconButton
                             onClick={toggleTheme}
                         >
@@ -130,6 +135,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                             )}
                         </IconButton>
 
+                        {/* IconButton for notifications */}
                         <IconButton>
                             <Badge
                                 color="primary"
@@ -144,6 +150,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         </IconButton>
                     </Box>
 
+                    {/* Avatar for user profile */}
                     <Avatar
                         variant="square"
                         onClick={() => setDrawerOpen(true)}
@@ -162,6 +169,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 </Paper >
             </Box >
 
+            {/* Drawer for user settings */}
             <Drawer
                 anchor="right"
                 open={drawerOpen}
@@ -177,12 +185,14 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 }}
             >
                 <Box>
+                    {/* Box for close button */}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-start ', mb: 2 }}>
                         <IconButton onClick={() => setDrawerOpen(false)}>
                             <span className="material-symbols-rounded">close</span>
                         </IconButton>
                     </Box>
 
+                    {/* Paper for user information */}
                     <Paper elevation={3} sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -226,6 +236,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         </Box>
                     </Paper>
 
+                    {/* Paper for settings menu items */}
                     <Paper
                         elevation={3}
                         sx={{
@@ -248,6 +259,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         </List>
                     </Paper>
 
+                    {/* Paper for additional settings menu items */}
                     <Paper
                         elevation={3}
                         sx={{
@@ -270,6 +282,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                     </Paper>
                 </Box>
 
+                {/* Box for logout button */}
                 <Box sx={{ mt: 'auto', mb: 2 }}>
                     <Button
                         fullWidth
@@ -287,6 +300,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 </Box>
             </Drawer>
 
+            {/* Drawer for settings component */}
             <Drawer
                 anchor="right"
                 open={settingsDrawer.open}
@@ -302,6 +316,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    {/* IconButton for going back to the previous screen */}
                     <IconButton
                         onClick={() => {
                             setSettingsDrawer({ open: false, component: '' });
@@ -311,12 +326,14 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                     >
                         <span className="material-symbols-rounded">arrow_back</span>
                     </IconButton>
+                    {/* Typography for settings title */}
                     <Typography variant="h6">
                         {settingsDrawer.component === t('dashboard.settings.userSettings.title') && t('dashboard.settings.userSettings.title')}
                         {settingsDrawer.component === t('dashboard.settings.securityPrivacy.title') && t('dashboard.settings.securityPrivacy.title')}
                         {settingsDrawer.component === t('dashboard.settings.help.title') && t('dashboard.settings.help.title')}
                     </Typography>
                 </Box>
+                {/* Suspense for loading settings component */}
                 <Suspense fallback={
                     <Box sx={{
                         display: 'flex',
