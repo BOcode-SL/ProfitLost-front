@@ -3,35 +3,23 @@ import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Types
 import type { Transaction } from '../../../../../types/models/transaction';
+
+// Utils
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
-
+// Interface for the props of the HomeBalances component
 interface HomeBalancesProps {
-    type: 'income' | 'expenses' | 'savings';
-    transactions: Transaction[];
-    isLoading: boolean;
+    type: 'income' | 'expenses' | 'savings'; // Type of balance (income, expenses, or savings)
+    transactions: Transaction[]; // Array of transactions
+    isLoading: boolean; // Loading state
 }
 
-const BalanceCardSkeleton = () => (
-    <Paper elevation={3} sx={{
-        flex: 1,
-        p: 2,
-        flexDirection: 'column',
-        gap: 1,
-        borderRadius: 3,
-        minHeight: { xs: '120px', sm: 'auto' },
-    }}>
-        <Skeleton width={80} height={24} />
-        <Skeleton width={120} height={35} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Skeleton width={60} height={20} />
-            <Skeleton width={100} height={20} />
-        </Box>
-    </Paper>
-);
-
+// BalanceCard component
 const BalanceCard = ({ type, amount, percentage }: { type: string; amount: number; percentage: number }) => {
     const theme = useTheme();
     const { user } = useUser();
@@ -43,11 +31,11 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
 
     const trendIcon = type === 'Spendings'
         ? percentage === 0 ? 'trending_flat'
-        : isPositiveTrend ? 'trending_down'
-        : 'trending_up'
+            : isPositiveTrend ? 'trending_down'
+                : 'trending_up'
         : percentage === 0 ? 'trending_flat'
-        : isPositiveTrend ? 'trending_up'
-        : 'trending_down';
+            : isPositiveTrend ? 'trending_up'
+                : 'trending_down';
 
     return (
         <Paper elevation={3} sx={{
@@ -93,7 +81,10 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     );
 };
 
+// HomeBalances component
 export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
+
+    // Get the balance data
     const balanceData = useMemo(() => {
         if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0 };
 
@@ -155,10 +146,28 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         return { amount: currentAmount, percentage };
     }, [transactions, isLoading, type]);
 
+    // If the balance data is loading, show a skeleton
     if (isLoading) {
-        return <BalanceCardSkeleton />;
+        return (
+            <Paper elevation={3} sx={{
+                flex: 1,
+                p: 2,
+                flexDirection: 'column',
+                gap: 1,
+                borderRadius: 3,
+                minHeight: { xs: '120px', sm: 'auto' },
+            }}>
+                <Skeleton width={80} height={30} />
+                <Skeleton width={120} height={45} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Skeleton width={60} height={25} />
+                    <Skeleton width={100} height={25} />
+                </Box>
+            </Paper>
+        )
     }
 
+    // Return the balance card
     return (
         <BalanceCard
             type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}

@@ -2,21 +2,29 @@ import { useMemo } from 'react';
 import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Types
 import type { Transaction } from '../../../../../types/models/transaction';
+
+// Utils
 import { formatDateTime } from '../../../../../utils/dateUtils';
 import { formatCurrency } from '../../../../../utils/formatCurrency';
 
+// Interface for the props of the HomeHistory component
 interface HomeHistoryProps {
-    transactions: Transaction[];
-    isLoading: boolean;
+    transactions: Transaction[]; // Array of transactions
+    isLoading: boolean; // Loading state
 }
 
+// HomeHistory component
 export default function HomeHistory({ transactions, isLoading }: HomeHistoryProps) {
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
 
+    // Get the recent transactions
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
@@ -31,6 +39,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             .slice(0, 8);
     }, [transactions, isLoading]);
 
+    // If the transactions are loading, show a skeleton
     if (isLoading) {
         return (
             <Paper

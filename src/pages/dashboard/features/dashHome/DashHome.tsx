@@ -3,17 +3,25 @@ import { Box } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Services
 import { transactionService } from '../../../../services/transaction.service';
+
+// Types
 import type { Transaction } from '../../../../types/models/transaction';
+
+// Components
 import HomeBalances from './components/HomeBalances';
 import HomeChart from './components/HomeChart';
 import HomeHistory from './components/HomeHistory';
 
+// DashHome component
 export default function DashHome() {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
 
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Fetch all transactions
     useEffect(() => {
         const fetchTransactions = async () => {
             try {

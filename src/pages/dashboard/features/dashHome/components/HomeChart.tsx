@@ -3,27 +3,35 @@ import { Box, Paper, Typography, Skeleton, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../../contexts/UserContext';
-import type { Transaction } from '../../../../../types/models/transaction';
-import { formatCurrency } from '../../../../../utils/formatCurrency';
 
+// Types
+import type { Transaction } from '../../../../../types/models/transaction';
 interface MonthlyData {
     month: string;
     income: number;
     expenses: number;
 }
 
+// Utils
+import { formatCurrency } from '../../../../../utils/formatCurrency';
+
+// Interface for the props of the HomeChart component
 interface HomeChartProps {
-    transactions: Transaction[];
-    isLoading: boolean;
+    transactions: Transaction[]; // Array of transactions
+    isLoading: boolean; // Loading state
 }
 
+// HomeChart component
 export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
     const theme = useTheme();
-    const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
     const { t } = useTranslation();
 
+    const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+
+    // Get the monthly data
     const monthlyDataMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
@@ -74,10 +82,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         return chartData;
     }, [transactions, isLoading, t]);
 
+    // UseEffect to set the monthly data
     useEffect(() => {
         setMonthlyData(monthlyDataMemo);
     }, [monthlyDataMemo]);
 
+    // If the transactions are loading, show a skeleton
     if (isLoading) {
         return (
             <Paper
@@ -88,26 +98,28 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     borderRadius: 3,
                     height: { xs: 'auto', sm: 'auto' }
                 }}>
-                <Skeleton width="100%" height="100%" sx={{ mb: 2 }} /> 
+                <Skeleton width="100%" height="100%" sx={{ mb: 2 }} />
                 <Skeleton variant="rectangular" sx={{ borderRadius: 3, height: 270 }} />
             </Paper>
         );
     }
 
+    // Check if the data is empty
     const isDataEmpty = monthlyData.length === 0 ||
         monthlyData.every(item => item.income === 0 && item.expenses === 0);
 
+    // If the data is empty, show a message    
     if (isDataEmpty) {
         const today = new Date();
         const emptyMonths = [];
-        
+
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = date.toLocaleString('default', { month: 'short' });
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             emptyMonths.push(translatedMonth);
         }
-        
+
         return (
             <Paper
                 elevation={3}
@@ -156,8 +168,8 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             }
                         }}
                     />
-                    <Typography 
-                        variant="body1" 
+                    <Typography
+                        variant="body1"
                         color="text.secondary"
                         sx={{
                             position: 'absolute',
