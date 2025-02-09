@@ -86,20 +86,24 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return parseFloat(total.toFixed(2));
     };
 
+    // Container for the chart
     return (
         <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+            {/* Bar chart component with dataset and series */}
             <BarChart
                 dataset={dataset}
                 series={series}
                 xAxis={[{
                     dataKey: 'month',
                     scaleType: 'band',
+                    // Formatter for the x-axis labels
                     valueFormatter: (month, context) => {
                         const dataPoint = dataset.find(d => d.month === month);
                         return context.location === 'tick'
                             ? dataPoint?.monthDisplay || month
                             : `${dataPoint?.monthDisplay}: ${formatCurrency(getMonthTotal(month), user)}`;
                     },
+                    // Style for the tick labels on the x-axis
                     tickLabelStyle: {
                         angle: 45,
                         textAnchor: 'start',
@@ -108,6 +112,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     }
                 }]}
                 yAxis={[{
+                    // Style for the tick labels on the y-axis
                     tickLabelStyle: {
                         fontSize: 12,
                         fill: theme.palette.text.primary
@@ -125,6 +130,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     bottom: 70
                 }}
             />
+            {/* Display message when there is no data */}
             {isDataEmpty && (
                 <Typography
                     variant="body1"

@@ -172,19 +172,23 @@ export default function Accounts() {
         };
     }, [orderedAccounts]);
 
+    // Fade transition for the entire content
     return (
         <Fade in timeout={400}>
+            {/* Container for the main content, arranged in a column */}
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
                 width: '100%'
             }}>
+                {/* Paper component for the year selection dropdown */}
                 <Paper elevation={2} sx={{
                     p: 1,
                     borderRadius: 3,
                     width: '100%'
                 }}>
+                    {/* Form control for selecting the year */}
                     <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
                         <InputLabel>{t('dashboard.common.year')}</InputLabel>
                         <Select
@@ -192,6 +196,7 @@ export default function Accounts() {
                             label={t('dashboard.common.year')}
                             onChange={(e) => setSelectedYear(e.target.value)}
                         >
+                            {/* Mapping through available years to create menu items */}
                             {availableYears.map(year => (
                                 <MenuItem key={year} value={year.toString()}>
                                     {year}
@@ -201,12 +206,14 @@ export default function Accounts() {
                     </FormControl>
                 </Paper>
 
+                {/* Paper component for displaying the accounts chart */}
                 <Paper elevation={2} sx={{
                     p: 2,
                     borderRadius: 3,
                     width: '100%',
                     height: '400px'
                 }}>
+                    {/* Accounts chart component with active accounts and selected year */}
                     <AccountsChart
                         accounts={activeAccounts}
                         loading={loading}
@@ -214,6 +221,7 @@ export default function Accounts() {
                     />
                 </Paper>
 
+                {/* Accounts table component for displaying active and inactive accounts */}
                 <AccountsTable
                     accounts={activeAccounts}
                     inactiveAccounts={inactiveAccounts}

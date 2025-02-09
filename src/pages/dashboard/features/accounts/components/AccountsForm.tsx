@@ -22,7 +22,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 // AccountsForm component
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
-    
+
     const [accountName, setAccountName] = useState(account?.accountName || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
@@ -187,6 +187,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
     return (
         <Box sx={{ p: 3 }}>
+            {/* Box for the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -196,7 +197,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Typography>
             </Box>
 
+            {/* Form component for the account */}
             <Box component="form">
+                {/* Paper component for the account name */}
                 <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
                         label={t('dashboard.accounts.form.fields.name.label')}
@@ -208,9 +211,12 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     />
                 </Paper>
 
+                {/* Paper component for the year selection dropdown */}
                 {account && (
                     <>
+                        {/* Paper component for the year selection dropdown */}
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
+                            {/* Form control for the year selection dropdown */}
                             <FormControl size="small" fullWidth>
                                 <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                 <Select
@@ -239,6 +245,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                 </Select>
                             </FormControl>
 
+                            {/* Box for the new year input and button */}
                             {showYearInput && (
                                 <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                                     <TextField
@@ -270,6 +277,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             )}
                         </Paper>
 
+                        {/* Paper component for the monthly values */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                 {months.map(month => (
@@ -289,6 +297,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             </Box>
                         </Paper>
 
+                        {/* Paper component for the active switch */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
@@ -301,6 +310,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </>
                 )}
 
+                {/* Paper component for the background color and text color */}
                 <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
@@ -320,6 +330,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Box>
                 </Paper>
 
+                {/* Box for the delete and submit buttons */}
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button
@@ -346,6 +357,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Box>
             </Box>
 
+            {/* Dialog component for the delete confirmation */}
             <Dialog
                 open={deleteDialog}
                 onClose={() => setDeleteDialog(false)}
@@ -357,6 +369,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     }
                 }}
             >
+                {/* Dialog title */}
                 <DialogTitle sx={{
                     textAlign: 'center',
                     pt: 3,
@@ -364,6 +377,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 }}>
                     {t('dashboard.accounts.form.delete.title')}
                 </DialogTitle>
+
+                {/* Dialog content */}
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
@@ -379,6 +394,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         {t('dashboard.accounts.form.delete.warning')}
                     </Typography>
                 </DialogContent>
+
+                {/* Box for the cancel and delete buttons */}
                 <DialogActions sx={{
                     justifyContent: 'center',
                     gap: 2,

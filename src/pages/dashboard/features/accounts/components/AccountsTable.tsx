@@ -39,7 +39,7 @@ export default function AccountsTable({
 }: AccountsTableProps) {
     const { user } = useUser();
     const { t } = useTranslation();
-    
+
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
@@ -73,6 +73,7 @@ export default function AccountsTable({
 
     // Function to render an account
     const renderAccount = (account: Account, isInactive: boolean = false) => (
+        // Paper component for the account
         <Paper
             key={account._id}
             onClick={() => {
@@ -96,7 +97,9 @@ export default function AccountsTable({
                 opacity: isInactive ? 0.7 : 1
             }}
         >
+            {/* Box for the account name and balance */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {/* Show drag indicator if the account is active */}
                 {!isInactive && (
                     <span
                         className="material-symbols-rounded"
@@ -109,10 +112,12 @@ export default function AccountsTable({
                         drag_indicator
                     </span>
                 )}
+                {/* Account name */}
                 <Typography variant="h6" sx={{ color: account.configuration.color }}>
                     {account.accountName}
                 </Typography>
             </Box>
+            {/* Balance */}
             <Typography variant="h6" sx={{ color: account.configuration.color }}>
                 {formatCurrency(getCurrentBalance(account), user)}
             </Typography>
@@ -128,11 +133,13 @@ export default function AccountsTable({
                 p: 3,
                 borderRadius: 3
             }}>
+                {/* Box for the new account button */}
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'flex-end',
                     mb: 2
                 }}>
+                    {/* Button to add a new account */}
                     <Button
                         variant="contained"
                         onClick={() => setIsDrawerOpen(true)}
@@ -143,6 +150,7 @@ export default function AccountsTable({
                     </Button>
                 </Box>
 
+                {/* Loading state */}
                 {loading ? (
                     <Box sx={{
                         display: 'flex',
@@ -154,8 +162,10 @@ export default function AccountsTable({
                     </Box>
                 ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {/* Render active accounts */}
                         {accounts.map(account => renderAccount(account))}
-                        
+
+                        {/* No accounts banner */}
                         {accounts.length === 0 && (
                             <Fade in timeout={300}>
                                 <Box sx={{
@@ -172,6 +182,7 @@ export default function AccountsTable({
                             </Fade>
                         )}
 
+                        {/* Inactive accounts section */}
                         {inactiveAccounts.length > 0 && (
                             <Box sx={{ mt: 2 }}>
                                 <Button
@@ -195,6 +206,7 @@ export default function AccountsTable({
                     </Box>
                 )}
 
+                {/* Drawer for the account form */}
                 <Drawer
                     open={isDrawerOpen}
                     onClose={() => {
@@ -208,6 +220,7 @@ export default function AccountsTable({
                         }
                     }}
                 >
+                    {/* Accounts form component */}
                     <AccountsForm
                         onClose={() => {
                             setIsDrawerOpen(false);
