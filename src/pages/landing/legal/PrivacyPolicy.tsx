@@ -1,14 +1,18 @@
 import { Typography, Box } from '@mui/material';
 
+// Components
 import LegalLayout from './components/LegalLayout';
 
+// Privacy Policy page
 export default function PrivacyPolicy() {
     return (
         <LegalLayout title="Privacy Policy">
+            {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last updated: 1/18/2025
+                Last updated: 09/02/2025
             </Typography>
 
+            {/* Section 1: Responsible for the Treatment */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 1. Responsible for the Treatment
             </Typography>
@@ -21,6 +25,7 @@ export default function PrivacyPolicy() {
                 <li>Website: https://profit-lost.com</li>
             </Box>
 
+            {/* Section 2: Information we collect */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 2. Information we collect
             </Typography>
@@ -35,6 +40,7 @@ export default function PrivacyPolicy() {
                 <li>IP address and browser data</li>
             </Box>
 
+            {/* Section 3: Legal basis for the treatment */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 3. Legal basis for the treatment
             </Typography>
@@ -48,6 +54,7 @@ export default function PrivacyPolicy() {
                 <li>Compliance with legal obligations (Art. 6.1.c RGPD)</li>
             </Box>
 
+            {/* Section 4: Purpose of the Treatment */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 4. Purpose of the Treatment
             </Typography>
@@ -64,6 +71,7 @@ export default function PrivacyPolicy() {
                 <li>Statistical analysis and service improvement</li>
             </Box>
 
+            {/* Section 5: ARCO+ Rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 5. ARCO+ Rights
             </Typography>
@@ -78,12 +86,12 @@ export default function PrivacyPolicy() {
                 <li>Limitation of the treatment</li>
                 <li>Portability of your data</li>
             </Box>
-
             <Typography >
                 To exercise these rights, contact support@profit-lost.com.
                 You also have the right to make a complaint to the Spanish Data Protection Agency (www.aepd.es).
             </Typography>
 
+            {/* Section 6: Data retention */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 6. Data retention
             </Typography>
@@ -96,6 +104,7 @@ export default function PrivacyPolicy() {
                 <li>Necessary to protect our legal interests</li>
             </Box>
 
+            {/* Section 7: Security measures */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 7. Security measures
             </Typography>
@@ -109,6 +118,7 @@ export default function PrivacyPolicy() {
                 <li>Security monitoring</li>
             </Box>
 
+            {/* Section 8: Minors */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 8. Minors
             </Typography>
@@ -118,6 +128,7 @@ export default function PrivacyPolicy() {
                 personal information to us, please contact us and we will proceed to its deletion.
             </Typography>
 
+            {/* Section 9: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 9. Modifications
             </Typography>
@@ -127,6 +138,7 @@ export default function PrivacyPolicy() {
                 we will notify you by email.
             </Typography>
 
+            {/* Section 10: Contact */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 10. Contact
             </Typography>

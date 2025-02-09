@@ -1,11 +1,13 @@
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+// Define the props for the LegalLayout component
 interface LegalLayoutProps {
-    title: string;
-    children: React.ReactNode;
+    title: string; // Title of the layout
+    children: React.ReactNode; // Children elements to be rendered inside the layout
 }
 
+// Export the LegalLayout component
 export default function LegalLayout({ title, children }: LegalLayoutProps) {
     const navigate = useNavigate();
 

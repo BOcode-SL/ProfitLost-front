@@ -1,14 +1,18 @@
 import { Typography, Box } from '@mui/material';
 
+// Components
 import LegalLayout from './components/LegalLayout';
 
+// Legal Notice page
 export default function LegalNotice() {
     return (
-        <LegalLayout title="Aviso Legal">
+        <LegalLayout title="Legal Notice">
+            {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last update: 1/18/2025
+                Last updated: 09/02/2025
             </Typography>
 
+            {/* Section 1: Title information */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 1. Title information
             </Typography>
@@ -21,6 +25,7 @@ export default function LegalNotice() {
                 <li>Sitio Web: https://profit-lost.com</li>
             </Box>
 
+            {/* Section 2: Object and scope of application */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 2. Object and scope of application
             </Typography>
@@ -29,6 +34,7 @@ export default function LegalNotice() {
                 This legal notice regulates the use of the website and the profit-lost.com application.
             </Typography>
 
+            {/* Section 3: Intellectual and industrial property */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 3. Intellectual and industrial property
             </Typography>
@@ -37,6 +43,7 @@ export default function LegalNotice() {
                 design, navigation structure, databases and content, are property of Profit&Lost or have licenses for their use.
             </Typography>
 
+            {/* Section 4: Use conditions */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 4. Use conditions
             </Typography>
@@ -48,6 +55,7 @@ export default function LegalNotice() {
                 <li>Not to use the platform to send advertising</li>
             </Box>
 
+            {/* Section 5: Responsibility */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 5. Responsibility
             </Typography>
@@ -61,6 +69,7 @@ export default function LegalNotice() {
                 <li>The improper use of the platform by third parties</li>
             </Box>
 
+            {/* Section 6: Applicable legislation */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 6. Applicable legislation
             </Typography>
@@ -70,6 +79,7 @@ export default function LegalNotice() {
                 without prejudice to the jurisdiction that corresponds according to consumer legislation.
             </Typography>
 
+            {/* Section 7: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 7. Modifications
             </Typography>

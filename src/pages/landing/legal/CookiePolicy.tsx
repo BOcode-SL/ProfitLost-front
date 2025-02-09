@@ -1,14 +1,18 @@
 import { Typography, Box } from '@mui/material';
 
+// Components
 import LegalLayout from './components/LegalLayout';
 
+// Cookie Policy page
 export default function CookiePolicy() {
     return (
-        <LegalLayout title="Política de Cookies">
+        <LegalLayout title="Cookie Policy">
+            {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last update: 1/18/2025
+                Last updated: 09/02/2025
             </Typography>
 
+            {/* Section 1: What are cookies? */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 1. What are cookies?
             </Typography>
@@ -17,6 +21,7 @@ export default function CookiePolicy() {
                 They allow us to remember your preferences and improve your navigation experience.
             </Typography>
 
+            {/* Section 2: Legal basis */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 2. Legal basis
             </Typography>
@@ -25,6 +30,7 @@ export default function CookiePolicy() {
                 and the General Data Protection Regulation (GDPR) 2016/679, we inform you about the use of cookies on our website.
             </Typography>
 
+            {/* Section 3: Types of cookies we use */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 3. Types of cookies we use
             </Typography>
@@ -39,6 +45,7 @@ export default function CookiePolicy() {
                 </li>
             </Box>
 
+            {/* Section 4: Cookies management */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 4. Cookies management
             </Typography>
@@ -47,6 +54,7 @@ export default function CookiePolicy() {
                 However, some features of our website may not work correctly without cookies.
             </Typography>
 
+            {/* Section 5: Third-party cookies */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 5. Third-party cookies
             </Typography>
@@ -57,6 +65,7 @@ export default function CookiePolicy() {
                 <li>Google Analytics: website usage analysis</li>
             </Box>
 
+            {/* Section 6: Cookies retention period */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 6. Cookies retention period
             </Typography>
@@ -65,6 +74,7 @@ export default function CookiePolicy() {
                 Persistent cookies remain on your device for a maximum period of 24 months.
             </Typography>
 
+            {/* Section 7: Your rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 7. Your rights
             </Typography>
@@ -76,6 +86,7 @@ export default function CookiePolicy() {
                 <li>Website: https://profit-lost.com</li>
             </Box>
 
+            {/* Section 8: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 8. Modifications
             </Typography>
