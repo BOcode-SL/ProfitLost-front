@@ -119,7 +119,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             emptyMonths.push(translatedMonth);
         }
-
+        // Container for the empty chart
         return (
             <Paper
                 elevation={3}
@@ -128,14 +128,17 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     p: 2,
                     borderRadius: 3
                 }}>
+                {/* Title of the chart */}
                 <Typography variant="subtitle1" color="primary.light" gutterBottom>
                     {t('dashboard.transactions.chart.monthlyBalance')}
                 </Typography>
+                {/* Box containing the LineChart and no data message */}
                 <Box sx={{
                     position: 'relative',
                     width: '100%',
                     height: '280px'
                 }}>
+                    {/* LineChart with zero data for income and expenses */}
                     <LineChart
                         series={[
                             {
@@ -168,6 +171,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             }
                         }}
                     />
+                    {/* No data message displayed over the chart */}
                     <Typography
                         variant="body1"
                         color="text.secondary"
@@ -189,6 +193,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         );
     }
 
+    // Container for the chart
     return (
         <Paper
             elevation={3}
@@ -197,9 +202,11 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                 p: 2,
                 borderRadius: 3
             }}>
+            {/* Chart title */}
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.chart.last6MonthsBalance')}
             </Typography>
+            {/* Box containing the LineChart */}
             <Box sx={{
                 width: '100%',
                 height: '280px'

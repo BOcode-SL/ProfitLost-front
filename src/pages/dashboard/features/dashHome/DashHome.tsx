@@ -47,6 +47,7 @@ export default function DashHome() {
             flexDirection: 'column',
             gap: 2,
         }}>
+            {/* Balances section */}
             <Box sx={{
                 display: 'flex',
                 gap: 2,
@@ -56,7 +57,9 @@ export default function DashHome() {
                 <HomeBalances type="expenses" transactions={transactions} isLoading={isLoading} />
                 <HomeBalances type="savings" transactions={transactions} isLoading={isLoading} />
             </Box>
+            {/* Chart section */}
             <HomeChart transactions={transactions} isLoading={isLoading} />
+            {/* History section */}
             <HomeHistory transactions={transactions} isLoading={isLoading} />
         </Box>
     );

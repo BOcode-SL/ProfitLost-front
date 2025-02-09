@@ -67,6 +67,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         );
     }
 
+    // Paper container for the history section
     return (
         <Paper
             elevation={3}
@@ -76,11 +77,14 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                 borderRadius: 3,
                 overflow: 'auto'
             }}>
+            {/* Title of the history section */}
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.history.lastTransactions')}
             </Typography>
+            {/* Iterate over recent transactions */}
             {recentTransactionsMemo.map((transaction, index) => (
                 <Box key={transaction._id}>
+                    {/* Container for each transaction item */}
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -88,13 +92,16 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                         py: 1
                     }}>
                         <Box>
+                            {/* Transaction description */}
                             <Typography variant="body1" sx={{ fontWeight: '600' }}>
                                 {transaction.description}
                             </Typography>
+                            {/* Transaction date */}
                             <Typography variant="body2" color="text.secondary">
                                 {formatDateTime(transaction.date, user)}
                             </Typography>
                         </Box>
+                        {/* Transaction amount */}
                         <Typography
                             variant="body1"
                             sx={{
