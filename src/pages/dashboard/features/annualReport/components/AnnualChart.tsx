@@ -72,16 +72,20 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
     // If the data is empty, show a message
     const isDataEmpty = chartData.every(item => item.income === 0 && item.expenses === 0);
 
+    // Fade in animation for the chart component
     return (
         <Fade in timeout={500}>
+            {/* Main container for the chart */}
             <Box sx={{
                 width: '100%',
                 height: { xs: 300, sm: 350, pt: 1 },
                 position: 'relative',
+                // Style for the tick labels on the x-axis
                 '& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
                     fontSize: isMobile ? '0.75rem' : '0.875rem',
                 }
             }}>
+                {/* Bar chart component displaying income and expenses */}
                 <BarChart
                     series={[
                         {
@@ -122,6 +126,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                         }
                     }}
                 />
+                {/* Display message when there is no data */}
                 {isDataEmpty && (
                     <Typography
                         variant="body1"

@@ -65,8 +65,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         }
     };
 
+    // Main container for the category form
     return (
         <Box sx={{ p: 3 }}>
+            {/* Header section with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -76,10 +78,12 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 </Typography>
             </Box>
 
+            {/* Form section for category input */}
             <Box component="form" onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
             }}>
+                {/* Input fields for color and category name */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -106,6 +110,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     />
                 </Paper>
 
+                {/* Action buttons for delete and submit */}
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {category && onDelete && (
                         <Button

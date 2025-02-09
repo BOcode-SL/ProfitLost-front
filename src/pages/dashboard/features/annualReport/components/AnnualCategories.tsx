@@ -186,9 +186,12 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
     };
 
     return (
+        // Main container with responsive padding
         <Box sx={{ p: { xs: 1, sm: 2 } }}>
+            {/* Fade animation for the content */}
             <Fade in timeout={500}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {/* Search and sort controls */}
                     <Box sx={{
                         display: 'flex',
                         gap: 2,
@@ -241,6 +244,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         </Button>
                     </Box>
 
+                    {/* Loading state skeleton */}
                     {loading ? (
                         <Fade in timeout={300}>
                             <Skeleton variant="rectangular" height={400} sx={{
@@ -249,6 +253,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             }} />
                         </Fade>
                     ) : categories.length === 0 ? (
+                        // Banner displayed when there are no categories
                         <Fade in timeout={300}>
                             <Box sx={{
                                 display: 'flex',
@@ -263,6 +268,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             </Box>
                         </Fade>
                     ) : categoriesBalance.length === 0 ? (
+                        // Message displayed when no categories match the search term
                         <Fade in timeout={300}>
                             <Box sx={{
                                 display: 'flex',
@@ -277,6 +283,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             </Box>
                         </Fade>
                     ) : (
+                        // List of categories with their balances
                         <Fade in timeout={500}>
                             <List sx={{ width: '100%' }}>
                                 {categoriesBalance.map(({ category, balance }) => (
@@ -335,6 +342,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 </Box>
             </Fade>
 
+            {/* Drawer for creating a new category */}
             <Drawer
                 anchor="right"
                 open={drawerOpen}
@@ -352,6 +360,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 />
             </Drawer>
 
+            {/* Drawer for editing an existing category */}
             <Drawer
                 anchor="right"
                 open={editCategory.isOpen}
@@ -378,6 +387,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                 />
             </Drawer>
 
+            {/* Dialog for confirming category deletion */}
             <Dialog
                 open={deleteDialog.open}
                 TransitionComponent={Transition}

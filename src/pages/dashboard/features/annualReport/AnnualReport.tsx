@@ -144,10 +144,13 @@ export default function AnnualReport() {
         }
     };
 
+    // Main container for the annual report
     return (
         <Box className="annual-report">
             <Fade in timeout={400}>
+                {/* Content container for the annual report */}
                 <Box className="annual-report__content">
+                    {/* Year selection paper */}
                     <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
                         <Box sx={{
                             display: 'flex',
@@ -156,6 +159,7 @@ export default function AnnualReport() {
                             alignItems: { xs: 'stretch', sm: 'center' }
                         }}>
                             <Fade in timeout={500}>
+                                {/* Year selection dropdown */}
                                 <FormControl size="small"
                                     sx={{
                                         flexGrow: 1,
@@ -176,6 +180,7 @@ export default function AnnualReport() {
                                 </FormControl>
                             </Fade>
 
+                            {/* View mode toggle buttons (only shown for the current year) */}
                             {year === currentYear && (
                                 <Fade in timeout={500}>
                                     <ToggleButtonGroup
@@ -200,6 +205,7 @@ export default function AnnualReport() {
                         </Box>
                     </Paper>
 
+                    {/* Chart paper displaying annual data */}
                     <Paper elevation={3} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
                         <Fade in timeout={600}>
                             <Box>
@@ -211,8 +217,10 @@ export default function AnnualReport() {
                         </Fade>
                     </Paper>
 
+                    {/* Component displaying annual balances */}
                     <AnnualBalances transactions={filteredTransactions} />
 
+                    {/* Categories paper displaying annual categories */}
                     <Fade in timeout={800}>
                         <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
                             <AnnualCategories

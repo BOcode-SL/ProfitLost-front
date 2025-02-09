@@ -47,12 +47,14 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
 
     return (
         <Fade in timeout={700}>
+            {/* Container Grid for Balance Items */}
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
                 gap: 1,
                 mt: 2
             }}>
+                {/* Mapping over balance items to display each balance */}
                 {balanceItems.map(({ label, value, color }, index) => (
                     <Paper key={index} elevation={3} sx={{
                         p: 1,
@@ -62,7 +64,9 @@ export default function AnnualBalances({ transactions }: AnnualBalancesProps) {
                         justifyContent: 'center',
                         gap: 2
                     }}>
+                        {/* Icon representing the balance type */}
                         <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
+                        {/* Formatted currency value */}
                         <span style={{ fontSize: '1.5rem' }}>{formatCurrency(value, user)}</span>
                     </Paper>
                 ))}
