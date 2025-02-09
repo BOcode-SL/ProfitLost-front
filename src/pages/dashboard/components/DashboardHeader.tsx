@@ -4,22 +4,33 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Services
 import { authService } from '../../../services/auth.service';
+
+// Types
 import { User } from '../../../types/models/user';
+
+// Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { useUser } from '../../../contexts/UserContext';
+
+// Components
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
 
 interface DashboardHeaderProps {
-    user: User | null;
+    user: User | null; // User object or null
 }
 
-const DashboardHeader = ({ user }: DashboardHeaderProps) => {
+// DashboardHeader component
+export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const { t } = useTranslation();
+    const { setUser } = useUser();
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
+
+
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [settingsDrawer, setSettingsDrawer] = useState<{
         open: boolean;
@@ -28,8 +39,8 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         open: false,
         component: ''
     });
-    const { setUser } = useUser();
 
+    // Handle user logout
     const handleLogout = async () => {
         try {
             await authService.logout();
@@ -42,6 +53,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         }
     };
 
+    // Menu items for settings
     const menuItems1 = [
         { icon: 'person', text: t('dashboard.settings.userSettings.title') },
         { icon: 'security', text: t('dashboard.settings.securityPrivacy.title') },
@@ -51,6 +63,7 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         { icon: 'help', text: t('dashboard.settings.help.title') },
     ];
 
+    // Handle settings menu item click
     const handleSettingsClick = (component: string) => {
         setDrawerOpen(false);
         setSettingsDrawer({
@@ -59,10 +72,12 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         });
     };
 
+    // Close settings drawer
     const handleCloseSettingsDrawer = () => {
         setSettingsDrawer({ open: false, component: '' });
     };
 
+    // Render the selected settings component
     const renderSettingsComponent = () => {
         switch (settingsDrawer.component) {
             case t('dashboard.settings.userSettings.title'):
@@ -106,15 +121,11 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
                         >
                             {isDarkMode ? (
                                 <Tooltip title={t('dashboard.tooltips.light_mode')}>
-                                    <span className="material-symbols-rounded">
-                                        light_mode
-                                    </span>
+                                    <span className="material-symbols-rounded">light_mode</span>
                                 </Tooltip>
                             ) : (
                                 <Tooltip title={t('dashboard.tooltips.dark_mode')}>
-                                    <span className="material-symbols-rounded">
-                                        dark_mode
-                                    </span>
+                                    <span className="material-symbols-rounded">dark_mode</span>
                                 </Tooltip>
                             )}
                         </IconButton>
@@ -321,5 +332,3 @@ const DashboardHeader = ({ user }: DashboardHeaderProps) => {
         </>
     );
 };
-
-export default DashboardHeader;

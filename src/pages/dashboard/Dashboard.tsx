@@ -3,25 +3,32 @@ import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../contexts/UserContext';
+
+// Components
 import DashboardHeader from './components/DashboardHeader';
 import DashboardNav from './components/DashboardNav';
 import DashboardContent from './components/DashboardContent';
 
+// Dashboard component
 export default function Dashboard() {
     const { t } = useTranslation();
-    const [activeSection, setActiveSection] = useState('dashhome');
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
+
+    const [activeSection, setActiveSection] = useState('dashhome');
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
+        // Redirect to auth if user is not logged in
         if (!isLoading && !user) {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
 
     useEffect(() => {
+        // Get section from search parameters
         const section = searchParams.get('section');
         if (section) {
             setActiveSection(section);
@@ -31,11 +38,13 @@ export default function Dashboard() {
     }, [searchParams]);
 
     const handleMenuItemClick = (sectionKey: string) => {
+        // Handle menu item click
         setActiveSection(sectionKey);
         setSearchParams(sectionKey === 'dashhome' ? {} : { section: sectionKey });
     };
 
     if (isLoading) {
+        // Show loading state
         return (
             <Box sx={{
                 display: 'flex',

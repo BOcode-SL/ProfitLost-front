@@ -1,5 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
+
+// Components
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -8,10 +10,11 @@ const Accounts = lazy(() => import('../features/accounts/Accounts'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 
 interface DashboardContentProps {
-    activeSection: string;
+    activeSection: string; // The currently active section
 }
 
-const DashboardContent = ({ activeSection }: DashboardContentProps) => {
+// DashboardContent component
+export default function DashboardContent({ activeSection }: DashboardContentProps) {
     const renderContent = () => {
         switch (activeSection) {
             case 'dashhome':
@@ -84,5 +87,3 @@ const DashboardContent = ({ activeSection }: DashboardContentProps) => {
         </Box>
     );
 };
-
-export default DashboardContent;

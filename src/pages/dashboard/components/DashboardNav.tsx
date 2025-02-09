@@ -1,20 +1,24 @@
 import { useState, useContext } from 'react';
 import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Icon } from '@mui/material';
 
+// Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
 
+// Types
 interface DashboardNavProps {
-    activeSection: string;
-    handleMenuItemClick: (sectionKey: string) => void;
-    menuItems: { label: string; icon: string; key: string; }[];
+    activeSection: string; // The currently active section
+    handleMenuItemClick: (sectionKey: string) => void; // Function to handle menu item clicks
+    menuItems: { label: string; icon: string; key: string; }[]; // Array of menu items
 }
 
-const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) => {
+// DashboardNav component
+export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) {
     const { isDarkMode } = useContext(ThemeContext);
+
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    const mainMenuItems = menuItems.slice(0, 3);
-    const moreMenuItems = menuItems.slice(3);
+    const mainMenuItems = menuItems.slice(0, 3); // Get the first three menu items for the main menu
+    const moreMenuItems = menuItems.slice(3); // Get the remaining menu items for the "more" menu
 
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setMoreAnchorEl(event.currentTarget);
@@ -186,6 +190,3 @@ const DashboardNav = ({ activeSection, handleMenuItemClick, menuItems }: Dashboa
         </>
     );
 };
-
-export default DashboardNav;
-
