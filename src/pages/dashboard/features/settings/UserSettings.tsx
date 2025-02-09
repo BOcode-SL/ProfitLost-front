@@ -3,27 +3,30 @@ import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select,
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../contexts/UserContext';
+
+// Services
 import { userService } from '../../../../services/user.service';
+
+// Types
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user';
 
+// Format options
 const dateFormatOptions = [
     { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' as DateFormat },
     { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' as DateFormat }
 ];
-
 const timeFormatOptions = [
     { label: '12h (AM/PM)', value: '12h' as TimeFormat },
     { label: '24h', value: '24h' as TimeFormat }
 ];
-
 const currencyOptions = [
     { label: 'USD - US Dollar', value: 'USD' as Currency },
     { label: 'EUR - Euro', value: 'EUR' as Currency },
     { label: 'GBP - British Pound', value: 'GBP' as Currency }
 ];
-
 const languageOptions = [
     {
         value: 'enUS' as Language,
@@ -35,13 +38,16 @@ const languageOptions = [
     }
 ];
 
+// Interface for the props of the UserSettings component
 interface UserSettingsProps {
-    onSuccess?: () => void;
+    onSuccess?: () => void; // Optional callback function to be called on success
 }
 
+// UserSettings component
 export default function UserSettings({ onSuccess }: UserSettingsProps) {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -58,6 +64,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         deleteImage: false
     });
 
+    // Handle the input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'name' && !value.trim()) {
@@ -69,6 +76,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
+    // Handle the select change
     const handleSelectChange = (e: SelectChangeEvent) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -77,6 +85,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
+    // Handle the image upload
     const handleImageUpload = (file: File) => {
         if (file.size > 8 * 1024 * 1024) {
             toast.error(t('dashboard.settings.userSettings.profileImageError'));
@@ -91,6 +100,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
+    // Handle the delete image
     const handleDeleteImage = () => {
         if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
             URL.revokeObjectURL(formData.previewUrl);
@@ -103,6 +113,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
+    // Handle the submit
     const handleSubmit = async () => {
         if (!formData.name.trim()) {
             toast.error(t('dashboard.settings.userSettings.nameRequired'));
@@ -111,7 +122,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
 
         setLoading(true);
         const updateFormData = new FormData();
-        
+
         updateFormData.append('name', formData.name.trim());
         updateFormData.append('surname', formData.surname);
         updateFormData.append('language', formData.language);

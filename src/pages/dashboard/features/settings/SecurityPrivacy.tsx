@@ -4,18 +4,26 @@ import { toast } from 'react-hot-toast';
 import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Services
 import { userService } from '../../../../services/user.service';
+
+// Contexts
 import { useUser } from '../../../../contexts/UserContext';
+
+// Types
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 
+// Interface for the props of the SecurityPrivacy component
 interface SecurityPrivacyProps {
-    onSuccess?: () => void;
+    onSuccess?: () => void; // Optional callback function to be called on success
 }
 
+// SecurityPrivacy component
 export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const { user, setUser } = useUser();
+    const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState({
         current: false,
         new: false,
@@ -29,9 +37,10 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
+    // Handle the password change
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (formData.newPassword !== formData.confirmPassword) {
             toast.error(t('dashboard.settings.securityPrivacy.passwordsDoNotMatch'));
             return;
@@ -45,7 +54,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
 
         try {
             await userService.changePassword(
-                formData.currentPassword, 
+                formData.currentPassword,
                 formData.newPassword
             );
             toast.success(t('dashboard.settings.securityPrivacy.passwordUpdatedSuccess'));
@@ -81,6 +90,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         }
     };
 
+    // Handle the delete account
     const handleDeleteAccount = async () => {
         if (!user || deleteConfirmation !== user.username) {
             toast.error(t('dashboard.settings.securityPrivacy.usernameDoesNotMatch'));

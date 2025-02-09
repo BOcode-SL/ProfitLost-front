@@ -1,10 +1,13 @@
 import { Box, Paper, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Help component
 export default function Help() {
     const { t } = useTranslation();
+
     return (
         <Box sx={{
+
             width: '100%',
             maxWidth: '1200px',
             margin: '0 auto'
@@ -185,7 +188,7 @@ export default function Help() {
                                 {t('dashboard.settings.help.mobileUsageDescription')}
                             </Typography>
                             <Typography sx={{ lineHeight: 1.6 }}>
-                               {t('dashboard.settings.help.mobileUsageStep1')}
+                                {t('dashboard.settings.help.mobileUsageStep1')}
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
