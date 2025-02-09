@@ -42,6 +42,7 @@ export default function NoteList({
         );
     }
 
+    // List container
     return (
         <List sx={{
             mt: 2,
@@ -52,7 +53,9 @@ export default function NoteList({
             gap: 1,
             width: '100%'
         }}>
+            {/* Iterate over notes */}
             {notes.map((note) => (
+                // Note item
                 <Box
                     key={note._id}
                     onClick={() => onSelectNote(note)}
@@ -79,7 +82,9 @@ export default function NoteList({
                                 'rgba(0, 0, 0, 0.05)'
                         }
                     }}>
+                    {/* Note content */}
                     <Box sx={{ width: '100%', overflow: 'hidden' }}>
+                        {/* Note title */}
                         <Typography
                             variant="subtitle1"
                             noWrap
@@ -92,6 +97,7 @@ export default function NoteList({
                         >
                             {note.title || t('dashboard.notes.list.noTitle')}
                         </Typography>
+                        {/* Note body */}
                         <Typography
                             variant="body2"
                             sx={{

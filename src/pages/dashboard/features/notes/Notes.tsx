@@ -141,11 +141,13 @@ export default function Notes() {
     };
 
     return (
+        // Main container
         <Box sx={{
             height: '100%',
             maxWidth: '100%',
             overflow: 'hidden'
         }}>
+            {/* Layout container with responsive direction */}
             <Box sx={{
                 display: 'flex',
                 flexDirection: {
@@ -156,6 +158,7 @@ export default function Notes() {
                 height: '100%',
                 width: '100%',
             }}>
+                {/* Sidebar containing the create button and note list */}
                 <Paper elevation={3} sx={{
                     p: 2,
                     borderRadius: 3,
@@ -197,6 +200,7 @@ export default function Notes() {
                     />
                 </Paper>
 
+                {/* Main editor area for the selected note */}
                 <Paper elevation={3} sx={{
                     p: 2,
                     flex: 1,

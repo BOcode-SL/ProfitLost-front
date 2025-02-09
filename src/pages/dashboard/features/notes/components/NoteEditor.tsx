@@ -60,14 +60,17 @@ export default function NoteEditor({
         );
     }
 
+    // Main return statement for the NoteEditor component
     return (
         <>
+            {/* Container for the note editor */}
             <Box sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2
             }}>
+                {/* Title input field */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <TextField
                         fullWidth
@@ -80,6 +83,7 @@ export default function NoteEditor({
                     />
                 </Box>
 
+                {/* Content input field */}
                 <TextField
                     multiline
                     fullWidth
@@ -90,11 +94,13 @@ export default function NoteEditor({
                     disabled={isSaving}
                 />
 
+                {/* Button container for delete and save actions */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
                     justifyContent: 'flex-end'
                 }}>
+                    {/* Delete button */}
                     <Button
                         variant="outlined"
                         color="primary"
@@ -108,6 +114,7 @@ export default function NoteEditor({
                     >
                         {t('dashboard.common.delete')}
                     </Button>
+                    {/* Save button */}
                     <Button
                         variant="contained"
                         color="primary"
@@ -128,6 +135,7 @@ export default function NoteEditor({
                 </Box>
             </Box>
 
+            {/* Dialog for confirming deletion of the note */}
             <Dialog
                 open={deleteDialog}
                 TransitionComponent={Transition}
@@ -141,6 +149,7 @@ export default function NoteEditor({
                     }
                 }}
             >
+                {/* Title of the delete confirmation dialog */}
                 <DialogTitle sx={{
                     textAlign: 'center',
                     pt: 3,
@@ -148,6 +157,7 @@ export default function NoteEditor({
                 }}>
                     {t('dashboard.notes.delete.title')}
                 </DialogTitle>
+                {/* Content of the delete confirmation dialog */}
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
@@ -159,11 +169,13 @@ export default function NoteEditor({
                         {t('dashboard.notes.delete.warning')}
                     </Typography>
                 </DialogContent>
+                {/* Actions for the delete confirmation dialog */}
                 <DialogActions sx={{
                     justifyContent: 'center',
                     gap: 2,
                     p: 3
                 }}>
+                    {/* Cancel button */}
                     <Button
                         variant="outlined"
                         onClick={() => setDeleteDialog(false)}
@@ -171,6 +183,7 @@ export default function NoteEditor({
                     >
                         {t('dashboard.common.cancel')}
                     </Button>
+                    {/* Confirm delete button */}
                     <Button
                         variant="contained"
                         color="error"
