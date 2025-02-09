@@ -3,24 +3,34 @@ import { toast } from 'react-hot-toast';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
 import { useUser } from '../../../../contexts/UserContext';
+
+// Types
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 import type { Transaction } from '../../../../types/models/transaction';
-import { User } from '../../../../types/models/user';
+import type { User } from '../../../../types/models/user';
 import type { Category } from '../../../../types/models/category';
+
+// Services
 import { transactionService } from '../../../../services/transaction.service';
 import { categoryService } from '../../../../services/category.service';
+
+// Components
 import TransactionPie from './components/TransactionPie';
 import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
 import TransactionTable from './components/TransactionTable';
 
+// Months array
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// Transactions component
 export default function Transactions() {
     const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
+
     const currentYear = new Date().getFullYear().toString();
     const [year, setYear] = useState<string>(currentYear);
     const [month, setMonth] = useState<string>(
@@ -31,6 +41,7 @@ export default function Transactions() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Handle the error
     const handleError = useCallback((error: TransactionApiErrorResponse) => {
         switch (error.error) {
             case 'UNAUTHORIZED':
@@ -50,6 +61,7 @@ export default function Transactions() {
         }
     }, [t]);
 
+    // Fetch the data
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
@@ -82,10 +94,12 @@ export default function Transactions() {
         }
     }, [year, month, currentYear, handleError]);
 
+    // UseEffect to fetch the data
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
+    // UseMemo to calculate the data
     const { incomeData, expensesData, totalIncome, totalExpenses } = useMemo(() => {
         const income: Record<string, number> = {};
         const expenses: Record<string, number> = {};
@@ -129,11 +143,14 @@ export default function Transactions() {
 
     return (
         <Fade in timeout={400}>
+            {/* Main container with vertical layout and spacing */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {/* Year and Month selection section */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2
                 }}>
+                    {/* Year selection paper */}
                     <Paper elevation={2} sx={{
                         p: 1,
                         borderRadius: 3,
@@ -146,6 +163,7 @@ export default function Transactions() {
                                 label={t('dashboard.common.year')}
                                 onChange={(e) => setYear(e.target.value)}
                             >
+                                {/* Mapping through years with data to create menu items */}
                                 {yearsWithData.map(y => (
                                     <MenuItem key={y} value={y}>{y}</MenuItem>
                                 ))}
@@ -153,6 +171,7 @@ export default function Transactions() {
                         </FormControl>
                     </Paper>
 
+                    {/* Month selection paper */}
                     <Paper elevation={2} sx={{
                         p: 1,
                         borderRadius: 3,
@@ -165,6 +184,7 @@ export default function Transactions() {
                                 label={t('dashboard.common.month')}
                                 onChange={(e) => setMonth(e.target.value)}
                             >
+                                {/* Generating month options */}
                                 {Array.from({ length: 12 }, (_, i) => {
                                     const monthNum = (i + 1).toString().padStart(2, '0');
                                     return (
@@ -178,19 +198,23 @@ export default function Transactions() {
                     </Paper>
                 </Box>
 
+                {/* Section for displaying charts */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
                     flexWrap: 'wrap',
                 }}>
+                    {/* Income pie chart */}
                     <TransactionPie
                         loading={loading}
                         data={incomeData}
                     />
+                    {/* Expenses pie chart */}
                     <TransactionPie
                         loading={loading}
                         data={expensesData}
                     />
+                    {/* Bar chart for income and expenses */}
                     <TransactionBarChart
                         loading={loading}
                         month={month}
@@ -199,12 +223,14 @@ export default function Transactions() {
                     />
                 </Box>
 
+                {/* Component to display total balances */}
                 <TransactionBalances
                     totalIncome={totalIncome}
                     totalExpenses={totalExpenses}
                     user={user as User}
                 />
 
+                {/* Table to display transaction data */}
                 <Box>
                     <TransactionTable
                         data={transactions}

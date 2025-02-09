@@ -4,18 +4,13 @@ import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Services
 import { transactionService } from '../../../../../services/transaction.service';
+
+// Types
 import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
 import type { RecurrenceType } from '../../../../../types/models/transaction';
-
-interface TransactionFormProps {
-    transaction?: Transaction;
-    onSubmit: () => void;
-    onClose: () => void;
-    categories: Category[];
-}
-
 interface TransactionUpdateData {
     date: string;
     description: string;
@@ -25,7 +20,6 @@ interface TransactionUpdateData {
     recurrenceType?: RecurrenceType;
     recurrenceEndDate?: string;
 }
-
 interface UpdateData {
     description: string;
     amount: number;
@@ -34,6 +28,15 @@ interface UpdateData {
     updateAll?: boolean;
 }
 
+// Interface for the TransactionForm component props
+interface TransactionFormProps {
+    transaction?: Transaction;
+    onSubmit: () => void;
+    onClose: () => void;
+    categories: Category[];
+}
+
+// Transition component
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -43,8 +46,10 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// TransactionForm component
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
     const { t } = useTranslation();
+
     const [date, setDate] = useState(() => {
         if (transaction) {
             const txDate = new Date(transaction.date);
@@ -76,23 +81,21 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
         return '';
     });
-
     const [editRecurrentDialog, setEditRecurrentDialog] = useState(false);
     const [transactionDataToUpdate, setTransactionDataToUpdate] = useState<TransactionUpdateData | null>(null);
     const [updateAllRecurrent, setUpdateAllRecurrent] = useState(false);
 
-
+    // Effect to update the form with the transaction data
     useEffect(() => {
         if (transaction) {
             const txDate = new Date(transaction.date);
             setDate(txDate.toISOString().slice(0, 19));
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
-            
-            // Buscar la categoría por nombre ya que el backend devuelve el nombre
+
             const foundCategory = categories.find(cat => cat.name === transaction.category);
             setCategory(foundCategory || null);
-            
+
             setIsIncome(transaction.amount >= 0);
             setIsRecurrent(transaction.isRecurrent);
             setRecurrenceType(transaction.recurrenceType || null);
@@ -103,6 +106,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     }, [transaction, categories]);
 
+    // Handle the form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -111,7 +115,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             return;
         }
 
-        // Solo validar recurrencia si es una nueva transacción
         if (!transaction && isRecurrent && (!recurrenceType || !recurrenceEndDate)) {
             toast.error(t('dashboard.transactions.form.errors.recurrenceRequired'));
             return;
@@ -164,10 +167,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
+    // Handle the delete click
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
+    // Handle the confirm delete
     const confirmDelete = async () => {
         try {
             setIsDeleting(true);
@@ -185,7 +190,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setDeleteDialog(false);
         }
     };
-    
+
+    // Handle the edit recurrent
     const handleEditRecurrent = async () => {
         if (!transaction || !transactionDataToUpdate) return;
 
@@ -204,7 +210,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 transaction._id,
                 { ...dataToUpdate, updateAll: updateAllRecurrent }
             );
-            
+
             toast.success(t('dashboard.transactions.success.updated'));
             onSubmit();
             onClose();
@@ -216,10 +222,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
+    // Sort the categories
     const sortedCategories = [...categories].sort((a, b) =>
         a.name.localeCompare(b.name)
     );
 
+    // Delete dialog
     const DeleteDialog = () => (
         <Dialog
             open={deleteDialog}
@@ -233,6 +241,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 }
             }}
         >
+            {/* Title of the dialog */}
             <DialogTitle sx={{
                 textAlign: 'center',
                 pt: 3,
@@ -240,6 +249,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             }}>
                 {t('dashboard.transactions.form.delete.title')}
             </DialogTitle>
+            {/* Content of the dialog */}
             <DialogContent sx={{
                 textAlign: 'center',
                 py: 2
@@ -251,6 +261,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </Typography>
                     ?
                 </Typography>
+                {/* Conditional rendering for recurrent transaction warning */}
                 {transaction?.isRecurrent && (
                     <>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
@@ -268,11 +279,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </>
                 )}
             </DialogContent>
+            {/* Actions at the bottom of the dialog */}
             <DialogActions sx={{
                 justifyContent: 'center',
                 gap: 2,
                 p: 3
             }}>
+                {/* Cancel button */}
                 <Button
                     variant="outlined"
                     onClick={() => setDeleteDialog(false)}
@@ -280,6 +293,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 >
                     {t('dashboard.common.cancel')}
                 </Button>
+                {/* Delete button */}
                 <Button
                     variant="contained"
                     color="error"
@@ -297,14 +311,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         </Dialog>
     );
 
+    // Recurrence fields
     const RecurrenceFields = () => {
         const shouldShow = isRecurrent;
-        
+
         if (!shouldShow) return null;
 
         return (
             <Box sx={{ width: '100%', mt: 2 }}>
+                {/* Recurrence type selection */}
                 <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                    {/* Label for the recurrence type selection */}
                     <InputLabel>{t('dashboard.transactions.form.fields.recurrenceType')}</InputLabel>
                     <Select
                         value={recurrenceType || ''}
@@ -317,6 +334,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </Select>
                 </FormControl>
 
+                {/* Recurrence end date input */}
                 <TextField
                     type="date"
                     label={t('dashboard.transactions.form.fields.recurrenceEndDate')}
@@ -330,10 +348,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         );
     };
 
-    const RecurrenceSwitch = ({ isEditing }: { isEditing: boolean }) => {        
+    // Recurrence switch component that allows the user to toggle recurrence
+    const RecurrenceSwitch = ({ isEditing }: { isEditing: boolean }) => {
+        // If editing and not recurrent, do not render anything
         if (isEditing && !isRecurrent) return null;
 
         return (
+            // Paper component to contain the switch and label
             <Paper
                 elevation={2}
                 sx={{
@@ -345,27 +366,33 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     px: 2,
                     borderRadius: 3,
                 }}>
+                {/* Box to layout the label and switch */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, width: '100%' }}>
+                    {/* Label for the recurrence switch */}
                     <Typography>{t('dashboard.transactions.form.fields.isRecurrent')}</Typography>
+                    {/* Switch to toggle recurrence */}
                     <Switch
                         checked={isRecurrent}
                         disabled={isEditing}
                         onChange={(e) => {
+                            // Update the recurrence state based on switch value
                             setIsRecurrent(e.target.checked);
+                            // If unchecked, reset recurrence type and end date
                             if (!e.target.checked) {
                                 setRecurrenceType(null);
                                 setRecurrenceEndDate('');
                             }
                         }}
-
                     />
                 </Box>
 
+                {/* Render recurrence fields if not editing and is recurrent */}
                 {!isEditing && isRecurrent && <RecurrenceFields />}
             </Paper>
         );
     };
 
+    // Edit recurrent dialog
     const EditRecurrentDialog = () => (
         <Dialog
             open={editRecurrentDialog}
@@ -383,7 +410,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             <DialogTitle sx={{ textAlign: 'center', pt: 3 }}>
                 {t('dashboard.transactions.form.editRecurrent.title')}
             </DialogTitle>
-            <DialogContent sx={{ 
+            <DialogContent sx={{
                 py: 2,
                 display: 'flex',
                 flexDirection: 'column',
@@ -409,16 +436,16 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 gap: 2,
                 p: 3
             }}>
-                <Button 
-                    variant="outlined" 
+                <Button
+                    variant="outlined"
                     onClick={() => setEditRecurrentDialog(false)}
                     sx={{ width: '120px' }}
                 >
                     {t('dashboard.common.cancel')}
                 </Button>
-                <Button 
-                    variant="contained" 
-                    onClick={handleEditRecurrent} 
+                <Button
+                    variant="contained"
+                    onClick={handleEditRecurrent}
                     color="primary"
                     sx={{ width: '120px' }}
                 >
@@ -428,8 +455,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         </Dialog>
     );
 
+    // Main container for the transaction form
     return (
         <Box sx={{ p: 3 }}>
+            {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -437,9 +466,11 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 <Typography variant="h6">{transaction ? t('dashboard.transactions.form.title.edit') : t('dashboard.transactions.form.title.new')}</Typography>
             </Box>
 
+            {/* Form submission handler */}
             <form onSubmit={handleSubmit}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 6 }}>
 
+                    {/* Date input field */}
                     <Paper
                         elevation={2}
                         sx={{
@@ -461,6 +492,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         />
                     </Paper>
 
+                    {/* Type selection (income/expense) */}
                     <Paper
                         elevation={2}
                         sx={{
@@ -488,6 +520,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         </FormControl>
                     </Paper>
 
+                    {/* Category selection with autocomplete */}
                     <Paper
                         elevation={2}
                         sx={{
@@ -535,6 +568,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         />
                     </Paper>
 
+                    {/* Description input field */}
                     <Paper
                         elevation={2}
                         sx={{
@@ -545,7 +579,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             p: 1,
                             borderRadius: 3,
                         }}>
-
                         <TextField
                             size="small"
                             label={t('dashboard.transactions.form.fields.description')}
@@ -555,6 +588,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         />
                     </Paper>
 
+                    {/* Amount input field */}
                     <Paper
                         elevation={2}
                         sx={{
@@ -578,12 +612,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             onChange={(e) => setAmount(e.target.value)}
                             fullWidth
                             required
-
                         />
                     </Paper>
 
+                    {/* Recurrence switch component */}
                     <RecurrenceSwitch isEditing={!!transaction} />
 
+                    {/* Buttons for form submission and cancellation */}
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
                         {transaction ? (
                             <>
@@ -626,8 +661,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 </Box>
             </form >
 
+            {/* Dialogs for delete and edit recurrent transactions */}
             <DeleteDialog />
-
             <EditRecurrentDialog />
         </Box >
     );
