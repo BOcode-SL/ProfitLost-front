@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
-// Importing context providers for user and theme management
+// Contexts
 import { UserProvider, useUser } from './contexts/UserContext';
 import { DashboardThemeProvider } from './contexts/ThemeContext';
 
-// Importing page components
+// Components
 import Home from "./pages/landing/Home";
 import AuthPage from "./pages/landing/AuthPage";
 const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));

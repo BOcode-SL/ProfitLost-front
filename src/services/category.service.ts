@@ -1,6 +1,9 @@
+// Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { CategoryApiResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types/api/responses';
+
+// Utils
 import { getAuthHeaders } from '../utils/apiHeaders';
 
 // Defining the API URL from environment variables

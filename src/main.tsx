@@ -5,11 +5,13 @@ import { Toaster } from 'react-hot-toast';
 import { CssBaseline } from '@mui/material';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// Importing global theme provider
+// Contexts
 import { GlobalThemeProvider } from './contexts/ThemeContext';
 
-// Importing internationalization and styles
+// Translation
 import './i18n';
+
+// Styles
 import './index.scss';
 
 // Importing the main application component

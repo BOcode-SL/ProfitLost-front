@@ -1,6 +1,9 @@
+// Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { AuthApiResponse, LoginCredentials, RegisterCredentials } from '../types/api/responses';
+
+// Utils
 import { isIOS } from '../utils/deviceDetection';
 
 // Defining the API URL from environment variables

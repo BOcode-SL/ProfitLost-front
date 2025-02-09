@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 
+// Components
 import Footer from './components/Footer';
+
+// Styles
 import './Home.scss';
 
 // Home component for the landing page

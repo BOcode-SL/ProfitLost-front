@@ -1,7 +1,9 @@
 import { Box, Container, Stack, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+// Define the Footer component
 export default function Footer() {
+    // Define footer links with text and href
     const footerLinks = [
         { text: 'Privacy Policy', href: '/privacy' },
         { text: 'Terms of Service', href: '/terms' },
@@ -11,6 +13,7 @@ export default function Footer() {
     ];
 
     return (
+        // Main footer box with background color and padding
         <Box component="footer" sx={{ bgcolor: '#F7F7F7', py: 6 }}>
             <Container maxWidth="lg">
                 <Stack
@@ -19,12 +22,14 @@ export default function Footer() {
                     justifyContent="space-between"
                 >
                     <Box>
+                        {/* Logo image */}
                         <Box
                             component="img"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
                             sx={{ width: 200, mb: 2 }}
                         />
+                        {/* Description text */}
                         <Typography variant="body2" color="text.secondary">
                             Simplifying personal finance management for everyone.
                         </Typography>
@@ -37,6 +42,7 @@ export default function Footer() {
                             Company
                         </Typography>
                         <List>
+                            {/* Map through footer links to create list items */}
                             {footerLinks.map(({ text, href }) => (
                                 <ListItem
                                     key={text}
@@ -45,6 +51,7 @@ export default function Footer() {
                                         justifyContent: { xs: 'flex-start', md: 'flex-end' }
                                     }}
                                 >
+                                    {/* Conditional rendering for mailto links */}
                                     {href.startsWith('mailto:') ? (
                                         <a href={href}>
                                             <ListItemText primary={text} />

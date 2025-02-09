@@ -1,6 +1,9 @@
+// Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
+
+// Utils
 import { getAuthHeaders } from '../utils/apiHeaders';
 import { isIOS } from '../utils/deviceDetection';
 
