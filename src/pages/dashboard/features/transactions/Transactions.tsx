@@ -228,6 +228,7 @@ export default function Transactions() {
                     totalIncome={totalIncome}
                     totalExpenses={totalExpenses}
                     user={user as User}
+                    loading={loading}
                 />
 
                 {/* Table to display transaction data */}
