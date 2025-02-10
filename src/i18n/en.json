@@ -1,9 +1,11 @@
 {
     "dashboard": {
         "tooltips": {
-            "dark_mode":"Dark mode",
-            "light_mode":"Light mode",
-            "inbox":"Inbox"
+            "dark_mode": "Dark mode",
+            "light_mode": "Light mode",
+            "inbox": "Inbox",
+            "enable_currency_amount": "Show balances",
+            "disable_currency_amount": "Hide balances"
         },
         "common": {
             "year": "Year",
@@ -16,12 +18,12 @@
             "close": "Close",
             "confirm": "Confirm",
             "loading": "Loading...",
+            "logout": "Log out",
             "noData": "No data available",
             "colors": {
                 "background": "Background color",
                 "text": "Text color"
             },
-            "logout": "Log out",
             "success": {
                 "saved": "Changes saved successfully",
                 "deleted": "Deleted successfully",

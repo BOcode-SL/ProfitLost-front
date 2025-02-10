@@ -11,7 +11,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import { categoryService } from '../../../../../services/category.service';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Types
 import type { Category } from '../../../../../types/models/category';
@@ -34,7 +34,7 @@ interface AnnualCategoriesProps {
     loading: boolean; // Loading state
 }
 
-// Transition component
+// Transition component for dialog animations
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -65,8 +65,9 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         open: false,
         categoryName: ''
     });
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Fetch all categories
+    // Fetch all categories from the server
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -82,7 +83,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         fetchCategories();
     }, [t]);
 
-    // Calculate the balance of each category
+    // Calculate the balance of each category based on transactions
     const categoriesBalance = useMemo(() => {
         if (!categories.length) {
             return [];
@@ -122,7 +123,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         });
     }, [categories, transactions, searchTerm, sortOption]);
 
-    // Handle the creation of a category
+    // Handle the creation of a new category
     const handleCreateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -130,7 +131,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
-    // Handle the click of a category
+    // Handle the click event on a category to edit it
     const handleCategoryClick = (category: Category) => {
         setEditCategory({
             isOpen: true,
@@ -140,7 +141,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         });
     };
 
-    // Handle the update of a category
+    // Handle the update of an existing category
     const handleUpdateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -148,7 +149,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
-    // Handle the deletion of a category
+    // Confirm the deletion of a category
     const confirmDelete = async () => {
         if (!editCategory.category) return;
 
@@ -185,13 +186,26 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
         }
     };
 
+    // Handle currency visibility changes
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
     return (
         // Main container with responsive padding
         <Box sx={{ p: { xs: 1, sm: 2 } }}>
             {/* Fade animation for the content */}
             <Fade in timeout={500}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {/* Search and sort controls */}
+                    {/* Search and sort controls for categories */}
                     <Box sx={{
                         display: 'flex',
                         gap: 2,
@@ -244,7 +258,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                         </Button>
                     </Box>
 
-                    {/* Loading state skeleton */}
+                    {/* Skeleton loader displayed while loading categories */}
                     {loading ? (
                         <Fade in timeout={300}>
                             <Skeleton variant="rectangular" height={400} sx={{
@@ -253,7 +267,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             }} />
                         </Fade>
                     ) : categories.length === 0 ? (
-                        // Banner displayed when there are no categories
+                        // Banner displayed when there are no categories available
                         <Fade in timeout={300}>
                             <Box sx={{
                                 display: 'flex',
@@ -283,7 +297,7 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                             </Box>
                         </Fade>
                     ) : (
-                        // List of categories with their balances
+                        // List of categories with their respective balances
                         <Fade in timeout={500}>
                             <List sx={{ width: '100%' }}>
                                 {categoriesBalance.map(({ category, balance }) => (
@@ -329,7 +343,9 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                                 fontWeight: 400,
                                                 fontSize: { xs: '0.9rem', sm: '1rem' },
                                                 textAlign: 'right',
-                                                minWidth: { xs: 80, sm: 120 }
+                                                minWidth: { xs: 80, sm: 120 },
+                                                filter: isHidden ? 'blur(8px)' : 'none',
+                                                transition: 'filter 0.3s ease'
                                             }}
                                         >
                                             {formatCurrency(balance, user)}

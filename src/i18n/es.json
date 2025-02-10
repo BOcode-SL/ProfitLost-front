@@ -3,7 +3,9 @@
         "tooltips": {
             "dark_mode": "Modo oscuro",
             "light_mode": "Modo claro",
-            "inbox": "Bandeja de entrada"
+            "inbox": "Bandeja de entrada",
+            "enable_currency_amount": "Mostrar balances",
+            "disable_currency_amount": "Ocultar balances"
         },
         "common": {
             "year": "Año",

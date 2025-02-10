@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -10,12 +10,12 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { formatDateTime } from '../../../../../utils/dateUtils';
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Interface for the props of the HomeHistory component
 interface HomeHistoryProps {
     transactions: Transaction[]; // Array of transactions
-    isLoading: boolean; // Loading state
+    isLoading: boolean; // Indicates if the component is loading data
 }
 
 // HomeHistory component
@@ -23,8 +23,22 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Get the recent transactions
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
+    // Retrieve recent transactions
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
@@ -39,7 +53,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             .slice(0, 8);
     }, [transactions, isLoading]);
 
-    // If the transactions are loading, show a skeleton
+    // Show a skeleton while transactions are loading
     if (isLoading) {
         return (
             <Paper
@@ -100,7 +114,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         );
     }
 
-    // Paper container for the history section
+    // Paper container for the transaction history section
     return (
         <Paper
             elevation={3}
@@ -110,11 +124,11 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                 borderRadius: 3,
                 overflow: 'auto'
             }}>
-            {/* Title of the history section */}
+            {/* Title of the transaction history section */}
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.history.lastTransactions')}
             </Typography>
-            {/* Iterate over recent transactions */}
+            {/* Iterate through recent transactions */}
             {recentTransactionsMemo.map((transaction, index) => (
                 <Box key={transaction._id}>
                     {/* Container for each transaction item */}
@@ -125,21 +139,24 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                         py: 1
                     }}>
                         <Box>
-                            {/* Transaction description */}
+                            {/* Description of the transaction */}
                             <Typography variant="body1" sx={{ fontWeight: '600' }}>
                                 {transaction.description}
                             </Typography>
-                            {/* Transaction date */}
+                            {/* Date of the transaction */}
                             <Typography variant="body2" color="text.secondary">
                                 {formatDateTime(transaction.date, user)}
                             </Typography>
                         </Box>
-                        {/* Transaction amount */}
+                        {/* Amount of the transaction */}
                         <Typography
                             variant="body1"
                             sx={{
                                 color: transaction.amount > 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
-                                fontWeight: 'medium'
+                                fontWeight: 'medium',
+                                filter: isHidden ? 'blur(8px)' : 'none',
+                                transition: 'filter 0.3s ease',
+                                userSelect: isHidden ? 'none' : 'auto'
                             }}
                         >
                             {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount, user)}

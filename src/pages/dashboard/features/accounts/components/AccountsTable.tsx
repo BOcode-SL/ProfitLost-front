@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +9,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Account, YearRecord } from '../../../../../types/models/account';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Components
 import AccountsForm from './AccountsForm';
@@ -18,11 +18,11 @@ import AccountsForm from './AccountsForm';
 interface AccountsTableProps {
     accounts: Account[]; // List of active accounts
     inactiveAccounts: Account[]; // List of inactive accounts
-    loading: boolean; // Loading state indicator
-    selectedYear: number; // Currently selected year
+    loading: boolean; // Indicator for loading state
+    selectedYear: number; // The year currently selected
     onUpdate: (account: Account) => Promise<boolean>; // Function to update an account
     onCreate: (account: Account) => Promise<boolean>; // Function to create a new account
-    onDelete: (accountId: string) => void; // Function to delete an account by ID
+    onDelete: (accountId: string) => void; // Function to delete an account by its ID
     onOrderChange: (newOrder: string[]) => void; // Function to change the order of accounts
 }
 
@@ -44,6 +44,20 @@ export default function AccountsTable({
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
     const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // Function to get the current balance of an account
     const getCurrentBalance = (account: Account): number => {
@@ -118,7 +132,14 @@ export default function AccountsTable({
                 </Typography>
             </Box>
             {/* Balance */}
-            <Typography variant="h6" sx={{ color: account.configuration.color }}>
+            <Typography
+                variant="body1"
+                sx={{
+                    color: account.configuration.color,
+                    filter: isHidden ? 'blur(8px)' : 'none',
+                    transition: 'filter 0.3s ease'
+                }}
+            >
                 {formatCurrency(getCurrentBalance(account), user)}
             </Typography>
         </Paper>
@@ -133,7 +154,7 @@ export default function AccountsTable({
                 p: 3,
                 borderRadius: 3
             }}>
-                {/* Box for the new account button */}
+                {/* Box for the button to create a new account */}
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'flex-end',
@@ -165,7 +186,7 @@ export default function AccountsTable({
                         {/* Render active accounts */}
                         {accounts.map(account => renderAccount(account))}
 
-                        {/* No accounts banner */}
+                        {/* Banner for no accounts */}
                         {accounts.length === 0 && (
                             <Fade in timeout={300}>
                                 <Box sx={{
@@ -182,7 +203,7 @@ export default function AccountsTable({
                             </Fade>
                         )}
 
-                        {/* Inactive accounts section */}
+                        {/* Section for inactive accounts */}
                         {inactiveAccounts.length > 0 && (
                             <Box sx={{ mt: 2 }}>
                                 <Button
@@ -220,7 +241,7 @@ export default function AccountsTable({
                         }
                     }}
                 >
-                    {/* Accounts form component */}
+                    {/* Component for the accounts form */}
                     <AccountsForm
                         onClose={() => {
                             setIsDrawerOpen(false);

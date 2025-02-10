@@ -15,12 +15,12 @@ interface MonthlyData {
 }
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Interface for the props of the HomeChart component
 interface HomeChartProps {
     transactions: Transaction[]; // Array of transactions
-    isLoading: boolean; // Loading state
+    isLoading: boolean; // Indicates if the data is currently loading
 }
 
 // HomeChart component
@@ -28,16 +28,30 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
     const theme = useTheme();
     const { t } = useTranslation();
-
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
-    // Get the monthly data
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
+    // Calculate monthly data based on transactions
     const monthlyDataMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
         const today = new Date();
         const monthlyDataMap: { [key: string]: { income: number; expenses: number } } = {};
 
+        // Initialize monthly data for the last six months
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = date.toLocaleString('default', { month: 'short' });
@@ -49,11 +63,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         sixMonthsAgo.setDate(1);
         sixMonthsAgo.setHours(0, 0, 0, 0);
 
+        // Filter transactions within the last six months
         const filteredTransactions = transactions.filter(transaction => {
             const transactionDate = new Date(transaction.date);
             return transactionDate >= sixMonthsAgo && transactionDate <= today;
         });
 
+        // Aggregate income and expenses for each month
         filteredTransactions.forEach(transaction => {
             const transactionDate = new Date(transaction.date);
             const monthKey = transactionDate.toLocaleString('default', { month: 'short' });
@@ -68,6 +84,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         });
 
         const chartData: MonthlyData[] = [];
+        // Prepare data for the chart
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = date.toLocaleString('default', { month: 'short' });
@@ -82,12 +99,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         return chartData;
     }, [transactions, isLoading, t]);
 
-    // UseEffect to set the monthly data
+    // Update monthly data when memoized data changes
     useEffect(() => {
         setMonthlyData(monthlyDataMemo);
     }, [monthlyDataMemo]);
 
-    // If the transactions are loading, show a skeleton
+    // Show skeleton while loading transactions
     if (isLoading) {
         return (
             <Paper elevation={3} sx={{
@@ -117,11 +134,11 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         );
     }
 
-    // Check if the data is empty
+    // Check if the monthly data is empty
     const isDataEmpty = monthlyData.length === 0 ||
         monthlyData.every(item => item.income === 0 && item.expenses === 0);
 
-    // If the data is empty, show a message    
+    // Show message if there is no data
     if (isDataEmpty) {
         const today = new Date();
         const emptyMonths = [];
@@ -151,25 +168,36 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     width: '100%',
                     height: '280px'
                 }}>
-                    {/* LineChart with zero data for income and expenses */}
+                    {/* LineChart displaying zero data for income and expenses */}
                     <LineChart
                         series={[
                             {
                                 data: [0, 0, 0, 0, 0, 0],
                                 label: t('dashboard.transactions.chart.income'),
                                 color: theme.palette.chart.income,
-                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                                showMark: false
                             },
                             {
                                 data: [0, 0, 0, 0, 0, 0],
                                 label: t('dashboard.transactions.chart.expenses'),
                                 color: theme.palette.chart.expenses,
-                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                                showMark: false
                             }
                         ]}
                         xAxis={[{
                             data: emptyMonths,
                             scaleType: 'point'
+                        }]}
+                        yAxis={[{
+                            tickNumber: 3,
+                            sx: {
+                                text: {
+                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                    transition: 'filter 0.3s ease'
+                                }
+                            }
                         }]}
                         height={280}
                         margin={{
@@ -183,8 +211,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                                 hidden: true
                             }
                         }}
+                        tooltip={isHidden ? {
+                            trigger: 'none'
+                        } : {
+                            trigger: 'axis'
+                        }}
                     />
-                    {/* No data message displayed over the chart */}
+                    {/* Message displayed when there is no data */}
                     <Typography
                         variant="body1"
                         color="text.secondary"
@@ -230,18 +263,29 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             data: monthlyData.map(d => d.income),
                             label: t('dashboard.transactions.chart.income'),
                             color: theme.palette.chart.income,
-                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                            showMark: false
                         },
                         {
                             data: monthlyData.map(d => d.expenses),
                             label: t('dashboard.transactions.chart.expenses'),
                             color: theme.palette.chart.expenses,
-                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user)
+                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                            showMark: false
                         }
                     ]}
                     xAxis={[{
                         data: monthlyData.map(d => d.month),
                         scaleType: 'point'
+                    }]}
+                    yAxis={[{
+                        tickNumber: 3,
+                        sx: {
+                            text: {
+                                filter: isHidden ? 'blur(8px)' : 'none',
+                                transition: 'filter 0.3s ease'
+                            }
+                        }
                     }]}
                     height={280}
                     margin={{
@@ -255,8 +299,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             hidden: true
                         }
                     }}
+                    tooltip={isHidden ? {
+                        trigger: 'none'
+                    } : {
+                        trigger: 'axis'
+                    }}
                 />
             </Box>
         </Paper>
     );
-} 
+}

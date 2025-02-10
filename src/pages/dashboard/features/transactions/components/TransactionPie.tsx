@@ -1,6 +1,13 @@
+import { useState, useEffect } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Box, Paper, Skeleton, Typography, Fade } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
+// Contexts
+import { useUser } from '../../../../../contexts/UserContext';
+
+// Utils
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Types
 interface PieChartData {
@@ -12,7 +19,7 @@ interface PieChartData {
 
 // Interface for the TransactionPie component props
 interface TransactionPieProps {
-    loading: boolean; // Indicates if the data is still loading
+    loading: boolean; // Indicates whether the data is still loading
     data: PieChartData[]; // Array of data for the pie chart
 }
 
@@ -22,6 +29,22 @@ export default function TransactionPie({
     data
 }: TransactionPieProps) {
     const { t } = useTranslation();
+    const { user } = useUser();
+
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // Create a Box component to hold the pie chart
     return (
@@ -48,7 +71,7 @@ export default function TransactionPie({
                     {loading ? (
                         // Fade in effect for the Skeleton loading state
                         <Fade in timeout={300}>
-                            {/* Skeleton component to show loading state */}
+                            {/* Skeleton component to indicate loading state */}
                             <Skeleton variant="rectangular" width="100%" height={250} sx={{
                                 borderRadius: 3,
                                 animation: 'pulse 1.5s ease-in-out infinite'
@@ -57,7 +80,7 @@ export default function TransactionPie({
                     ) : data.length === 0 ? (
                         // Fade in effect for the no data message
                         <Fade in timeout={300}>
-                            {/* Typography component to display no data message */}
+                            {/* Typography component to display a message when there's no data */}
                             <Typography
                                 variant="body1"
                                 color="text.secondary"
@@ -80,7 +103,7 @@ export default function TransactionPie({
                         <Fade in timeout={500}>
                             {/* Box to center the PieChart */}
                             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                {/* PieChart component to display the data */}
+                                {/* PieChart component to visualize the data */}
                                 <PieChart
                                     series={[{
                                         data,
@@ -88,12 +111,18 @@ export default function TransactionPie({
                                         paddingAngle: 2,
                                         cornerRadius: 4,
                                         highlightScope: { faded: 'global', highlighted: 'item' },
+                                        valueFormatter: (value: { value: number }) => formatCurrency(value.value, user)
                                     }]}
                                     height={250}
                                     width={250}
                                     margin={{ top: 5, bottom: 5, left: 5, right: 5 }}
                                     slotProps={{
                                         legend: { hidden: true }
+                                    }}
+                                    tooltip={isHidden ? {
+                                        trigger: 'none'
+                                    } : {
+                                        trigger: 'item'
                                     }}
                                 />
                             </Box>

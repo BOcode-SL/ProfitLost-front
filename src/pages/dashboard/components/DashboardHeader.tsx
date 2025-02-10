@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useContext } from 'react';
+import React, { useState, Suspense, useContext, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
@@ -19,6 +19,8 @@ const UserSettings = React.lazy(() => import('../features/settings/UserSettings'
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
 
+import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/formatCurrency';
+
 interface DashboardHeaderProps {
     user: User | null; // User object or null
 }
@@ -30,7 +32,6 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
 
-
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [settingsDrawer, setSettingsDrawer] = useState<{
         open: boolean;
@@ -39,6 +40,20 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         open: false,
         component: ''
     });
+    const [isDisabledCurrencyAmount, setIsDisabledCurrencyAmount] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsDisabledCurrencyAmount(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // Handle user logout
     const handleLogout = async () => {
@@ -63,7 +78,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         { icon: 'help', text: t('dashboard.settings.help.title') },
     ];
 
-    // Handle settings menu item click
+    // Handle click on settings menu item
     const handleSettingsClick = (component: string) => {
         setDrawerOpen(false);
         setSettingsDrawer({
@@ -72,7 +87,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         });
     };
 
-    // Close settings drawer
+    // Close the settings drawer
     const handleCloseSettingsDrawer = () => {
         setSettingsDrawer({ open: false, component: '' });
     };
@@ -89,6 +104,11 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
             default:
                 return null;
         }
+    };
+
+    // Handle toggling currency visibility
+    const handleToggleCurrency = () => {
+        toggleCurrencyVisibility();
     };
 
     // Main return statement for the DashboardHeader component
@@ -120,26 +140,27 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 >
                     {/* Box for theme toggle and notifications */}
                     <Box >
+                        {/* IconButton for toggling currency visibility */}
+                        <IconButton onClick={handleToggleCurrency}>
+                            <Tooltip title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 'enable_currency_amount' : 'disable_currency_amount'}`)}>
+                                <span className="material-symbols-rounded">
+                                    {isDisabledCurrencyAmount ? 'visibility' : 'visibility_off'}
+                                </span>
+                            </Tooltip>
+                        </IconButton>
+
                         {/* IconButton for toggling theme */}
-                        <IconButton
-                            onClick={toggleTheme}
-                        >
-                            {isDarkMode ? (
-                                <Tooltip title={t('dashboard.tooltips.light_mode')}>
-                                    <span className="material-symbols-rounded">light_mode</span>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title={t('dashboard.tooltips.dark_mode')}>
-                                    <span className="material-symbols-rounded">dark_mode</span>
-                                </Tooltip>
-                            )}
+                        <IconButton onClick={toggleTheme}>
+                            <Tooltip title={t(`dashboard.tooltips.${isDarkMode ? 'light_mode' : 'dark_mode'}`)}>
+                                <span className="material-symbols-rounded">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
+                            </Tooltip>
                         </IconButton>
 
                         {/* IconButton for notifications */}
                         <IconButton disabled={true}>
                             <Badge
                                 color="primary"
-                                // variant="dot"
+                            // variant="dot"
                             >
                                 <Tooltip title={t('dashboard.tooltips.inbox')}>
                                     <span className="material-symbols-rounded no-select">
@@ -316,7 +337,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    {/* IconButton for going back to the previous screen */}
+                    {/* IconButton for navigating back to the previous screen */}
                     <IconButton
                         onClick={() => {
                             setSettingsDrawer({ open: false, component: '' });
@@ -333,7 +354,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         {settingsDrawer.component === t('dashboard.settings.help.title') && t('dashboard.settings.help.title')}
                     </Typography>
                 </Box>
-                {/* Suspense for loading settings component */}
+                {/* Suspense for loading the settings component */}
                 <Suspense fallback={
                     <Box sx={{
                         display: 'flex',

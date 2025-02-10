@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
@@ -10,7 +10,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Interface for the props of the HomeBalances component
 interface HomeBalancesProps {
@@ -24,11 +24,27 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
+    // Determine if the trend is positive
     const isPositiveTrend = type === 'Spendings'
         ? percentage <= 0
         : percentage >= 0;
 
+    // Get the appropriate trend icon based on the type and percentage
     const trendIcon = type === 'Spendings'
         ? percentage === 0 ? 'trending_flat'
             : isPositiveTrend ? 'trending_down'
@@ -49,7 +65,15 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
             <Typography variant="subtitle1" color="primary.light">
                 {t(`dashboard.dashhome.balance.${type.toLowerCase()}`)}
             </Typography>
-            <Typography sx={{ fontWeight: '450', fontSize: '1.7rem' }}>
+            <Typography
+                sx={{
+                    fontWeight: '450',
+                    fontSize: '1.7rem',
+                    filter: isHidden ? 'blur(8px)' : 'none',
+                    transition: 'filter 0.3s ease',
+                    userSelect: isHidden ? 'none' : 'auto'
+                }}
+            >
                 {formatCurrency(amount, user)}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -84,7 +108,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
 // HomeBalances component
 export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
 
-    // Get the balance data
+    // Calculate the balance data based on transactions and loading state
     const balanceData = useMemo(() => {
         if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0 };
 
@@ -146,7 +170,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         return { amount: currentAmount, percentage };
     }, [transactions, isLoading, type]);
 
-    // If the balance data is loading, show a skeleton
+    // If the balance data is loading, display a skeleton loader
     if (isLoading) {
         return (
             <Paper elevation={3} sx={{
@@ -197,7 +221,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         );
     }
 
-    // Return the balance card
+    // Return the balance card with calculated data
     return (
         <BalanceCard
             type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}

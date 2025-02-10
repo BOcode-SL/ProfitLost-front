@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, Fade, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 import type { Category } from '../../../../../types/models/category';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 import { formatDateTime } from '../../../../../utils/dateUtils';
 
 // Components
@@ -19,9 +19,9 @@ import TransactionForm from './TransactionForm';
 // Interface for the props of the TransactionTable component
 interface TransactionTableProps {
     data: Transaction[]; // Array of transactions
-    loading: boolean; // Loading state
+    loading: boolean; // Indicates if the data is currently loading
     categories: Category[]; // Array of categories
-    onReload: () => void; // Function to reload data
+    onReload: () => void; // Function to reload the transaction data
 }
 
 // TransactionTable component
@@ -40,6 +40,20 @@ export default function TransactionTable({
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
     const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // Handle the transaction click
     const handleTransactionClick = useCallback((transaction: Transaction) => {
@@ -277,7 +291,9 @@ export default function TransactionTable({
                                                         ? theme.palette.chart.income
                                                         : theme.palette.chart.expenses,
                                                     width: { xs: '25%', md: '20%' },
-                                                    textAlign: 'right'
+                                                    textAlign: 'right',
+                                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                                    transition: 'filter 0.3s ease'
                                                 }}
                                             >
                                                 {formatCurrency(transaction.amount, user)}
@@ -305,7 +321,7 @@ export default function TransactionTable({
                     sx: {
                         width: { xs: '100%', sm: 500 }
                     }
-                }}
+                }} 
             >
                 {selectedTransaction && (
                     <TransactionForm

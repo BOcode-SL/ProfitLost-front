@@ -1,19 +1,20 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Paper, Skeleton, Fade, useTheme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Months
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Interface for the props of the TransactionBarChart component
 interface TransactionBarChartProps {
-    loading: boolean; // Indicates if the data is loading
+    loading: boolean; // Indicates whether the data is currently loading
     month: string;    // The month for which the data is displayed
     income: number;   // Total income for the specified month
     expenses: number; // Total expenses for the specified month
@@ -29,6 +30,21 @@ export default function TransactionBarChart({
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
+
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // Check if the data is empty
     const isDataEmpty = income === 0 && expenses === 0;
@@ -107,6 +123,19 @@ export default function TransactionBarChart({
                                     }}
                                     slotProps={{
                                         legend: { hidden: true }
+                                    }}
+                                    yAxis={[{
+                                        sx: {
+                                            text: {
+                                                filter: isHidden ? 'blur(8px)' : 'none',
+                                                transition: 'filter 0.3s ease'
+                                            }
+                                        }
+                                    }]}
+                                    tooltip={isHidden ? {
+                                        trigger: 'none'
+                                    } : {
+                                        trigger: 'axis'
                                     }}
                                 />
                                 {/* Display a message if there is no data */}

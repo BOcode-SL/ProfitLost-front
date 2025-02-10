@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Skeleton, useMediaQuery, useTheme, Fade, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +10,12 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/formatCurrency';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
     transactions: Transaction[]; // Array of transactions
-    loading: boolean; // Loading state
+    loading: boolean; // Indicates if the data is currently loading
 }
 
 // Months in English for the backend
@@ -28,8 +28,22 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
     const { user } = useUser();
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Function to get the translated month name
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
+    // Function to get the translated short name of the month
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
@@ -69,7 +83,7 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
         );
     }
 
-    // If the data is empty, show a message
+    // Check if the data is empty and show a message if it is
     const isDataEmpty = chartData.every(item => item.income === 0 && item.expenses === 0);
 
     // Fade in animation for the chart component
@@ -120,11 +134,24 @@ export default function AnnualChart({ transactions, loading }: AnnualChartProps)
                     slotProps={{
                         legend: { hidden: true }
                     }}
+                    tooltip={isHidden ? {
+                        trigger: 'none'
+                    } : {
+                        trigger: 'axis'
+                    }}
                     sx={{
                         '& .MuiXChart-tooltip': {
                             borderRadius: '8px',
                         }
                     }}
+                    yAxis={[{
+                        sx: {
+                            text: {
+                                filter: isHidden ? 'blur(8px)' : 'none',
+                                transition: 'filter 0.3s ease'
+                            }
+                        }
+                    }]}
                 />
                 {/* Display message when there is no data */}
                 {isDataEmpty && (

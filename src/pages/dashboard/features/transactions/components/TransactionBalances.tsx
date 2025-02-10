@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Box, Paper, Fade, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
 
 // Types
 import type { User } from '../../../../../types/models/user';
@@ -12,7 +13,7 @@ interface TransactionBalancesProps {
     totalIncome: number; // Total income amount
     totalExpenses: number; // Total expenses amount
     user: User; // User information
-    loading?: boolean;
+    loading?: boolean; // Indicates if the data is currently loading
 }
 
 // TransactionBalances component
@@ -23,6 +24,21 @@ export default function TransactionBalances({
     loading
 }: TransactionBalancesProps) {
     const theme = useTheme();
+
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
 
     // If loading, show skeletons
     if (loading) {
@@ -89,7 +105,11 @@ export default function TransactionBalances({
                         gap: 2
                     }}>
                         <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
-                        <span style={{ fontSize: '1.5rem' }}>{formatCurrency(value, user)}</span>
+                        <span style={{ 
+                            fontSize: '1.5rem',
+                            filter: isHidden ? 'blur(8px)' : 'none',
+                            transition: 'filter 0.3s ease'
+                        }}>{formatCurrency(value, user)}</span>
                     </Paper>
                 ))}
             </Box>

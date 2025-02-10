@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Skeleton, useTheme, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/formatCurrency';
 
 // Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
@@ -33,20 +34,36 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const { t } = useTranslation();
     const theme = useTheme();
 
+    // State to track currency visibility
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+    // Effect to listen for changes in currency visibility
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
     // Function to get the short translated name of the month
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
-    // Skeleton loading
+    // Show skeleton loading while data is being fetched
     if (loading) {
         return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
     }
 
-    // Filter active accounts
+    // Filter to get only active accounts
     const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
 
-    // Check if there is no data 
+    // Check if there is no data available
     const isDataEmpty = activeAccounts.length === 0;
 
     // Create the dataset for the chart
@@ -74,7 +91,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
-    // Function to get the total for a specific month
+    // Function to calculate the total for a specific month
     const getMonthTotal = (month: string): number => {
         const monthData = dataset.find(d => d.month === month);
         if (!monthData) return 0;
@@ -116,10 +133,21 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     tickLabelStyle: {
                         fontSize: 12,
                         fill: theme.palette.text.primary
+                    },
+                    sx: {
+                        text: {
+                            filter: isHidden ? 'blur(8px)' : 'none',
+                            transition: 'filter 0.3s ease'
+                        }
                     }
                 }]}
                 slotProps={{
                     legend: { hidden: true }
+                }}
+                tooltip={isHidden ? {
+                    trigger: 'none'
+                } : {
+                    trigger: 'axis'
                 }}
                 borderRadius={5}
                 height={400}
@@ -130,7 +158,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     bottom: 70
                 }}
             />
-            {/* Display message when there is no data */}
+            {/* Display message when there is no data available */}
             {isDataEmpty && (
                 <Typography
                     variant="body1"
