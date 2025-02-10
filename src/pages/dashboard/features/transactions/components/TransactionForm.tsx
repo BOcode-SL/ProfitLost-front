@@ -362,8 +362,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     flexDirection: 'column',
                     alignItems: 'center',
                     width: '100%',
-                    py: 1,
+                    pt: 1,
                     px: 2,
+                    pb: 2,
                     borderRadius: 3,
                 }}>
                 {/* Box to layout the label and switch */}
