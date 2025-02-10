@@ -364,7 +364,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     width: '100%',
                     pt: 1,
                     px: 2,
-                    pb: 2,
+                    pb: isRecurrent ? 2 : 1,
                     borderRadius: 3,
                 }}>
                 {/* Box to layout the label and switch */}
