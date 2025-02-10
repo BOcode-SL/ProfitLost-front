@@ -136,10 +136,10 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         </IconButton>
 
                         {/* IconButton for notifications */}
-                        <IconButton>
+                        <IconButton disabled={true}>
                             <Badge
                                 color="primary"
-                                variant="dot"
+                                // variant="dot"
                             >
                                 <Tooltip title={t('dashboard.tooltips.inbox')}>
                                     <span className="material-symbols-rounded no-select">
