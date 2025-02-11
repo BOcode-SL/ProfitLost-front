@@ -285,12 +285,22 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         <Typography>{getMonthName(month)}</Typography>
                                         <TextField
                                             size="small"
-                                            type="number"
+                                            type="text"
+                                            inputProps={{
+                                                inputMode: 'decimal',
+                                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                            }}
                                             value={monthlyValues[month] || 0}
-                                            onChange={(e) => setMonthlyValues(prev => ({
-                                                ...prev,
-                                                [month]: Number(e.target.value)
-                                            }))}
+                                            onChange={(e) => {
+                                                // Replace commas with dots and validate the format
+                                                const value = e.target.value.replace(',', '.');
+                                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                                    setMonthlyValues(prev => ({
+                                                        ...prev,
+                                                        [month]: value === '' ? 0 : Number(value)
+                                                    }));
+                                                }
+                                            }}
                                         />
                                     </Box>
                                 ))}

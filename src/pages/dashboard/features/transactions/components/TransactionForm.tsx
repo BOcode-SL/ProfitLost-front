@@ -603,15 +603,19 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         <TextField
                             size="small"
                             label={t('dashboard.transactions.form.fields.amount')}
-                            type="number"
+                            type="text"
                             inputProps={{
                                 inputMode: 'decimal',
-                                pattern: '^[0-9]*([.,][0-9]{0,2})?$',
-                                min: 0,
-                                step: "0.01"
+                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
                             }}
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => {
+                                // Replace commas with dots and validate the format
+                                const value = e.target.value.replace(',', '.');
+                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                    setAmount(value);
+                                }
+                            }}
                             fullWidth
                             required
                         />
