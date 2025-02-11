@@ -234,7 +234,9 @@
                 "form": {
                     "categoryName": "Nombre de la categoría",
                     "categoryNameRequired": "El nombre de la categoría es requerido",
-                    "color": "Color"
+                    "color": "Color",
+                    "showTransactions": "Mostrar movimientos de {{year}}",
+                    "hideTransactions": "Ocultar movimientos de {{year}}"
                 },
                 "delete": {
                     "title": "Delete Category",

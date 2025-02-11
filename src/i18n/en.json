@@ -233,8 +233,10 @@
                 "editCategory": "Edit Category",
                 "form": {
                     "categoryName": "Category Name",
-                    "categoryNameRequired": "Category name is required",
-                    "color": "Color"
+                    "categoryNameRequired": "The category name is required",
+                    "color": "Color",
+                    "showTransactions": "Show transactions from {{year}}",
+                    "hideTransactions": "Hide transactions from {{year}}"
                 },
                 "delete": {
                     "title": "Delete Category",

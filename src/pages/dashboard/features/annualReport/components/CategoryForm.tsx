@@ -1,15 +1,22 @@
-import { useState } from 'react';
-import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton } from '@mui/material';
+import { useState, useEffect, useMemo } from 'react';
+import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton, Select, MenuItem, FormControl, InputLabel, Link } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+// Contexts
+import { useUser } from '../../../../../contexts/UserContext';
+
 // Services
 import { categoryService } from '../../../../../services/category.service';
+import { transactionService } from '../../../../../services/transaction.service';
 
 // Types
 import type { Category } from '../../../../../types/models/category';
+import type { Transaction } from '../../../../../types/models/transaction';
 
-// Interface for the props of the CategoryForm component
+// Utils
+import { formatCurrency } from '../../../../../utils/formatCurrency';
+
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {
     category?: Category; // Optional category prop
@@ -18,13 +25,77 @@ interface CategoryFormProps {
     onDelete?: () => void; // Optional function to call on delete
 }
 
+// Tipos adicionales
+interface GroupedTransactions {
+    [key: string]: Transaction[];
+}
+
 // CategoryForm component
 export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
     const { t } = useTranslation();
+    const { user } = useUser();
 
     const [name, setName] = useState(category?.name || '');
     const [color, setColor] = useState(category?.color || '#ff8e38');
     const [saving, setSaving] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+    const [yearsWithData, setYearsWithData] = useState<string[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [showTransactions, setShowTransactions] = useState(false);
+
+    // Efecto para cargar los años con datos
+    useEffect(() => {
+        const fetchAllTransactions = async () => {
+            if (!category) return;
+
+            try {
+                const response = await transactionService.getAllTransactions();
+                if (response.success && Array.isArray(response.data)) {
+                    const years = new Set(
+                        response.data
+                            .filter(tx => tx.category === category.name)
+                            .map(tx => new Date(tx.date).getFullYear().toString())
+                    );
+                    setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
+                }
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        };
+
+        fetchAllTransactions();
+    }, [category]);
+
+    // Efecto para cargar las transacciones del año seleccionado
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            if (!category || !showTransactions) return;
+
+            try {
+                const response = await transactionService.getTransactionsByYear(Number(selectedYear));
+                if (response.success && Array.isArray(response.data)) {
+                    const filteredTransactions = response.data.filter(tx => tx.category === category.name);
+                    setTransactions(filteredTransactions);
+                }
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        };
+
+        fetchTransactions();
+    }, [category, selectedYear, showTransactions]);
+
+    // Función para agrupar transacciones por mes
+    const groupedTransactions = useMemo(() => {
+        return transactions.reduce((groups: GroupedTransactions, transaction) => {
+            const month = new Date(transaction.date).toLocaleString('es-ES', { month: 'long' });
+            if (!groups[month]) {
+                groups[month] = [];
+            }
+            groups[month].push(transaction);
+            return groups;
+        }, {});
+    }, [transactions]);
 
     // Handle the submit of the form
     const handleSubmit = async () => {
@@ -133,6 +204,88 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     </Button>
                 </Box>
             </Box>
-        </Box>
+
+            {/* Nueva sección de transacciones (solo visible en modo edición) */}
+            {category && (
+                <Paper elevation={3} sx={{ mt: 3, p: 2, borderRadius: 3 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <FormControl size="small" fullWidth>
+                            <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                            <Select
+                                value={selectedYear}
+                                label={t('dashboard.common.year')}
+                                onChange={(e) => setSelectedYear(e.target.value)}
+                            >
+                                {yearsWithData.map((year) => (
+                                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Link
+                            component="button"
+                            onClick={() => setShowTransactions(!showTransactions)}
+                            sx={{ textDecoration: 'none' }}
+                        >
+                            {showTransactions
+                                ? t('dashboard.annualReport.categories.form.hideTransactions', { year: selectedYear })
+                                : t('dashboard.annualReport.categories.form.showTransactions', { year: selectedYear })}
+                        </Link>
+                    </Box>
+
+                    {showTransactions && (
+                        <Box sx={{ mt: 2 }}>
+                            {Object.entries(groupedTransactions).map(([month, monthTransactions]) => (
+                                <Box key={month} sx={{ mb: 3 }}>
+                                    <Typography variant="subtitle1" sx={{
+                                        mb: 2,
+                                        textTransform: 'capitalize',
+                                        fontWeight: 600,
+                                        color: 'text.secondary'
+                                    }}>
+                                        {month}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        {monthTransactions.map((transaction) => (
+                                            <Paper
+                                                key={transaction._id}
+                                                elevation={0}
+                                                sx={{
+                                                    p: 2,
+                                                    borderRadius: 2,
+                                                    backgroundColor: 'background.default',
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    transition: 'background-color 0.2s ease-in-out',
+                                                    '&:hover': {
+                                                        backgroundColor: 'action.hover'
+                                                    }
+                                                }}
+                                            >
+                                                <Box>
+                                                    <Typography sx={{ fontWeight: 500 }}>
+                                                        {transaction.description || category.name}
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {new Date(transaction.date).toLocaleDateString()}
+                                                    </Typography>
+                                                </Box>
+                                                <Typography sx={{
+                                                    fontWeight: 600,
+                                                    color: transaction.amount >= 0 ? 'success.main' : 'error.main'
+                                                }}>
+                                                    {formatCurrency(transaction.amount, user)}
+                                                </Typography>
+                                            </Paper>
+                                        ))}
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
+                </Paper>
+            )
+            }
+        </Box >
     );
 }
