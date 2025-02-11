@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton, Select, MenuItem, FormControl, InputLabel, Link } from '@mui/material';
+import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton, Select, MenuItem, FormControl, InputLabel, Link, useTheme } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -34,6 +34,7 @@ interface GroupedTransactions {
 export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
+    const theme = useTheme();
 
     const [name, setName] = useState(category?.name || '');
     const [color, setColor] = useState(category?.color || '#ff8e38');
@@ -272,7 +273,9 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                 </Box>
                                                 <Typography sx={{
                                                     fontWeight: 600,
-                                                    color: transaction.amount >= 0 ? 'success.main' : 'error.main'
+                                                    color: transaction.amount >= 0
+                                                        ? theme.palette.chart.income
+                                                        : theme.palette.chart.expenses,
                                                 }}>
                                                     {formatCurrency(transaction.amount, user)}
                                                 </Typography>
