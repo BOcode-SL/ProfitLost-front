@@ -96,10 +96,16 @@
             }
 
             .hero-image {
+                display: flex;
+                justify-content: right;
+                align-items: center;
+
                 img {
-                    width: 100%;
+                    width: 80%;
                     height: auto;
                     animation: float 6s ease-in-out infinite;
+                    box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.3);
+                    border-radius: 0.5rem;
                 }
             }
         }

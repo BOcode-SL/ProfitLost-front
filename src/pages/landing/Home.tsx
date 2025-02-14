@@ -65,7 +65,7 @@ export default function Home() {
                     <div className="hero-image">
                         <img
                             className="no-select"
-                            src="https://res.cloudinary.com/dnhlagojg/image/upload/v1736263487/AppPhotos/Brand/mockup/ujcemumjttmpe3mnjfmt.png"
+                            src="https://res.cloudinary.com/dnhlagojg/image/upload/v1739553639/AppPhotos/Brand/mockup/annualreport.png"
                             alt="Dashboard Preview"
                         />
                     </div>
