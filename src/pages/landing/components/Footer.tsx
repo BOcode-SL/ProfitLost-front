@@ -30,8 +30,8 @@ export default function Footer() {
                             sx={{ width: 200, mb: 2 }}
                         />
                         {/* Description text */}
-                        <Typography variant="body2" color="text.secondary">
-                            Simplifying personal finance management for everyone.
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem', width: '60%' }}>
+                            Profit&Lost is more than an app—it's your partner in financial growth. From tracking expenses to planning for the future, we're here to help you every step of the way.
                         </Typography>
                     </Box>
                     <Box sx={{
