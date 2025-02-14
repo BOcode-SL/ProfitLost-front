@@ -1,6 +1,7 @@
 import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import Footer from './components/Footer';
@@ -11,6 +12,7 @@ import './Home.scss';
 
 // Home component for the landing page
 export default function Home() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [activeStep, setActiveStep] = useState(0);
     const stepsContainerRef = useRef<HTMLDivElement>(null);
@@ -29,8 +31,8 @@ export default function Home() {
 
             {/* Hero Section */}
             <Box component="section" sx={{
-                pt: { xs: '100px', sm: 'clamp(100px, 10vw, 140px)' },
-                pb: { xs: '40px', sm: 'clamp(40px, 8vw, 80px)' }
+                pt: { xs: '140px', sm: 'clamp(140px, 10vw, 180px)' },
+                pb: { xs: '80px', sm: 'clamp(80px, 10vw, 120px)' }
             }}>
                 <Container maxWidth={false} sx={{ maxWidth: '1200px' }}>
                     <Box sx={{
@@ -54,7 +56,7 @@ export default function Home() {
                                     lineHeight: 1.2
                                 }}
                             >
-                                Manage your finances in a SMART way
+                                {t('home.hero.title')}
                             </Typography>
                             <Typography
                                 sx={{
@@ -64,7 +66,7 @@ export default function Home() {
                                     lineHeight: 1.4
                                 }}
                             >
-                                Take control of your finances and save more with our platform
+                                {t('home.hero.subtitle')}
                             </Typography>
                             <Button
                                 variant="contained"
@@ -85,7 +87,7 @@ export default function Home() {
                                     }
                                 }}
                             >
-                                Start Now
+                                {t('home.hero.startButton')}
                             </Button>
                         </Box>
                         <Box sx={{
@@ -164,7 +166,7 @@ export default function Home() {
                                 }
                             }}
                         >
-                            How It Works
+                            {t('home.howItWorks.title')}
                         </Typography>
                         <Typography
                             sx={{
@@ -177,7 +179,7 @@ export default function Home() {
                                 lineHeight: 1.6
                             }}
                         >
-                            Profit&Lost is designed to be simple, intuitive, and powerful. Here's how you can take control of your finances in just a few steps:
+                            {t('home.howItWorks.subtitle')}
                         </Typography>
                         <Box sx={{
                             position: 'relative',
@@ -208,23 +210,23 @@ export default function Home() {
                                 {[
                                     {
                                         number: 1,
-                                        title: "Sign Up & Set Up",
-                                        description: "Create your account and customize your categories (work, home, groceries, etc.). It only takes a few minutes!"
+                                        title: t('home.howItWorks.steps.step1.title'),
+                                        description: t('home.howItWorks.steps.step1.description')
                                     },
                                     {
                                         number: 2,
-                                        title: "Add Your Transactions",
-                                        description: "Start adding your income and expenses. Profit&Lost automatically organizes them into your chosen categories."
+                                        title: t('home.howItWorks.steps.step2.title'),
+                                        description: t('home.howItWorks.steps.step2.description')
                                     },
                                     {
                                         number: 3,
-                                        title: "Visualize & Analyze",
-                                        description: "Use our monthly and annual graphs to see where your money goes and make smarter financial decisions."
+                                        title: t('home.howItWorks.steps.step3.title'),
+                                        description: t('home.howItWorks.steps.step3.description')
                                     },
                                     {
                                         number: 4,
-                                        title: "Achieve Your Goals",
-                                        description: "Set financial goals, track your progress, and watch your savings grow. Profit&Lost is here to help you succeed."
+                                        title: t('home.howItWorks.steps.step4.title'),
+                                        description: t('home.howItWorks.steps.step4.description')
                                     }
                                 ].map((step, index) => (
                                     <Box
@@ -366,7 +368,7 @@ export default function Home() {
                                 }
                             }}
                         >
-                            Features
+                            {t('home.features.title')}
                         </Typography>
                         <Typography
                             sx={{
@@ -379,51 +381,51 @@ export default function Home() {
                                 lineHeight: 1.6
                             }}
                         >
-                            Discover all the tools you need to manage your finances effectively
+                            {t('home.features.subtitle')}
                         </Typography>
                     </Box>
                 </Container>
                 <div className="features-container bento-grid">
                     <article className="feature-card highlight">
                         <span className="material-symbols-rounded no-select">bar_chart_4_bars</span>
-                        <h4>Annual Report</h4>
-                        <p>Visualize your annual expenses with monthly graphs and detailed category analysis. Stay on top of your finances all year round.</p>
+                        <h4>{t('home.features.cards.annualReport.title')}</h4>
+                        <p>{t('home.features.cards.annualReport.description')}</p>
                     </article>
 
                     <article className="feature-card">
                         <span className="material-symbols-rounded no-select">receipt_long</span>
-                        <h4>Transactions</h4>
-                        <p>Manage your monthly expenses with intuitive category and income vs. expense graphs. Know exactly where your money goes.</p>
+                        <h4>{t('home.features.cards.transactions.title')}</h4>
+                        <p>{t('home.features.cards.transactions.description')}</p>
                     </article>
 
                     <article className="feature-card">
                         <span className="material-symbols-rounded no-select">task_alt</span>
-                        <h4>Goals <span className="soon-badge">Soon</span></h4>
-                        <p>Set and achieve your financial goals with smart tracking. Save for what matters most.</p>
+                        <h4>{t('home.features.cards.goals.title')}<span className="soon-badge">Soon</span></h4>
+                        <p>{t('home.features.cards.goals.description')}</p>
                     </article>
 
                     <article className="feature-card">
                         <span className="material-symbols-rounded no-select">note_alt</span>
-                        <h4>Notes</h4>
-                        <p>Keep important notes and reminders about your personal finances. Never miss a detail.</p>
+                        <h4>{t('home.features.cards.notes.title')}</h4>
+                        <p>{t('home.features.cards.notes.description')}</p>
                     </article>
 
                     <article className="feature-card highlight">
                         <span className="material-symbols-rounded no-select">account_balance</span>
-                        <h4>Accounts</h4>
-                        <p>Monitor your total account balance with a visual representation of your net worth. All your finances, in one place.</p>
+                        <h4>{t('home.features.cards.accounts.title')}</h4>
+                        <p>{t('home.features.cards.accounts.description')}</p>
                     </article>
 
                     <article className="feature-card">
                         <span className="material-symbols-rounded no-select">trending_up</span>
-                        <h4>Investment Tracking <span className="soon-badge">Soon</span></h4>
-                        <p>Monitor your investments and analyze their performance over time. Make smarter financial decisions.</p>
+                        <h4>{t('home.features.cards.investments.title')}<span className="soon-badge">Soon</span></h4>
+                        <p>{t('home.features.cards.investments.description')}</p>
                     </article>
 
-                    <article className="feature-card soon">
+                    <article className="feature-card">
                         <span className="material-symbols-rounded no-select">inbox</span>
-                        <h4>Inbox <span className="soon-badge">Soon</span></h4>
-                        <p>Receive notifications and stay up to date with your personal finances. Always informed, always in control.</p>
+                        <h4>{t('home.features.cards.inbox.title')}<span className="soon-badge">Soon</span></h4>
+                        <p>{t('home.features.cards.inbox.description')}</p>
                     </article>
                 </div>
             </Box>

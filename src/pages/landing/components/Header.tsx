@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Container, Toolbar } from '@mui/material';
+import { Box, Button, Container, Toolbar, IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
+    const [currentLanguage, setCurrentLanguage] = useState(() =>
+        localStorage.getItem('language') || 'en'
+    );
+    const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -15,6 +21,18 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        setScrollbarWidth(scrollbarWidth);
+    }, []);
+
+    const toggleLanguage = () => {
+        const newLang = currentLanguage === 'en' ? 'es' : 'en';
+        setCurrentLanguage(newLang);
+        i18n.changeLanguage(newLang);
+        localStorage.setItem('language', newLang);
+    };
+
     return (
         <Box
             sx={{
@@ -23,7 +41,10 @@ export default function Header() {
                 left: 0,
                 right: 0,
                 zIndex: 1000,
-                p: { xs: 1, sm: 2, md: 3 }
+                p: { xs: 1, sm: 2, md: 3 },
+                paddingRight: `${scrollbarWidth}px !important`,
+                boxSizing: 'border-box',
+                width: '100%'
             }}
         >
             <Container
@@ -58,29 +79,56 @@ export default function Header() {
                         onClick={() => navigate('/')}
                     />
 
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => navigate('/auth')}
-                        sx={{
-                            backgroundColor: '#fe6f14',
-                            color: '#ffffff',
-                            borderRadius: '8px',
-                            px: { xs: 2, sm: 3 },
-                            py: { xs: 0.8, sm: 1 },
-                            fontSize: { xs: '0.875rem', sm: '1rem' },
-                            fontWeight: 500,
-                            boxShadow: 'none',
-                            whiteSpace: 'nowrap',
-                            transition: 'all 0.3s ease-in-out',
-                            '&:hover': {
-                                transform: 'scale(1.02)',
-                                backgroundColor: '#c84f03',
-                            }
-                        }}
-                    >
-                        Login
-                    </Button>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Tooltip title={t(`home.header.language.${currentLanguage === 'en' ? 'es' : 'en'}`)}>
+                            <IconButton
+                                onClick={toggleLanguage}
+                                sx={{
+                                    p: 0.5,
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'scale(1.1)'
+                                    }
+                                }}
+                            >
+                                <Box
+                                    component="img"
+                                    src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
+                                    alt={t(`home.header.language.${currentLanguage}`)}
+                                    sx={{
+                                        width: 24,
+                                        height: 'auto',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                            </IconButton>
+                        </Tooltip>
+
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => navigate('/auth')}
+                            sx={{
+                                backgroundColor: '#fe6f14',
+                                color: '#ffffff',
+                                borderRadius: '8px',
+                                px: { xs: 2, sm: 3 },
+                                py: { xs: 0.8, sm: 1 },
+                                fontSize: { xs: '0.875rem', sm: '1rem' },
+                                fontWeight: 500,
+                                boxShadow: 'none',
+                                whiteSpace: 'nowrap',
+                                transition: 'all 0.3s ease-in-out',
+                                '&:hover': {
+                                    transform: 'scale(1.02)',
+                                    backgroundColor: '#c84f03',
+                                }
+                            }}
+                        >
+                            {t('home.header.login')}
+                        </Button>
+                    </Box>
                 </Toolbar>
             </Container>
         </Box>

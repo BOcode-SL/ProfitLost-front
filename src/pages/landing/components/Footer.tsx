@@ -1,15 +1,18 @@
 import { Box, Container, Stack, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // Define the Footer component
 export default function Footer() {
+    const { t } = useTranslation();
+
     // Define footer links with text and href
     const footerLinks = [
-        { text: 'Privacy Policy', href: '/privacy' },
-        { text: 'Terms of Service', href: '/terms' },
-        { text: 'Legal Notice', href: '/legal' },
-        { text: 'Cookie Policy', href: '/cookies' },
-        { text: 'Contact', href: '/contact' }
+        { text: t('home.footer.links.privacy'), href: '/privacy' },
+        { text: t('home.footer.links.terms'), href: '/terms' },
+        { text: t('home.footer.links.legal'), href: '/legal' },
+        { text: t('home.footer.links.cookies'), href: '/cookies' },
+        { text: t('home.footer.links.contact'), href: '/contact' }
     ];
 
     return (
@@ -31,7 +34,7 @@ export default function Footer() {
                         />
                         {/* Description text */}
                         <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem', width: '60%' }}>
-                            Profit&Lost is more than an app—it's your partner in financial growth. From tracking expenses to planning for the future, we're here to help you every step of the way.
+                            {t('home.footer.description')}
                         </Typography>
                     </Box>
                     <Box sx={{
@@ -39,7 +42,7 @@ export default function Footer() {
                         minWidth: { md: '200px' }
                     }}>
                         <Typography variant="h6" gutterBottom>
-                            Company
+                            {t('home.footer.company')}
                         </Typography>
                         <List>
                             {/* Map through footer links to create list items */}
@@ -77,11 +80,12 @@ export default function Footer() {
                     }}
                 >
                     <Typography variant="body2" color="text.secondary">
-                        © 2024 Profit&Lost. All rights reserved. Developed by{' '}
+                        {t('home.footer.copyright')} {' '}
                         <a
                             href="https://brian-novoa.com"
                             target="_blank"
                             rel="noopener noreferrer"
+                            style={{ color: '#fe6f14' }}
                         >
                             Brian G. Novoa
                         </a>

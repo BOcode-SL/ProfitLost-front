@@ -1,4 +1,86 @@
 {
+    "home": {
+        "header": {
+            "login": "Login",
+            "language": {
+                "en": "Change to English",
+                "es": "Change to Spanish"
+            }
+        },
+        "hero": {
+            "title": "Manage your finances in a SMART way",
+            "subtitle": "Take control of your finances and save more with our platform",
+            "startButton": "Start Now"
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "subtitle": "Profit&Lost is designed to be simple, intuitive, and powerful. Here's how you can take control of your finances in just a few steps:",
+            "steps": {
+                "step1": {
+                    "title": "Create an Account",
+                    "description": "Sign up for free and set up your profile with your preferences"
+                },
+                "step2": {
+                    "title": "Add Your Categories and Transactions",
+                    "description": "Start adding your income and expenses. Profit&Lost automatically organizes them into your chosen categories."
+                },
+                "step3": {
+                    "title": "Visualize & Analyze",
+                    "description": "Use our monthly and annual graphs to see where your money goes and make smarter financial decisions."
+                },
+                "step4": {
+                    "title": "Achieve Your Goals",
+                    "description": "Set financial goals, track your progress, and watch your savings grow. Profit&Lost is here to help you succeed."
+                }
+            }
+        },
+        "features": {
+            "title": "Features",
+            "subtitle": "Discover all the tools you need to manage your finances effectively",
+            "cards": {
+                "annualReport": {
+                    "title": "Annual Report",
+                    "description": "Visualize your annual expenses with monthly graphs and detailed category analysis. Stay on top of your finances all year round."
+                },
+                "transactions": {
+                    "title": "Transactions",
+                    "description": "Manage your monthly expenses with intuitive category and income vs. expense graphs. Know exactly where your money goes."
+                },
+                "goals": {
+                    "title": "Goals",
+                    "description": "Set and achieve your financial goals with smart tracking. Save for what matters most."
+                },
+                "notes": {
+                    "title": "Notes",
+                    "description": "Keep important notes and reminders about your personal finances. Never miss a detail."
+                },
+                "accounts": {
+                    "title": "Accounts",
+                    "description": "Monitor your total account balance with a visual representation of your net worth. All your finances, in one place."
+                },
+                "investments": {
+                    "title": "Investments",
+                    "description": "Monitor your investments and analyze their performance over time. Make smarter financial decisions."
+                },
+                "inbox": {
+                    "title": "Inbox",
+                    "description": "Receive notifications and stay up to date with your personal finances. Always informed, always in control."
+                }
+            }
+        },
+        "footer": {
+            "description": "Profit&Lost is more than an app—it's your partner in financial growth. From tracking expenses to planning for the future, we're here to help you every step of the way.",
+            "company": "Company",
+            "links": {
+                "privacy": "Privacy Policy",
+                "terms": "Terms of Service",
+                "legal": "Legal Notice",
+                "cookies": "Cookie Policy",
+                "contact": "Contact"
+            },
+            "copyright": "© 2024 Profit&Lost. All rights reserved. Developed by"
+        }
+    },
     "dashboard": {
         "tooltips": {
             "dark_mode": "Dark mode",

@@ -1,4 +1,86 @@
 {
+    "home": {
+        "header": {
+            "login": "Iniciar sesión",
+            "language": {
+                "en": "Cambiar a inglés",
+                "es": "Cambiar a español"
+            }
+        },
+        "hero": {
+            "title": "Administra tus finanzas de manera INTELIGENTE",
+            "subtitle": "Toma el control de tus finanzas y ahorra más con nuestra plataforma",
+            "startButton": "Comenzar ahora"
+        },
+        "howItWorks": {
+            "title": "¿Cómo funciona?",
+            "subtitle": "Profit&Lost está diseñado para ser simple, intuitivo y poderoso. Aquí tienes cómo puedes tomar el control de tus finanzas en solo unos pocos pasos:",
+            "steps": {
+                "step1": {
+                    "title": "Crea una cuenta",
+                    "description": "Regístrate gratis y configura tu perfil con tus preferencias"
+                },
+                "step2": {
+                    "title": "Añade tus categorías y transacciones",
+                    "description": "Comienza a añadir tus ingresos y gastos. Profit&Lost los organiza automáticamente en tus categorías elegidas."
+                },
+                "step3": {
+                    "title": "Visualiza y analiza",
+                    "description": "Utiliza nuestros gráficos mensuales y anuales para ver dónde va tu dinero y toma decisiones financieras más inteligentes."
+                },
+                "step4": {
+                    "title": "Alcanza tus objetivos",
+                    "description": "Establece objetivos financieros, rastrea tu progreso y observa cómo crece tu ahorro. Profit&Lost está aquí para ayudarte a tener éxito."
+                }
+            }
+        },
+        "features": {
+            "title": "Herramientas",
+            "subtitle": "Descubre todas las herramientas que necesitas para administrar tus finanzas de manera efectiva",
+            "cards": {
+                "annualReport": {
+                    "title": "Reporte anual",
+                    "description": "Visualiza tus gastos anuales con gráficos mensuales y análisis detallado por categoría"
+                },
+                "transactions": {
+                    "title": "Movimientos",
+                    "description": "Administra tus gastos mensuales con gráficos intuitivos de categoría y ingresos vs. gastos"
+                },
+                "goals": {
+                    "title": "Metas",
+                    "description": "Establece y alcanza tus objetivos financieros con un seguimiento inteligente"
+                },
+                "notes": {
+                    "title": "Notas",
+                    "description": "Guarda importantes notas y recordatorios sobre tus finanzas personales"
+                },
+                "accounts": {
+                    "title": "Cuentas",
+                    "description": "Monitorea tu saldo total de cuenta con una representación visual de tu patrimonio"
+                },
+                "investments": {
+                    "title": "Inversiones",
+                    "description": "Monitorea tus inversiones y analiza su rendimiento a lo largo del tiempo"
+                },
+                "inbox": {
+                    "title": "Bandeja de entrada",
+                    "description": "Recibe notificaciones y mantente actualizado con tus finanzas personales"
+                }
+            }
+        },
+        "footer": {
+            "description": "Profit&Lost es más que una aplicación: es tu aliado en el crecimiento financiero. Desde el seguimiento de gastos hasta la planificación del futuro, estamos aquí para ayudarte en cada paso del camino.",
+            "company": "Compañía",
+            "links": {
+                "privacy": "Política de Privacidad",
+                "terms": "Términos de Servicio",
+                "legal": "Aviso Legal",
+                "cookies": "Política de Cookies",
+                "contact": "Contacto"
+            },
+            "copyright": "© 2024 Profit&Lost. Todos los derechos reservados. Desarrollado por"
+        }
+    },
     "dashboard": {
         "tooltips": {
             "dark_mode": "Modo oscuro",
