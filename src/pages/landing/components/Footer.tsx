@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 export default function Footer() {
     const { t } = useTranslation();
 
-    // Define footer links with text and href
+    // Define footer links with their corresponding text and href attributes
     const footerLinks = [
         { text: t('home.footer.links.privacy'), href: '/privacy' },
         { text: t('home.footer.links.terms'), href: '/terms' },
@@ -16,7 +16,7 @@ export default function Footer() {
     ];
 
     return (
-        // Main footer box with background color and padding
+        // Main footer container with background color and vertical padding
         <Box component="footer" sx={{ bgcolor: '#F7F7F7', py: 6 }}>
             <Container maxWidth="lg">
                 <Stack
@@ -25,14 +25,14 @@ export default function Footer() {
                     justifyContent="space-between"
                 >
                     <Box>
-                        {/* Logo image */}
+                        {/* Logo image displayed in the footer */}
                         <Box
                             component="img"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
                             sx={{ width: 200, mb: 2 }}
                         />
-                        {/* Description text */}
+                        {/* Description text for the footer */}
                         <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem', width: '60%' }}>
                             {t('home.footer.description')}
                         </Typography>
@@ -45,7 +45,7 @@ export default function Footer() {
                             {t('home.footer.company')}
                         </Typography>
                         <List>
-                            {/* Map through footer links to create list items */}
+                            {/* Iterate through footer links to create list items */}
                             {footerLinks.map(({ text, href }) => (
                                 <ListItem
                                     key={text}
@@ -54,7 +54,7 @@ export default function Footer() {
                                         justifyContent: { xs: 'flex-start', md: 'flex-end' }
                                     }}
                                 >
-                                    {/* Conditional rendering for mailto links */}
+                                    {/* Render links conditionally based on href */}
                                     {href.startsWith('mailto:') ? (
                                         <a href={href}>
                                             <ListItemText primary={text} />
@@ -69,7 +69,7 @@ export default function Footer() {
                         </List>
                     </Box>
                 </Stack>
-                {/* Copyright section */}
+                {/* Section for copyright information */}
                 <Box
                     sx={{
                         mt: 4,

@@ -13,6 +13,7 @@ export default function Header() {
     const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
     useEffect(() => {
+        // Handle scroll event to change header style based on scroll position
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
@@ -22,11 +23,13 @@ export default function Header() {
     }, []);
 
     useEffect(() => {
+        // Calculate and set the width of the scrollbar
         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         setScrollbarWidth(scrollbarWidth);
     }, []);
 
     const toggleLanguage = () => {
+        // Toggle between English and Spanish languages
         const newLang = currentLanguage === 'en' ? 'es' : 'en';
         setCurrentLanguage(newLang);
         i18n.changeLanguage(newLang);

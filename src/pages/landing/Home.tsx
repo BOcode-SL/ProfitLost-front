@@ -18,6 +18,7 @@ export default function Home() {
     const stepsContainerRef = useRef<HTMLDivElement>(null);
 
     const handleStepChange = (direction: 'prev' | 'next') => {
+        // Update the active step based on the direction
         if (direction === 'prev') {
             setActiveStep(prev => (prev > 0 ? prev - 1 : 3));
         } else {
@@ -284,7 +285,6 @@ export default function Home() {
                                 ))}
                             </Box>
 
-                            {/* Controles del carrusel (solo visibles en móvil) */}
                             <Box
                                 sx={{
                                     display: { xs: 'flex', md: 'none' },
@@ -306,7 +306,7 @@ export default function Home() {
                                     <span className="material-symbols-rounded">arrow_back_ios</span>
                                 </IconButton>
 
-                                {/* Indicadores de paso */}
+                                {/* Step indicators */}
                                 <Box sx={{ display: 'flex', gap: 1 }}>
                                     {[0, 1, 2, 3].map((step) => (
                                         <Box
