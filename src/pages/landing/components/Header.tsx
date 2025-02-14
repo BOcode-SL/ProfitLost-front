@@ -1,3 +1,4 @@
+// Import necessary hooks and components from React and Material-UI
 import { useState, useEffect } from 'react';
 import { Box, Button, Container, Toolbar, IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -7,12 +8,14 @@ export default function Header() {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
-    const [currentLanguage, setCurrentLanguage] = useState(() =>
-        localStorage.getItem('language') || 'en'
-    );
+    const [currentLanguage, setCurrentLanguage] = useState(() => {
+        // Retrieve the current language from local storage or default to English
+        const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
+        return i18nextLng.startsWith('es') ? 'es' : 'en';
+    });
 
     useEffect(() => {
-        // Handle scroll event to change header style based on scroll position
+        // Add scroll event listener to change header style based on scroll position
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
@@ -22,11 +25,10 @@ export default function Header() {
     }, []);
 
     const toggleLanguage = () => {
-        // Toggle between English and Spanish languages
+        // Switch between English and Spanish languages
         const newLang = currentLanguage === 'en' ? 'es' : 'en';
         setCurrentLanguage(newLang);
         i18n.changeLanguage(newLang);
-        localStorage.setItem('language', newLang);
     };
 
     return (

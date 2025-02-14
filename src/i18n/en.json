@@ -379,6 +379,107 @@
                     }
                 }
             }
+        },
+        "auth": {
+            "common": {
+                "loading": "Loading...",
+                "or": "or"
+            },
+            "login": {
+                "title": "Welcome back",
+                "subtitle": "Sign in to your account",
+                "form": {
+                    "identifier": {
+                        "label": "Email or username",
+                        "placeholder": "email@example.com or username"
+                    },
+                    "password": {
+                        "label": "Password",
+                        "forgot": "Forgot password?"
+                    },
+                    "submit": "Login",
+                    "googleButton": "Continue with Google",
+                    "googleError": "Error authenticating with Google",
+                    "alternativeAction": "Don't have an account? Sign up"
+                }
+            },
+            "register": {
+                "title": "Create Account",
+                "subtitle": "Join us and start managing your finances",
+                "form": {
+                    "name": {
+                        "label": "Name",
+                        "placeholder": "Your name"
+                    },
+                    "surname": {
+                        "label": "Surname",
+                        "placeholder": "Your surname"
+                    },
+                    "username": {
+                        "label": "Username",
+                        "placeholder": "username",
+                        "helper": "Only lowercase letters and numbers allowed"
+                    },
+                    "email": {
+                        "label": "Email",
+                        "placeholder": "email@example.com"
+                    },
+                    "password": {
+                        "label": "Password",
+                        "helper": "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
+                    },
+                    "submit": "Create Account",
+                    "alternativeAction": "Already have an account? Sign in"
+                }
+            },
+            "resetPassword": {
+                "title": "Reset Password",
+                "subtitle": "Enter your email to receive a recovery code",
+                "steps": {
+                    "email": {
+                        "title": "Enter your email",
+                        "label": "Email",
+                        "submit": "Send Recovery Code"
+                    },
+                    "token": {
+                        "title": "Enter recovery code",
+                        "label": "Recovery Code",
+                        "submit": "Verify Code"
+                    },
+                    "password": {
+                        "title": "Create new password",
+                        "newPassword": {
+                            "label": "New Password"
+                        },
+                        "confirmPassword": {
+                            "label": "Confirm New Password",
+                            "helper": "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
+                        },
+                        "submit": "Reset Password"
+                    }
+                }
+            },
+            "errors": {
+                "missingFields": "All fields are required",
+                "invalidFormat": "Invalid format. Please check the fields",
+                "emailExists": "Email already registered",
+                "usernameExists": "Username already in use",
+                "passwordRequirements": "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number",
+                "invalidCredentials": "Invalid credentials",
+                "accountInactive": "Account inactive. Contact support",
+                "accountLocked": "Account locked temporarily. Try again in {{minutes}} minutes",
+                "serverError": "Server error. Please try again later",
+                "connectionError": "Connection error",
+                "emailNotFound": "Email not found",
+                "invalidToken": "Invalid or expired token",
+                "passwordsDoNotMatch": "Passwords do not match"
+            },
+            "success": {
+                "welcome": "Welcome back!",
+                "registration": "Registration successful!",
+                "recoveryCodeSent": "Recovery code sent to your email",
+                "passwordReset": "Password reset successfully"
+            }
         }
     },
     "dashboard": {

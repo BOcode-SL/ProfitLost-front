@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { CredentialResponse } from '@react-oauth/google';
+import { useTranslation } from 'react-i18next';
 
 // Types
 import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../../types/api/responses';
@@ -23,6 +24,7 @@ import ResetPasswordForm from './components/ResetPasswordForm';
 // AuthPage component
 export default function AuthPage() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { loadUserData } = useUser();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
@@ -79,26 +81,26 @@ export default function AuthPage() {
                 const response = await authService.login(loginData);
                 if (response.success) {
                     await loadUserData();
-                    toast.success('Welcome back!');
+                    toast.success(t('home.auth.login.title'));
                     navigate('/dashboard', { replace: true });
                 }
             } else {
                 if (!validatePassword(registerData.password)) {
                     setLoading(false);
-                    toast.error('The password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number');
+                    toast.error(t('home.auth.errors.passwordRequirements'));
                     return;
                 }
 
                 if (!registerData.username || !registerData.email || !registerData.password || !registerData.name || !registerData.surname) {
                     setLoading(false);
-                    toast.error('All fields are required');
+                    toast.error(t('home.auth.errors.missingFields'));
                     return;
                 }
 
                 const response = await authService.register(registerData);
                 if (response.success) {
                     await loadUserData();
-                    toast.success('Registration successful!');
+                    toast.success(t('home.auth.success.registration'));
                     navigate('/dashboard');
                 }
             }
@@ -108,40 +110,42 @@ export default function AuthPage() {
             // Handle different error types
             switch (error.error as AuthErrorType) {
                 case 'MISSING_FIELDS':
-                    toast.error('All fields are required');
+                    toast.error(t('home.auth.errors.missingFields'));
                     break;
                 case 'INVALID_FORMAT':
-                    toast.error('Formato inválido. Verifica los campos');
+                    toast.error(t('home.auth.errors.invalidFormat'));
                     break;
                 case 'EMAIL_EXISTS':
-                    toast.error('Email already registered');
+                    toast.error(t('home.auth.errors.emailExists'));
                     break;
                 case 'USERNAME_EXISTS':
-                    toast.error('Username already in use');
+                    toast.error(t('home.auth.errors.usernameExists'));
                     break;
                 case 'PASSWORD_TOO_WEAK':
-                    toast.error('The password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number');
+                    toast.error(t('home.auth.errors.passwordRequirements'));
                     break;
                 case 'INVALID_CREDENTIALS':
-                    toast.error('Invalid credentials');
+                    toast.error(t('home.auth.errors.invalidCredentials'));
                     break;
                 case 'ACCOUNT_INACTIVE':
-                    toast.error('Account inactive. Contact support');
+                    toast.error(t('home.auth.errors.accountInactive'));
                     break;
                 case 'ACCOUNT_LOCKED':
                     {
                         const minutes = Math.ceil((error.remainingTime || 0) / (60 * 1000));
-                        toast.error(`Account locked temporarily. Try again in ${minutes} minutes`);
+                        toast.error(t('home.auth.errors.accountLocked', { 
+                            minutes: minutes 
+                        }));
                         break;
                     }
                 case 'SERVER_ERROR':
-                    toast.error('Server error. Please try again later');
+                    toast.error(t('home.auth.errors.serverError'));
                     break;
                 case 'CONNECTION_ERROR':
-                    toast.error('Connection error.');
+                    toast.error(t('home.auth.errors.connectionError'));
                     break;
                 default:
-                    toast.error(error.message || 'Unknown error');
+                    toast.error(error.message || t('home.auth.errors.serverError'));
             }
         } finally {
             setLoading(false);
@@ -155,16 +159,16 @@ export default function AuthPage() {
 
         try {
             await authService.forgotPassword(resetEmail);
-            toast.success('Recovery code sent to your email');
+            toast.success(t('home.auth.success.recoveryCodeSent'));
             setResetStep('token');
         } catch (err: unknown) {
             const error = err as AuthApiErrorResponse;
             switch (error.error as AuthErrorType) {
                 case 'EMAIL_NOT_FOUND':
-                    toast.error('Email not found');
+                    toast.error(t('home.auth.errors.emailNotFound'));
                     break;
                 default:
-                    toast.error('Error sending recovery code');
+                    toast.error(t('home.auth.errors.serverError'));
             }
         } finally {
             setLoading(false);
@@ -180,7 +184,7 @@ export default function AuthPage() {
             await authService.verifyResetToken(resetToken);
             setResetStep('password');
         } catch {
-            toast.error('Invalid or expired token');
+            toast.error(t('home.auth.errors.invalidToken'));
         } finally {
             setLoading(false);
         }
@@ -193,26 +197,26 @@ export default function AuthPage() {
 
         try {
             if (newPassword !== confirmPassword) {
-                toast.error('Passwords do not match');
+                toast.error(t('home.auth.errors.passwordsDoNotMatch'));
                 setLoading(false);
                 return;
             }
 
             await authService.resetPassword(resetToken, newPassword);
-            toast.success('Password reset successfully');
+            toast.success(t('home.auth.success.passwordReset'));
             setShowResetPassword(false);
             setIsLogin(true);
         } catch (err: unknown) {
             const error = err as AuthApiErrorResponse;
             switch (error.error as AuthErrorType) {
                 case 'PASSWORD_TOO_WEAK':
-                    toast.error('Password must be at least 8 characters long and contain uppercase, lowercase, numbers and special characters');
+                    toast.error(t('home.auth.errors.passwordRequirements'));
                     break;
                 case 'INVALID_RESET_TOKEN':
-                    toast.error('Invalid or expired token');
+                    toast.error(t('home.auth.errors.invalidToken'));
                     break;
                 default:
-                    toast.error('Error resetting password');
+                    toast.error(t('home.auth.errors.serverError'));
             }
         } finally {
             setLoading(false);
@@ -239,7 +243,7 @@ export default function AuthPage() {
         setLoading(true);
         try {
             if (!credentialResponse.credential) {
-                toast.error('Invalid Google token');
+                toast.error(t('home.auth.login.form.googleError'));
                 return;
             }
 
@@ -247,15 +251,15 @@ export default function AuthPage() {
 
             if (response.success) {
                 await loadUserData();
-                toast.success('Welcome!');
+                toast.success(t('home.auth.success.welcome'));
                 navigate('/dashboard', { replace: true });
             }
         } catch (error) {
             const authError = error as AuthApiErrorResponse;
             if (authError.error === 'GOOGLE_AUTH_ERROR') {
-                toast.error('Error authenticating with Google');
+                toast.error(t('home.auth.login.form.googleError'));
             } else {
-                toast.error('An error occurred');
+                toast.error(t('home.auth.errors.serverError'));
             }
         } finally {
             setLoading(false);
@@ -266,13 +270,13 @@ export default function AuthPage() {
     return (
         <>
             <AuthLayout
-                title={showResetPassword ? 'Reset Password' : (isLogin ? 'Login' : 'Register')}
+                title={showResetPassword ? t('home.auth.resetPassword.title') : (isLogin ? t('home.auth.login.title') : t('home.auth.register.title'))}
                 subtitle={showResetPassword
-                    ? 'Enter your email to receive a recovery code'
-                    : (isLogin ? 'Welcome back!' : 'Create an account to start')}
+                    ? t('home.auth.resetPassword.subtitle')
+                    : (isLogin ? t('home.auth.login.subtitle') : t('home.auth.register.subtitle'))}
                 showDivider={!showResetPassword}
                 showAlternativeAction={!showResetPassword}
-                alternativeActionText={isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
+                alternativeActionText={isLogin ? t('home.auth.login.form.alternativeAction') : t('home.auth.register.form.alternativeAction')}
                 onAlternativeActionClick={() => setIsLogin(!isLogin)}
             >
                 {/* Conditional rendering for the form based on the reset password state */}

@@ -1,9 +1,11 @@
 import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography, Link } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 // Types
 import type { LoginCredentials } from '../../../../types/api/responses';
+
 interface LoginFormProps {
     loginData: LoginCredentials; // User login data
     loading: boolean; // Loading state for the button
@@ -28,6 +30,7 @@ export default function LoginForm({
     handleSubmit,
     handleGoogleSuccess
 }: LoginFormProps) {
+    const { t } = useTranslation();
 
     return (
         <Box component="form" onSubmit={handleSubmit}>
@@ -36,7 +39,7 @@ export default function LoginForm({
                 <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={() => {
-                        toast.error('Error authenticating with Google');
+                        toast.error(t('home.auth.login.form.googleError'));
                     }}
                     useOneTap
                     width="100%"
@@ -48,7 +51,7 @@ export default function LoginForm({
             {/* Divider for visual separation */}
             <Divider sx={{ my: 2 }}>
                 <Typography sx={{ color: '#666', px: 2 }}>
-                    or
+                    {t('home.auth.common.or')}
                 </Typography>
             </Divider>
 
@@ -56,20 +59,21 @@ export default function LoginForm({
             <TextField
                 fullWidth
                 required
-                label="Email o username"
+                label={t('home.auth.login.form.identifier.label')}
                 variant="outlined"
                 margin="normal"
                 name="identifier"
-                placeholder="email@example.com o username"
+                placeholder={t('home.auth.login.form.identifier.placeholder')}
                 value={loginData.identifier}
                 onChange={handleChange}
             />
-            {/* Input for password */}
+
+            {/* Password Input */}
             <TextField
                 fullWidth
                 required
                 type={showPassword ? 'text' : 'password'}
-                label="Password"
+                label={t('home.auth.login.form.password.label')}
                 variant="outlined"
                 margin="normal"
                 name="password"
@@ -88,7 +92,7 @@ export default function LoginForm({
                 }}
             />
 
-            {/* Link to reset password */}
+            {/* Forgot Password Link */}
             <Box sx={{ mt: 2 }}>
                 <Link
                     sx={{
@@ -98,11 +102,11 @@ export default function LoginForm({
                     }}
                     onClick={() => setShowResetPassword(true)}
                 >
-                    Forgot password?
+                    {t('home.auth.login.form.password.forgot')}
                 </Link>
             </Box>
 
-            {/* Submit button for login */}
+            {/* Submit Button */}
             <Button
                 fullWidth
                 variant="contained"
@@ -115,7 +119,7 @@ export default function LoginForm({
                     '&:hover': { bgcolor: '#c84f03' }
                 }}
             >
-                {loading ? 'Loading...' : 'Login'}
+                {loading ? t('home.auth.common.loading') : t('home.auth.login.form.submit')}
             </Button>
         </Box>
     );

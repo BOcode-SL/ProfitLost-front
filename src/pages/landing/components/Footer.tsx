@@ -42,8 +42,9 @@ export default function Footer() {
                                 mb: { xs: 1.5, sm: 2 },
                                 height: 'auto',
                                 display: 'block',
-                                marginLeft: 'auto',
-                                marginRight: 'auto'
+                                marginLeft: { xs: 'auto', md: 0 },
+                                marginRight: { xs: 'auto', md: 0 },
+                                textAlign: { xs: 'center', md: 'left' }
                             }}
                         />
                         <Typography

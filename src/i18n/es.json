@@ -379,6 +379,107 @@
                     }
                 }
             }
+        },
+        "auth": {
+            "common": {
+                "loading": "Cargando...",
+                "or": "o"
+            },
+            "login": {
+                "title": "Bienvenido de nuevo!",
+                "subtitle": "Inicia sesión en tu cuenta",
+                "form": {
+                    "identifier": {
+                        "label": "Email o nombre de usuario",
+                        "placeholder": "email@example.com o nombre de usuario"
+                    },
+                    "password": {
+                        "label": "Contraseña",
+                        "forgot": "¿Olvidaste tu contraseña?"
+                    },
+                    "submit": "Iniciar sesión",
+                    "googleButton": "Continuar con Google",
+                    "googleError": "Error al autenticar con Google",
+                    "alternativeAction": "¿No tienes una cuenta? Regístrate"
+                }
+            },
+            "register": {
+                "title": "Crea una cuenta",
+                "subtitle": "Únete a nosotros y comienza a gestionar tus finanzas",
+                "form": {
+                    "name": {
+                        "label": "Nombre",
+                        "placeholder": "Tu nombre"
+                    },
+                    "surname": {
+                        "label": "Apellido",
+                        "placeholder": "Tu apellido"
+                    },
+                    "username": {
+                        "label": "Nombre de usuario",
+                        "placeholder": "nombre de usuario",
+                        "helper": "Solo se permiten letras minúsculas y números"
+                    },
+                    "email": {
+                        "label": "Email",
+                        "placeholder": "email@example.com"
+                    },
+                    "password": {
+                        "label": "Contraseña",
+                        "helper": "Mínimo 8 caracteres, una letra mayúscula, una letra minúscula, un número y un símbolo"
+                    },
+                    "submit": "Crear cuenta",
+                    "alternativeAction": "¿Ya tienes una cuenta? Inicia sesión"
+                }
+            },
+            "resetPassword": {
+                "title": "Restablecer contraseña",
+                "subtitle": "Ingresa tu email para recibir un código de recuperación",
+                "steps": {
+                    "email": {
+                        "title": "Ingresa tu email",
+                        "label": "Email",
+                        "submit": "Enviar código de recuperación"
+                    },
+                    "token": {
+                        "title": "Ingresa el código de recuperación",
+                        "label": "Código de recuperación",
+                        "submit": "Verificar código"
+                    },
+                    "password": {
+                        "title": "Crea una nueva contraseña",
+                        "newPassword": {
+                            "label": "Nueva contraseña"
+                        },
+                        "confirmPassword": {
+                            "label": "Confirmar nueva contraseña",
+                            "helper": "Mínimo 8 caracteres, una letra mayúscula, una letra minúscula, un número y un símbolo"
+                        },
+                        "submit": "Restablecer contraseña"
+                    }
+                }
+            },
+            "errors": {
+                "missingFields": "Todos los campos son requeridos",
+                "invalidFormat": "Formato inválido. Por favor, verifica los campos",
+                "emailExists": "Email ya registrado",
+                "usernameExists": "Nombre de usuario ya en uso",
+                "passwordRequirements": "La contraseña debe tener al menos 8 caracteres, contener al menos una letra mayúscula, una letra minúscula y un número",
+                "invalidCredentials": "Credenciales inválidas",
+                "accountInactive": "Cuenta inactiva. Contacta al soporte",
+                "accountLocked": "Cuenta bloqueada temporalmente. Intenta de nuevo en {{minutes}} minutos",
+                "serverError": "Error del servidor. Por favor, inténtalo de nuevo más tarde",
+                "connectionError": "Error de conexión",
+                "emailNotFound": "Email no encontrado",
+                "invalidToken": "Token inválido o expirado",
+                "passwordsDoNotMatch": "Las contraseñas no coinciden"
+            },
+            "success": {
+                "welcome": "Bienvenido de nuevo!",
+                "registration": "Registro exitoso!",
+                "recoveryCodeSent": "Código de recuperación enviado a tu email",
+                "passwordReset": "Contraseña restablecida correctamente"
+            }
         }
     },
     "dashboard": {

@@ -1,8 +1,10 @@
 import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Types
 import type { RegisterCredentials } from '../../../../types/api/responses';
+
 interface RegisterFormProps {
     registerData: RegisterCredentials; // Data for registration
     loading: boolean; // Loading state for the button
@@ -23,6 +25,7 @@ export default function RegisterForm({
     isFormValid,
     handleSubmit
 }: RegisterFormProps) {
+    const { t } = useTranslation();
 
     return (
         <Box component="form" onSubmit={handleSubmit}>
@@ -30,36 +33,36 @@ export default function RegisterForm({
             <TextField
                 fullWidth
                 required
-                label="Name"
+                label={t('home.auth.register.form.name.label')}
                 variant="outlined"
                 margin="normal"
                 name="name"
                 value={registerData.name}
                 onChange={handleChange}
-                placeholder="Your name"
+                placeholder={t('home.auth.register.form.name.placeholder')}
             />
             {/* Input for Surname */}
             <TextField
                 fullWidth
                 required
-                label="Surname"
+                label={t('home.auth.register.form.surname.label')}
                 variant="outlined"
                 margin="normal"
                 name="surname"
                 value={registerData.surname}
                 onChange={handleChange}
-                placeholder="Your surname"
+                placeholder={t('home.auth.register.form.surname.placeholder')}
             />
             {/* Input for Username */}
             <TextField
                 fullWidth
                 required
-                label="Username"
+                label={t('home.auth.register.form.username.label')}
                 variant="outlined"
                 margin="normal"
                 name="username"
-                helperText="Only lowercase letters and numbers allowed"
-                placeholder="username"
+                helperText={t('home.auth.register.form.username.helper')}
+                placeholder={t('home.auth.register.form.username.placeholder')}
                 value={registerData.username}
                 onChange={(e) => {
                     const value = e.target.value.toLowerCase();
@@ -77,25 +80,25 @@ export default function RegisterForm({
             <TextField
                 fullWidth
                 required
-                label="Email"
+                label={t('home.auth.register.form.email.label')}
                 type="email"
                 variant="outlined"
                 margin="normal"
                 name="email"
                 value={registerData.email}
                 onChange={handleChange}
-                placeholder="tu@email.com"
+                placeholder={t('home.auth.register.form.email.placeholder')}
             />
             {/* Input for Password */}
             <TextField
                 fullWidth
                 required
                 type={showPassword ? 'text' : 'password'}
-                label="Password"
+                label={t('home.auth.register.form.password.label')}
                 variant="outlined"
                 margin="normal"
                 name="password"
-                helperText="Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
+                helperText={t('home.auth.register.form.password.helper')}
                 value={registerData.password}
                 onChange={handleChange}
                 InputProps={{
@@ -123,7 +126,7 @@ export default function RegisterForm({
                     '&:hover': { bgcolor: '#c84f03' }
                 }}
             >
-                {loading ? 'Loading...' : 'Register'}
+                {loading ? t('home.auth.common.loading') : t('home.auth.register.form.submit')}
             </Button>
         </Box>
     );

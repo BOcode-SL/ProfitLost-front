@@ -1,5 +1,6 @@
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 import { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Types
 interface ResetPasswordFormProps {
@@ -42,6 +43,7 @@ export default function ResetPasswordForm({
     handleVerifyToken,
     handleResetPassword,
 }: ResetPasswordFormProps) {
+    const { t } = useTranslation();
 
     switch (resetStep) {
         // Email step
@@ -52,7 +54,7 @@ export default function ResetPasswordForm({
                     <TextField
                         fullWidth
                         required
-                        label="Email"
+                        label={t('home.auth.resetPassword.steps.email.label')}
                         type="email"
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value.trim())}
@@ -69,7 +71,7 @@ export default function ResetPasswordForm({
                             '&:hover': { bgcolor: '#c84f03' }
                         }}
                     >
-                        {loading ? 'Loading...' : 'Send Recovery Code'}
+                        {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.email.submit')}
                     </Button>
                 </Box>
             );
@@ -81,7 +83,7 @@ export default function ResetPasswordForm({
                     <TextField
                         fullWidth
                         required
-                        label="Recovery Code"
+                        label={t('home.auth.resetPassword.steps.token.label')}
                         value={resetToken}
                         onChange={(e) => setResetToken(e.target.value.trim())}
                         sx={{ mb: 2 }}
@@ -98,7 +100,7 @@ export default function ResetPasswordForm({
                             '&:hover': { bgcolor: '#c84f03' }
                         }}
                     >
-                        {loading ? 'Loading...' : 'Verify Code'}
+                        {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.token.submit')}
                     </Button>
                 </Box>
             );
@@ -111,7 +113,7 @@ export default function ResetPasswordForm({
                         fullWidth
                         required
                         type={showNewPassword ? 'text' : 'password'}
-                        label="New Password"
+                        label={t('home.auth.resetPassword.steps.password.newPassword.label')}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         margin="normal"
@@ -132,11 +134,11 @@ export default function ResetPasswordForm({
                         fullWidth
                         required
                         type={showConfirmPassword ? 'text' : 'password'}
-                        label="Confirm New Password"
-                        helperText="Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
+                        label={t('home.auth.resetPassword.steps.password.confirmPassword.label')}
+                        helperText={t('home.auth.resetPassword.steps.password.confirmPassword.helper')}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        sx={{ mb: 2 }}
+                        margin="normal"
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -156,11 +158,12 @@ export default function ResetPasswordForm({
                         type="submit"
                         disabled={!newPassword || !confirmPassword || loading}
                         sx={{
+                            mt: 3,
                             bgcolor: '#fe6f14',
                             '&:hover': { bgcolor: '#c84f03' }
                         }}
                     >
-                        {loading ? 'Loading...' : 'Reset Password'}
+                        {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.password.submit')}
                     </Button>
                 </Box>
             );

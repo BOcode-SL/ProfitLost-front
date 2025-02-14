@@ -1,33 +1,57 @@
-// Importing the i18n library for internationalization
+// Importing the i18n library for internationalization support
 import i18n from 'i18next';
-// Importing the React bindings for i18next
+// Importing the React bindings for i18next to integrate with React
 import { initReactI18next } from 'react-i18next';
-// Importing the language detector for browser language detection
+// Importing the language detector to automatically detect the user's language
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Importing translation files for English and Spanish
+// Importing translation files for English and Spanish languages
 import en from './i18n/en.json';
 import es from './i18n/es.json';
 
-// Initializing i18n with the necessary configurations
+// Function to normalize language codes
+const normalizeLanguage = (lng) => {
+    // Convert es-ES, es-AR, etc. to simply 'es'
+    if (lng.startsWith('es')) return 'es';
+    // Convert en-US, en-GB, etc. to simply 'en'
+    if (lng.startsWith('en')) return 'en';
+    return 'en'; // default language
+};
+
+// Initializing i18n with the required configurations
 i18n
-    .use(LanguageDetector) // Using the language detector
-    .use(initReactI18next) // Initializing React i18next
+    .use(LanguageDetector)
+    .use(initReactI18next)
     .init({
         resources: {
             en: {
-                translation: en // English translations
+                translation: en
             },
             es: {
-                translation: es // Spanish translations
+                translation: es
             }
         },
-        fallbackLng: 'en', // Fallback language if the detected language is not available
-        debug: process.env.NODE_ENV === 'development', // Enable debug mode in development
+        fallbackLng: 'en',
+        debug: process.env.NODE_ENV === 'development',
+        detection: {
+            order: ['localStorage', 'navigator'],
+            lookupLocalStorage: 'i18nextLng',
+            caches: ['localStorage']
+        },
+        load: 'languageOnly', // Load only the main language code (e.g., 'es' instead of 'es-ES')
         interpolation: {
-            escapeValue: false // Disable escaping for interpolation
+            escapeValue: false
         }
     });
 
-// Exporting the configured i18n instance
+// Normalize the current language if necessary
+const currentLng = localStorage.getItem('i18nextLng');
+if (currentLng) {
+    const normalizedLng = normalizeLanguage(currentLng);
+    if (currentLng !== normalizedLng) {
+        i18n.changeLanguage(normalizedLng);
+    }
+}
+
+// Exporting the configured i18n instance for use in the application
 export default i18n;
