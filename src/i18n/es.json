@@ -3,8 +3,7 @@
         "header": {
             "login": "Iniciar sesión",
             "language": {
-                "en": "Cambiar a inglés",
-                "es": "Cambiar a español"
+                "en": "Change to English"
             }
         },
         "hero": {
