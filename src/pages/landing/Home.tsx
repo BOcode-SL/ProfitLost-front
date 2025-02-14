@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 
 // Components
 import Footer from './components/Footer';
+import Header from './components/Header';
 
 // Styles
 import './Home.scss';
@@ -30,20 +31,7 @@ export default function Home() {
 
     return (
         <div className="home-container">
-            {/* Header */}
-            <header className="header">
-                <nav className="nav-container">
-                    <img className="no-select" src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg" alt="logo" />
-
-                    <div className="nav-buttons">
-                        <button
-                            className="cta-button"
-                            onClick={() => window.location.href = '/auth'}>
-                            Login
-                        </button>
-                    </div>
-                </nav>
-            </header>
+            <Header />
 
             {/* Hero Section */}
             <section className="hero-section">
