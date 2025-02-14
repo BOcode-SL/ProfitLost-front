@@ -1,141 +1,147 @@
 import { Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import LegalLayout from './components/LegalLayout';
 
 // Terms of Service page
 export default function TermsOfService() {
+    const { t } = useTranslation();
+
+    // Helper function to safely convert translation to array
+    const getTranslationArray = (key: string): string[] => {
+        const translation = t(key, { returnObjects: true });
+        return Array.isArray(translation) ? translation : [];
+    };
+
     return (
-        <LegalLayout title="Terms of Service">
+        <LegalLayout title={t('home.legal.terms.title')}>
             {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last updated: 09/02/2025
+                {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             {/* Section 1: Acceptance of the Terms */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                1. Acceptance of the Terms
+                {t('home.legal.terms.sections.acceptance.title')}
             </Typography>
-            <Typography >
-                By accessing and using Profit&Lost, you agree to be bound by these terms of service. If you do not agree with any part of the terms, you will not be able to access the service.
+            <Typography>
+                {t('home.legal.terms.sections.acceptance.content')}
             </Typography>
 
             {/* Section 2: Service description */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                2. Service description
+                {t('home.legal.terms.sections.description.title')}
             </Typography>
-            <Typography >
-                Profit&Lost is a web application for the management and visualization of personal financial data. The service is provided "as is" and "as available".
+            <Typography>
+                {t('home.legal.terms.sections.description.content')}
             </Typography>
 
             {/* Section 3: Registration and Account */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                3. Registration and Account
+                {t('home.legal.terms.sections.registration.title')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>The registration information must be accurate and up-to-date</li>
-                <li>You are responsible for maintaining the security of your account</li>
-                <li>You must not share your access credentials</li>
+                {getTranslationArray('home.legal.terms.sections.registration.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 4: European User Rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                4. European User Rights
+                {t('home.legal.terms.sections.europeanRights.title')}
             </Typography>
-            <Typography >
-                According to EU legislation, you have the right to:
+            <Typography>
+                {t('home.legal.terms.sections.europeanRights.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Cancel your subscription within 14 days after the purchase</li>
-                <li>Receive all the information about the service in a clear and understandable way</li>
-                <li>Access, correct or delete your personal data</li>
-                <li>Present a complaint to the competent data protection authority</li>
-                <li>Resolve disputes through the ODR platform of the EU (Online Dispute Resolution)</li>
+                {getTranslationArray('home.legal.terms.sections.europeanRights.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 5: Conflict Resolution in the EU */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                5. Conflict Resolution in the EU
+                {t('home.legal.terms.sections.conflictResolution.title')}
             </Typography>
-            <Typography >
-                For users in the EU:
+            <Typography>
+                {t('home.legal.terms.sections.conflictResolution.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>You can access the online conflict resolution platform of the EU at: http://ec.europa.eu/consumers/odr/</li>
-                <li>You have the right to present complaints to the consumer authority of your country</li>
-                <li>You can choose the legislation of your country of residence for any dispute</li>
+                {getTranslationArray('home.legal.terms.sections.conflictResolution.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 6: Rights and Restrictions */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                6. Rights and Restrictions
+                {t('home.legal.terms.sections.rights.title')}
             </Typography>
-            <Typography >
-                We reserve the right to:
+            <Typography>
+                {t('home.legal.terms.sections.rights.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Modify or interrupt the service without prior notice</li>
-                <li>Reject the service to any user</li>
-                <li>Delete content that violates these terms</li>
-                <li>Update prices with 30 days prior notice</li>
+                {getTranslationArray('home.legal.terms.sections.rights.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 7: Data Protection */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                7. Data Protection
+                {t('home.legal.terms.sections.dataProtection.title')}
             </Typography>
-            <Typography >
-                The processing of personal data is governed by our Privacy Policy, in compliance with the RGPD (UE) 2016/679.
+            <Typography>
+                {t('home.legal.terms.sections.dataProtection.content')}
             </Typography>
 
             {/* Section 8: Limitation of Liability */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                8. Limitation of Liability
+                {t('home.legal.terms.sections.liability.title')}
             </Typography>
-            <Typography >
-                In the maximum extent permitted by law, Profit&Lost will not be responsible for:
+            <Typography>
+                {t('home.legal.terms.sections.liability.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Indirect or consequential damages</li>
-                <li>Loss of data or service interruption</li>
-                <li>Financial decisions based on the information provided</li>
+                {getTranslationArray('home.legal.terms.sections.liability.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 9: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                9. Modifications
+                {t('home.legal.terms.sections.modifications.title')}
             </Typography>
-            <Typography >
-                We reserve the right to modify these terms at any time. The changes will come into effect immediately after their publication.
+            <Typography>
+                {t('home.legal.terms.sections.modifications.content')}
             </Typography>
 
             {/* Section 10: Applicable Law and Jurisdiction */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                10. Applicable Law and Jurisdiction
+                {t('home.legal.terms.sections.law.title')}
             </Typography>
-            <Typography >
-                For users in the EU, these terms are governed by Spanish law and applicable European legislation. Notwithstanding the mandatory legislation of the user's country of residence, any dispute will be subject to:
+            <Typography>
+                {t('home.legal.terms.sections.law.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>The jurisdiction of the Spanish courts</li>
-                <li>The alternative dispute resolution mechanisms available in the EU</li>
-                <li>The consumer protection legislation of the user's country of residence</li>
+                {getTranslationArray('home.legal.terms.sections.law.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 11: Validity and Nullity */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                11. Validity and Nullity
+                {t('home.legal.terms.sections.validity.title')}
             </Typography>
-            <Typography >
-                If any provision of these terms is declared null or inapplicable, such nullity will not affect the remaining provisions, which will remain fully effective and binding.
+            <Typography>
+                {t('home.legal.terms.sections.validity.content')}
             </Typography>
 
             {/* Section 12: Contact */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                12. Contact
+                {t('home.legal.terms.sections.contact.title')}
             </Typography>
-            <Typography paragraph>
-                For any questions about these terms, contact: support@profit-lost.com
+            <Typography>
+                {t('home.legal.terms.sections.contact.content')}
             </Typography>
         </LegalLayout>
     );

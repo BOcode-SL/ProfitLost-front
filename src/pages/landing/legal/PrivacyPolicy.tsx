@@ -1,151 +1,143 @@
 import { Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import LegalLayout from './components/LegalLayout';
 
 // Privacy Policy page
 export default function PrivacyPolicy() {
+    const { t } = useTranslation();
+
+    // Helper function to safely convert translation to array
+    const getTranslationArray = (key: string): string[] => {
+        const translation = t(key, { returnObjects: true });
+        return Array.isArray(translation) ? translation : [];
+    };
+
     return (
-        <LegalLayout title="Privacy Policy">
+        <LegalLayout title={t('home.legal.privacyPolicy.title')}>
             {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last updated: 09/02/2025
+                {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             {/* Section 1: Responsible for the Treatment */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                1. Responsible for the Treatment
+                {t('home.legal.privacyPolicy.sections.responsible.title')}
             </Typography>
-            <Typography >
-                In accordance with the General Data Protection Regulation (EU) 2016/679:
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.responsible.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Responsable: Brian González Novoa</li>
-                <li>Email: support@profit-lost.com</li>
-                <li>Website: https://profit-lost.com</li>
+                <li>{t('home.legal.privacyPolicy.sections.responsible.items.name')}</li>
+                <li>{t('home.legal.privacyPolicy.sections.responsible.items.email')}</li>
+                <li>{t('home.legal.privacyPolicy.sections.responsible.items.website')}</li>
             </Box>
 
             {/* Section 2: Information we collect */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                2. Information we collect
-            </Typography>
-            <Typography >
-                In Profit&Lost, we collect and process:
-            </Typography>
-            <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Identifying data: email and username</li>
-                <li>Financial data voluntarily introduced</li>
-                <li>Usage and analytical data</li>
-                <li>Technical and analytical cookies</li>
-                <li>IP address and browser data</li>
-            </Box>
-
-            {/* Section 3: Legal basis for the treatment */}
-            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                3. Legal basis for the treatment
+                {t('home.legal.privacyPolicy.sections.information.title')}
             </Typography>
             <Typography>
-                We process your personal data based on:
+                {t('home.legal.privacyPolicy.sections.information.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>The execution of the service contract (Art. 6.1.b RGPD)</li>
-                <li>Your explicit consent (Art. 6.1.a RGPD)</li>
-                <li>Our legitimate interest in improving our services (Art. 6.1.f RGPD)</li>
-                <li>Compliance with legal obligations (Art. 6.1.c RGPD)</li>
+                {getTranslationArray('home.legal.privacyPolicy.sections.information.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
-            {/* Section 4: Purpose of the Treatment */}
+            {/* Section 3: Legal basis */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                4. Purpose of the Treatment
+                {t('home.legal.privacyPolicy.sections.legalBasis.title')}
             </Typography>
             <Typography>
-                Your data will be processed with the following specific purposes:
+                {t('home.legal.privacyPolicy.sections.legalBasis.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Manage your account and provide our services</li>
-                <li>Process and visualize your financial data</li>
-                <li>Improve and personalize your experience</li>
-                <li>Send communications about the service</li>
-                <li>Comply with legal obligations</li>
-                <li>Fraud prevention and platform security</li>
-                <li>Statistical analysis and service improvement</li>
+                {getTranslationArray('home.legal.privacyPolicy.sections.legalBasis.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
+            </Box>
+
+            {/* Section 4: Purpose */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.privacyPolicy.sections.purpose.title')}
+            </Typography>
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.purpose.subtitle')}
+            </Typography>
+            <Box component="ul" sx={{ pl: 4, mb: 4 }}>
+                {getTranslationArray('home.legal.privacyPolicy.sections.purpose.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 5: ARCO+ Rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                5. ARCO+ Rights
+                {t('home.legal.privacyPolicy.sections.rights.title')}
             </Typography>
-            <Typography >
-                You can exercise your rights of:
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.rights.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Access to your personal data</li>
-                <li>Rectification of inaccurate data</li>
-                <li>Cancellation (deletion) of your data</li>
-                <li>Opposition to the treatment</li>
-                <li>Limitation of the treatment</li>
-                <li>Portability of your data</li>
+                {getTranslationArray('home.legal.privacyPolicy.sections.rights.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
-            <Typography >
-                To exercise these rights, contact support@profit-lost.com.
-                You also have the right to make a complaint to the Spanish Data Protection Agency (www.aepd.es).
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.rights.contact')}
             </Typography>
 
             {/* Section 6: Data retention */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                6. Data retention
+                {t('home.legal.privacyPolicy.sections.retention.title')}
             </Typography>
-            <Typography >
-                We will retain your personal data while:
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.retention.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Maintain an active account</li>
-                <li>Necessary to comply with legal obligations</li>
-                <li>Necessary to protect our legal interests</li>
+                {getTranslationArray('home.legal.privacyPolicy.sections.retention.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 7: Security measures */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                7. Security measures
+                {t('home.legal.privacyPolicy.sections.security.title')}
             </Typography>
-            <Typography >
-                We implement technical and organizational measures appropriate to ensure an adequate level of security, including:
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.security.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Data encryption</li>
-                <li>Restricted access to personal data</li>
-                <li>Regular backups</li>
-                <li>Security monitoring</li>
+                {getTranslationArray('home.legal.privacyPolicy.sections.security.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 8: Minors */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                8. Minors
+                {t('home.legal.privacyPolicy.sections.minors.title')}
             </Typography>
-            <Typography >
-                Our services are not directed to minors under 18 years of age. We do not knowingly collect
-                intencionadamente information personal of minors. If you are aware that a minor has provided
-                personal information to us, please contact us and we will proceed to its deletion.
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.minors.content')}
             </Typography>
 
             {/* Section 9: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                9. Modifications
+                {t('home.legal.privacyPolicy.sections.modifications.title')}
             </Typography>
-            <Typography >
-                We reserve the right to modify this privacy policy.
-                Changes will be published on this page and, in case of substantial modifications,
-                we will notify you by email.
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.modifications.content')}
             </Typography>
 
             {/* Section 10: Contact */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                10. Contact
+                {t('home.legal.privacyPolicy.sections.contact.title')}
             </Typography>
-            <Typography >
-                For any privacy-related questions: support@profit-lost.com
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.contact.content')}
             </Typography>
-
         </LegalLayout>
     );
 } 

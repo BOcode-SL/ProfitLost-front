@@ -1,98 +1,113 @@
 import { Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import LegalLayout from './components/LegalLayout';
 
+// Types
+interface CookieType {
+    title: string;
+    description: string;
+}
+
 // Cookie Policy page
 export default function CookiePolicy() {
+    const { t } = useTranslation();
+
+    // Helper functions to safely convert translations to arrays
+    const getTranslationArray = (key: string): string[] => {
+        const translation = t(key, { returnObjects: true });
+        return Array.isArray(translation) ? translation : [];
+    };
+
+    const getCookieTypesArray = (key: string): CookieType[] => {
+        const translation = t(key, { returnObjects: true });
+        return Array.isArray(translation) ? translation : [];
+    };
+
     return (
-        <LegalLayout title="Cookie Policy">
+        <LegalLayout title={t('home.legal.cookiesPolicy.title')}>
             {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last updated: 09/02/2025
+                {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             {/* Section 1: What are cookies? */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                1. What are cookies?
+                {t('home.legal.cookiesPolicy.sections.whatAreCookies.title')}
             </Typography>
-            <Typography >
-                Cookies are small text files that are stored on your device when you visit our website.
-                They allow us to remember your preferences and improve your navigation experience.
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.whatAreCookies.content')}
             </Typography>
 
             {/* Section 2: Legal basis */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                2. Legal basis
+                {t('home.legal.cookiesPolicy.sections.legalBasis.title')}
             </Typography>
-            <Typography >
-                In compliance with the Law 34/2002, of the Information Society and Electronic Commerce Service (LSSI-CE),
-                and the General Data Protection Regulation (GDPR) 2016/679, we inform you about the use of cookies on our website.
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.legalBasis.content')}
             </Typography>
 
             {/* Section 3: Types of cookies we use */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                3. Types of cookies we use
+                {t('home.legal.cookiesPolicy.sections.types.title')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>
-                    <Typography component="span" fontWeight="bold">Technical cookies (necessary):</Typography>
-                    {' '}They allow navigation and the use of basic functions.
-                </li>
-                <li>
-                    <Typography component="span" fontWeight="bold">Analytical cookies:</Typography>
-                    {' '}They help us understand how users interact with the website (Google Analytics).
-                </li>
+                {getCookieTypesArray('home.legal.cookiesPolicy.sections.types.items').map((item: CookieType, index: number) => (
+                    <li key={index}>
+                        <Typography component="span" fontWeight="bold">{item.title}</Typography>
+                        {' '}{item.description}
+                    </li>
+                ))}
             </Box>
 
             {/* Section 4: Cookies management */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                4. Cookies management
+                {t('home.legal.cookiesPolicy.sections.management.title')}
             </Typography>
-            <Typography >
-                You can configure your browser to reject all cookies or to receive a notification when a cookie is sent.
-                However, some features of our website may not work correctly without cookies.
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.management.content')}
             </Typography>
 
             {/* Section 5: Third-party cookies */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                5. Third-party cookies
+                {t('home.legal.cookiesPolicy.sections.thirdParty.title')}
             </Typography>
-            <Typography >
-                We use third-party services that may set cookies on your device:
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.thirdParty.content')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Google Analytics: website usage analysis</li>
+                {getTranslationArray('home.legal.cookiesPolicy.sections.thirdParty.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
             </Box>
 
             {/* Section 6: Cookies retention period */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                6. Cookies retention period
+                {t('home.legal.cookiesPolicy.sections.retention.title')}
             </Typography>
-            <Typography >
-                Session cookies are deleted when the browser is closed.
-                Persistent cookies remain on your device for a maximum period of 24 months.
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.retention.content')}
             </Typography>
 
             {/* Section 7: Your rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                7. Your rights
+                {t('home.legal.cookiesPolicy.sections.rights.title')}
             </Typography>
-            <Typography >
-                You can exercise your rights of access, rectification, deletion and opposition by contacting:
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.rights.content')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                <li>Email: support@profit-lost.com</li>
-                <li>Website: https://profit-lost.com</li>
+                <li>{t('home.legal.cookiesPolicy.sections.rights.contact.email')}</li>
+                <li>{t('home.legal.cookiesPolicy.sections.rights.contact.website')}</li>
             </Box>
 
             {/* Section 8: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                8. Modifications
+                {t('home.legal.cookiesPolicy.sections.modifications.title')}
             </Typography>
-            <Typography >
-                We reserve the right to update this cookie policy at any time.
-                The changes will come into force immediately after their publication on the website.
+            <Typography>
+                {t('home.legal.cookiesPolicy.sections.modifications.content')}
             </Typography>
         </LegalLayout>
     );

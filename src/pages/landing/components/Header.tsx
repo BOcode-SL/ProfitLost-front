@@ -10,7 +10,6 @@ export default function Header() {
     const [currentLanguage, setCurrentLanguage] = useState(() =>
         localStorage.getItem('language') || 'en'
     );
-    const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
     useEffect(() => {
         // Handle scroll event to change header style based on scroll position
@@ -20,12 +19,6 @@ export default function Header() {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
-        // Calculate and set the width of the scrollbar
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        setScrollbarWidth(scrollbarWidth);
     }, []);
 
     const toggleLanguage = () => {
@@ -45,7 +38,6 @@ export default function Header() {
                 right: 0,
                 zIndex: 1000,
                 p: { xs: 1, sm: 2, md: 3 },
-                paddingRight: `${scrollbarWidth}px !important`,
                 boxSizing: 'border-box',
                 width: '100%'
             }}

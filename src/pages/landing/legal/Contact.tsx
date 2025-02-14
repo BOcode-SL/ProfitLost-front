@@ -1,45 +1,49 @@
 import { Typography, Box, Link } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import LegalLayout from './components/LegalLayout';
 
 // Contact page
 export default function Contact() {
+    const { t } = useTranslation();
+
     return (
-        <LegalLayout title="Contact">
+        <LegalLayout title={t('home.legal.contact.title')}>
             {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
-                Last updated: 09/02/2025
+                {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             <Box sx={{ maxWidth: 800 }}>
                 {/* Section 1: General information */}
                 <Typography paragraph sx={{ mb: 4 }}>
-                    If you have any questions or suggestions, we are here to help you.
-                    Our team is committed to providing the best support possible to all our users.
+                    {t('home.legal.contact.generalInfo')}
                 </Typography>
 
                 {/* Section 2: Technical Support */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
-                        Technical Support
+                        {t('home.legal.contact.sections.technicalSupport.title')}
                     </Typography>
                     <Typography>
-                        For technical questions, application issues or general help:
+                        {t('home.legal.contact.sections.technicalSupport.description')}
                     </Typography>
-                    <Link href="mailto:support@profit-lost.com">support@profit-lost.com</Link>
+                    <Link href={`mailto:${t('home.legal.contact.sections.technicalSupport.email')}`}>
+                        {t('home.legal.contact.sections.technicalSupport.email')}
+                    </Link>
                     <Typography variant="body2" color="text.secondary">
-                        Usual response time: 24-48 hours working days
+                        {t('home.legal.contact.sections.technicalSupport.responseTime')}
                     </Typography>
                 </Box>
 
                 {/* Section 3: Support Hours */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
-                        Support Hours
+                        {t('home.legal.contact.sections.supportHours.title')}
                     </Typography>
                     <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                        <li>Monday to Friday: 9:00 - 18:00 (CET)</li>
+                        <li>{t('home.legal.contact.sections.supportHours.schedule')}</li>
                     </Box>
                 </Box>
             </Box>

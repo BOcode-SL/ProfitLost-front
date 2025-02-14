@@ -79,6 +79,306 @@
                 "contact": "Contacto"
             },
             "copyright": "© 2024 Profit&Lost. Todos los derechos reservados. Desarrollado por"
+        },
+        "legal": {
+            "home": "Inicio",
+            "lastUpdated": "Última actualización: {{date}}",
+            "privacyPolicy": {
+                "title": "Política de Privacidad",
+                "sections": {
+                    "responsible": {
+                        "title": "1. Responsable del tratamiento",
+                        "subtitle": "De acuerdo con la Reglamentación General de Protección de Datos (RGPD) 2016/679:",
+                        "items": {
+                            "name": "Responsable: Brian González Novoa",
+                            "email": "Correo electrónico: support@profit-lost.com",
+                            "website": "Página web: https://profit-lost.com"
+                        }
+                    },
+                    "information": {
+                        "title": "2. Información que recopilamos",
+                        "subtitle": "En Profit&Lost, recopilamos y procesamos:",
+                        "items": [
+                            "Datos identificativos: email y nombre de usuario",
+                            "Datos financieros voluntariamente introducidos",
+                            "Datos de uso y análisis",
+                            "Cookies técnicas y analíticas",
+                            "Dirección IP y datos del navegador"
+                        ]
+                    },
+                    "legalBasis": {
+                        "title": "3. Base legal del tratamiento",
+                        "subtitle": "Procesamos tus datos personales basándonos en:",
+                        "items": [
+                            "La ejecución del contrato de servicio (Art. 6.1.b RGPD)",
+                            "Tu consentimiento explícito (Art. 6.1.a RGPD)",
+                            "Nuestro interés legítimo en mejorar nuestros servicios (Art. 6.1.f RGPD)",
+                            "Cumplimiento de obligaciones legales (Art. 6.1.c RGPD)"
+                        ]
+                    },
+                    "purpose": {
+                        "title": "4. Finalidad del tratamiento",
+                        "subtitle": "Tus datos se procesarán con las siguientes finalidades específicas:",
+                        "items": [
+                            "Gestionar tu cuenta y proporcionar nuestros servicios",
+                            "Procesar y visualizar tus datos financieros",
+                            "Mejorar y personalizar tu experiencia",
+                            "Enviar comunicaciones sobre el servicio",
+                            "Cumplir con obligaciones legales",
+                            "Prevención de fraude y seguridad de la plataforma",
+                            "Análisis estadístico y mejora del servicio"
+                        ]
+                    },
+                    "rights": {
+                        "title": "5. Derechos ARCO+",
+                        "subtitle": "Puedes ejercer tus derechos de:",
+                        "items": [
+                            "Acceso a tus datos personales",
+                            "Rectificación de datos inexactos",
+                            "Cancelación (eliminación) de tus datos",
+                            "Oposición al tratamiento",
+                            "Limitación del tratamiento",
+                            "Portabilidad de tus datos"
+                        ],
+                        "contact": "Para ejercer estos derechos, contacta con support@profit-lost.com. También tienes el derecho a presentar una reclamación a la Agencia Española de Protección de Datos (www.aepd.es)."
+                    },
+                    "retention": {
+                        "title": "6. Retención de datos",
+                        "subtitle": "Retendremos tus datos personales mientras:",
+                        "items": [
+                            "Mantener una cuenta activa",
+                            "Necesario para cumplir con obligaciones legales",
+                            "Necesario para proteger nuestros intereses legales"
+                        ]
+                    },
+                    "security": {
+                        "title": "7. Medidas de seguridad",
+                        "subtitle": "Implementamos medidas técnicas y organizativas adecuadas para garantizar un nivel de seguridad adecuado, incluyendo:",
+                        "items": [
+                            "Cifrado de datos",
+                            "Acceso restringido a datos personales",
+                            "Respaldos regulares",
+                            "Monitoreo de seguridad"
+                        ]
+                    },
+                    "minors": {
+                        "title": "8. Menores",
+                        "content": "Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos información personal de menores. Si estás consciente de que un menor ha proporcionado información personal a nosotros, por favor contacta con nosotros y procederemos a su eliminación."
+                    },
+                    "modifications": {
+                        "title": "9. Modificaciones",
+                        "content": "Reservamos el derecho a modificar esta política de privacidad. Los cambios se publicarán en esta página y, en caso de modificaciones sustanciales, se notificarán a través de correo electrónico."
+                    },
+                    "contact": {
+                        "title": "10. Contacto",
+                        "content": "Para cualquier pregunta relacionada con la privacidad: support@profit-lost.com"
+                    }
+                }
+            },
+            "terms": {
+                "title": "Términos de Servicio",
+                "sections": {
+                    "acceptance": {
+                        "title": "1. Aceptación de los Términos",
+                        "content": "Al acceder y utilizar Profit&Lost, aceptas estar sujeto a estos términos de servicio. Si no estás de acuerdo con alguna parte de los términos, no podrás acceder al servicio."
+                    },
+                    "description": {
+                        "title": "2. Descripción del servicio",
+                        "content": "Profit&Lost es una aplicación web para la gestión y visualización de datos financieros personales. El servicio se proporciona \"tal cual\" y \"tal como esté disponible\"."
+                    },
+                    "registration": {
+                        "title": "3. Registro y cuenta",
+                        "items": [
+                            "La información de registro debe ser precisa y actualizada",
+                            "Eres responsable de mantener la seguridad de tu cuenta",
+                            "No debes compartir tus credenciales de acceso"
+                        ]
+                    },
+                    "europeanRights": {
+                        "title": "4. Derechos de los usuarios europeos",
+                        "subtitle": "De acuerdo con la legislación europea, tienes el derecho a:",
+                        "items": [
+                            "Cancelar tu suscripción dentro de los 14 días después de la compra",
+                            "Recibir toda la información sobre el servicio de manera clara y comprensible",
+                            "Acceder, corregir o eliminar tus datos personales",
+                            "Presentar una reclamación al organismo de protección de datos competente",
+                            "Resolver disputas a través de la plataforma de ODR de la UE (Resolución de disputas en línea)"
+                        ]
+                    },
+                    "conflictResolution": {
+                        "title": "5. Resolución de conflictos en la UE",
+                        "subtitle": "Para usuarios en la UE:",
+                        "items": [
+                            "Puedes acceder a la plataforma de resolución de conflictos en línea de la UE en: http://ec.europa.eu/consumers/odr/",
+                            "Tienes el derecho de presentar quejas al organismo de consumidor de tu país",
+                            "Puedes elegir la legislación de tu país de residencia para cualquier disputa"
+                        ]
+                    },
+                    "rights": {
+                        "title": "6. Derechos y restricciones",
+                        "subtitle": "Reservamos el derecho de:",
+                        "items": [
+                            "Modificar o interrumpir el servicio sin previo aviso",
+                            "Rechazar el servicio a cualquier usuario",
+                            "Eliminar contenido que viole estos términos",
+                            "Actualizar precios con 30 días de antelación"
+                        ]
+                    },
+                    "dataProtection": {
+                        "title": "7. Protección de datos",
+                        "content": "El procesamiento de datos personales está regulado por nuestra Política de Privacidad, en cumplimiento con la RGPD (UE) 2016/679."
+                    },
+                    "liability": {
+                        "title": "8. Limitación de responsabilidad",
+                        "subtitle": "En el máximo grado permitido por la ley, Profit&Lost no será responsable de:",
+                        "items": [
+                            "Daños indirectos o consecuenciales",
+                            "Pérdida de datos o interrupción del servicio",
+                            "Decisiones financieras basadas en la información proporcionada"
+                        ]
+                    },
+                    "modifications": {
+                        "title": "9. Modificaciones",
+                        "content": "Reservamos el derecho de modificar estos términos en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación."
+                    },
+                    "law": {
+                        "title": "10. Ley aplicable y jurisdicción",
+                        "subtitle": "Para usuarios en la UE, estos términos están sujetos a la ley española y a la legislación europea aplicable. Independientemente de la legislación obligatoria del país de residencia del usuario, cualquier disputa estará sujeta a:",
+                        "items": [
+                            "El juicio de los tribunales españoles",
+                            "Los mecanismos de resolución de disputas alternativos disponibles en la UE",
+                            "La legislación de protección al consumidor del país de residencia del usuario"
+                        ]
+                    },
+                    "validity": {
+                        "title": "11. Validez y nulidad",
+                        "content": "Si alguna disposición de estos términos se declara nula o inaplicable, dicha nulidad no afectará a las disposiciones restantes, que permanecerán plenamente efectivas y vinculantes."
+                    },
+                    "contact": {
+                        "title": "12. Contacto",
+                        "content": "Para cualquier pregunta sobre estos términos, contacta con: support@profit-lost.com"
+                    }
+                }
+            },
+            "cookiesPolicy": {
+                "title": "Política de cookies",
+                "sections": {
+                    "whatAreCookies": {
+                        "title": "1. ¿Qué son las cookies?",
+                        "content": "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas nuestro sitio web. Nos permiten recordar tus preferencias y mejorar tu experiencia de navegación."
+                    },
+                    "legalBasis": {
+                        "title": "2. Base legal",
+                        "content": "En cumplimiento con la Ley 34/2002, de la Sociedad de la Información y de la Comercio Electrónico (LSSI-CE), y la Reglamentación General de Protección de Datos (RGPD) 2016/679, te informamos sobre el uso de cookies en nuestro sitio web."
+                    },
+                    "types": {
+                        "title": "3. Tipos de cookies que utilizamos",
+                        "items": [
+                            {
+                                "title": "Cookies técnicas (necesarias):",
+                                "description": "Permiten la navegación y el uso de funciones básicas."
+                            },
+                            {
+                                "title": "Cookies analíticas:",
+                                "description": "Ayudan a entender cómo los usuarios interactúan con el sitio web (Google Analytics)."
+                            }
+                        ]
+                    },
+                    "management": {
+                        "title": "4. Gestión de cookies",
+                        "content": "Puedes configurar tu navegador para rechazar todas las cookies o recibir una notificación cuando una cookie se envía. Sin embargo, algunas funciones de nuestro sitio web pueden no funcionar correctamente sin cookies."
+                    },
+                    "thirdParty": {
+                        "title": "5. Cookies de terceros",
+                        "content": "Utilizamos servicios de terceros que pueden establecer cookies en tu dispositivo:",
+                        "items": [
+                            "Google Analytics: análisis del uso del sitio web"
+                        ]
+                    },
+                    "retention": {
+                        "title": "6. Periodo de retención de cookies",
+                        "content": "Las cookies de sesión se eliminan cuando se cierra el navegador. Las cookies persistentes permanecen en tu dispositivo durante un período máximo de 24 meses."
+                    },
+                    "rights": {
+                        "title": "7. Tus derechos",
+                        "content": "Puedes ejercer tus derechos de acceso, rectificación, eliminación y oposición contactando con:",
+                        "contact": {
+                            "email": "Correo electrónico: support@profit-lost.com",
+                            "website": "Sitio web: https://profit-lost.com"
+                        }
+                    },
+                    "modifications": {
+                        "title": "8. Modificaciones",
+                        "content": "Reservamos el derecho de actualizar esta política de cookies en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en el sitio web."
+                    }
+                }
+            },
+            "contact": {
+                "title": "Contacto",
+                "generalInfo": "Si tienes alguna pregunta o sugerencia, estamos aquí para ayudarte. Nuestro equipo está comprometido a proporcionar el mejor soporte posible a todos nuestros usuarios.",
+                "sections": {
+                    "technicalSupport": {
+                        "title": "Soporte técnico",
+                        "description": "Para preguntas técnicas, problemas de aplicación o ayuda general:",
+                        "email": "support@profit-lost.com",
+                        "responseTime": "Tiempo de respuesta habitual: 24-48 horas laborales"
+                    },
+                    "supportHours": {
+                        "title": "Horario de soporte",
+                        "schedule": "Lunes a Viernes: 9:00 - 18:00 (CET)"
+                    }
+                }
+            },
+            "legalNotice": {
+                "title": "Aviso legal",
+                "sections": {
+                    "titleInfo": {
+                        "title": "1. Información de título",
+                        "subtitle": "En cumplimiento con la Ley 34/2002, de la Sociedad de la Información y de la Comercio Electrónico (LSSI-CE):",
+                        "items": {
+                            "owner": "Propietario: Brian González Novoa",
+                            "email": "Correo electrónico: support@profit-lost.com",
+                            "website": "Sitio web: https://profit-lost.com"
+                        }
+                    },
+                    "object": {
+                        "title": "2. Objetivo y ámbito de aplicación",
+                        "content": "Profit&Lost es una aplicación web dedicada a la gestión y visualización de datos financieros personales. Este aviso legal regula el uso del sitio web y la aplicación profit-lost.com."
+                    },
+                    "intellectual": {
+                        "title": "3. Propiedad intelectual y industrial",
+                        "content": "Todos los derechos de propiedad intelectual e industrial de este sitio web, incluyendo su código fuente, diseño, estructura de navegación, bases de datos y contenido, son propiedad de Profit&Lost o tienen licencias para su uso."
+                    },
+                    "conditions": {
+                        "title": "4. Condiciones de uso",
+                        "subtitle": "El usuario se compromete a:",
+                        "items": [
+                            "No realizar actividades ilegales o contrarias al buen juicio",
+                            "No difundir contenido o propaganda de carácter racista o xenófobo",
+                            "No causar problemas técnicos a la plataforma",
+                            "No utilizar la plataforma para enviar publicidad"
+                        ]
+                    },
+                    "responsibility": {
+                        "title": "5. Responsabilidad",
+                        "subtitle": "Profit&Lost no es responsable de:",
+                        "items": [
+                            "Decisiones basadas en la información proporcionada",
+                            "La continuidad y disponibilidad del servicio",
+                            "La presencia de virus o programas maliciosos",
+                            "El uso impropio de la plataforma por parte de terceros"
+                        ]
+                    },
+                    "legislation": {
+                        "title": "6. Legislación aplicable",
+                        "content": "Este aviso legal está sujeto a la legislación española y europea. Cualquier controversia se resolverá en los tribunales de España, sin perjuicio de la jurisdicción que corresponda de acuerdo con la legislación de consumidor."
+                    },
+                    "modifications": {
+                        "title": "7. Modificaciones",
+                        "content": "Reservamos el derecho de modificar este aviso legal en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en el sitio web."
+                    }
+                }
+            }
         }
     },
     "dashboard": {
