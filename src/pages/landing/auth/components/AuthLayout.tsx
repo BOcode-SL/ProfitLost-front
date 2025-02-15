@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Divider } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 // Define the props for the AuthLayout component
@@ -75,24 +75,12 @@ export default function AuthLayout({
                         </Typography>
                     </Box>
 
-                    {/* Children components */}                        
+                    {/* Children components */}
                     {children}
 
                     {/* Divider */}
                     {showDivider && (
                         <>
-                            <Box sx={{
-                                position: 'relative',
-                                textAlign: 'center',
-                                my: 3
-                            }}>
-                                <Divider>
-                                    <Typography sx={{ color: '#666', px: 2 }}>
-                                        or
-                                    </Typography>
-                                </Divider>
-                            </Box>
-
                             {/* Alternative action */}
                             {showAlternativeAction && (
                                 <Box sx={{ textAlign: 'center', mt: 3, color: '#666' }}>
