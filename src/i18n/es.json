@@ -481,6 +481,13 @@
             }
         }
     },
+    "blog": {
+        "title": "Blog Profit&Lost",
+        "subtitle": "Descubre las últimas novedades y consejos sobre finanzas personales",
+        "readMore": "Leer más",
+        "by": "Por",
+        "postNotFound": "Publicación no encontrada"
+    },
     "dashboard": {
         "tooltips": {
             "dark_mode": "Modo oscuro",

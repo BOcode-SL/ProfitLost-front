@@ -8,6 +8,8 @@ import { DashboardThemeProvider } from './contexts/ThemeContext';
 // Components
 import Home from "./pages/landing/Home";
 import AuthPage from "./pages/landing/auth/AuthPage";
+const BlogPage = React.lazy(() => import('./pages/blog/BlogPage'));
+const BlogPostDetail = React.lazy(() => import('./pages/blog/components/BlogPostDetail'));
 const Dashboard = React.lazy(() => import('./pages/dashboard/Dashboard'));
 const LegalNotice = React.lazy(() => import('./pages/landing/legal/LegalNotice'));
 const PrivacyPolicy = React.lazy(() => import('./pages/landing/legal/PrivacyPolicy'));
@@ -52,6 +54,8 @@ export default function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/auth' element={<AuthPage />} />
+        <Route path='/blog' element={<BlogPage />} />
+        <Route path='/blog/:id' element={<BlogPostDetail />} />
         <Route path='/legal' element={<LegalNotice />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/cookies' element={<CookiePolicy />} />

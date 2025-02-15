@@ -12,7 +12,8 @@ export default function Footer() {
         { text: t('home.footer.links.terms'), href: '/terms' },
         { text: t('home.footer.links.legal'), href: '/legal' },
         { text: t('home.footer.links.cookies'), href: '/cookies' },
-        { text: t('home.footer.links.contact'), href: '/contact' }
+        { text: t('home.footer.links.contact'), href: '/contact' },
+        { text: 'Blog', href: '/blog' } // Añadido el link al blog
     ];
 
     return (
