@@ -23,6 +23,9 @@ interface HomeChartProps {
     isLoading: boolean; // Indicates if the data is currently loading
 }
 
+// Define the keys for the months
+const MONTH_KEYS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 // HomeChart component
 export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
@@ -54,7 +57,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         // Initialize monthly data for the last six months
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-            const monthKey = date.toLocaleString('default', { month: 'short' });
+            const monthKey = MONTH_KEYS[date.getMonth()];
             monthlyDataMap[monthKey] = { income: 0, expenses: 0 };
         }
 
@@ -72,7 +75,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         // Aggregate income and expenses for each month
         filteredTransactions.forEach(transaction => {
             const transactionDate = new Date(transaction.date);
-            const monthKey = transactionDate.toLocaleString('default', { month: 'short' });
+            const monthKey = MONTH_KEYS[transactionDate.getMonth()];
 
             if (monthlyDataMap[monthKey]) {
                 if (transaction.amount > 0) {
@@ -87,7 +90,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         // Prepare data for the chart
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-            const monthKey = date.toLocaleString('default', { month: 'short' });
+            const monthKey = MONTH_KEYS[date.getMonth()];
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             chartData.push({
                 month: translatedMonth,
@@ -145,7 +148,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-            const monthKey = date.toLocaleString('default', { month: 'short' });
+            const monthKey = MONTH_KEYS[date.getMonth()];
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             emptyMonths.push(translatedMonth);
         }
