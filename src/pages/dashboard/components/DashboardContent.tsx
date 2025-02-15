@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
 
 // Components
@@ -16,13 +16,16 @@ interface DashboardContentProps {
 
 // DashboardContent component
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
+    // Effect to scroll to the top when the active section changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [activeSection]);
 
-    // Render the content based on the active section
+    // Function to render the content based on the active section
     const renderContent = () => {
         switch (activeSection) {
             case 'dashhome':
                 return <DashHome />;
-
             case 'annualReport':
                 return <AnnualReport />;
             case 'transactions':
@@ -71,7 +74,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
                 mt: '80px'
             }
         }}>
-            {/* Suspense component to handle loading state */}
+            {/* Suspense component to manage loading state */}
             <Suspense fallback={
                 <Box sx={{
                     display: 'flex',
