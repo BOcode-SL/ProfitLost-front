@@ -9,6 +9,7 @@ import { useProcessBlogContent } from '../../../utils/blogUtils';
 
 // Components
 import Footer from '../../landing/components/Footer';
+import LanguageSelector from '../../landing/components/LanguageSelector';
 
 // Function to format the blog post date
 const formatBlogDate = (dateString: string) => {
@@ -39,11 +40,11 @@ export default function BlogPostDetail() {
     // Debug effect - always present, not conditional
     useEffect(() => {
         if (!post) return;
-        
+
         const processedContent = processContent(post.content);
         if (processedContent.includes('blog.post')) {
             console.warn('Untranslated content detected:', processedContent);
-            console.log('Available translation keys:', 
+            console.log('Available translation keys:',
                 t('blog.post.2.content.step1.items', { returnObjects: true }));
         }
     }, [post, t, processContent]);
@@ -60,6 +61,7 @@ export default function BlogPostDetail() {
 
     return (
         <>
+            <LanguageSelector />
             <Container maxWidth="md" sx={{ py: 4 }}>
                 <Breadcrumbs sx={{ mb: 4, mt: 2 }}>
                     <Link
@@ -82,7 +84,6 @@ export default function BlogPostDetail() {
                     <Box sx={{
                         position: 'relative',
                         width: '100%',
-                        height: '400px',
                         overflow: 'hidden',
                         borderRadius: 4,
                         mb: 4
@@ -99,8 +100,8 @@ export default function BlogPostDetail() {
                         <Box
                             sx={{
                                 position: 'absolute',
-                                bottom: 16,
-                                left: 16,
+                                bottom: { xs: 8, sm: 16 }, // Espaciado responsivo
+                                left: { xs: 8, sm: 16 }, // Espaciado responsivo
                                 zIndex: 2
                             }}
                         >
@@ -110,7 +111,7 @@ export default function BlogPostDetail() {
                                     backgroundColor: 'primary.main',
                                     color: 'white',
                                     fontWeight: 600,
-                                    fontSize: '0.875rem',
+                                    fontSize: { xs: '0.75rem', sm: '0.875rem' }, // Tamaño de fuente responsivo
                                     px: 2,
                                     '& .MuiChip-label': {
                                         px: 1
@@ -127,17 +128,17 @@ export default function BlogPostDetail() {
                         {t(post.title)}
                     </Typography>
 
-                    <Box 
-                        sx={{ 
-                            display: 'flex', 
-                            gap: 2, 
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 2,
                             mb: 4,
                             alignItems: 'center',
                             flexWrap: 'wrap'
                         }}
                     >
-                        <Typography 
-                            variant="subtitle1" 
+                        <Typography
+                            variant="subtitle1"
                             sx={{
                                 color: 'text.secondary',
                                 display: 'flex',
@@ -148,8 +149,8 @@ export default function BlogPostDetail() {
                             <span className="material-symbols-rounded" style={{ fontSize: 20 }}>person</span>
                             {t('blog.by')} {t(post.author)}
                         </Typography>
-                        <Typography 
-                            variant="subtitle1" 
+                        <Typography
+                            variant="subtitle1"
                             sx={{
                                 color: 'text.secondary',
                                 display: 'flex',

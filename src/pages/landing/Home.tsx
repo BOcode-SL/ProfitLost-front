@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 // Components
 import Footer from './components/Footer';
 import Header from './components/Header';
+import LanguageSelector from './components/LanguageSelector';
 
 // Styles
 import './Home.scss';
@@ -28,6 +29,7 @@ export default function Home() {
 
     return (
         <Box className="home-container">
+            <LanguageSelector />
             <Header />
 
             {/* Hero Section */}

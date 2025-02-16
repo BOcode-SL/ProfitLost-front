@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 // Components
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import LanguageSelector from '../../components/LanguageSelector';
 
 // Define the props for the LegalLayout component
 interface LegalLayoutProps {
@@ -15,8 +17,13 @@ interface LegalLayoutProps {
 export default function LegalLayout({ title, children }: LegalLayoutProps) {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <>
+            <LanguageSelector />
             <Header />
             <Box
                 sx={{
@@ -40,8 +47,9 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                     sx={{
                         position: 'relative',
                         zIndex: 1,
-                        pt: 18,
-                        pb: 8
+                        pt: { xs: 12, sm: 14, md: 18 },
+                        pb: { xs: 4, sm: 6, md: 8 },
+                        px: { xs: 2, sm: 3, md: 6 }
                     }}
                 >
                     <Box
@@ -49,7 +57,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                             bgcolor: 'white',
                             borderRadius: 2,
                             boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                            p: { xs: 3, md: 6 }
+                            p: { xs: 2, sm: 3, md: 6 }
                         }}
                     >
                         <Breadcrumbs sx={{ mb: 4 }}>

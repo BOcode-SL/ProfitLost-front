@@ -1,18 +1,13 @@
 // Import necessary hooks and components from React and Material-UI
 import { useState, useEffect } from 'react';
-import { Box, Button, Container, Toolbar, IconButton, Tooltip } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, Container, Toolbar } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 export default function Header() {
     const navigate = useNavigate();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
-    const [currentLanguage, setCurrentLanguage] = useState(() => {
-        // Retrieve the current language from local storage or default to English
-        const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
-        return i18nextLng.startsWith('es') ? 'es' : 'en';
-    });
 
     useEffect(() => {
         // Add scroll event listener to change header style based on scroll position
@@ -24,13 +19,6 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const toggleLanguage = () => {
-        // Switch between English and Spanish languages
-        const newLang = currentLanguage === 'en' ? 'es' : 'en';
-        setCurrentLanguage(newLang);
-        i18n.changeLanguage(newLang);
-    };
-
     return (
         <Box
             sx={{
@@ -40,6 +28,7 @@ export default function Header() {
                 right: 0,
                 zIndex: 1000,
                 p: { xs: 1, sm: 2, md: 3 },
+                pt: { xs: 2, sm: 2, md: 3 },
                 boxSizing: 'border-box',
                 width: '100%'
             }}
@@ -77,31 +66,9 @@ export default function Header() {
                     />
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Tooltip title={t(`home.header.language.${currentLanguage === 'en' ? 'es' : 'en'}`)}>
-                            <IconButton
-                                onClick={toggleLanguage}
-                                sx={{
-                                    p: 0.5,
-                                    transition: 'all 0.3s ease',
-                                    '&:hover': {
-                                        transform: 'scale(1.1)'
-                                    }
-                                }}
-                            >
-                                <Box
-                                    component="img"
-                                    src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
-                                    alt={t(`home.header.language.${currentLanguage}`)}
-                                    sx={{
-                                        width: 24,
-                                        height: 'auto',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-
+                        <Link to="/blog">
+                            Blog
+                        </Link>
                         <Button
                             variant="contained"
                             size="small"

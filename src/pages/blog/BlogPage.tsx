@@ -11,7 +11,7 @@ const availableCategories = ['all', ...new Set(blogPosts.map(post => post.catego
 import BlogPost from './components/BlogPost';
 import Header from '../landing/components/Header';
 import Footer from '../landing/components/Footer';
-
+import LanguageSelector from '../landing/components/LanguageSelector';
 // Helper function to normalize text by removing accents, punctuation, and converting to lowercase
 const normalizeText = (text: string): string => {
   return text
@@ -85,8 +85,13 @@ export default function BlogPage() {
 
   return (
     <>
+      <LanguageSelector />
       <Header />
-      <Container maxWidth="lg" sx={{ py: 8, pt: 20 }}>
+      <Container maxWidth="lg" sx={{ 
+        py: { xs: 4, sm: 6, md: 8 }, 
+        pt: { xs: 16, sm: 18, md: 20 },
+        px: { xs: 2, sm: 3, md: 4 }
+      }}>
         <Box sx={{ mb: 8, textAlign: 'center' }}>
           <Typography
             variant="h2"
@@ -165,7 +170,15 @@ export default function BlogPage() {
         </Box>
 
         {/* Grid layout for displaying existing posts */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 4 }}>
+        <Box sx={{ 
+          display: 'grid',
+          gridTemplateColumns: { 
+            xs: '1fr',
+            sm: 'repeat(auto-fill, minmax(280px, 1fr))',
+            md: 'repeat(2, 1fr)' 
+          },
+          gap: { xs: 2, sm: 3, md: 4 }
+        }}>
           {currentPosts.map((post) => (
             <Box key={post.id}>
               <BlogPost post={post} />

@@ -1,21 +1,10 @@
-import { Box, Container, Stack, List, ListItem, ListItemText, Typography, IconButton, Tooltip, Divider } from '@mui/material';
+import { Box, Container, Stack, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 
 // Define the Footer component
 export default function Footer() {
-    const { t, i18n } = useTranslation();
-    const [currentLanguage, setCurrentLanguage] = useState(() => {
-        const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
-        return i18nextLng.startsWith('es') ? 'es' : 'en';
-    });
-
-    const toggleLanguage = () => {
-        const newLang = currentLanguage === 'en' ? 'es' : 'en';
-        setCurrentLanguage(newLang);
-        i18n.changeLanguage(newLang);
-    };
+    const { t } = useTranslation();
 
     // Define footer links with their corresponding text and href attributes
     const footerLinks = [
@@ -24,7 +13,7 @@ export default function Footer() {
         { text: t('home.footer.links.legal'), href: '/legal' },
         { text: t('home.footer.links.cookies'), href: '/cookies' },
         { text: t('home.footer.links.contact'), href: '/contact' },
-        { text: 'Blog', href: '/blog' } // Añadido el link al blog
+        { text: 'Blog', href: '/blog' }
     ];
 
     return (
@@ -45,14 +34,17 @@ export default function Footer() {
                     alignItems={{ xs: 'flex-start', md: 'flex-start' }}
                 >
                     {/* Logo and Description Section */}
-                    <Box sx={{ width: { xs: '100%', md: '60%' } }}>
+                    <Box sx={{ 
+                        width: { xs: '100%', md: '60%' },
+                        px: { xs: 2, sm: 0 }
+                    }}>
                         <Box
                             component="img"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
                             sx={{
-                                width: { xs: 150, sm: 200 },
-                                mb: { xs: 1.5, sm: 2 },
+                                width: { xs: 120, sm: 150, md: 200 },
+                                mb: { xs: 2, sm: 3 },
                                 height: 'auto',
                                 display: 'block',
                                 marginLeft: { xs: 'auto', md: 0 },
@@ -64,7 +56,7 @@ export default function Footer() {
                             variant="body2"
                             color="text.secondary"
                             sx={{
-                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
                                 width: { xs: '100%', md: '80%' },
                                 lineHeight: 1.6,
                                 mb: 2
@@ -72,41 +64,6 @@ export default function Footer() {
                         >
                             {t('home.footer.description')}
                         </Typography>
-
-                        {/* Language Selector */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
-                            >
-                                {currentLanguage === 'en' ? 'Language:' : 'Idioma:'}
-                            </Typography>
-                            <Tooltip title={t(`home.header.language.${currentLanguage === 'en' ? 'es' : 'en'}`)}>
-                                <IconButton
-                                    onClick={toggleLanguage}
-                                    sx={{
-                                        p: 0.5,
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            transform: 'scale(1.1)'
-                                        }
-                                    }}
-                                >
-                                    <Box
-                                        component="img"
-                                        src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
-                                        alt={t(`home.header.language.${currentLanguage}`)}
-                                        sx={{
-                                            width: 24,
-                                            height: 'auto',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer'
-                                        }}
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
                     </Box>
 
                     {/* Links Section */}
