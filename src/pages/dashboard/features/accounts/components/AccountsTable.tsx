@@ -137,7 +137,8 @@ export default function AccountsTable({
                 sx={{
                     color: account.configuration.color,
                     filter: isHidden ? 'blur(8px)' : 'none',
-                    transition: 'filter 0.3s ease'
+                    transition: 'filter 0.3s ease',
+                    fontSize: { xs: '1rem', sm: '1.2rem' }
                 }}
             >
                 {formatCurrency(getCurrentBalance(account), user)}
