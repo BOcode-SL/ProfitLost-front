@@ -4,7 +4,10 @@ export interface BlogPost {
     excerpt: string;
     content: string;
     date: string;
-    image?: string;
+    image: string;
     author: string;
     contentType: 'html';
+    category: CategoryType;
 }
+
+export type CategoryType = 'introduction' | 'tutorials' | 'tips' | 'updates';

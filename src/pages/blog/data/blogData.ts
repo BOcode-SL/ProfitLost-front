@@ -3,77 +3,79 @@ import { BlogPost } from "../../../types/models/blogPost";
 export const blogPosts: BlogPost[] = [
     {
         id: 1,
-        title: "Bienvenido a Profit&Lost 💸",
-        excerpt: "Os presentamos la nueva app para gestionar vuestros gastos",
+        title: "blog.post.1.title",
+        excerpt: "blog.post.1.excerpt",
         content: `
-            <p>🚀 ¡Hola! Hoy vengo a presentar Profit&Lost 🚀</p>
+            <p>{{blog.post.1.content.intro}}</p>
 
-            <p>¿Alguna vez has tenido que lidiar con hojas de Excel interminables para gestionar tus finanzas? 💸 Yo también… y por eso creé Profit&Lost: una herramienta sencilla, visual y poderosa para que tomes el control de tu dinero.</p>
+            <p>{{blog.post.1.content.question}}</p>
 
-            <h3>💡 Nuestra historia:</h3>
-            <p>Nació como un proyecto personal para resolver mi propio caos financiero. Hoy, gracias al feedback de testers increíbles, es una app lista para ayudar a más personas como tú.</p>
+            <h3>{{blog.post.1.content.historyTitle}}</h3>
+            <p>{{blog.post.1.content.historyContent}}</p>
 
-            <h3>🌟 ¿Cuáles son nuestras características?</h3>
+            <h3>{{blog.post.1.content.featuresTitle}}</h3>
             <ul>
-                <li>✅ Categorías personalizadas: Organiza tus gastos en trabajo, casa, supermercado y más.</li>
-                <li>✅ Visualización anual y mensual: Analiza tus finanzas a corto y largo plazo.</li>
-                <li>✅ Gestión de cuentas: Para ver todo tu saldo total en un solo lugar.</li>
-                <li>✅ Pronto tendremos: Sección de metas financieras y Sección de seguimiento de inversiones.</li>
+                <li>{{blog.post.1.content.features.1}}</li>
+                <li>{{blog.post.1.content.features.2}}</li>
+                <li>{{blog.post.1.content.features.3}}</li>
+                <li>{{blog.post.1.content.features.4}}</li>
             </ul>
 
-            <p>👉 ¿Te gustaría probarla? Estamos cerca del lanzamiento público. Síguenos para ser de los primeros en descubrirla.</p>
+            <p>{{blog.post.1.content.callToAction}}</p>
 
-            <p>🔗 <a href="https://profit-lost.com">profit-lost.com</a></p>
+            <p><a href="https://profit-lost.com">profit-lost.com</a></p>
         `,
         date: "2024-03-20",
         image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1739636810/blog/fefy4e0cgpnt0tjfornm.jpg",
-        author: "Profit&Lost Team",
-        contentType: 'html'
+        author: "blog.post.1.author",
+        contentType: 'html',
+        category: 'introduction'
     },
     {
         id: 2,
-        title: "Cómo organizar tus gastos mensuales con Profit&Lost",
-        excerpt: "Os presentamos la nueva app para gestionar vuestros gastos",
+        title: "blog.post.2.title",
+        excerpt: "blog.post.2.excerpt",
         content: `
-            <p>¿Te cuesta controlar tus gastos mensuales? 💸 ¿Quieres saber en qué se te va el dinero y cómo puedes ahorrar más? 💰 En Profit&Lost, hemos diseñado una herramienta sencilla y visual para ayudarte a organizar tus finanzas. En este tutorial, te explicamos paso a paso cómo hacerlo.</p>
+            <p>{{blog.post.2.content.intro}}</p>
 
-            <h3>Paso 1: Crea tu cuenta y personaliza tus categorías</h3>
+            <h3>{{blog.post.2.content.step1.title}}</h3>
             <ul>
-                <li>Regístrate en <a href="https://profit-lost.com/auth">profit-lost.com/auth</a> ⛓️‍💥</li>
-                <li>Una vez dentro, ve a la sección de Categorías y crea las que mejor se adapten a tus gastos (ej: trabajo, casa, supermercado, ocio, etc.). 🎨</li>
-                <li>Personaliza los colores de cada categoría para identificarlas fácilmente. 🌈</li>
+                <li>{{blog.post.2.content.step1.items.0}} <a href="https://profit-lost.com/auth">profit-lost.com/auth</a> ⛓️‍💥</li>
+                <li>{{blog.post.2.content.step1.items.1}}</li>
+                <li>{{blog.post.2.content.step1.items.2}}</li>
             </ul>
 
-            <h3>Paso 2: Añade tus ingresos y gastos</h3>
+            <h3>{{blog.post.2.content.step2.title}}</h3>
             <ul>
-                <li>Dirígete a la sección de Transacciones. 📊</li>
-                <li>Añade tus ingresos (salario, freelance, etc.) y tus gastos (compras, facturas, etc.). 🏦</li>
-                <li>Asigna cada transacción a la categoría correspondiente. 🏷️</li>
+                <li>{{blog.post.2.content.step2.items.0}}</li>
+                <li>{{blog.post.2.content.step2.items.1}}</li>
+                <li>{{blog.post.2.content.step2.items.2}}</li>
             </ul>
 
-            <h3>Paso 3: Visualiza y analiza tus finanzas</h3>
+            <h3>{{blog.post.2.content.step3.title}}</h3>
             <ul>
-                <li>En la sección de Visualización Mensual, verás un gráfico que muestra tus ingresos vs. gastos. 📈</li>
-                <li>Identifica en qué categorías gastas más y ajusta tu presupuesto si es necesario. ⚖️</li>
+                <li>{{blog.post.2.content.step3.items.0}}</li>
+                <li>{{blog.post.2.content.step3.items.1}}</li>
             </ul>
 
-            <h3>Paso 4: Establece metas y ahorra</h3>
+            <h3>{{blog.post.2.content.step4.title}}</h3>
             <ul>
-                <li>Próximamente, podrás usar la sección de Goals para fijar metas financieras (ej: ahorrar para un viaje ✈️ o pagar deudas). 💳</li>
-                <li>Revisa tu progreso mensualmente y celebra tus logros. 🎉</li>
+                <li>{{blog.post.2.content.step4.items.0}}</li>
+                <li>{{blog.post.2.content.step4.items.1}}</li>
             </ul>
 
-            <h3>Consejos adicionales</h3>
+            <h3>{{blog.post.2.content.additionalTips.title}}</h3>
             <ul>
-                <li>Revisa tus transacciones semanalmente para mantener el control. 📅</li>
-                <li>Usa la sección de Notas para anotar detalles importantes (ej: "Este mes gasté más en ocio"). 📝</li>
+                <li>{{blog.post.2.content.additionalTips.items.0}}</li>
+                <li>{{blog.post.2.content.additionalTips.items.1}}</li>
             </ul>
 
-            <p>👉 ¿Listo para tomar el control de tus finanzas? Prueba Profit&Lost hoy mismo y descubre lo fácil que puede ser. 🚀</p>
+            <p>{{blog.post.2.content.callToAction}}</p>
         `,
         date: "2025-02-15",
         image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1739553639/AppPhotos/Brand/mockup/annualreport.png",
-        author: "Profit&Lost Team",
-        contentType: 'html'
+        author: "blog.post.2.author",
+        contentType: 'html',
+        category: 'tutorials'
     }
 ];

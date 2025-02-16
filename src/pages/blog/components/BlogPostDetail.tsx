@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
-import { Container, Typography, Box, Divider, Paper, Breadcrumbs, Link } from '@mui/material';
+import { Container, Typography, Box, Divider, Paper, Breadcrumbs, Link, Chip } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 // Data
 import { blogPosts } from '../data/blogData';
+import { useProcessBlogContent } from '../../../utils/blogUtils';
+
+// Components
+import Footer from '../../landing/components/Footer';
 
 // Function to format the blog post date
 const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
     const language = localStorage.getItem('i18nextLng') || 'en';
 
-    // Return the date in the appropriate format based on the language
+    // Returns the date in the appropriate format based on the selected language
     return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -24,14 +28,26 @@ export default function BlogPostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const { processContent } = useProcessBlogContent();
     const post = blogPosts.find(post => post.id === Number(id));
 
-    // Scroll to the top of the page when the component mounts
+    // Effect to scroll to the top of the page
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    // If the post is not found, display a message
+    // Debug effect - always present, not conditional
+    useEffect(() => {
+        if (!post) return;
+        
+        const processedContent = processContent(post.content);
+        if (processedContent.includes('blog.post')) {
+            console.warn('Untranslated content detected:', processedContent);
+            console.log('Available translation keys:', 
+                t('blog.post.2.content.step1.items', { returnObjects: true }));
+        }
+    }, [post, t, processContent]);
+
     if (!post) {
         return (
             <Container>
@@ -39,6 +55,8 @@ export default function BlogPostDetail() {
             </Container>
         );
     }
+
+    const processedContent = processContent(post.content);
 
     return (
         <>
@@ -57,61 +75,111 @@ export default function BlogPostDetail() {
                     >
                         Blog
                     </Link>
-                    <Typography color="text.secondary">{post.title}</Typography>
+                    <Typography color="text.secondary">{t(post.title)}</Typography>
                 </Breadcrumbs>
 
                 {post.image && (
                     <Box sx={{
+                        position: 'relative',
                         width: '100%',
-                        height: '100%',
+                        height: '400px',
                         overflow: 'hidden',
                         borderRadius: 4,
                         mb: 4
                     }}>
                         <img
                             src={post.image}
-                            alt={post.title}
+                            alt={t(post.title)}
                             style={{
                                 width: '100%',
                                 height: '100%',
                                 objectFit: 'cover'
                             }}
                         />
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                bottom: 16,
+                                left: 16,
+                                zIndex: 2
+                            }}
+                        >
+                            <Chip
+                                label={t(`blog.categories.${post.category}`)}
+                                sx={{
+                                    backgroundColor: 'primary.main',
+                                    color: 'white',
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem',
+                                    px: 2,
+                                    '& .MuiChip-label': {
+                                        px: 1
+                                    },
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                                }}
+                            />
+                        </Box>
                     </Box>
                 )}
 
-                <Paper elevation={0} sx={{ p: 4, backgroundColor: 'background.default' }}>
+                <Paper elevation={0} sx={{ p: 4, borderRadius: 4 }}>
                     <Typography variant="h3" component="h1" gutterBottom>
-                        {post.title}
+                        {t(post.title)}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            {t('blog.by')} {post.author}
+                    <Box 
+                        sx={{ 
+                            display: 'flex', 
+                            gap: 2, 
+                            mb: 4,
+                            alignItems: 'center',
+                            flexWrap: 'wrap'
+                        }}
+                    >
+                        <Typography 
+                            variant="subtitle1" 
+                            sx={{
+                                color: 'text.secondary',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1
+                            }}
+                        >
+                            <span className="material-symbols-rounded" style={{ fontSize: 20 }}>person</span>
+                            {t('blog.by')} {t(post.author)}
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary">
+                        <Typography 
+                            variant="subtitle1" 
+                            sx={{
+                                color: 'text.secondary',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1
+                            }}
+                        >
+                            <span className="material-symbols-rounded" style={{ fontSize: 20 }}>calendar_today</span>
                             {formatBlogDate(post.date)}
                         </Typography>
                     </Box>
 
                     <Divider sx={{ mb: 4 }} />
 
-                    <Box 
+                    <Box
                         sx={{
                             typography: 'body1',
                             lineHeight: 1.8,
                             '& p': { mb: 2 },
-                            '& h3': { 
-                                fontSize: '1.5rem', 
+                            '& h3': {
+                                fontSize: '1.5rem',
                                 fontWeight: 600,
-                                my: 3 
+                                my: 3
                             },
-                            '& ul': { 
+                            '& ul': {
                                 pl: 3,
-                                mb: 2 
+                                mb: 2
                             },
-                            '& li': { 
-                                mb: 1 
+                            '& li': {
+                                mb: 1
                             },
                             '& a': {
                                 color: 'primary.main',
@@ -121,10 +189,13 @@ export default function BlogPostDetail() {
                                 }
                             }
                         }}
-                        dangerouslySetInnerHTML={{ __html: post.content }}
+                        dangerouslySetInnerHTML={{
+                            __html: processedContent
+                        }}
                     />
                 </Paper>
             </Container>
+            <Footer />
         </>
     );
 };

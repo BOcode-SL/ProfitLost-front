@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Button, alpha } from '@mui/material';
+import { Box, Paper, Typography, alpha } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
     const language = localStorage.getItem('i18nextLng') || 'en';
 
-    // Return the date in the appropriate format based on the language
+    // Return the date formatted according to the selected language
     return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -70,7 +70,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                             content: '""',
                             position: 'absolute',
                             inset: 0,
-                            background: 'linear-gradient(180deg, transparent -10%, rgba(0,0,0,0.4) 130%)',
+                            background: 'linear-gradient(180deg, transparent -10%, rgba(0,0,0,0.2) 100%)',
                             opacity: 0.8,
                             transition: 'opacity 0.3s ease'
                         }
@@ -97,7 +97,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                             fontWeight: 500
                         }}
                     >
-                        {formatBlogDate(post.date)}
+                        {t(`blog.categories.${post.category}`)}
                     </Typography>
                 </Box>
             </Box>
@@ -116,7 +116,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         lineHeight: 1.3
                     }}
                 >
-                    {post.title}
+                    {t(post.title)}
                 </Typography>
 
                 <Typography
@@ -131,7 +131,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         lineHeight: 1.6
                     }}
                 >
-                    {post.excerpt}
+                    {t(post.excerpt)}
                 </Typography>
 
                 <Box
@@ -145,25 +145,28 @@ export default function BlogPost({ post }: BlogPostProps) {
                     <Typography
                         variant="body2"
                         sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
                             color: 'text.secondary',
                             fontWeight: 500
                         }}
                     >
-                        {post.author}
+                        <span className="material-symbols-rounded" style={{ fontSize: 20 }}>person</span>
+                        {t(post.author)}
                     </Typography>
-                    <Button
-                        variant="text"
-                        size="small"
+                    <Typography
+                        variant="body2"
                         sx={{
-                            fontWeight: 600,
-                            '&:hover': {
-                                backgroundColor: 'transparent',
-                                color: 'primary.dark'
-                            }
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            color: 'text.secondary'
                         }}
                     >
-                        {t('blog.readMore')} →
-                    </Button>
+                        <span className="material-symbols-rounded" style={{ fontSize: 20 }}>calendar_today</span>
+                        {formatBlogDate(post.date)}
+                    </Typography>
                 </Box>
             </Box>
         </Paper>

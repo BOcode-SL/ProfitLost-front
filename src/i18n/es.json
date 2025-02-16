@@ -486,7 +486,80 @@
         "subtitle": "Descubre las últimas novedades y consejos sobre finanzas personales",
         "readMore": "Leer más",
         "by": "Por",
-        "postNotFound": "Publicación no encontrada"
+        "postNotFound": "Publicación no encontrada",
+        "searchPlaceholder": "Buscar publicaciones...",
+        "categories": {
+            "all": "Todas",
+            "introduction": "Introducción",
+            "tutorials": "Tutoriales",
+            "tips": "Consejos",
+            "updates": "Actualizaciones"
+        },
+        "post": {
+            "1": {
+                "title": "Bienvenido a Profit&Lost 💸",
+                "excerpt": "Te presentamos la nueva app para gestionar tus gastos",
+                "content": {
+                    "intro": "🚀 ¡Hola! Hoy te presento Profit&Lost 🚀",
+                    "question": "¿Alguna vez has tenido que lidiar con hojas de Excel interminables para gestionar tus finanzas? 💸 Yo también... y por eso creé Profit&Lost: una herramienta sencilla, visual y poderosa para que tomes el control de tu dinero.",
+                    "historyTitle": "💡 Nuestra historia:",
+                    "historyContent": "Nació como un proyecto personal para resolver mi propio caos financiero. Hoy, gracias al feedback de testers increíbles, es una app lista para ayudar a más personas como tú.",
+                    "featuresTitle": "🌟 ¿Cuáles son nuestras características?",
+                    "features": {
+                        "1": "✅ Categorías personalizadas: Organiza tus gastos en trabajo, casa, supermercado, y más.",
+                        "2": "✅ Visualización anual y mensual: Analiza tus finanzas en corto y largo plazo.",
+                        "3": "✅ Gestión de cuentas: Para ver todo tu saldo total en un solo lugar.",
+                        "4": "✅ Pronto tendremos: Sección de metas financieras y Sección de seguimiento de inversiones."
+                    },
+                    "callToAction": "👉 ¿Te gustaría probarla? Estamos cerca del lanzamiento público. Síguenos para ser de los primeros en descubrirla."
+                }
+            },
+            "2": {
+                "title": "Cómo organizar tus gastos con Profit&Lost",
+                "excerpt": "Te presentamos la nueva app para gestionar tus gastos",
+                "content": {
+                    "intro": "¿Te cuesta controlar tus gastos mensuales? 💸 ¿Quieres saber en qué se te va el dinero y cómo puedes ahorrar más? 💰 En Profit&Lost, hemos diseñado una herramienta sencilla y visual para ayudarte a organizar tus finanzas. En este tutorial, te explicamos paso a paso cómo hacerlo.",
+                    "step1": {
+                        "title": "Paso 1: Crea tu cuenta y personaliza tus categorías",
+                        "items": [
+                            "Regístrate en",
+                            "Una vez dentro, ve a la sección de Categorías y crea las que mejor se adapten a tus gastos (ej: trabajo, casa, supermercado, ocio, etc.). 🎨",
+                            "Personaliza los colores de cada categoría para identificarlas fácilmente. 🌈"
+                        ]
+                    },
+                    "step2": {
+                        "title": "Paso 2: Añade tus ingresos y gastos",
+                        "items": [
+                            "Ve a la sección de Transacciones. 📊",
+                            "Añade tus ingresos (salario, freelance, etc.) y tus gastos (compras, facturas, etc.). 🏦",
+                            "Asigna cada transacción a la categoría correspondiente. 🏷️"
+                        ]
+                    },
+                    "step3": {
+                        "title": "Paso 3: Visualiza y analiza tus finanzas",
+                        "items": [
+                            "En la sección de Visualización mensual, verás un gráfico que muestra tus ingresos vs. tus gastos. 📈",
+                            "Identifica cuáles categorías gastas más y ajusta tu presupuesto si es necesario. ⚖️"
+                        ]
+                    },
+                    "step4": {
+                        "title": "Paso 4: Establece objetivos y ahorra",
+                        "items": [
+                            "Pronto, podrás usar la sección de Objetivos para establecer tus objetivos financieros (ej: ahorrar para un viaje ✈️ o pagar deudas 💳). ",
+                            "Revisa tu progreso mensualmente y celebra tus logros. 🎉"
+                        ]
+                    },
+                    "additionalTips": {
+                        "title": "Consejos adicionales",
+                        "items": [
+                            "Revisa tus transacciones semanales para mantener el control. 📅",
+                            "Usa la sección de Notas para escribir detalles importantes (ej: \"Este mes gasté más en ocio\"). 📝"
+                        ]
+                    },
+                    "callToAction": "👉 ¿Listo para tomar el control de tus finanzas? Prueba Profit&Lost hoy y descubre cuán fácil puede ser. 🚀"
+                }
+            }
+        }
     },
     "dashboard": {
         "tooltips": {
