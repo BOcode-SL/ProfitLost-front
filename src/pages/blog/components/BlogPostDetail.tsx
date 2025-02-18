@@ -86,7 +86,8 @@ export default function BlogPostDetail() {
                         width: '100%',
                         overflow: 'hidden',
                         borderRadius: 4,
-                        mb: 4
+                        mb: 4,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                     }}>
                         <img
                             src={post.image}
@@ -94,7 +95,7 @@ export default function BlogPostDetail() {
                             style={{
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover'
+                                objectFit: 'cover',
                             }}
                         />
                         <Box
