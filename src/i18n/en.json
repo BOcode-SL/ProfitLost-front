@@ -560,6 +560,73 @@
                     },
                     "callToAction": "👉 Ready to take control of your finances? Try Profit&Lost today and discover how easy it can be. 🚀"
                 }
+            },
+            "3": {
+                "title": "How to organize your money with the 50/30/20 method",
+                "excerpt": "📊 Managing your money can be easy with the 50/30/20 method. Do you know it? I'll explain it to you.",
+                "author": "Profit&Lost Team",
+                "content": {
+                    "intro": "Managing your money effectively is a challenge for many people. However, there is a simple and easy-to-apply method that can help you balance your income and ensure you cover all your needs without neglecting savings: the 50/30/20 method.",
+                    "explanation": "This financial management system, popularized by the American senator Elizabeth Warren in her book All Your Worth: The Ultimate Lifetime Money Plan, divides your income into three large categories: needs, wants, and savings. In this article, we will explain how it works and how to apply it in your daily life with the help of Profit&Lost.",
+                    "whatIs": {
+                        "title": "💼 What is the 50/30/20 method?",
+                        "description": "This system divides your net income (after taxes) into the following proportions:\n\n50% for needs: Basic expenses necessary to live.\n\n30% for wants: Optional purchases or entertainment.\n\n20% for savings and investment: Build long-term financial security."
+                    },
+                    "needs": {
+                        "title": "📅 50%: Needs",
+                        "description": "This is the money destined for expenses that you cannot avoid. It includes:",
+                        "items": {
+                            "1": "✅ Rent or mortgage",
+                            "2": "✅ Basic services (water, electricity, gas, internet)",
+                            "3": "✅ Transportation (fuel, public transport, car maintenance)",
+                            "4": "✅ Food (supermarket and essential products)",
+                            "5": "✅ Insurance (medical, housing, auto)",
+                            "6": "✅ Minimum debts"
+                        },
+                        "note": "If these expenses exceed 50% of your income, you may consider reducing costs, looking for more economical alternatives, or increasing your income."
+                    },
+                    "wants": {
+                        "title": "🎉 30%: Wants",
+                        "description": "These expenses are those that improve your quality of life but are not essential. Here are some examples:",
+                        "items": {
+                            "1": "✅ Restaurant outings, bars and cafes",
+                            "2": "✅ Streaming subscriptions",
+                            "3": "✅ Travel and leisure",
+                            "4": "✅ Non-essential clothing and accessories",
+                            "5": "✅ Technology and gadgets"
+                        },
+                        "note": "Controlling these expenses is key to avoiding that they affect your finances. Profit&Lost allows you to label these purchases and visualize how much you are spending on wants."
+                    },
+                    "savings": {
+                        "title": "💼 20%: Savings and investment",
+                        "description": "This is the part that many people neglect, but it is the most important to achieve financial stability. It should be dedicated to:",
+                        "items": {
+                            "1": "✅ Emergency fund (ideally 3-6 months of fixed expenses)",
+                            "2": "✅ Personal goals savings (buying a house, studies, trips)",
+                            "3": "✅ Investments (indexed funds, stocks, cryptocurrencies, real estate)",
+                            "4": "✅ Additional contributions for retirement"
+                        },
+                        "note": "Automatizing this savings with tools like Profit&Lost helps to achieve goals without effort."
+                    },
+                    "howTo": {
+                        "title": "📈 How to apply the 50/30/20 method with Profit&Lost",
+                        "items": {
+                            "1": "Register your income: Enter your net salary to calculate how to divide it",
+                            "2": "Categorize your expenses: Use labels to identify needs, wants and savings",
+                            "3": "Visualize your progress: Graphs and reports help you know if you are following the method",
+                            "4": "Adjust your budget: If you are spending too much on wants, you can balance it quickly"
+                        }
+                    },
+                    "benefits": {
+                        "title": "💸 Benefits of using the 50/30/20 method",
+                        "items": {
+                            "1": "✅ Simplicity: You don't need advanced financial knowledge",
+                            "2": "✅ Flexibility: It adapts to any income level",
+                            "3": "✅ Financial discipline: It helps you avoid unnecessary expenses",
+                            "4": "✅ Security: You build a financial cushion for the future"
+                        }
+                    }
+                }
             }
         }
     },

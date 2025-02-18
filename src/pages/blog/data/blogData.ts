@@ -77,5 +77,71 @@ export const blogPosts: BlogPost[] = [
         author: "blog.post.2.author",
         contentType: 'html',
         category: 'tutorials'
+    },
+    {
+        id: 3,
+        title: "blog.post.3.title",
+        excerpt: "blog.post.3.excerpt",
+        content: `
+            <p>{{blog.post.3.content.intro}}</p>
+            <p>{{blog.post.3.content.explanation}}</p>
+
+            <h3>{{blog.post.3.content.whatIs.title}}</h3>
+            <p>{{blog.post.3.content.whatIs.description}}</p>
+
+            <h3>{{blog.post.3.content.needs.title}}</h3>
+            <p>{{blog.post.3.content.needs.description}}</p>
+            <ul>
+                <li>{{blog.post.3.content.needs.items.1}}</li>
+                <li>{{blog.post.3.content.needs.items.2}}</li>
+                <li>{{blog.post.3.content.needs.items.3}}</li>
+                <li>{{blog.post.3.content.needs.items.4}}</li>
+                <li>{{blog.post.3.content.needs.items.5}}</li>
+                <li>{{blog.post.3.content.needs.items.6}}</li>
+            </ul>
+            <p>{{blog.post.3.content.needs.note}}</p>
+
+            <h3>{{blog.post.3.content.wants.title}}</h3>
+            <p>{{blog.post.3.content.wants.description}}</p>
+            <ul>
+                <li>{{blog.post.3.content.wants.items.1}}</li>
+                <li>{{blog.post.3.content.wants.items.2}}</li>
+                <li>{{blog.post.3.content.wants.items.3}}</li>
+                <li>{{blog.post.3.content.wants.items.4}}</li>
+                <li>{{blog.post.3.content.wants.items.5}}</li>
+            </ul>
+            <p>{{blog.post.3.content.wants.note}}</p>
+
+            <h3>{{blog.post.3.content.savings.title}}</h3>
+            <p>{{blog.post.3.content.savings.description}}</p>
+            <ul>
+                <li>{{blog.post.3.content.savings.items.1}}</li>
+                <li>{{blog.post.3.content.savings.items.2}}</li>
+                <li>{{blog.post.3.content.savings.items.3}}</li>
+                <li>{{blog.post.3.content.savings.items.4}}</li>
+            </ul>
+            <p>{{blog.post.3.content.savings.note}}</p>
+
+            <h3>{{blog.post.3.content.howTo.title}}</h3>
+            <ul>
+                <li>{{blog.post.3.content.howTo.items.1}}</li>
+                <li>{{blog.post.3.content.howTo.items.2}}</li>
+                <li>{{blog.post.3.content.howTo.items.3}}</li>
+                <li>{{blog.post.3.content.howTo.items.4}}</li>
+            </ul>
+
+            <h3>{{blog.post.3.content.benefits.title}}</h3>
+            <ul>
+                <li>{{blog.post.3.content.benefits.items.1}}</li>
+                <li>{{blog.post.3.content.benefits.items.2}}</li>
+                <li>{{blog.post.3.content.benefits.items.3}}</li>
+                <li>{{blog.post.3.content.benefits.items.4}}</li>
+            </ul>
+        `,
+        date: "2025-02-19",
+        image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1739904289/blog/u9gorhzyau8nvrhuwjvb.png",
+        author: "blog.post.3.author",
+        contentType: 'html',
+        category: 'tips'
     }
 ];

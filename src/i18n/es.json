@@ -558,6 +558,73 @@
                     },
                     "callToAction": "👉 ¿Listo para tomar el control de tus finanzas? Prueba Profit&Lost hoy y descubre cuán fácil puede ser. 🚀"
                 }
+            },
+            "3": {
+                "title": "Cómo organizar tu dinero con el método 50/30/20",
+                "excerpt": "📊 Administrar tu dinero puede ser fácil con el método 50/30/20. ¿Lo conoces? Te lo explico.",
+                "author": "Brian G. Novoa",
+                "content": {
+                    "intro": "Administrar el dinero de manera efectiva es un reto para muchas personas. Sin embargo, existe un método simple y fácil de aplicar que puede ayudarte a equilibrar tus ingresos y asegurarte de que cubres todas tus necesidades sin descuidar el ahorro: el método 50/30/20.",
+                    "explanation": "Este sistema de gestión financiera, popularizado por la senadora estadounidense Elizabeth Warren en su libro All Your Worth: The Ultimate Lifetime Money Plan, divide tus ingresos en tres grandes categorías: necesidades, deseos y ahorro. En este artículo, te explicaremos cómo funciona y cómo aplicarlo en tu vida diaria con la ayuda de Profit&Lost.",
+                    "whatIs": {
+                        "title": "💼 ¿En qué consiste el método 50/30/20?",
+                        "description": "Este sistema divide tu ingreso neto (después de impuestos) en la siguiente proporción:\n\n50% para necesidades: Gastos básicos imprescindibles para vivir.\n\n30% para deseos: Compras opcionales o de entretenimiento.\n\n20% para ahorro e inversión: Construir seguridad financiera a largo plazo."
+                    },
+                    "needs": {
+                        "title": "📅 50%: Necesidades",
+                        "description": "Este es el dinero destinado a gastos que no puedes evitar. Incluye:",
+                        "items": {
+                            "1": "✅ Alquiler o hipoteca",
+                            "2": "✅ Servicios básicos (agua, electricidad, gas, internet)",
+                            "3": "✅ Transporte (combustible, transporte público, mantenimiento del auto)",
+                            "4": "✅ Alimentación (supermercado y productos esenciales)",
+                            "5": "✅ Seguros (médico, de vivienda, automotriz)",
+                            "6": "✅ Deudas mínimas obligatorias"
+                        },
+                        "note": "Si estos gastos superan el 50% de tus ingresos, podrías considerar reducir costos, buscar alternativas más económicas o aumentar tus ingresos."
+                    },
+                    "wants": {
+                        "title": "🎉 30%: Deseos",
+                        "description": "Estos gastos son los que mejoran tu calidad de vida pero no son esenciales. Aquí entran:",
+                        "items": {
+                            "1": "✅ Salidas a restaurantes, bares y cafeterías",
+                            "2": "✅ Suscripciones a plataformas de streaming",
+                            "3": "✅ Viajes y ocio",
+                            "4": "✅ Ropa y accesorios no esenciales",
+                            "5": "✅ Tecnología y gadgets"
+                        },
+                        "note": "Controlar estos gastos es clave para evitar que afecten tus finanzas. Profit&Lost te permite etiquetar estas compras y visualizar cuánto estás gastando en deseos."
+                    },
+                    "savings": {
+                        "title": "💼 20%: Ahorro e inversión",
+                        "description": "Esta es la parte que muchas personas descuidan, pero es la más importante para lograr estabilidad financiera. Debe destinarse a:",
+                        "items": {
+                            "1": "✅ Fondo de emergencia (idealmente 3-6 meses de gastos fijos)",
+                            "2": "✅ Ahorro para metas personales (comprar una casa, estudios, viajes)",
+                            "3": "✅ Inversiones (fondos indexados, acciones, criptomonedas, bienes raíces)",
+                            "4": "✅ Aportes adicionales para la jubilación"
+                        },
+                        "note": "Automatizar este ahorro con herramientas como Profit&Lost ayuda a cumplir metas sin esfuerzo."
+                    },
+                    "howTo": {
+                        "title": "📈 Cómo aplicar el método 50/30/20 con Profit&Lost",
+                        "items": {
+                            "1": "Registra tus ingresos: Ingresa tu salario neto para calcular cómo dividirlo",
+                            "2": "Categoriza tus gastos: Usa etiquetas para identificar necesidades, deseos y ahorros",
+                            "3": "Visualiza tus avances: Gráficos y reportes te ayudan a saber si estás cumpliendo el método",
+                            "4": "Ajusta tu presupuesto: Si estás gastando demasiado en deseos, puedes equilibrarlo rápidamente"
+                        }
+                    },
+                    "benefits": {
+                        "title": "💸 Beneficios de usar el método 50/30/20",
+                        "items": {
+                            "1": "✅ Simplicidad: No necesitas conocimientos financieros avanzados",
+                            "2": "✅ Flexibilidad: Se adapta a cualquier nivel de ingresos",
+                            "3": "✅ Disciplina financiera: Te ayuda a evitar gastos innecesarios",
+                            "4": "✅ Seguridad: Construyes un colchón financiero para el futuro"
+                        }
+                    }
+                }
             }
         }
     },
