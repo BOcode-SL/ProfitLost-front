@@ -1,44 +1,35 @@
-<h1>Profit & Lost Frontend</h1>
+<h1>🚀 Profit & Lost Frontend</h1>
 
-<h2>Descripción</h2>
-Profit-Lost.com es una aplicación web desarrollada en React con Typescript, centrada en la gestión y visualización de datos financieros. Esta aplicación está diseñada para proporcionar a los usuarios una herramienta intuitiva y eficaz para el seguimiento de sus finanzas personales o empresariales, con énfasis en la claridad y la facilidad de uso.
-Repositorio <a href="https://github.com/brianglezn/PL-back-v2">BACKEND</a>
+<h2>🌐 Web de Profit & Lost</h2>
+Visita nuestra página para más información <a href="https://profit-lost.com" target="_blank" rel="noopener noreferrer">profit-lost.com</a>
 
-<h2>Características Principales</h2>
-<ul>
-  <li>Gráficos y tablas para visualizar los datos financieros.</li>
-  <li>Interfaz de Usuario Personalizable y Responsiva</li>
-  <li>Gráficos Dinámicos</li>
-  <li>Gestión de cuentas financieras.</li>
-  <li>Seguimiento de movimientos anuales y mensuales.</li>
-  <li>Gestión de categorías y movimientos.</li>
-  <li>Autenticación de usuarios.</li>
-</ul>
+<h2>📝 Descripción</h2>
+Profit&Lost es una aplicación web moderna desarrollada con React y TypeScript, diseñada para revolucionar la gestión de finanzas personales. Con una interfaz intuitiva y potentes herramientas de visualización, permite a los usuarios:
 
-<h2>Tecnologías Utilizadas</h2>
-<ul>
-  <li>React</li>
-  <li>TypeScript</li>
-  <li>MaterialUI</li>
-  <li>Vite</li>
-  <li>i18n</li>
-  <li>Sass</li>
-  <li>Cloudinary</li>
-</ul>
+- 📊 Seguimiento detallado de ingresos y gastos
+- 💰 Gestión de múltiples cuentas bancarias
+- 📈 Visualización de datos financieros con gráficos interactivos
+- 🎯 Establecimiento y seguimiento de metas financieras (soon)
+- 📝 Sistema de notas para gestión financiera
+- 🔄 Transacciones recurrentes automatizadas
+- 📱 Diseño responsive para cualquier dispositivo
+- 🌍 Soporte multiidioma (ES/EN)
+- 🔒 Seguridad avanzada con autenticación
 
-<h2>Prerrequisitos</h2>
-<p>Antes de comenzar, asegúrate de tener instalado <a href="https://nodejs.org/">Node.js</a> en tu sistema.</p>
+Repositorio <a href="https://github.com/brianglezn/PL-back-v2" target="_blank" rel="noopener noreferrer">BACKEND</a>
 
-<h2>Desarrollo y Contribuciones</h2>
-<ol>
-  <li>Clona el repositorio: <code>git clone https://github.com/brianglezn/profit-lost.com_FrontEnd.git</code></li>
-  <li>Navega al directorio del proyecto: <code>cd profit-lost.com_FrontEnd</code></li>
-  <li>Instala las dependencias del proyecto: <code>npm install</code></li>
-  <li>Ejecuta la aplicación en modo de desarrollo: <code>npm run dev</code></li>
-</ol>
-   
-<h2>Licencia</h2>
+<h2>🛠️ Tecnologías Principales</h2>
+- React 18
+- Vite
+- TypeScript
+- Material-UI (MUI)
+- React Router
+- i18next
+- React Hot Toast
+- SASS
+
+<h2>📄 Licencia</h2>
 Este proyecto está bajo la Licencia MIT.
 
-<h2>Contacto</h2>
+<h2>📧 Contacto</h2>
 Brian González Novoa - brianglezn@gmail.com
