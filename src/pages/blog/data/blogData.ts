@@ -139,7 +139,7 @@ export const blogPosts: BlogPost[] = [
             </ul>
         `,
         date: "2025-02-19",
-        image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1739904289/blog/u9gorhzyau8nvrhuwjvb.png",
+        image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1739905395/blog/n4rqts7zupjou5kvcewx.png",
         author: "blog.post.3.author",
         contentType: 'html',
         category: 'tips'
