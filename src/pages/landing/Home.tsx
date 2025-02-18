@@ -100,7 +100,7 @@ export default function Home() {
                         }}>
                             <Box
                                 component="img"
-                                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1739553639/AppPhotos/Brand/mockup/annualreport.png"
+                                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1739794876/AppPhotos/Brand/mockup/rjlpdnlnqvejgsyvxoxs.png"
                                 alt="Dashboard Preview"
                                 className="no-select"
                                 sx={{
@@ -112,10 +112,10 @@ export default function Home() {
                                     },
                                     height: 'auto',
                                     animation: 'float 6s ease-in-out infinite',
-                                    boxShadow: '0 15px 20px 0 rgba(0, 0, 0, 0.3)',
                                     borderRadius: '0.5rem',
                                     transition: 'transform 0.3s ease',
                                     m: { xs: '0 auto', md: 0 },
+                                    filter: 'drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3))',
                                     '&:hover': {
                                         transform: 'scale(1.02)'
                                     }
