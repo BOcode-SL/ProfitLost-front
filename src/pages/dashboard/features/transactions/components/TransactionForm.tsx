@@ -36,7 +36,7 @@ interface TransactionFormProps {
     categories: Category[];
 }
 
-// Transition component
+// Transition component for dialog animations
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -45,6 +45,32 @@ const Transition = forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
+// Helper function to calculate recurring dates based on start date, end date, and recurrence type
+const calculateRecurringDates = (startDate: string, endDate: string, recurrenceType: RecurrenceType): Date[] => {
+    const dates: Date[] = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const currentDate = new Date(start);
+
+    while (currentDate <= end) {
+        dates.push(new Date(currentDate));
+
+        switch (recurrenceType) {
+            case 'weekly':
+                currentDate.setDate(currentDate.getDate() + 7);
+                break;
+            case 'monthly':
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                break;
+            case 'yearly':
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+                break;
+        }
+    }
+
+    return dates;
+};
 
 // TransactionForm component
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
@@ -85,7 +111,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [transactionDataToUpdate, setTransactionDataToUpdate] = useState<TransactionUpdateData | null>(null);
     const [updateAllRecurrent, setUpdateAllRecurrent] = useState(false);
 
-    // Effect to update the form with the transaction data
+    // Effect to update the form with the transaction data when the transaction prop changes
     useEffect(() => {
         if (transaction) {
             const txDate = new Date(transaction.date);
@@ -167,12 +193,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
-    // Handle the delete click
+    // Handle the delete button click
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
-    // Handle the confirm delete
+    // Handle the confirmation of deletion
     const confirmDelete = async () => {
         try {
             setIsDeleting(true);
@@ -191,7 +217,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
-    // Handle the edit recurrent
+    // Handle the editing of recurrent transactions
     const handleEditRecurrent = async () => {
         if (!transaction || !transactionDataToUpdate) return;
 
@@ -222,12 +248,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
-    // Sort the categories
+    // Sort the categories alphabetically
     const sortedCategories = [...categories].sort((a, b) =>
         a.name.localeCompare(b.name)
     );
 
-    // Delete dialog
+    // Calculate the recurring dates when all necessary data is available
+    const recurringDates = date && recurrenceType && recurrenceEndDate
+        ? calculateRecurringDates(date, recurrenceEndDate, recurrenceType)
+        : [];
+
+    // Delete confirmation dialog
     const DeleteDialog = () => (
         <Dialog
             open={deleteDialog}
@@ -241,7 +272,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 }
             }}
         >
-            {/* Title of the dialog */}
+            {/* Title of the delete confirmation dialog */}
             <DialogTitle sx={{
                 textAlign: 'center',
                 pt: 3,
@@ -249,7 +280,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             }}>
                 {t('dashboard.transactions.form.delete.title')}
             </DialogTitle>
-            {/* Content of the dialog */}
+            {/* Content of the delete confirmation dialog */}
             <DialogContent sx={{
                 textAlign: 'center',
                 py: 2
@@ -279,7 +310,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </>
                 )}
             </DialogContent>
-            {/* Actions at the bottom of the dialog */}
+            {/* Actions at the bottom of the delete confirmation dialog */}
             <DialogActions sx={{
                 justifyContent: 'center',
                 gap: 2,
@@ -311,7 +342,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         </Dialog>
     );
 
-    // Recurrence fields
+    // Recurrence fields component
     const RecurrenceFields = () => {
         const shouldShow = isRecurrent;
 
@@ -319,7 +350,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
         return (
             <Box sx={{ width: '100%', mt: 2 }}>
-                {/* Recurrence type selection */}
+                {/* Recurrence type selection dropdown */}
                 <FormControl fullWidth size="small" sx={{ mb: 2 }}>
                     {/* Label for the recurrence type selection */}
                     <InputLabel>{t('dashboard.transactions.form.fields.recurrenceType')}</InputLabel>
@@ -334,7 +365,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </Select>
                 </FormControl>
 
-                {/* Recurrence end date input */}
+                {/* Recurrence end date input field */}
                 <TextField
                     type="date"
                     label={t('dashboard.transactions.form.fields.recurrenceEndDate')}
@@ -344,6 +375,25 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     size="small"
                     InputLabelProps={{ shrink: true }}
                 />
+
+                {/* Display the calculated recurring dates */}
+                {recurringDates.length > 0 && (
+                    <Box sx={{ mt: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            {t('dashboard.transactions.form.fields.recurrenceDates')}:
+                        </Typography>
+                        {recurringDates.map((date, index) => (
+                            <Typography
+                                key={index}
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 0.5 }}
+                            >
+                                {date.toLocaleDateString()}
+                            </Typography>
+                        ))}
+                    </Box>
+                )}
             </Box>
         );
     };
@@ -393,7 +443,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         );
     };
 
-    // Edit recurrent dialog
+    // Edit recurrent dialog component
     const EditRecurrentDialog = () => (
         <Dialog
             open={editRecurrentDialog}

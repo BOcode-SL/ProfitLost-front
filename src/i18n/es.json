@@ -976,7 +976,8 @@
                     "recurrenceEndDate": "Fecha final",
                     "weekly": "Semanal",
                     "monthly": "Mensual",
-                    "yearly": "Anual"
+                    "yearly": "Anual",
+                    "recurrenceDates": "Fechas de recurrencia"
                 },
                 "placeholders": {
                     "description": "Ingrese descripción",
