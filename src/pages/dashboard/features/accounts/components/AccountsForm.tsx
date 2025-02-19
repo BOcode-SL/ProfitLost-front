@@ -27,6 +27,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
     const [isActive, setIsActive] = useState(account?.configuration.isActive ?? true);
+    const [monthlyInput, setMonthlyInput] = useState<Record<string, string>>({});
     const [monthlyValues, setMonthlyValues] = useState<Record<string, number>>({});
     const [savingChanges, setSavingChanges] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
@@ -47,17 +48,21 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [account]);
 
-    // useEffect to get the monthly values for the selected year
+    // useEffect to retrieve monthly values for the selected year
     useEffect(() => {
-        if (account) {
+        if (account && selectedYear) {
             const yearRecord = account.records[selectedYear.toString()];
             if (yearRecord) {
                 const values: Record<string, number> = {};
+                const inputs: Record<string, string> = {};
                 months.forEach(month => {
                     const monthKey = month.toLowerCase();
-                    values[month] = yearRecord[monthKey as keyof YearRecord];
+                    const value = yearRecord[monthKey as keyof YearRecord];
+                    values[month] = value;
+                    inputs[month] = value.toString().replace('.', ',');
                 });
                 setMonthlyValues(values);
+                setMonthlyInput(inputs);
             }
         }
     }, [account, selectedYear]);
@@ -68,7 +73,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         return t(path + monthKey);
     };
 
-    // Function to handle the form submission
+    // Function to handle form submission
     const handleSubmit = async () => {
         if (!accountName.trim()) {
             toast.error(t('dashboard.accounts.errors.nameRequired'));
@@ -135,7 +140,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Function to handle the delete action
+    // Function to handle account deletion
     const handleDelete = async () => {
         if (!account) return;
 
@@ -151,7 +156,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Function to handle the addition of a new year
+    // Function to add a new year
     const handleAddYear = () => {
         const yearNumber = parseInt(newYear);
         if (isNaN(yearNumber) || yearNumber < 1900 || yearNumber > 9999) {
@@ -187,7 +192,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
     return (
         <Box sx={{ p: 3 }}>
-            {/* Box for the close button and title */}
+            {/* Container for the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -197,9 +202,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Typography>
             </Box>
 
-            {/* Form component for the account */}
+            {/* Form for account details */}
             <Box component="form">
-                {/* Paper component for the account name */}
+                {/* Input field for the account name */}
                 <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
                         label={t('dashboard.accounts.form.fields.name.label')}
@@ -211,12 +216,12 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     />
                 </Paper>
 
-                {/* Paper component for the year selection dropdown */}
+                {/* Dropdown for year selection */}
                 {account && (
                     <>
-                        {/* Paper component for the year selection dropdown */}
+                        {/* Year selection dropdown */}
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
-                            {/* Form control for the year selection dropdown */}
+                            {/* Form control for year selection */}
                             <FormControl size="small" fullWidth>
                                 <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                 <Select
@@ -245,7 +250,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                 </Select>
                             </FormControl>
 
-                            {/* Box for the new year input and button */}
+                            {/* Input for adding a new year */}
                             {showYearInput && (
                                 <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                                     <TextField
@@ -277,7 +282,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             )}
                         </Paper>
 
-                        {/* Paper component for the monthly values */}
+                        {/* Input fields for monthly values */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                 {months.map(month => (
@@ -285,19 +290,35 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         <Typography>{getMonthName(month)}</Typography>
                                         <TextField
                                             size="small"
-                                            type="number"
-                                            value={monthlyValues[month] || 0}
-                                            onChange={(e) => setMonthlyValues(prev => ({
-                                                ...prev,
-                                                [month]: Number(e.target.value)
-                                            }))}
+                                            type="text"
+                                            inputProps={{
+                                                inputMode: 'decimal',
+                                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                            }}
+                                            value={monthlyInput[month] || ''}
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(',', '.');
+                                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                                    setMonthlyInput(prev => ({
+                                                        ...prev,
+                                                        [month]: value.replace('.', ',')
+                                                    }));
+                                                }
+                                            }}
+                                            onBlur={() => {
+                                                const value = monthlyInput[month]?.replace(',', '.') || '0';
+                                                setMonthlyValues(prev => ({
+                                                    ...prev,
+                                                    [month]: parseFloat(value) || 0
+                                                }));
+                                            }}
                                         />
                                     </Box>
                                 ))}
                             </Box>
                         </Paper>
 
-                        {/* Paper component for the active switch */}
+                        {/* Switch for account active status */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
@@ -310,7 +331,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </>
                 )}
 
-                {/* Paper component for the background color and text color */}
+                {/* Color selection for background and text */}
                 <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
@@ -330,7 +351,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Box>
                 </Paper>
 
-                {/* Box for the delete and submit buttons */}
+                {/* Container for delete and submit buttons */}
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button
@@ -357,7 +378,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Box>
             </Box>
 
-            {/* Dialog component for the delete confirmation */}
+            {/* Dialog for delete confirmation */}
             <Dialog
                 open={deleteDialog}
                 onClose={() => setDeleteDialog(false)}
@@ -395,7 +416,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Typography>
                 </DialogContent>
 
-                {/* Box for the cancel and delete buttons */}
+                {/* Container for cancel and delete buttons */}
                 <DialogActions sx={{
                     justifyContent: 'center',
                     gap: 2,
