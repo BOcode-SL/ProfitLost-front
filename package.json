@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build && shx cp .htaccess dist/",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "pnpm vite",
+    "build": "pnpm tsc && pnpm vite build",
+    "lint": "pnpm eslint",
+    "preview": "pnpm vite preview"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",

@@ -15,6 +15,10 @@
 dist
 build
 
+# pnpm
+pnpm-lock.yaml
+.pnpm-store/
+
 # Varios archivos y directorios
 .DS_Store
 Thumbs.db
