@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm vite",
-    "build": "pnpm tsc && pnpm vite build",
+    "build": "pnpm tsc && pnpm vite build && pnpm shx cp .htaccess dist/",
     "lint": "pnpm eslint",
     "preview": "pnpm vite preview"
   },
