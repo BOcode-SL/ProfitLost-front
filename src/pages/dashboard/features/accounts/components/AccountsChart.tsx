@@ -137,7 +137,8 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     sx: {
                         text: {
                             filter: isHidden ? 'blur(8px)' : 'none',
-                            transition: 'filter 0.3s ease'
+                            transition: 'filter 0.3s ease',
+                            userSelect: isHidden ? 'none' : 'auto'
                         }
                     }
                 }]}

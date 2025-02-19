@@ -345,7 +345,8 @@ export default function AnnualCategories({ transactions, loading }: AnnualCatego
                                                 textAlign: 'right',
                                                 minWidth: { xs: 80, sm: 120 },
                                                 filter: isHidden ? 'blur(8px)' : 'none',
-                                                transition: 'filter 0.3s ease'
+                                                transition: 'filter 0.3s ease',
+                                                userSelect: isHidden ? 'none' : 'auto' // Added no-select style when isHidden is true
                                             }}
                                         >
                                             {formatCurrency(balance, user)}

@@ -138,6 +138,7 @@ export default function AccountsTable({
                     color: account.configuration.color,
                     filter: isHidden ? 'blur(8px)' : 'none',
                     transition: 'filter 0.3s ease',
+                    userSelect: isHidden ? 'none' : 'auto',
                     fontSize: { xs: '1rem', sm: '1.2rem' }
                 }}
             >

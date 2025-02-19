@@ -108,7 +108,8 @@ export default function TransactionBalances({
                         <span style={{ 
                             fontSize: '1.5rem',
                             filter: isHidden ? 'blur(8px)' : 'none',
-                            transition: 'filter 0.3s ease'
+                            transition: 'filter 0.3s ease',
+                            userSelect: isHidden ? 'none' : 'auto'
                         }}>{formatCurrency(value, user)}</span>
                     </Paper>
                 ))}

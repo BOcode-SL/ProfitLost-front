@@ -121,12 +121,13 @@ export default function AnnualBalances({ transactions, loading }: AnnualBalances
                         gap: 2
                     }}>
                         {/* Icon representing the type of balance */}
-                        <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
+                        <span className='material-symbols-rounded' style={{ color, fontSize: '2rem' }}>{label}</span>
                         {/* Display formatted currency value */}
                         <span style={{
                             fontSize: '1.5rem',
                             filter: isHidden ? 'blur(8px)' : 'none',
-                            transition: 'filter 0.3s ease'
+                            transition: 'filter 0.3s ease',
+                            userSelect: isHidden ? 'none' : 'auto'
                         }}>{formatCurrency(value, user)}</span>
                     </Paper>
                 ))}

@@ -293,7 +293,8 @@ export default function TransactionTable({
                                                     width: { xs: '25%', md: '20%' },
                                                     textAlign: 'right',
                                                     filter: isHidden ? 'blur(8px)' : 'none',
-                                                    transition: 'filter 0.3s ease'
+                                                    transition: 'filter 0.3s ease',
+                                                    userSelect: isHidden ? 'none' : 'auto'
                                                 }}
                                             >
                                                 {formatCurrency(transaction.amount, user)}
