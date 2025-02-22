@@ -192,6 +192,6 @@ export const blogPosts: BlogPost[] = [
         image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1740227121/blog/rto8kegs48jmr31o2rdk.png",
         author: "blog.post.4.author",
         contentType: 'html',
-        category: 'updates'
+        category: 'tutorials'
     }
 ];
