@@ -20,34 +20,34 @@ interface DashboardContentProps {
 
 // DashboardContent component
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
-    // Initialize user context and state for showing the introduction dialog
+    // Initialize user context and state for displaying the introduction dialog
     const { user, setUser } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
-    // Effect to scroll to the top when the active section changes
+    // Effect to scroll to the top of the page when the active section changes
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeSection]);
 
+    // Effect to display the introduction dialog only if:
+    // 1. The user is logged in
+    // 2. The onboarding process is completed
+    // 3. The current section has not been previously shown
     useEffect(() => {
-        // Show the introduction dialog only if:
-        // 1. The user exists
-        // 2. The global onboarding is completed
-        // 3. The current section has not been shown yet
         if (user && activeSection && user.onboarding.completed) {
             const sectionIntro = user.onboarding.sections.find(
                 section => section.section === activeSection
             );
-            
+
             if (!sectionIntro || !sectionIntro.shown) {
                 setShowIntro(true);
             }
         }
     }, [activeSection, user]);
 
+    // Function to handle the close of the introduction dialog
     const handleIntroClose = async () => {
         try {
-            // Update the onboarding section in the user service
             await userService.updateOnboardingSection(activeSection);
             if (user) {
                 setUser({
@@ -106,7 +106,16 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
 
     // Main container for the dashboard content
     return (
-        <Box sx={{ gridArea: 'Content', p: { xs: 2, md: 3 }, pb: { xs: 10, md: 3 } }}>
+        <Box sx={{ 
+            gridArea: 'Content', 
+            p: { xs: 2, md: 2 }, 
+            pt: { xs: 11, md: 0 }, 
+            pb: { xs: 0, md: 2 }, 
+            pl: { xs: 2, md: 0 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+        }}>
             <Suspense fallback={
                 <Box sx={{
                     display: 'flex',
