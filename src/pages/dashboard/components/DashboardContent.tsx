@@ -110,7 +110,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
             gridArea: 'Content',
             p: { xs: 2, md: 2 },
             pt: { xs: 11, md: 0 },
-            pb: { xs: 0, md: 2 },
+            pb: { xs: 14, md: 2 },
             pl: { xs: 2, md: 0 },
             width: '100%'
         }}>
