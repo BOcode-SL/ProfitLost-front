@@ -13,14 +13,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 const handleCategoryError = (error: unknown): CategoryApiResponse => {
     // Check if the error has a statusCode
     if ((error as CategoryApiResponse).statusCode) {
-        return error as CategoryApiResponse;
+        return error as CategoryApiResponse; // Return the error if it has a statusCode
     }
     // Handle network errors
     return {
         success: false,
-        message: 'Connection error. Please check your internet connection.',
-        error: 'CONNECTION_ERROR' as CommonErrorType,
-        statusCode: 0 as HttpStatusCode
+        message: 'Connection error. Please check your internet connection.', // Message for connection errors
+        error: 'CONNECTION_ERROR' as CommonErrorType, // Error type for connection issues
+        statusCode: 0 as HttpStatusCode // Default status code for network errors
     };
 };
 
@@ -29,23 +29,23 @@ export const categoryService = {
     async getAllCategories(): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/all`, {
-                method: 'GET',
-                credentials: 'include',
-                headers: getAuthHeaders()
+                method: 'GET', // HTTP method for fetching categories
+                credentials: 'include', // Include credentials for the request
+                headers: getAuthHeaders() // Set authentication headers
             });
 
-            const data = await response.json();
+            const data = await response.json(); // Parse the JSON response
 
             if (!response.ok) {
                 throw {
                     ...data,
-                    statusCode: response.status as HttpStatusCode
+                    statusCode: response.status as HttpStatusCode // Throw an error if the response is not OK
                 } as CategoryApiResponse;
             }
 
-            return data as CategoryApiResponse;
+            return data as CategoryApiResponse; // Return the category data
         } catch (error) {
-            throw handleCategoryError(error);
+            throw handleCategoryError(error); // Handle any errors that occur
         }
     },
 
@@ -53,24 +53,24 @@ export const categoryService = {
     async createCategory(categoryData: CreateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/create`, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(categoryData),
-                headers: getAuthHeaders()
+                method: 'POST', // HTTP method for creating a new category
+                credentials: 'include', // Include credentials for the request
+                body: JSON.stringify(categoryData), // Convert category data to JSON
+                headers: getAuthHeaders() // Set authentication headers
             });
 
-            const data = await response.json();
+            const data = await response.json(); // Parse the JSON response
 
             if (!response.ok) {
                 throw {
                     ...data,
-                    statusCode: response.status as HttpStatusCode
+                    statusCode: response.status as HttpStatusCode // Throw an error if the response is not OK
                 } as CategoryApiResponse;
             }
 
-            return data as CategoryApiResponse;
+            return data as CategoryApiResponse; // Return the created category data
         } catch (error) {
-            throw handleCategoryError(error);
+            throw handleCategoryError(error); // Handle any errors that occur
         }
     },
 
@@ -78,24 +78,24 @@ export const categoryService = {
     async updateCategory(id: string, categoryData: UpdateCategoryRequest): Promise<CategoryApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/categories/${id}`, {
-                method: 'PUT',
-                credentials: 'include',
-                body: JSON.stringify(categoryData),
-                headers: getAuthHeaders()
+                method: 'PUT', // HTTP method for updating a category
+                credentials: 'include', // Include credentials for the request
+                body: JSON.stringify(categoryData), // Convert updated category data to JSON
+                headers: getAuthHeaders() // Set authentication headers
             });
 
-            const data = await response.json();
+            const data = await response.json(); // Parse the JSON response
 
             if (!response.ok) {
                 throw {
                     ...data,
-                    statusCode: response.status as HttpStatusCode
+                    statusCode: response.status as HttpStatusCode // Throw an error if the response is not OK
                 } as CategoryApiResponse;
             }
 
-            return data as CategoryApiResponse;
+            return data as CategoryApiResponse; // Return the updated category data
         } catch (error) {
-            throw handleCategoryError(error);
+            throw handleCategoryError(error); // Handle any errors that occur
         }
     },
 
@@ -106,6 +106,33 @@ export const categoryService = {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: getAuthHeaders()
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as CategoryApiResponse;
+            }
+
+            return data as CategoryApiResponse;
+        } catch (error) {
+            throw handleCategoryError(error);
+        }
+    },
+    // Method to create default categories
+    async createDefaultCategories(categories: { name: string, color: string }[]): Promise<CategoryApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/categories/default`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ categories })
             });
 
             const data = await response.json();

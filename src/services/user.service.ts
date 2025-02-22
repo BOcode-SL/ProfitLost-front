@@ -2,6 +2,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
+import type { UserPreferences } from '../types/models/user';
 
 // Utils
 import { getAuthHeaders } from '../utils/apiHeaders';
@@ -219,6 +220,57 @@ export const userService = {
                 method: 'POST',
                 credentials: 'include',
                 body: JSON.stringify({ accountsOrder }),
+                headers: getAuthHeaders()
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as UserApiResponse;
+            }
+
+            return data as UserApiResponse;
+        } catch (error) {
+            throw handleUserError(error);
+        }
+    },
+    // Method to update user preferences
+    async onboardingPreferences(preferences: UserPreferences): Promise<UserApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/users/preferences`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preferences)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as UserApiResponse;
+            }
+
+            return data as UserApiResponse;
+        } catch (error) {
+            throw handleUserError(error);
+        }
+    },
+
+    // Method to complete the onboarding process
+    async completeOnboarding(): Promise<UserApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/users/complete-onboarding`, {
+                method: 'POST',
+                credentials: 'include',
                 headers: getAuthHeaders()
             });
 

@@ -10,6 +10,7 @@ import { useUser } from '../../contexts/UserContext';
 import DashboardHeader from './components/DashboardHeader';
 import DashboardNav from './components/DashboardNav';
 import DashboardContent from './components/DashboardContent';
+import GlobalOnboardingDialog from './components/GlobalOnboardingDialog';
 
 // Dashboard component
 export default function Dashboard() {
@@ -19,32 +20,47 @@ export default function Dashboard() {
 
     const [activeSection, setActiveSection] = useState('dashhome');
     const [searchParams, setSearchParams] = useSearchParams();
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
+    // Redirect to authentication page if user is not logged in
     useEffect(() => {
-        // Redirect to auth if user is not logged in
         if (!isLoading && !user) {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
 
+    // Effect to determine if onboarding should be shown
     useEffect(() => {
-        // Get section from search parameters
+        if (user && (!user.onboarding || !user.onboarding.completed)) {
+            setShowOnboarding(true);
+        }
+    }, [user]);
+
+    // Effect to retrieve section from search parameters
+    useEffect(() => {
         const section = searchParams.get('section');
         if (section) {
             setActiveSection(section);
         } else {
-            setActiveSection('dashhome');
+            setActiveSection('dashhome'); // Default section
         }
     }, [searchParams]);
 
+    // Handle menu item click to change active section
     const handleMenuItemClick = (sectionKey: string) => {
-        // Handle menu item click
         setActiveSection(sectionKey);
         setSearchParams(sectionKey === 'dashhome' ? {} : { section: sectionKey });
     };
 
+    // Handle onboarding close
+    const handleOnboardingClose = () => {
+        // Clear onboarding progress from local storage and close dialog
+        localStorage.removeItem('onboarding_progress');
+        setShowOnboarding(false);
+    };
+
+    // Show loading state while data is being fetched
     if (isLoading) {
-        // Show loading state
         return (
             <Box sx={{
                 display: 'flex',
@@ -77,39 +93,47 @@ export default function Dashboard() {
 
     // Main container for the dashboard layout
     return (
-        <Box sx={{
-            display: {
-                xs: 'flex',
-                md: 'grid'
-            },
-            flexDirection: {
-                xs: 'column'
-            },
-            gridTemplateColumns: {
-                md: '280px 1fr'
-            },
-            gridTemplateRows: {
-                md: '90px 1fr'
-            },
-            gridTemplateAreas: {
-                md: `
-                    "Nav Header" 
-                    "Nav Content" 
-                `
-            },
-            minHeight: '100vh',
-            bgcolor: 'background.default'
-        }}>
-            {/* Header component for the dashboard */}
-            <DashboardHeader user={user} />
-            {/* Navigation component for the dashboard */}
-            <DashboardNav
-                activeSection={activeSection}
-                handleMenuItemClick={handleMenuItemClick}
-                menuItems={menuItems}
+        <>
+            <Box sx={{
+                display: {
+                    xs: 'flex',
+                    md: 'grid'
+                },
+                flexDirection: {
+                    xs: 'column'
+                },
+                gridTemplateColumns: {
+                    md: '280px 1fr'
+                },
+                gridTemplateRows: {
+                    md: '90px 1fr'
+                },
+                gridTemplateAreas: {
+                    md: `
+                        "Nav Header" 
+                        "Nav Content" 
+                    `
+                },
+                minHeight: '100vh',
+                bgcolor: 'background.default'
+            }}>
+                {/* Header component for the dashboard */}
+                <DashboardHeader user={user} />
+                {/* Navigation component for the dashboard */}
+                <DashboardNav
+                    activeSection={activeSection}
+                    handleMenuItemClick={handleMenuItemClick}
+                    menuItems={menuItems}
+                />
+                {/* Content component for the dashboard */}
+                <DashboardContent activeSection={activeSection} />
+            </Box>
+
+            {/* Global Onboarding Dialog */}
+            <GlobalOnboardingDialog
+                open={showOnboarding}
+                onClose={handleOnboardingClose}
             />
-            {/* Content component for the dashboard */}
-            <DashboardContent activeSection={activeSection} />
-        </Box>
+        </>
     );
 }

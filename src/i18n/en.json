@@ -738,6 +738,33 @@
                 "fullYear": "Full Year"
             }
         },
+        "onboarding": {
+            "steps": {
+                "preferences": "Preferences",
+                "categories": "Categories"
+            },
+            "preferences": {
+                "title": "Customize your experience by selecting your language, currency, and format preferences:",
+                "language": "Language",
+                "currency": "Currency",
+                "dateFormat": "Date Format",
+                "timeFormat": "Time Format"
+            },
+            "categories": {
+                "title": "Select the categories you want to create by default:",
+                "income": "Income",
+                "expense": "Expense"
+            },
+            "buttons": {
+                "back": "Back",
+                "next": "Next",
+                "finish": "Finish"
+            },
+            "errors": {
+                "title": "Error in onboarding process",
+                "description": "There was an error during the setup process. Please try again."
+            }
+        },
         "settings": {
             "userSettings": {
                 "title": "User Settings",

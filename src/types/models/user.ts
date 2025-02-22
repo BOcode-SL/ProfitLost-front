@@ -8,6 +8,7 @@ export interface User {
     profileImagePublicId?: string;
     accountsOrder?: string[];
     preferences: UserPreferences;
+    onboarding: UserOnboarding;
 }
 
 export interface UserPreferences {
@@ -25,6 +26,22 @@ export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY';
 export type TimeFormat = '12h' | '24h';
 export type Theme = 'light' | 'dark';
 export type ViewMode = 'yearToday' | 'fullYear';
+
+export interface UserOnboarding {
+    completed: boolean;
+    sections: OnboardingSection[];
+}
+
+export interface OnboardingSection {
+    section: string;
+    shown: boolean;
+}
+
+export interface OnboardingProgress {
+    activeStep: number;
+    preferences: UserPreferences;
+    selectedCategories: string[];
+}
 
 export interface UserContextType {
     user: User | null;
