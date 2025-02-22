@@ -20,12 +20,12 @@ import { formatCurrency } from '../../../../../utils/formatCurrency';
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {
     category?: Category; // Optional category prop
-    onSubmit: () => void; // Function to call on form submission
+    onSubmit: () => void; // Function to call upon form submission
     onClose: () => void; // Function to call to close the form
-    onDelete?: () => void; // Optional function to call on delete
+    onDelete?: () => void; // Optional function to call for deletion
 }
 
-// Tipos adicionales
+// Types
 interface GroupedTransactions {
     [key: string]: Transaction[];
 }
@@ -44,7 +44,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [showTransactions, setShowTransactions] = useState(false);
 
-    // Efecto para cargar los años con datos
+    // Effect to load years with available transaction data
     useEffect(() => {
         const fetchAllTransactions = async () => {
             if (!category) return;
@@ -67,7 +67,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         fetchAllTransactions();
     }, [category]);
 
-    // Efecto para cargar las transacciones del año seleccionado
+    // Effect to load transactions for the selected year
     useEffect(() => {
         const fetchTransactions = async () => {
             if (!category || !showTransactions) return;
@@ -86,7 +86,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         fetchTransactions();
     }, [category, selectedYear, showTransactions]);
 
-    // Función para agrupar transacciones por mes
+    // Function to group transactions by month
     const groupedTransactions = useMemo(() => {
         return transactions.reduce((groups: GroupedTransactions, transaction) => {
             const month = new Date(transaction.date).toLocaleString('es-ES', { month: 'long' });
@@ -98,7 +98,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         }, {});
     }, [transactions]);
 
-    // Handle the submit of the form
+    // Handle the submission of the form
     const handleSubmit = async () => {
         if (!name.trim()) {
             toast.error(t('dashboard.annualReport.categories.form.categoryNameRequired'));
@@ -140,7 +140,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Main container for the category form
     return (
         <Box sx={{ p: 3 }}>
-            {/* Header section with close button and title */}
+            {/* Header section containing the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -155,7 +155,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 e.preventDefault();
                 handleSubmit();
             }}>
-                {/* Input fields for color and category name */}
+                {/* Input fields for color selection and category name */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -182,7 +182,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     />
                 </Paper>
 
-                {/* Action buttons for delete and submit */}
+                {/* Action buttons for deletion and submission */}
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {category && onDelete && (
                         <Button
@@ -206,8 +206,8 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 </Box>
             </Box>
 
-            {/* Nueva sección de transacciones (solo visible en modo edición) */}
-            {category && (
+            {/* New section for transactions (only visible in edit mode) */}
+            {category && yearsWithData.length > 0 && (
                 <Paper elevation={3} sx={{ mt: 3, p: 2, borderRadius: 3 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 2 }}>
                         <FormControl size="small" fullWidth>
@@ -233,7 +233,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         </Link>
                     </Box>
 
-                    {showTransactions && (
+                    {showTransactions && Object.keys(groupedTransactions).length > 0 && (
                         <Box sx={{ mt: 2 }}>
                             {Object.entries(groupedTransactions).map(([month, monthTransactions]) => (
                                 <Box key={month} sx={{ mb: 3 }}>
@@ -287,8 +287,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         </Box>
                     )}
                 </Paper>
-            )
-            }
+            )}
         </Box >
     );
 }
