@@ -499,6 +499,7 @@
             "1": {
                 "title": "Bienvenido a Profit&Lost 💸",
                 "excerpt": "Te presentamos la nueva app para gestionar tus gastos",
+                "author": "Profit&Lost Team",
                 "content": {
                     "intro": "🚀 ¡Hola! Hoy te presento Profit&Lost 🚀",
                     "question": "¿Alguna vez has tenido que lidiar con hojas de Excel interminables para gestionar tus finanzas? 💸 Yo también... y por eso creé Profit&Lost: una herramienta sencilla, visual y poderosa para que tomes el control de tu dinero.",
@@ -517,6 +518,7 @@
             "2": {
                 "title": "Cómo organizar tus gastos con Profit&Lost",
                 "excerpt": "Te presentamos la nueva app para gestionar tus gastos",
+                "author": "Profit&Lost Team",
                 "content": {
                     "intro": "¿Te cuesta controlar tus gastos mensuales? 💸 ¿Quieres saber en qué se te va el dinero y cómo puedes ahorrar más? 💰 En Profit&Lost, hemos diseñado una herramienta sencilla y visual para ayudarte a organizar tus finanzas. En este tutorial, te explicamos paso a paso cómo hacerlo.",
                     "step1": {
@@ -562,7 +564,7 @@
             "3": {
                 "title": "Cómo organizar tu dinero con el método 50/30/20",
                 "excerpt": "📊 Administrar tu dinero puede ser fácil con el método 50/30/20. ¿Lo conoces? Te lo explico.",
-                "author": "Brian G. Novoa",
+                "author": "Profit&Lost Team",
                 "content": {
                     "intro": "Administrar el dinero de manera efectiva es un reto para muchas personas. Sin embargo, existe un método simple y fácil de aplicar que puede ayudarte a equilibrar tus ingresos y asegurarte de que cubres todas tus necesidades sin descuidar el ahorro: el método 50/30/20.",
                     "explanation": "Este sistema de gestión financiera, popularizado por la senadora estadounidense Elizabeth Warren en su libro All Your Worth: The Ultimate Lifetime Money Plan, divide tus ingresos en tres grandes categorías: necesidades, deseos y ahorro. En este artículo, te explicaremos cómo funciona y cómo aplicarlo en tu vida diaria con la ayuda de Profit&Lost.",
@@ -624,6 +626,55 @@
                             "4": "✅ Seguridad: Construyes un colchón financiero para el futuro"
                         }
                     }
+                }
+            },
+            "4": {
+                "title": "¡Instala Profit&Lost en tu móvil y accede fácilmente a tu gestión financiera!",
+                "excerpt": "Descubre cómo instalar Profit&Lost como una PWA en tu dispositivo para un acceso más rápido y conveniente.",
+                "author": "Profit&Lost Team",
+                "content": {
+                    "intro": "Ahora puedes acceder a Profit&Lost de manera rápida y sencilla instalando nuestra PWA (Progressive Web App) en tu dispositivo móvil o escritorio. Esto te permite abrir la plataforma como si fuera una aplicación nativa, sin necesidad de descargarla desde la tienda de aplicaciones.",
+                    "benefits": {
+                        "title": "👉 Beneficios de instalar Profit&Lost como PWA:",
+                        "items": [
+                            "✅ Acceso rápido desde la pantalla de inicio",
+                            "✅ Mejor rendimiento y carga más rápida",
+                            "✅ No ocupa espacio adicional en tu dispositivo",
+                            "✅ Disponible en Android, iOS y escritorio"
+                        ]
+                    },
+                    "installation": {
+                        "title": "¿Cómo instalar Profit&Lost en tu dispositivo?",
+                        "android": {
+                            "title": "📱 Para usuarios de Android:",
+                            "steps": [
+                                "Abre Google Chrome y visita profit-lost.com",
+                                "Toca el menú (los tres puntos en la esquina superior derecha)",
+                                "Selecciona \"Añadir a pantalla de inicio\"",
+                                "Haz click en Instalar y listo, tendrás Profit&Lost como una app en tu móvil"
+                            ]
+                        },
+                        "ios": {
+                            "title": "🍏 Para usuarios de iOS (iPhone y iPad):",
+                            "steps": [
+                                "Abre Safari y visita profit-lost.com",
+                                "Toca el ícono de compartir (un cuadrado con una flecha hacia arriba)",
+                                "Selecciona \"Añadir a pantalla de inicio\"",
+                                "Escribe el nombre de la app si lo deseas y presiona \"Añadir\"",
+                                "Ahora verás el ícono de Profit&Lost en tu pantalla de inicio"
+                            ]
+                        },
+                        "desktop": {
+                            "title": "🖥️ Para usuarios de escritorio (Windows y Mac):",
+                            "steps": [
+                                "Abre el Navegador y visita profit-lost.com",
+                                "En la barra de direcciones, busca el ícono de instalación de la PWA (un cuadro con una flecha descendente o un ícono de \"+\")",
+                                "Haz clic en \"Instalar\"",
+                                "Profit&Lost se abrirá en una ventana independiente como una aplicación"
+                            ]
+                        }
+                    },
+                    "conclusion": "👉 ¡Empieza a gestionar tus finanzas de manera práctica!\n\nCon esta instalación, podrás acceder a Profit&Lost rápidamente y disfrutar de una experiencia fluida.\n\nSi tienes dudas o necesitas ayuda, escríbenos. ¡Estamos aquí para ayudarte a mejorar tu gestión financiera!"
                 }
             }
         }

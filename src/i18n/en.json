@@ -627,6 +627,55 @@
                         }
                     }
                 }
+            },
+            "4": {
+                "title": "Install Profit&Lost on your mobile and access your financial management easily!",
+                "excerpt": "Discover how to install Profit&Lost as a PWA on your device for faster and more convenient access.",
+                "author": "Profit&Lost Team",
+                "content": {
+                    "intro": "Now you can access Profit&Lost quickly and easily by installing our PWA (Progressive Web App) on your mobile or desktop device. This allows you to open the platform as if it were a native application, without the need to download it from the app store.",
+                    "benefits": {
+                        "title": "👉 Benefits of installing Profit&Lost as a PWA:",
+                        "items": [
+                            "✅ Quick access from the home screen",
+                            "✅ Better performance and faster loading",
+                            "✅ No additional space on your device",
+                            "✅ Available on Android, iOS and desktop"
+                        ]
+                    },
+                    "installation": {
+                        "title": "How to install Profit&Lost on your device?",
+                        "android": {
+                            "title": "📱 For Android users:",
+                            "steps": [
+                                "Open Google Chrome and visit profit-lost.com",
+                                "Tap the menu (the three dots in the top right corner)",
+                                "Select \"Add to home screen\"",
+                                "Click Install and you will have Profit&Lost as an app on your mobile"
+                            ]
+                        },
+                        "ios": {
+                            "title": "🍏 For iOS users (iPhone and iPad):",
+                            "steps": [
+                                "Open Safari and visit profit-lost.com",
+                                "Tap the share icon (a square with an arrow pointing up)",
+                                "Select \"Add to home screen\"",
+                                "Write the name of the app if you want and press \"Add\"",
+                                "Now you will see the Profit&Lost icon on your home screen"
+                            ]
+                        },
+                        "desktop": {
+                            "title": "🖥️ Para usuarios de escritorio (Windows y Mac):",
+                            "steps": [
+                                "Open the browser and visit profit-lost.com",
+                                "In the address bar, search for the PWA installation icon (a square with a downward arrow or a \"+\" icon)",
+                                "Click \"Install\"",
+                                "Profit&Lost will open in a separate window as an app"
+                            ]
+                        }
+                    },
+                    "conclusion": "👉 Start managing your finances in a practical way!\n\nWith this installation, you will be able to access Profit&Lost quickly and enjoy a fluid experience.\n\nIf you have any questions or need help, write to us. We are here to help you improve your financial management!"
+                }
             }
         }
     },

@@ -143,5 +143,55 @@ export const blogPosts: BlogPost[] = [
         author: "blog.post.3.author",
         contentType: 'html',
         category: 'tips'
+    },
+    {
+        id: 4,
+        title: "blog.post.4.title",
+        excerpt: "blog.post.4.excerpt",
+        content: `
+            <p>{{blog.post.4.content.intro}}</p>
+
+            <h3>{{blog.post.4.content.benefits.title}}</h3>
+            <ul>
+                <li>{{blog.post.4.content.benefits.items.0}}</li>
+                <li>{{blog.post.4.content.benefits.items.1}}</li>
+                <li>{{blog.post.4.content.benefits.items.2}}</li>
+                <li>{{blog.post.4.content.benefits.items.3}}</li>
+            </ul>
+
+            <h3>{{blog.post.4.content.installation.title}}</h3>
+
+            <h4>{{blog.post.4.content.installation.android.title}}</h4>
+            <ol>
+                <li>{{blog.post.4.content.installation.android.steps.0}}</li>
+                <li>{{blog.post.4.content.installation.android.steps.1}}</li>
+                <li>{{blog.post.4.content.installation.android.steps.2}}</li>
+                <li>{{blog.post.4.content.installation.android.steps.3}}</li>
+            </ol>
+
+            <h4>{{blog.post.4.content.installation.ios.title}}</h4>
+            <ol>
+                <li>{{blog.post.4.content.installation.ios.steps.0}}</li>
+                <li>{{blog.post.4.content.installation.ios.steps.1}}</li>
+                <li>{{blog.post.4.content.installation.ios.steps.2}}</li>
+                <li>{{blog.post.4.content.installation.ios.steps.3}}</li>
+                <li>{{blog.post.4.content.installation.ios.steps.4}}</li>
+            </ol>
+
+            <h4>{{blog.post.4.content.installation.desktop.title}}</h4>
+            <ol>
+                <li>{{blog.post.4.content.installation.desktop.steps.0}}</li>
+                <li>{{blog.post.4.content.installation.desktop.steps.1}}</li>
+                <li>{{blog.post.4.content.installation.desktop.steps.2}}</li>
+                <li>{{blog.post.4.content.installation.desktop.steps.3}}</li>
+            </ol>
+
+            <p>{{blog.post.4.content.conclusion}}</p>
+        `,
+        date: "2025-02-24",
+        image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1740227121/blog/rto8kegs48jmr31o2rdk.png",
+        author: "blog.post.4.author",
+        contentType: 'html',
+        category: 'updates'
     }
 ];
