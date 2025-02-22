@@ -637,6 +637,7 @@
             "disable_currency_amount": "Ocultar balances"
         },
         "common": {
+            "understood": "Entendido",
             "year": "Año",
             "month": "Mes",
             "save": "Guardar",
@@ -759,8 +760,9 @@
                 "finish": "Finalizar"
             },
             "errors": {
-                "title": "Error en el proceso de onboarding",
-                "description": "Ocurrió un error durante el proceso de configuración. Por favor, inténtalo de nuevo."
+                "title": "Error en el proceso de configuración",
+                "description": "Hubo un error durante el proceso de configuración. Por favor, inténtalo de nuevo.",
+                "selectCategory": "Por favor, selecciona al menos una categoría para continuar"
             }
         },
         "settings": {
@@ -848,6 +850,10 @@
         },
         "dashhome": {
             "title": "Dashboard",
+            "intro": {
+                "title": "Bienvenido a tu Dashboard",
+                "content": "Este es tu centro de control financiero. Aquí encontrarás un resumen rápido de tus cuentas, transacciones recientes y estado financiero."
+            },
             "balance": {
                 "earnings": "Ingresos",
                 "spendings": "Gastos",
@@ -866,6 +872,10 @@
         },
         "annualReport": {
             "title": "Reporte anual",
+            "intro": {
+                "title": "Reporte anual",
+                "content": "Rastrea tu progreso financiero anual. Visualiza ingresos vs gastos, tasa de ahorro y tendencias financieras a lo largo del tiempo."
+            },
             "chart": {
                 "income": "Ingresos",
                 "expenses": "Gastos",
@@ -921,6 +931,10 @@
         },
         "accounts": {
             "title": "Cuentas",
+            "intro": {
+                "title": "Cuentas",
+                "content": "Administra todas tus cuentas financieras en un solo lugar. Rastrea balances, supervisa transferencias y mantén tu organización financiera."
+            },
             "newAccount": "Nueva cuenta",
             "editAccount": "Editar cuenta",
             "accountName": "Nombre de la cuenta",
@@ -984,6 +998,10 @@
         },
         "transactions": {
             "title": "Movimientos",
+            "intro": {
+                "title": "Movimientos",
+                "content": "Registra y administra todos tus movimientos financieros. Categoriza gastos, rastrea ingresos y mantén un historial financiero claro."
+            },
             "form": {
                 "title": {
                     "edit": "Editar movimiento",
@@ -1086,6 +1104,10 @@
         },
         "notes": {
             "title": "Notas",
+            "intro": {
+                "title": "Notas",
+                "content": "Anota información financiera importante, recordatorios y objetivos. Agrega notas a transacciones o crea notas financieras independientes."
+            },
             "form": {
                 "title": {
                     "edit": "Editar nota",

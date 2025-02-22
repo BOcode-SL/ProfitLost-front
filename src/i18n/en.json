@@ -639,6 +639,7 @@
             "disable_currency_amount": "Hide balances"
         },
         "common": {
+            "understood": "Understood",
             "year": "Year",
             "month": "Month",
             "save": "Save",
@@ -762,7 +763,8 @@
             },
             "errors": {
                 "title": "Error in onboarding process",
-                "description": "There was an error during the setup process. Please try again."
+                "description": "There was an error during the setup process. Please try again.",
+                "selectCategory": "Please select at least one category to continue"
             }
         },
         "settings": {
@@ -850,6 +852,10 @@
         },
         "dashhome": {
             "title": "Dashboard",
+            "intro": {
+                "title": "Welcome to Your Dashboard",
+                "content": "This is your financial command center. Here you'll find a quick overview of your accounts, recent transactions, and financial status."
+            },
             "balance": {
                 "earnings": "Earnings",
                 "spendings": "Spendings",
@@ -868,6 +874,10 @@
         },
         "annualReport": {
             "title": "Annual Report",
+            "intro": {
+                "title": "Annual Financial Report",
+                "content": "Track your yearly financial progress. View income vs expenses, savings rate, and financial trends over time."
+            },
             "chart": {
                 "income": "Income",
                 "expenses": "Expenses",
@@ -923,6 +933,10 @@
         },
         "accounts": {
             "title": "Accounts",
+            "intro": {
+                "title": "Account Overview",
+                "content": "Manage all your financial accounts in one place. Track balances, monitor transfers, and maintain your financial organization."
+            },
             "newAccount": "New Account",
             "editAccount": "Edit Account",
             "accountName": "Account Name",
@@ -986,6 +1000,10 @@
         },
         "transactions": {
             "title": "Transactions",
+            "intro": {
+                "title": "Transaction Management",
+                "content": "Record and manage all your financial transactions. Categorize expenses, track income, and maintain a clear financial history."
+            },
             "form": {
                 "title": {
                     "edit": "Edit Transaction",
@@ -1091,6 +1109,10 @@
         },
         "notes": {
             "title": "Notes",
+            "intro": {
+                "title": "Financial Notes",
+                "content": "Keep track of important financial information, reminders, and goals. Add notes to transactions or create standalone financial memos."
+            },
             "form": {
                 "title": {
                     "edit": "Edit Note",

@@ -287,5 +287,33 @@ export const userService = {
         } catch (error) {
             throw handleUserError(error);
         }
+    },
+
+    // Method to update an onboarding section
+    async updateOnboardingSection(section: string): Promise<UserApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/users/onboarding-section`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ section })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                } as UserApiResponse;
+            }
+
+            return data as UserApiResponse;
+        } catch (error) {
+            throw handleUserError(error);
+        }
     }
 }; 

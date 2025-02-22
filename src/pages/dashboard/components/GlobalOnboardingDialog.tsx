@@ -97,8 +97,8 @@ const Transition = forwardRef(function Transition(
 });
 
 interface GlobalOnboardingDialogProps {
-    open: boolean; // Indicates if the dialog is open
-    onClose: () => void; // Function to call when the dialog is closed
+    open: boolean; // Indicates if the dialog is currently open
+    onClose: () => void; // Callback function to execute when the dialog is closed
 }
 
 // Global onboarding dialog component
@@ -157,7 +157,7 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 [key]: value
             };
             
-            // If the change is for language, update i18n
+            // Update i18n language if the language preference changes
             if (key === 'language') {
                 const newLang = value === 'esES' ? 'es' : 'en';
                 i18n.changeLanguage(newLang);
@@ -173,7 +173,14 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
             if (activeStep === 0) {
                 await userService.onboardingPreferences(preferences);
                 await loadUserData();
+                setActiveStep((prevStep) => prevStep + 1);
             } else if (activeStep === steps.length - 1) {
+                // Validate that at least one category is selected
+                if (selectedCategories.length === 0) {
+                    toast.error(t('dashboard.onboarding.errors.selectCategory'));
+                    return;
+                }
+
                 const selectedCats = selectedCategories.map(index => {
                     const category = defaultCategories[preferences.language as keyof typeof defaultCategories][parseInt(index)];
                     return {
@@ -186,8 +193,8 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 await loadUserData();
                 clearProgress();
                 onClose();
+                setActiveStep((prevStep) => prevStep + 1);
             }
-            setActiveStep((prevStep) => prevStep + 1);
         } catch (error) {
             console.error('Error in the onboarding process:', error);
             toast.error(t('dashboard.onboarding.errors.title'));
@@ -333,8 +340,8 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
             keepMounted
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                sx: {
+            sx={{
+                '& .MuiPaper-root': {
                     borderRadius: 3
                 }
             }}

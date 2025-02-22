@@ -29,12 +29,18 @@ export default function Dashboard() {
         }
     }, [user, isLoading, navigate]);
 
-    // Effect to determine if onboarding should be shown
+    // Effect para determinar si se debe mostrar el onboarding
     useEffect(() => {
         if (user && (!user.onboarding || !user.onboarding.completed)) {
             setShowOnboarding(true);
+            // Asegurarse de que no se muestre el diálogo de sección mientras el onboarding está activo
+            const section = searchParams.get('section');
+            if (section) {
+                setSearchParams({});
+            }
+            setActiveSection('dashhome');
         }
-    }, [user]);
+    }, [user, searchParams, setSearchParams]);
 
     // Effect to retrieve section from search parameters
     useEffect(() => {

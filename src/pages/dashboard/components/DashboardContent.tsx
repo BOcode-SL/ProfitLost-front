@@ -1,5 +1,9 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
+import { useUser } from '../../../contexts/UserContext';
+import { userService } from '../../../services/user.service';
+
+import SectionIntroDialog from './SectionIntroDialog';
 
 // Components
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
@@ -16,10 +20,52 @@ interface DashboardContentProps {
 
 // DashboardContent component
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
+    // Initialize user context and state for showing the introduction dialog
+    const { user, setUser } = useUser();
+    const [showIntro, setShowIntro] = useState(false);
+
     // Effect to scroll to the top when the active section changes
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeSection]);
+
+    useEffect(() => {
+        // Show the introduction dialog only if:
+        // 1. The user exists
+        // 2. The global onboarding is completed
+        // 3. The current section has not been shown yet
+        if (user && activeSection && user.onboarding.completed) {
+            const sectionIntro = user.onboarding.sections.find(
+                section => section.section === activeSection
+            );
+            
+            if (!sectionIntro || !sectionIntro.shown) {
+                setShowIntro(true);
+            }
+        }
+    }, [activeSection, user]);
+
+    const handleIntroClose = async () => {
+        try {
+            // Update the onboarding section in the user service
+            await userService.updateOnboardingSection(activeSection);
+            if (user) {
+                setUser({
+                    ...user,
+                    onboarding: {
+                        ...user.onboarding,
+                        sections: [
+                            ...user.onboarding.sections.filter(s => s.section !== activeSection),
+                            { section: activeSection, shown: true }
+                        ]
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error updating onboarding section:', error);
+        }
+        setShowIntro(false);
+    };
 
     // Function to render the content based on the active section
     const renderContent = () => {
@@ -60,41 +106,26 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
 
     // Main container for the dashboard content
     return (
-        <Box sx={{
-            gridArea: 'Content',
-            width: '100%',
-            minHeight: 'calc(100vh - 90px)',
-            pr: { xs: 0, md: 2 },
-            pb: { xs: 0, md: 2 },
-            position: 'relative',
-            '@media (max-width: 868px)': {
-                p: 2,
-                mb: '100px',
-                flex: 1,
-                mt: '80px'
-            }
-        }}>
-            {/* Suspense component to manage loading state */}
+        <Box sx={{ gridArea: 'Content', p: { xs: 2, md: 3 }, pb: { xs: 10, md: 3 } }}>
             <Suspense fallback={
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: '100%',
-                    minHeight: '200px'
+                    minHeight: '50vh'
                 }}>
-                    {/* Circular progress indicator for loading state */}
-                    <CircularProgress
-                        size={48}
-                        sx={{
-                            color: 'primary.main'
-                        }}
-                    />
+                    <CircularProgress size={48} sx={{ color: 'primary.main' }} />
                 </Box>
             }>
-                {/* Render the content based on the active section */}
                 {renderContent()}
             </Suspense>
+            {showIntro && (
+                <SectionIntroDialog
+                    open={showIntro}
+                    onClose={handleIntroClose}
+                    section={activeSection}
+                />
+            )}
         </Box>
     );
 };
