@@ -902,8 +902,13 @@
         "dashhome": {
             "title": "Dashboard",
             "intro": {
-                "title": "Welcome to Your Dashboard",
-                "content": "This is your financial command center. Here you'll find a quick overview of your accounts, recent transactions, and financial status."
+                "title": "Welcome to your Dashboard",
+                "content": [
+                    "This is your financial command center, where you'll find a quick overview of your accounts, recent transactions, and financial status.",
+                    "📊 Visualize your income, expenses, and EBITDA for the current month compared to the previous month.",
+                    "📈 Consult an interactive graph of the last 6 months.",
+                    "🔄 Review your latest transactions."
+                ]
             },
             "balance": {
                 "earnings": "Earnings",
@@ -925,7 +930,14 @@
             "title": "Annual Report",
             "intro": {
                 "title": "Annual Financial Report",
-                "content": "Track your yearly financial progress. View income vs expenses, savings rate, and financial trends over time."
+                "content": [
+                    "Get a comprehensive overview of your financial year with detailed analysis and trends.",
+                    "💰 Visualize your annual summary of income and expenses.",
+                    "📈 Analyze the monthly evolution of your finances.",
+                    "🎯 Identify patterns and trends in your expenses.",
+                    "📋 Manage and customize your categories.",
+                    "💡 Make smart decisions based on real data."
+                ]
             },
             "chart": {
                 "income": "Income",
@@ -983,8 +995,15 @@
         "accounts": {
             "title": "Accounts",
             "intro": {
-                "title": "Account Overview",
-                "content": "Manage all your financial accounts in one place. Track balances, monitor transfers, and maintain your financial organization."
+                "title": "Account Management",
+                "content": [
+                    "Centralize and monitor all your financial accounts efficiently.",
+                    "💳 Manage multiple accounts in one place.",
+                    "💰 Visualize your total available assets.",
+                    "📊 Analyze the distribution of your money.",
+                    "⚡ Access your information quickly.",
+                    "🎨 Customize the visualization of each account."
+                ]
             },
             "newAccount": "New Account",
             "editAccount": "Edit Account",
@@ -1050,8 +1069,15 @@
         "transactions": {
             "title": "Transactions",
             "intro": {
-                "title": "Transaction Management",
-                "content": "Record and manage all your financial transactions. Categorize expenses, track income, and maintain a clear financial history."
+                "title": "Your Transactions",
+                "content": [
+                    "Manage and organize all your financial transactions in one place.",
+                    "📝 Easily record income and expenses.",
+                    "🗂️ Organize with personalized categories.",
+                    "📅 Visualize the detail month by month.",
+                    "📊 Analyze with interactive graphs.",
+                    "🔍 Keep a detailed control of each movement."
+                ]
             },
             "form": {
                 "title": {
@@ -1159,8 +1185,15 @@
         "notes": {
             "title": "Notes",
             "intro": {
-                "title": "Financial Notes",
-                "content": "Keep track of important financial information, reminders, and goals. Add notes to transactions or create standalone financial memos."
+                "title": "Your Notes",
+                "content": [
+                    "Your personal space to organize ideas and financial reminders.",
+                    "📝 Create detailed notes about your finances.",
+                    "⏰ Set important reminders.",
+                    "📌 Save relevant information and goals.",
+                    "✏️ Easily customize and edit.",
+                    "🔍 Find what you need quickly."
+                ]
             },
             "form": {
                 "title": {

@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, List, ListItem, ListItemText } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Define the props for the SectionIntroDialog component
@@ -17,30 +17,30 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
         return {
             dashhome: {
                 title: t('dashboard.dashhome.intro.title'),
-                content: t('dashboard.dashhome.intro.content'),
+                content: t('dashboard.dashhome.intro.content', { returnObjects: true }) as string[],
                 icon: 'home'
             },
             annualReport: {
                 title: t('dashboard.annualReport.intro.title'),
-                content: t('dashboard.annualReport.intro.content'),
+                content: t('dashboard.annualReport.intro.content', { returnObjects: true }) as string[],
                 icon: 'bar_chart_4_bars'
             },
             transactions: {
                 title: t('dashboard.transactions.intro.title'),
-                content: t('dashboard.transactions.intro.content'),
+                content: t('dashboard.transactions.intro.content', { returnObjects: true }) as string[],
                 icon: 'receipt_long'
             },
             accounts: {
                 title: t('dashboard.accounts.intro.title'),
-                content: t('dashboard.accounts.intro.content'),
+                content: t('dashboard.accounts.intro.content', { returnObjects: true }) as string[],
                 icon: 'account_balance'
             },
             notes: {
                 title: t('dashboard.notes.intro.title'),
-                content: t('dashboard.notes.intro.content'),
+                content: t('dashboard.notes.intro.content', { returnObjects: true }) as string[],
                 icon: 'note_alt'
             }
-        }[section] || { title: '', content: '', icon: '' };
+        }[section] || { title: '', content: [], icon: '' };
     };
 
     const sectionInfo = getSectionContent(section);
@@ -57,19 +57,52 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
                 }
             }}
         >
-            <DialogTitle sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2
-            }}>
-                <span className="material-symbols-rounded">{sectionInfo.icon}</span>
-                {sectionInfo.title}
+            <DialogTitle
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    pb: 1
+                }}
+            >
+                <span className="material-symbols-rounded" style={{ fontSize: 28 }}>
+                    {sectionInfo.icon}
+                </span>
+                <Typography variant="h6" component="span">
+                    {sectionInfo.title}
+                </Typography>
             </DialogTitle>
             <DialogContent>
-                <Typography>{sectionInfo.content}</Typography>
+                <List>
+                    {Array.isArray(sectionInfo.content) ? sectionInfo.content.map((item: string, index: number) => (
+                        <ListItem key={index} sx={{ py: 0.5 }}>
+                            <ListItemText
+                                primary={item}
+                                sx={{
+                                    '& .MuiListItemText-primary': {
+                                        fontSize: '0.95rem'
+                                    }
+                                }}
+                            />
+                        </ListItem>
+                    )) : (
+                        <ListItem sx={{ py: 0.5 }}>
+                            <ListItemText
+                                primary={sectionInfo.content as string}
+                            />
+                        </ListItem>
+                    )}
+                </List>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary">
+                <Button
+                    onClick={onClose}
+                    color="primary"
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 500
+                    }}
+                >
                     {t('dashboard.common.understood')}
                 </Button>
             </DialogActions>
