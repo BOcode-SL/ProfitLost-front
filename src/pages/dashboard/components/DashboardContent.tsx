@@ -106,15 +106,13 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
 
     // Main container for the dashboard content
     return (
-        <Box sx={{ 
-            gridArea: 'Content', 
-            p: { xs: 2, md: 2 }, 
-            pt: { xs: 11, md: 0 }, 
-            pb: { xs: 0, md: 2 }, 
+        <Box sx={{
+            gridArea: 'Content',
+            p: { xs: 2, md: 2 },
+            pt: { xs: 11, md: 0 },
+            pb: { xs: 0, md: 2 },
             pl: { xs: 2, md: 0 },
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            width: '100%'
         }}>
             <Suspense fallback={
                 <Box sx={{
