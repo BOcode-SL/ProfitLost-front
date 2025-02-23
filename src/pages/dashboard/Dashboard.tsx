@@ -22,27 +22,30 @@ export default function Dashboard() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [showOnboarding, setShowOnboarding] = useState(false);
 
-    // Redirect to authentication page if user is not logged in
+    // Redirect to authentication page if the user is not logged in
     useEffect(() => {
         if (!isLoading && !user) {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
 
-    // Effect para determinar si se debe mostrar el onboarding
+    // Effect to determine if onboarding should be displayed
     useEffect(() => {
         if (user && (!user.onboarding || !user.onboarding.completed)) {
-            setShowOnboarding(true);
-            // Asegurarse de que no se muestre el diálogo de sección mientras el onboarding está activo
-            const section = searchParams.get('section');
-            if (section) {
-                setSearchParams({});
+            // Do not show onboarding if we are in the analytics section
+            if (activeSection !== 'analytics') {
+                setShowOnboarding(true);
+                // Ensure that the section dialog is not shown while onboarding is active
+                const section = searchParams.get('section');
+                if (section) {
+                    setSearchParams({});
+                }
+                setActiveSection('dashhome');
             }
-            setActiveSection('dashhome');
         }
-    }, [user, searchParams, setSearchParams]);
+    }, [user, searchParams, setSearchParams, activeSection]);
 
-    // Effect to retrieve section from search parameters
+    // Effect to retrieve the section from search parameters
     useEffect(() => {
         const section = searchParams.get('section');
         if (section) {
@@ -52,15 +55,15 @@ export default function Dashboard() {
         }
     }, [searchParams]);
 
-    // Handle menu item click to change active section
+    // Handle menu item click to change the active section
     const handleMenuItemClick = (sectionKey: string) => {
         setActiveSection(sectionKey);
         setSearchParams(sectionKey === 'dashhome' ? {} : { section: sectionKey });
     };
 
-    // Handle onboarding close
+    // Handle closing of the onboarding dialog
     const handleOnboardingClose = () => {
-        // Clear onboarding progress from local storage and close dialog
+        // Clear onboarding progress from local storage and close the dialog
         localStorage.removeItem('onboarding_progress');
         setShowOnboarding(false);
     };

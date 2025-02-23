@@ -3,34 +3,41 @@ import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem,
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
+import { useUser } from '../../../contexts/UserContext';
 
 // Interface for the props of the DashboardNav component
 interface DashboardNavProps {
     activeSection: string; // The currently active section
-    handleMenuItemClick: (sectionKey: string) => void; // Function to handle menu item clicks
-    menuItems: { label: string; icon: string; key: string; }[]; // Array of menu items
+    handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
+    menuItems: { label: string; icon: string; key: string; }[]; // Array containing the menu items
 }
 
 // DashboardNav component
 export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) {
     const { isDarkMode } = useContext(ThemeContext);
+    const { user } = useUser();
 
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    const mainMenuItems = menuItems.slice(0, 3); // Get the first three menu items for the main menu
-    const moreMenuItems = menuItems.slice(3); // Get the remaining menu items for the "more" menu
+    // Add the Analytics item if the user is an admin
+    const allMenuItems = user?.role === 'admin' 
+        ? [...menuItems, { label: 'Analytics', icon: 'analytics', key: 'analytics' }]
+        : menuItems;
 
-    // Function to handle more click
+    const mainMenuItems = allMenuItems.slice(0, 3); // Retrieve the first three menu items for the main menu
+    const moreMenuItems = allMenuItems.slice(3); // Retrieve the remaining menu items for the "more" menu
+
+    // Function to handle the click event for the "more" button
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setMoreAnchorEl(event.currentTarget);
     };
 
-    // Function to handle more close
+    // Function to close the "more" menu
     const handleMoreClose = () => {
         setMoreAnchorEl(null);
     };
 
-    // Function to handle more item click
+    // Function to handle clicks on additional menu items
     const handleMoreItemClick = (label: string) => {
         handleMenuItemClick(label);
         handleMoreClose();
@@ -49,7 +56,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                 zIndex: 999,
                 display: { xs: 'none', md: 'block' }
             }}>
-                {/* Paper component to hold the navigation items */}
+                {/* Paper component to contain the navigation items */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -57,7 +64,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                         borderRadius: 3,
                     }}
                 >
-                    {/* Box for the logo display */}
+                    {/* Box for displaying the logo */}
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -67,7 +74,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
                             userSelect: 'none'
                         }
                     }}>
-                        {/* Conditional rendering of logo based on dark mode */}
+                        {/* Conditional rendering of the logo based on dark mode */}
                         {isDarkMode ? (
                             <img
                                 className="no-select"
@@ -85,7 +92,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
 
                     {/* List of menu items */}
                     <List sx={{ px: 2 }}>
-                        {menuItems.map((item) => (
+                        {allMenuItems.map((item) => (
                             <ListItem
                                 key={item.label}
                                 onClick={() => handleMenuItemClick(item.key)}
