@@ -9,6 +9,7 @@ export interface User {
     accountsOrder?: string[];
     preferences: UserPreferences;
     onboarding: UserOnboarding;
+    role: UserRole;
 }
 
 export interface UserPreferences {
@@ -48,4 +49,6 @@ export interface UserContextType {
     setUser: (user: User | null) => void;
     isLoading: boolean;
     loadUserData: () => Promise<void>;
-} 
+}
+
+export type UserRole = 'user' | 'admin'; 
