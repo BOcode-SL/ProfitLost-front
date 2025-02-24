@@ -691,6 +691,8 @@
             "understood": "Understood",
             "year": "Year",
             "month": "Month",
+            "daily": "Daily",
+            "monthly": "Monthly",
             "save": "Save",
             "update": "Update",
             "create": "Create",
@@ -1232,6 +1234,32 @@
                 "createError": "Error creating note",
                 "updateError": "Error saving note",
                 "deleteError": "Error deleting note"
+            }
+        },
+        "analytics": {
+            "title": "Analytics",
+            "sections": {
+                "users": "User Metrics",
+                "devices": "Device Distribution",
+                "transactions": "Transaction Metrics",
+                "engagement": "Engagement Metrics"
+            },
+            "metrics": {
+                "totalUsers": "Total Users",
+                "activeUsersDaily": "Daily Active Users",
+                "activeUsersWeekly": "Weekly Active Users",
+                "activeUsersMonthly": "Monthly Active Users",
+                "newUsersDaily": "New Users Today",
+                "newUsersWeekly": "New Users This Week",
+                "newUsersMonthly": "New Users This Month",
+                "deviceStatsDesktop": "Desktop",
+                "deviceStatsMobile": "Mobile",
+                "deviceStatsTablet": "Tablet",
+                "totalTransactions": "Total Transactions",
+                "transactionsToday": "Today's Transactions",
+                "averageTransactionsPerUser": "Average Transactions/User",
+                "userRetention": "User Retention",
+                "averageSessionDuration": "Average Session Duration"
             }
         }
     }

@@ -9,7 +9,7 @@ import { useUser } from '../../../contexts/UserContext';
 interface DashboardNavProps {
     activeSection: string; // The currently active section
     handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
-    menuItems: { label: string; icon: string; key: string; }[]; // Array containing the menu items
+    menuItems: { label: string; icon: string; key: string; adminOnly?: boolean; }[]; // Array containing the menu items
 }
 
 // DashboardNav component
@@ -19,13 +19,13 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
 
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    // Add the Analytics item if the user is an admin
-    const allMenuItems = user?.role === 'admin' 
-        ? [...menuItems, { label: 'Analytics', icon: 'analytics', key: 'analytics' }]
-        : menuItems;
+    // Modificar la lógica de filtrado de menú
+    const allMenuItems = menuItems.filter(item => 
+        !item.adminOnly || (item.adminOnly && user?.role === 'admin')
+    );
 
-    const mainMenuItems = allMenuItems.slice(0, 3); // Retrieve the first three menu items for the main menu
-    const moreMenuItems = allMenuItems.slice(3); // Retrieve the remaining menu items for the "more" menu
+    const mainMenuItems = allMenuItems.slice(0, 3);
+    const moreMenuItems = allMenuItems.slice(3);
 
     // Function to handle the click event for the "more" button
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {

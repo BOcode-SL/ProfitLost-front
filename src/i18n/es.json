@@ -691,6 +691,8 @@
             "understood": "Entendido",
             "year": "Año",
             "month": "Mes",
+            "daily": "Diario",
+            "monthly": "Mensual",
             "save": "Guardar",
             "update": "Actualizar",
             "create": "Crear",
@@ -1229,6 +1231,32 @@
                 "createError": "Error al crear la nota",
                 "updateError": "Error al guardar la nota",
                 "deleteError": "Error al eliminar la nota"
+            }
+        },
+        "analytics": {
+            "title": "Analíticas",
+            "sections": {
+                "users": "Métricas de Usuarios",
+                "devices": "Distribución de Dispositivos",
+                "transactions": "Métricas de Transacciones",
+                "engagement": "Métricas de Engagement"
+            },
+            "metrics": {
+                "totalUsers": "Total de Usuarios",
+                "activeUsersDaily": "Usuarios Activos Diarios",
+                "activeUsersWeekly": "Usuarios Activos Semanales",
+                "activeUsersMonthly": "Usuarios Activos Mensuales",
+                "newUsersDaily": "Nuevos Usuarios Hoy",
+                "newUsersWeekly": "Nuevos Usuarios Esta Semana",
+                "newUsersMonthly": "Nuevos Usuarios Este Mes",
+                "deviceStatsDesktop": "Escritorio",
+                "deviceStatsMobile": "Móvil",
+                "deviceStatsTablet": "Tablet",
+                "totalTransactions": "Total de Transacciones",
+                "transactionsToday": "Transacciones de Hoy",
+                "averageTransactionsPerUser": "Promedio de Transacciones/Usuario",
+                "userRetention": "Retención de Usuarios",
+                "averageSessionDuration": "Duración Media de Sesión"
             }
         }
     }
