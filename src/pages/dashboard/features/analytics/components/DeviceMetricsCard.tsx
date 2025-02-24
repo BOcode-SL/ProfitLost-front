@@ -1,7 +1,6 @@
 import { Box, Paper, Typography, Skeleton, Fade } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material/styles';
 
 // Types
 import type { DeviceMetrics } from '../../../../../types/models/analytics';
@@ -13,7 +12,6 @@ interface DeviceMetricsCardProps {
 
 export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardProps) {
     const { t } = useTranslation();
-    const theme = useTheme();
 
     if (loading) {
         return (
@@ -25,12 +23,12 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
                     display: 'flex',
                     flexDirection: 'column'
                 }}>
-                    {/* Skeleton for Title */}
+                    {/* Loading Skeleton for Title */}
                     <Box sx={{ mb: 2 }}>
                         <Skeleton variant="text" width={150} height={32} />
                     </Box>
 
-                    {/* Skeleton for Chart */}
+                    {/* Loading Skeleton for Chart */}
                     <Box sx={{ 
                         flex: 1,
                         display: 'flex',
@@ -41,7 +39,7 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
                     }}>
                         <Skeleton variant="circular" width={200} height={200} />
                         
-                        {/* Skeleton for Legend */}
+                        {/* Loading Skeleton for Legend Items */}
                         <Box sx={{ 
                             display: 'flex', 
                             gap: 2, 
@@ -66,19 +64,19 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
             id: 'desktop',
             value: data?.desktop || 0,
             label: t('dashboard.analytics.metrics.deviceStatsDesktop'),
-            color: theme.palette.primary.main
+            color: '#fe6f14'
         },
         {
             id: 'mobile',
             value: data?.mobile || 0,
             label: t('dashboard.analytics.metrics.deviceStatsMobile'),
-            color: theme.palette.secondary.main
+            color: '#ff9b61'
         },
         {
             id: 'tablet',
             value: data?.tablet || 0,
             label: t('dashboard.analytics.metrics.deviceStatsTablet'),
-            color: theme.palette.info.main
+            color: '#cc5810'
         }
     ];
 
@@ -121,7 +119,7 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
                                 markGap: 5,
                                 itemGap: 10,
                                 labelStyle: {
-                                    fontSize: 12
+                                    fontSize: 14
                                 }
                             }
                         }}
@@ -129,7 +127,7 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
                         width={250}
                         margin={{ 
                             top: 10,
-                            bottom: 40, // Increased to provide space for the legend
+                            bottom: 40,
                             left: 0,
                             right: 0 
                         }}

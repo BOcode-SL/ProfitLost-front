@@ -10,7 +10,7 @@ interface EngagementMetricsCardProps {
     loading: boolean;
 }
 
-// Skeleton component for displaying loading state of metrics
+// Skeleton component for displaying the loading state of metrics
 const MetricSkeleton = () => (
     <Box sx={{
         display: 'flex',
@@ -18,28 +18,28 @@ const MetricSkeleton = () => (
         gap: 1.5,
         width: '100%'
     }}>
-        {/* Label with icon */}
+        {/* Label with icon for the metric */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Skeleton variant="circular" width={20} height={20} />
             <Skeleton variant="text" width={180} height={24} />
         </Box>
-        
-        {/* Progress bar skeleton */}
-        <Skeleton 
-            variant="rectangular" 
-            height={8} 
-            sx={{ 
+
+        {/* Skeleton for the progress bar */}
+        <Skeleton
+            variant="rectangular"
+            height={8}
+            sx={{
                 borderRadius: 1,
                 transform: 'none'
-            }} 
+            }}
         />
-        
-        {/* Value skeleton */}
-        <Skeleton 
-            variant="text" 
-            width={80} 
+
+        {/* Skeleton for the value display */}
+        <Skeleton
+            variant="text"
+            width={80}
             height={40}
-            sx={{ 
+            sx={{
                 transform: 'none',
                 transformOrigin: '0 0'
             }}
@@ -61,12 +61,12 @@ export default function EngagementMetricsCard({ data, loading }: EngagementMetri
                     display: 'flex',
                     flexDirection: 'column'
                 }}>
-                    {/* Title */}
+                    {/* Title placeholder while loading */}
                     <Box sx={{ mb: 2 }}>
                         <Skeleton variant="text" width={200} height={32} />
                     </Box>
 
-                    {/* Metrics section */}
+                    {/* Section for displaying metrics */}
                     <Box sx={{
                         flex: 1,
                         display: 'flex',
@@ -98,11 +98,11 @@ export default function EngagementMetricsCard({ data, loading }: EngagementMetri
         }
     ];
 
-    // Function to determine the color of the progress bar based on value
+    // Function to determine the color of the progress bar based on the value
     const getProgressColor = (value: number) => {
-        if (value >= 75) return theme.palette.success.main;
-        if (value >= 50) return theme.palette.warning.main;
-        return theme.palette.error.main;
+        if (value >= 75) return '#fe6f14';
+        if (value >= 50) return '#ff9b61';
+        return '#cc5810';
     };
 
     return (
@@ -123,14 +123,14 @@ export default function EngagementMetricsCard({ data, loading }: EngagementMetri
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    gap: 3,
-                    py: 2
+                    gap: { xs: 2, sm: 3 },
+                    py: { xs: 1, sm: 2 }
                 }}>
                     {metrics.map((metric, index) => (
                         <Box key={index} sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: 1
+                            gap: { xs: 0.5, sm: 1 }
                         }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
@@ -152,7 +152,13 @@ export default function EngagementMetricsCard({ data, loading }: EngagementMetri
                                     }
                                 }}
                             />
-                            <Typography variant="h5" color="text.primary">
+                            <Typography variant="h5" color="text.primary" sx={{
+                                fontSize: {
+                                    xs: '1.5rem',
+                                    sm: '1.75rem',
+                                    md: '2rem'
+                                }
+                            }}>
                                 {metric.value.toFixed(1)}{metric.suffix}
                             </Typography>
                         </Box>

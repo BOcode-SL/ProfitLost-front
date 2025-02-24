@@ -24,11 +24,11 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulating data loading
+        // Simulating the process of data loading
         const fetchData = async () => {
             setLoading(true);
             try {
-                // This is where the actual API call would go
+                // Placeholder for the actual API call
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 setData(mockAnalyticsData);
             } catch (error) {
@@ -41,7 +41,7 @@ export default function Analytics() {
         fetchData();
     }, []);
 
-    // Check if the user is an administrator
+    // Verify if the user has administrator privileges
     if (!user?.role || user.role !== 'admin') {
         return (
             <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -55,32 +55,33 @@ export default function Analytics() {
     return (
         <Fade in timeout={400}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {/* User Metrics Card */}
+                {/* Card displaying user metrics */}
                 <Box sx={{ width: '100%' }}>
                     <UserMetricsCard data={data?.users || null} loading={loading} />
                 </Box>
 
-                {/* Transaction Metrics Card */}
+                {/* Card displaying transaction metrics */}
                 <Box sx={{ width: '100%' }}>
                     <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
                 </Box>
 
-                {/* Device (1/3) and Engagement (2/3) Cards */}
+                {/* Cards for Device (1/3) and Engagement (2/3) metrics */}
                 <Box sx={{
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
                     gap: 2,
-                    minHeight: 320 // Increased to accommodate the legend
+                    minHeight: { xs: 'auto', md: 320 }
                 }}>
                     <Box sx={{
                         flex: { xs: '1', md: '1' },
-                        minWidth: { xs: '100%', md: '300px' }
+                        minWidth: { xs: '100%', md: '300px' },
+                        mb: { xs: 2, md: 0 }
                     }}>
                         <DeviceMetricsCard data={data?.devices || null} loading={loading} />
                     </Box>
                     <Box sx={{
                         flex: { xs: '1', md: '2' },
-                        minWidth: { xs: '100%', md: '600px' }
+                        minWidth: { xs: '100%', md: '400px' }
                     }}>
                         <EngagementMetricsCard data={data?.engagement || null} loading={loading} />
                     </Box>

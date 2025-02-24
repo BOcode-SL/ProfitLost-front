@@ -153,13 +153,21 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     {t('dashboard.analytics.sections.transactions')}
                 </Typography>
 
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+                <Box sx={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: { xs: 1, sm: 2 }, 
+                    mb: { xs: 2, sm: 3 } 
+                }}>
                     {metrics.map((metric, index) => (
                         <Box key={index} sx={{
-                            flex: '1 1 200px',
+                            flex: {
+                                xs: '1 1 calc(50% - 8px)',
+                                sm: '1 1 200px'
+                            },
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: 1
+                            gap: { xs: 0.5, sm: 1 }
                         }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
@@ -169,7 +177,13 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                     {metric.label}
                                 </Typography>
                             </Box>
-                            <Typography variant="h4" color="text.primary">
+                            <Typography variant="h4" color="text.primary" sx={{
+                                fontSize: {
+                                    xs: '1.5rem',
+                                    sm: '1.75rem',
+                                    md: '2rem'
+                                }
+                            }}>
                                 {metric.isAverage
                                     ? metric.value.toFixed(1)
                                     : metric.value.toLocaleString()}
@@ -196,7 +210,11 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     </ToggleButtonGroup>
                 </Box>
 
-                <Box sx={{ height: 250, width: '100%' }}>
+                <Box sx={{ 
+                    height: { xs: 200, sm: 250 }, 
+                    width: '100%',
+                    mt: { xs: 1, sm: 2 } 
+                }}>
                     <LineChart
                         xAxis={[{
                             data: chartData[viewType].xAxis,
@@ -223,10 +241,13 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                             valueFormatter: (value: number | null) => value ? value.toLocaleString() : '',
                             connectNulls: true
                         }]}
-                        height={250}
+                        height={undefined}
                         margin={{ top: 20, right: 20, bottom: 30, left: 40 }}
                         sx={{
+                            width: '100%',
+                            height: '100%',
                             '.MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' },
                                 transform: 'rotate(0deg)'
                             }
                         }}
