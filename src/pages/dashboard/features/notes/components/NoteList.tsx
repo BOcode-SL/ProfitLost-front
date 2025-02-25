@@ -1,4 +1,4 @@
-import { List, Box, Typography, useTheme, Skeleton, Fade } from '@mui/material';
+import { List, Box, Typography, useTheme, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Types
@@ -25,54 +25,52 @@ export default function NoteList({
     // If loading, show skeletons
     if (isLoading) {
         return (
-            <Fade in timeout={500}>
-                <List sx={{
-                    mt: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                    width: '100%'
-                }}>
-                    {[1, 2, 3, 4].map((index) => (
-                        <Box
-                            key={index}
+            <List sx={{
+                mt: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                width: '100%'
+            }}>
+                {[1, 2, 3, 4].map((index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            backgroundColor: theme.palette.mode === 'dark' ?
+                                'rgba(255, 255, 255, 0.05)' :
+                                'rgba(0, 0, 0, 0.03)',
+                        }}
+                    >
+                        <Skeleton
+                            variant="text"
+                            width="60%"
+                            height={24}
                             sx={{
-                                p: 2,
-                                borderRadius: 3,
-                                backgroundColor: theme.palette.mode === 'dark' ?
-                                    'rgba(255, 255, 255, 0.05)' :
-                                    'rgba(0, 0, 0, 0.03)',
+                                animation: 'pulse 1.5s ease-in-out infinite'
                             }}
-                        >
-                            <Skeleton
-                                variant="text"
-                                width="60%"
-                                height={24}
-                                sx={{
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }}
-                            />
-                            <Skeleton
-                                variant="text"
-                                width="90%"
-                                height={20}
-                                sx={{
-                                    mt: 1,
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }}
-                            />
-                            <Skeleton
-                                variant="text"
-                                width="40%"
-                                height={20}
-                                sx={{
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }}
-                            />
-                        </Box>
-                    ))}
-                </List>
-            </Fade>
+                        />
+                        <Skeleton
+                            variant="text"
+                            width="90%"
+                            height={20}
+                            sx={{
+                                mt: 1,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                        <Skeleton
+                            variant="text"
+                            width="40%"
+                            height={20}
+                            sx={{
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                    </Box>
+                ))}
+            </List>
         );
     }
 
