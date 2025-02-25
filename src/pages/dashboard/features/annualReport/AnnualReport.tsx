@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { Box, Paper, FormControl, Select, MenuItem, InputLabel, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,7 @@ export default function AnnualReport() {
     const [year, setYear] = useState(currentYear);
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
     const [isUpdatingViewMode, setIsUpdatingViewMode] = useState(false);
 
@@ -83,7 +83,7 @@ export default function AnnualReport() {
     // Fetch transactions by year
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
-            setLoading(true);
+            setIsLoading(true);
             try {
                 const response = await transactionService.getTransactionsByYear(Number(year));
                 if (response.success && Array.isArray(response.data)) {
@@ -112,7 +112,7 @@ export default function AnnualReport() {
                 }
                 setTransactions([]);
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         };
 
@@ -149,94 +149,83 @@ export default function AnnualReport() {
 
     // Main container for the annual report
     return (
-        <Box className="annual-report">
-            <Fade in timeout={400}>
-                {/* Content container for the annual report */}
-                <Box className="annual-report__content">
-                    {/* Year selection paper */}
-                    <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
-                        <Box sx={{
-                            display: 'flex',
-                            gap: 2,
-                            flexDirection: { xs: 'column', sm: 'row' },
-                            alignItems: { xs: 'stretch', sm: 'center' }
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+        }}>
+            {/* Year selection paper */}
+            <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
+                <Box sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: { xs: 'stretch', sm: 'center' }
+                }}>
+                    {/* Year selection dropdown */}
+                    <FormControl size="small"
+                        sx={{
+                            flexGrow: 1,
+                            minWidth: { xs: '100%', sm: 200 },
                         }}>
-                            <Fade in timeout={500}>
-                                {/* Year selection dropdown */}
-                                <FormControl size="small"
-                                    sx={{
-                                        flexGrow: 1,
-                                        minWidth: { xs: '100%', sm: 200 },
-                                    }}>
-                                    <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                                    <Select
-                                        value={year}
-                                        label={t('dashboard.common.year')}
-                                        onChange={(e) => setYear(e.target.value)}
-                                    >
-                                        {yearsWithData.map((yearOption) => (
-                                            <MenuItem key={yearOption} value={yearOption}>
-                                                {yearOption}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Fade>
+                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                        <Select
+                            value={year}
+                            label={t('dashboard.common.year')}
+                            onChange={(e) => setYear(e.target.value)}
+                        >
+                            {yearsWithData.map((yearOption) => (
+                                <MenuItem key={yearOption} value={yearOption}>
+                                    {yearOption}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                            {/* View mode toggle buttons (only shown for the current year) */}
-                            {year === currentYear && (
-                                <Fade in timeout={500}>
-                                    <ToggleButtonGroup
-                                        value={viewMode}
-                                        exclusive
-                                        onChange={(_, newMode) => newMode && handleViewModeChange(newMode)}
-                                        size="small"
-                                        fullWidth
-                                        sx={{
-                                            width: { xs: '100%', sm: 250 },
-                                        }}
-                                    >
-                                        <ToggleButton value="yearToday">
-                                            {t('dashboard.common.viewMode.yearToday')}
-                                        </ToggleButton>
-                                        <ToggleButton value="fullYear">
-                                            {t('dashboard.common.viewMode.fullYear')}
-                                        </ToggleButton>
-                                    </ToggleButtonGroup>
-                                </Fade>
-                            )}
-                        </Box>
-                    </Paper>
-
-                    {/* Chart paper displaying annual data */}
-                    <Paper elevation={3} sx={{ p: 1, borderRadius: 3, mt: 2, width: '100%' }}>
-                        <Fade in timeout={600}>
-                            <Box>
-                                <AnnualChart
-                                    transactions={filteredTransactions}
-                                    loading={loading && !isUpdatingViewMode}
-                                />
-                            </Box>
-                        </Fade>
-                    </Paper>
-
-                    {/* Component displaying annual balances */}
-                    <AnnualBalances 
-                        transactions={filteredTransactions} 
-                        loading={loading && !isUpdatingViewMode} 
-                    />
-
-                    {/* Categories paper displaying annual categories */}
-                    <Fade in timeout={800}>
-                        <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%', mt: 2 }}>
-                            <AnnualCategories
-                                transactions={filteredTransactions}
-                                loading={loading && !isUpdatingViewMode}
-                            />
-                        </Paper>
-                    </Fade>
+                    {/* View mode toggle buttons (only shown for the current year) */}
+                    {year === currentYear && (
+                        <ToggleButtonGroup
+                            value={viewMode}
+                            exclusive
+                            onChange={(_, newMode) => newMode && handleViewModeChange(newMode)}
+                            size="small"
+                            fullWidth
+                            sx={{
+                                width: { xs: '100%', sm: 250 },
+                            }}
+                        >
+                            <ToggleButton value="yearToday">
+                                {t('dashboard.common.viewMode.yearToday')}
+                            </ToggleButton>
+                            <ToggleButton value="fullYear">
+                                {t('dashboard.common.viewMode.fullYear')}
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    )}
                 </Box>
-            </Fade>
+            </Paper>
+
+            {/* Chart paper displaying annual data */}
+            <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
+                <AnnualChart
+                    transactions={filteredTransactions}
+                    isLoading={isLoading && !isUpdatingViewMode}
+                />
+            </Paper>
+
+            {/* Component displaying annual balances */}
+            <AnnualBalances 
+                transactions={filteredTransactions} 
+                isLoading={isLoading && !isUpdatingViewMode} 
+            />
+
+            {/* Categories paper displaying annual categories */}
+            <Paper elevation={3} sx={{ p: 1, borderRadius: 3 }}>
+                <AnnualCategories
+                    transactions={filteredTransactions}
+                    isLoading={isLoading && !isUpdatingViewMode}
+                />
+            </Paper>
         </Box>
     );
 }

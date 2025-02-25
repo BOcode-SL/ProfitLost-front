@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Box, Paper, Fade, useTheme, Skeleton } from '@mui/material';
+import { Box, Paper, useTheme, Skeleton } from '@mui/material';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -13,11 +13,11 @@ import type { Transaction } from '../../../../../types/models/transaction';
 // Interface for the props of the AnnualBalances component
 interface AnnualBalancesProps {
     transactions: Transaction[]; // Array of transactions
-    loading?: boolean; // Optional loading state
+    isLoading: boolean; // Loading state
 }
 
 // AnnualBalances component
-export default function AnnualBalances({ transactions, loading }: AnnualBalancesProps) {
+export default function AnnualBalances({ transactions, isLoading }: AnnualBalancesProps) {
     const { user } = useUser();
     const theme = useTheme();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
@@ -60,58 +60,14 @@ export default function AnnualBalances({ transactions, loading }: AnnualBalances
     }, []);
 
     // If loading, show skeleton
-    if (loading) {
+    if (isLoading) {
         return (
-            <Fade in timeout={700}>
-                <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                    gap: 1,
-                    mt: 2
-                }}>
-                    {[1, 2, 3].map((index) => (
-                        <Paper key={index} elevation={3} sx={{
-                            p: 1,
-                            borderRadius: 3,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 2
-                        }}>
-                            <Skeleton
-                                variant="circular"
-                                width={32}
-                                height={32}
-                                sx={{
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }}
-                            />
-                            <Skeleton
-                                variant="text"
-                                width={100}
-                                height={32}
-                                sx={{
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }}
-                            />
-                        </Paper>
-                    ))}
-                </Box>
-            </Fade>
-        );
-    }
-
-    return (
-        <Fade in timeout={700}>
-            {/* Grid container for displaying balance items */}
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                gap: 1,
-                mt: 2
+                gap: 1
             }}>
-                {/* Iterate over balance items to display each one */}
-                {balanceItems.map(({ label, value, color }, index) => (
+                {[1, 2, 3].map((index) => (
                     <Paper key={index} elevation={3} sx={{
                         p: 1,
                         borderRadius: 3,
@@ -120,18 +76,55 @@ export default function AnnualBalances({ transactions, loading }: AnnualBalances
                         justifyContent: 'center',
                         gap: 2
                     }}>
-                        {/* Icon representing the type of balance */}
-                        <span className='material-symbols-rounded' style={{ color, fontSize: '2rem' }}>{label}</span>
-                        {/* Display formatted currency value */}
-                        <span style={{
-                            fontSize: '1.5rem',
-                            filter: isHidden ? 'blur(8px)' : 'none',
-                            transition: 'filter 0.3s ease',
-                            userSelect: isHidden ? 'none' : 'auto'
-                        }}>{formatCurrency(value, user)}</span>
+                        <Skeleton
+                            variant="circular"
+                            width={32}
+                            height={32}
+                            sx={{
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
+                        <Skeleton
+                            variant="text"
+                            width={100}
+                            height={36}
+                            sx={{
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }}
+                        />
                     </Paper>
                 ))}
             </Box>
-        </Fade>
+        );
+    }
+
+    return (
+        <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
+            gap: 1
+        }}>
+            {/* Iterate over balance items to display each one */}
+            {balanceItems.map(({ label, value, color }, index) => (
+                <Paper key={index} elevation={3} sx={{
+                    p: 1,
+                    borderRadius: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 2
+                }}>
+                    {/* Icon representing the type of balance */}
+                    <span className='material-symbols-rounded' style={{ color, fontSize: '2rem' }}>{label}</span>
+                    {/* Display formatted currency value */}
+                    <span style={{
+                        fontSize: '1.5rem',
+                        filter: isHidden ? 'blur(8px)' : 'none',
+                        transition: 'filter 0.3s ease',
+                        userSelect: isHidden ? 'none' : 'auto'
+                    }}>{formatCurrency(value, user)}</span>
+                </Paper>
+            ))}
+        </Box>
     );
 } 
