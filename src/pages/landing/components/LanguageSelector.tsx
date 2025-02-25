@@ -28,11 +28,13 @@ export default function LanguageSelector() {
     return (
         <Box sx={{
             position: 'fixed',
-            bottom: 16,
-            right: 16,
+            bottom: { xs: 24, lg: 'auto' },
+            top: { xs: 'auto', lg: 16 },
+            right: { xs: 24, lg: 16 },
             zIndex: 1100,
-            '@media (max-width: 600px)': {
+            '@media (max-width: 1385px)': {
                 bottom: 24,
+                top: 'auto',
                 right: 24
             }
         }}>
