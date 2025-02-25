@@ -74,7 +74,6 @@ export default function Analytics() {
                 <Box sx={{
                     flex: { xs: '1', md: '1' },
                     minWidth: { xs: '100%', md: '300px' },
-                    mb: { xs: 2, md: 0 }
                 }}>
                     <DeviceMetricsCard data={data?.devices || null} loading={loading} />
                 </Box>
