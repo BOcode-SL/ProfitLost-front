@@ -3,6 +3,8 @@ import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typo
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { useUser } from '../../../../../contexts/UserContext';
+import { formatDate } from '../../../../../utils/dateUtils';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -75,6 +77,7 @@ const calculateRecurringDates = (startDate: string, endDate: string, recurrenceT
 // TransactionForm component
 export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
     const { t } = useTranslation();
+    const { user } = useUser();
 
     const [date, setDate] = useState(() => {
         if (transaction) {
@@ -389,7 +392,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 color="text.secondary"
                                 sx={{ mb: 0.5 }}
                             >
-                                {date.toLocaleDateString()}
+                                {formatDate(date.toISOString(), user)}
                             </Typography>
                         ))}
                     </Box>
