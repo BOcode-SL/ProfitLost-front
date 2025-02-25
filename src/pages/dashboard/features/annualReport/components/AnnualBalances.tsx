@@ -65,7 +65,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                gap: 1
+                gap: 2
             }}>
                 {[1, 2, 3].map((index) => (
                     <Paper key={index} elevation={3} sx={{
@@ -102,7 +102,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         <Box sx={{
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-            gap: 1
+            gap: 2
         }}>
             {/* Iterate over balance items to display each one */}
             {balanceItems.map(({ label, value, color }, index) => (
