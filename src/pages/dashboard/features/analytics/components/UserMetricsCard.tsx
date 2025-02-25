@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Skeleton, Fade, Divider } from '@mui/material';
+import { Box, Paper, Typography, Skeleton, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Types
@@ -14,95 +14,107 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
 
     if (loading) {
         return (
-            <Fade in timeout={500}>
-                <Paper elevation={3} sx={{
-                    p: { xs: 1.5, sm: 2 },
-                    borderRadius: 3,
-                    width: '100%'
-                }}>
-                    {/* Title Skeleton */}
-                    <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
-                        <Skeleton variant="text" width={150} height={32} />
-                    </Box>
+            <Paper elevation={3} sx={{
+                p: { xs: 1.5, sm: 2 },
+                borderRadius: 3,
+                width: '100%'
+            }}>
+                {/* Title Skeleton */}
+                <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                    <Skeleton variant="text" width={150} height={32} sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }} />
+                </Box>
 
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: { xs: 2, sm: 3, md: 4 }
+                }}>
+                    {/* Skeletons for Active Metrics */}
                     <Box sx={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: { xs: 2, sm: 3, md: 4 }
+                        flexWrap: 'wrap',
+                        gap: { xs: 1, sm: 2, md: 3 }
                     }}>
-                        {/* Skeletons for Active Metrics */}
-                        <Box sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: { xs: 1, sm: 2, md: 3 }
-                        }}>
-                            {[1, 2, 3, 4].map((i) => (
-                                <Box key={`active-${i}`} sx={{
-                                    flex: {
-                                        xs: '1 1 calc(50% - 8px)',
-                                        sm: '1 1 calc(33.33% - 16px)',
-                                        md: '1 1 200px'
-                                    },
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 1
-                                }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Skeleton variant="circular" width={20} height={20} />
-                                        <Skeleton variant="text" width={100} height={24} />
-                                    </Box>
-                                    <Skeleton 
-                                        variant="text" 
-                                        width={80} 
-                                        height={40}
-                                        sx={{ 
-                                            transform: 'none',
-                                            transformOrigin: '0 0'
-                                        }}
-                                    />
+                        {[1, 2, 3, 4].map((i) => (
+                            <Box key={`active-${i}`} sx={{
+                                flex: {
+                                    xs: '1 1 calc(50% - 8px)',
+                                    sm: '1 1 calc(33.33% - 16px)',
+                                    md: '1 1 200px'
+                                },
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Skeleton variant="circular" width={20} height={20} sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }} />
+                                    <Skeleton variant="text" width={100} height={24} sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }} />
                                 </Box>
-                            ))}
-                        </Box>
-
-                        {/* Skeleton for Divider */}
-                        <Skeleton variant="rectangular" height={1} />
-
-                        {/* Skeletons for New Users Metrics */}
-                        <Box sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: { xs: 1, sm: 2, md: 3 }
-                        }}>
-                            {[1, 2, 3].map((i) => (
-                                <Box key={`new-${i}`} sx={{
-                                    flex: {
-                                        xs: '1 1 calc(50% - 8px)',
-                                        sm: '1 1 calc(33.33% - 16px)',
-                                        md: '1 1 200px'
-                                    },
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 1
-                                }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Skeleton variant="circular" width={20} height={20} />
-                                        <Skeleton variant="text" width={100} height={24} />
-                                    </Box>
-                                    <Skeleton 
-                                        variant="text" 
-                                        width={80} 
-                                        height={40}
-                                        sx={{ 
-                                            transform: 'none',
-                                            transformOrigin: '0 0'
-                                        }}
-                                    />
-                                </Box>
-                            ))}
-                        </Box>
+                                <Skeleton 
+                                    variant="text" 
+                                    width={80} 
+                                    height={40}
+                                    sx={{ 
+                                        transform: 'none',
+                                        transformOrigin: '0 0',
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }}
+                                />
+                            </Box>
+                        ))}
                     </Box>
-                </Paper>
-            </Fade>
+
+                    {/* Skeleton for Divider */}
+                    <Skeleton variant="rectangular" height={1} sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }} />
+
+                    {/* Skeletons for New Users Metrics */}
+                    <Box sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: { xs: 1, sm: 2, md: 3 }
+                    }}>
+                        {[1, 2, 3].map((i) => (
+                            <Box key={`new-${i}`} sx={{
+                                flex: {
+                                    xs: '1 1 calc(50% - 8px)',
+                                    sm: '1 1 calc(33.33% - 16px)',
+                                    md: '1 1 200px'
+                                },
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Skeleton variant="circular" width={20} height={20} sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }} />
+                                    <Skeleton variant="text" width={100} height={24} sx={{
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }} />
+                                </Box>
+                                <Skeleton 
+                                    variant="text" 
+                                    width={80} 
+                                    height={40}
+                                    sx={{ 
+                                        transform: 'none',
+                                        transformOrigin: '0 0',
+                                        animation: 'pulse 1.5s ease-in-out infinite'
+                                    }}
+                                />
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+            </Paper>
         );
     }
 
@@ -207,57 +219,55 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
     );
 
     return (
-        <Fade in timeout={500}>
-            <Paper elevation={3} sx={{
-                p: { xs: 1.5, sm: 2 },
-                borderRadius: 3,
-                width: '100%'
+        <Paper elevation={3} sx={{
+            p: { xs: 1.5, sm: 2 },
+            borderRadius: 3,
+            width: '100%'
+        }}>
+            <Typography 
+                variant="h6" 
+                color="primary" 
+                gutterBottom 
+                sx={{ 
+                    mb: { xs: 1.5, sm: 2 },
+                    fontSize: {
+                        xs: '1.1rem',
+                        sm: '1.25rem'
+                    }
+                }}
+            >
+                {t('dashboard.analytics.sections.users')}
+            </Typography>
+
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: { xs: 2, sm: 3, md: 4 }
             }}>
-                <Typography 
-                    variant="h6" 
-                    color="primary" 
-                    gutterBottom 
-                    sx={{ 
-                        mb: { xs: 1.5, sm: 2 },
-                        fontSize: {
-                            xs: '1.1rem',
-                            sm: '1.25rem'
-                        }
-                    }}
-                >
-                    {t('dashboard.analytics.sections.users')}
-                </Typography>
+                <Box sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: { xs: 1, sm: 2, md: 3 },
+                    justifyContent: 'flex-start'
+                }}>
+                    {activeMetrics.map((metric, index) => (
+                        <MetricBox key={index} metric={metric} />
+                    ))}
+                </Box>
+
+                <Divider />
 
                 <Box sx={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: { xs: 2, sm: 3, md: 4 }
+                    flexWrap: 'wrap',
+                    gap: { xs: 1, sm: 2, md: 3 },
+                    justifyContent: 'flex-start'
                 }}>
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: { xs: 1, sm: 2, md: 3 },
-                        justifyContent: 'flex-start'
-                    }}>
-                        {activeMetrics.map((metric, index) => (
-                            <MetricBox key={index} metric={metric} />
-                        ))}
-                    </Box>
-
-                    <Divider />
-
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: { xs: 1, sm: 2, md: 3 },
-                        justifyContent: 'flex-start'
-                    }}>
-                        {newMetrics.map((metric, index) => (
-                            <MetricBox key={index} metric={metric} />
-                        ))}
-                    </Box>
+                    {newMetrics.map((metric, index) => (
+                        <MetricBox key={index} metric={metric} />
+                    ))}
                 </Box>
-            </Paper>
-        </Fade>
+            </Box>
+        </Paper>
     );
 } 

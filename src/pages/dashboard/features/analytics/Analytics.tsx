@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Fade } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -53,40 +53,38 @@ export default function Analytics() {
     }
 
     return (
-        <Fade in timeout={400}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {/* Card displaying user metrics */}
-                <Box sx={{ width: '100%' }}>
-                    <UserMetricsCard data={data?.users || null} loading={loading} />
-                </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Card displaying user metrics */}
+            <Box sx={{ width: '100%' }}>
+                <UserMetricsCard data={data?.users || null} loading={loading} />
+            </Box>
 
-                {/* Card displaying transaction metrics */}
-                <Box sx={{ width: '100%' }}>
-                    <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
-                </Box>
+            {/* Card displaying transaction metrics */}
+            <Box sx={{ width: '100%' }}>
+                <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
+            </Box>
 
-                {/* Cards for Device (1/3) and Engagement (2/3) metrics */}
+            {/* Cards for Device (1/3) and Engagement (2/3) metrics */}
+            <Box sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: 2,
+                minHeight: { xs: 'auto', md: 320 }
+            }}>
                 <Box sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    gap: 2,
-                    minHeight: { xs: 'auto', md: 320 }
+                    flex: { xs: '1', md: '1' },
+                    minWidth: { xs: '100%', md: '300px' },
+                    mb: { xs: 2, md: 0 }
                 }}>
-                    <Box sx={{
-                        flex: { xs: '1', md: '1' },
-                        minWidth: { xs: '100%', md: '300px' },
-                        mb: { xs: 2, md: 0 }
-                    }}>
-                        <DeviceMetricsCard data={data?.devices || null} loading={loading} />
-                    </Box>
-                    <Box sx={{
-                        flex: { xs: '1', md: '2' },
-                        minWidth: { xs: '100%', md: '400px' }
-                    }}>
-                        <EngagementMetricsCard data={data?.engagement || null} loading={loading} />
-                    </Box>
+                    <DeviceMetricsCard data={data?.devices || null} loading={loading} />
+                </Box>
+                <Box sx={{
+                    flex: { xs: '1', md: '2' },
+                    minWidth: { xs: '100%', md: '400px' }
+                }}>
+                    <EngagementMetricsCard data={data?.engagement || null} loading={loading} />
                 </Box>
             </Box>
-        </Fade>
+        </Box>
     );
 } 

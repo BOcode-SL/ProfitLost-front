@@ -20,8 +20,12 @@ const MetricSkeleton = () => (
     }}>
         {/* Label with icon for the metric */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Skeleton variant="circular" width={20} height={20} />
-            <Skeleton variant="text" width={180} height={24} />
+            <Skeleton variant="circular" width={20} height={20} sx={{
+                animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+            <Skeleton variant="text" width={180} height={24} sx={{
+                animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
         </Box>
 
         {/* Skeleton for the progress bar */}
@@ -30,7 +34,8 @@ const MetricSkeleton = () => (
             height={8}
             sx={{
                 borderRadius: 1,
-                transform: 'none'
+                transform: 'none',
+                animation: 'pulse 1.5s ease-in-out infinite'
             }}
         />
 
@@ -41,7 +46,8 @@ const MetricSkeleton = () => (
             height={40}
             sx={{
                 transform: 'none',
-                transformOrigin: '0 0'
+                transformOrigin: '0 0',
+                animation: 'pulse 1.5s ease-in-out infinite'
             }}
         />
     </Box>
@@ -63,7 +69,9 @@ export default function EngagementMetricsCard({ data, loading }: EngagementMetri
                 }}>
                     {/* Title placeholder while loading */}
                     <Box sx={{ mb: 2 }}>
-                        <Skeleton variant="text" width={200} height={32} />
+                        <Skeleton variant="text" width={200} height={32} sx={{
+                            animation: 'pulse 1.5s ease-in-out infinite'
+                        }} />
                     </Box>
 
                     {/* Section for displaying metrics */}

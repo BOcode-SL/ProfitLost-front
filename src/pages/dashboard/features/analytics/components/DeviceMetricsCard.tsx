@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Skeleton, Fade } from '@mui/material';
+import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useTranslation } from 'react-i18next';
 
@@ -15,47 +15,53 @@ export default function DeviceMetricsCard({ data, loading }: DeviceMetricsCardPr
 
     if (loading) {
         return (
-            <Fade in timeout={500}>
-                <Paper elevation={3} sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
-                }}>
-                    {/* Loading Skeleton for Title */}
-                    <Box sx={{ mb: 2 }}>
-                        <Skeleton variant="text" width={150} height={32} />
-                    </Box>
+            <Paper elevation={3} sx={{
+                p: 2,
+                borderRadius: 3,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
+                {/* Loading Skeleton for Title */}
+                <Box sx={{ mb: 2 }}>
+                    <Skeleton variant="text" width={150} height={32} sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }} />
+                </Box>
 
-                    {/* Loading Skeleton for Chart */}
+                {/* Loading Skeleton for Chart */}
+                <Box sx={{ 
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 260
+                }}>
+                    <Skeleton variant="circular" width={200} height={200} sx={{
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }} />
+                    
+                    {/* Loading Skeleton for Legend Items */}
                     <Box sx={{ 
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minHeight: 260
+                        display: 'flex', 
+                        gap: 2, 
+                        mt: 2,
+                        justifyContent: 'center'
                     }}>
-                        <Skeleton variant="circular" width={200} height={200} />
-                        
-                        {/* Loading Skeleton for Legend Items */}
-                        <Box sx={{ 
-                            display: 'flex', 
-                            gap: 2, 
-                            mt: 2,
-                            justifyContent: 'center'
-                        }}>
-                            {[1, 2, 3].map((i) => (
-                                <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Skeleton variant="rectangular" width={10} height={10} />
-                                    <Skeleton variant="text" width={60} height={20} />
-                                </Box>
-                            ))}
-                        </Box>
+                        {[1, 2, 3].map((i) => (
+                            <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Skeleton variant="rectangular" width={10} height={10} sx={{
+                                    animation: 'pulse 1.5s ease-in-out infinite'
+                                }} />
+                                <Skeleton variant="text" width={60} height={20} sx={{
+                                    animation: 'pulse 1.5s ease-in-out infinite'
+                                }} />
+                            </Box>
+                        ))}
                     </Box>
-                </Paper>
-            </Fade>
+                </Box>
+            </Paper>
         );
     }
 
