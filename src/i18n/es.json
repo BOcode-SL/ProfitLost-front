@@ -1062,7 +1062,9 @@
                 }
             },
             "table": {
+                "search": "Buscar cuentas",
                 "noAccounts": "No se encontraron cuentas",
+                "noAccountsFound": "No se encontraron cuentas que coincidan",
                 "addAccount": "Agregar cuenta",
                 "inactiveAccounts": "Cuentas inactivas",
                 "addAccountBanner": "🏦 Agrega tu primera cuenta 🏦"

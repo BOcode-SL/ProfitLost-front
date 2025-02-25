@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Typography, Button, Drawer, Collapse, CircularProgress } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer, Collapse, CircularProgress, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -45,6 +45,7 @@ export default function AccountsTable({
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
     const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Listen for changes in currency visibility
     useEffect(() => {
@@ -84,6 +85,15 @@ export default function AccountsTable({
         }
         setDraggedAccountId(null);
     };
+
+    // Filtered accounts based on search term
+    const filteredAccounts = accounts.filter(account =>
+        account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredInactiveAccounts = inactiveAccounts.filter(account =>
+        account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     // Function to render an account
     const renderAccount = (account: Account, isInactive: boolean = false) => (
@@ -131,7 +141,7 @@ export default function AccountsTable({
                     {account.accountName}
                 </Typography>
             </Box>
-            {/* Balance */}
+            {/* Balance display */}
             <Typography
                 variant="body1"
                 sx={{
@@ -155,24 +165,41 @@ export default function AccountsTable({
             p: 3,
             borderRadius: 3
         }}>
-            {/* Box for the button to create a new account */}
+            {/* Box for search input and create account button */}
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-end',
+                alignItems: 'center',
+                flexDirection: { xs: 'column-reverse', sm: 'row' },
+                gap: 2,
                 mb: 2
             }}>
-                {/* Button to add a new account */}
+                <TextField
+                    size="small"
+                    placeholder={t('dashboard.accounts.table.search')}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{
+                        minWidth: { xs: '100%', sm: 200 },
+                        '& .MuiInputBase-root': {
+                            height: '35px'
+                        }
+                    }}
+                />
                 <Button
                     variant="contained"
                     onClick={() => setIsDrawerOpen(true)}
                     startIcon={<span className="material-symbols-rounded">add</span>}
                     size="small"
+                    sx={{
+                        width: { xs: '100%', sm: 'auto' }
+                    }}
                 >
                     {t('dashboard.accounts.newAccount')}
                 </Button>
             </Box>
 
-            {/* Loading state */}
+            {/* Loading state indicator */}
             {loading ? (
                 <Box sx={{
                     display: 'flex',
@@ -184,11 +211,11 @@ export default function AccountsTable({
                 </Box>
             ) : (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {/* Render active accounts */}
-                    {accounts.map(account => renderAccount(account))}
+                    {/* Render filtered active accounts */}
+                    {filteredAccounts.map(account => renderAccount(account))}
 
-                    {/* Banner for no accounts */}
-                    {accounts.length === 0 && (
+                    {/* Banner for no accounts or no search results */}
+                    {accounts.length === 0 ? (
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -200,10 +227,22 @@ export default function AccountsTable({
                                 {t('dashboard.accounts.table.addAccountBanner')}
                             </Typography>
                         </Box>
-                    )}
+                    ) : filteredAccounts.length === 0 && searchTerm !== '' ? (
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 3,
+                            minHeight: 200
+                        }}>
+                            <Typography variant="h5" color="text.secondary">
+                                🔍 {t('dashboard.accounts.table.noAccountsFound')} "{searchTerm}" 🔍
+                            </Typography>
+                        </Box>
+                    ) : null}
 
                     {/* Section for inactive accounts */}
-                    {inactiveAccounts.length > 0 && (
+                    {filteredInactiveAccounts.length > 0 && (
                         <Box sx={{ mt: 2 }}>
                             <Button
                                 onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
@@ -214,11 +253,11 @@ export default function AccountsTable({
                                 }
                                 sx={{ mb: 1, color: 'text.primary' }}
                             >
-                                {t('dashboard.accounts.table.inactiveAccounts')} ({inactiveAccounts.length})
+                                {t('dashboard.accounts.table.inactiveAccounts')} ({filteredInactiveAccounts.length})
                             </Button>
                             <Collapse in={showInactiveAccounts}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                    {inactiveAccounts.map(account => renderAccount(account, true))}
+                                    {filteredInactiveAccounts.map(account => renderAccount(account, true))}
                                 </Box>
                             </Collapse>
                         </Box>
