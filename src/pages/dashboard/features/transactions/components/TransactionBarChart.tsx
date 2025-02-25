@@ -1,5 +1,5 @@
 import { BarChart } from '@mui/x-charts/BarChart';
-import { Box, Paper, Skeleton, useTheme, Typography } from '@mui/material';
+import { Box, Paper, Skeleton, Fade, useTheme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
@@ -55,13 +55,15 @@ export default function TransactionBarChart({
         return t(`dashboard.common.monthNames.${months[monthIndex]}`);
     }
 
-    // Show skeleton while loading
-    if (loading) {
-        return (
-            <Box sx={{
-                flex: 1,
-                minWidth: { xs: '100%', md: '300px' }
-            }}>
+    // Return the main container for the chart
+    return (
+        <Box sx={{
+            flex: 1,
+            minWidth: { xs: '100%', md: '300px' }
+        }}>
+            {/* Fade in effect for the paper component */}
+            <Fade in timeout={800}>
+                {/* Paper component to hold the chart */}
                 <Paper
                     elevation={2}
                     sx={{
@@ -73,109 +75,94 @@ export default function TransactionBarChart({
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: 2,
-                        minHeight: 285
+                        minHeight: 285,
+                        position: 'relative'
                     }}>
-                    <Skeleton 
-                        variant="rectangular" 
-                        width="100%" 
-                        height={250} 
-                        sx={{
-                            borderRadius: 3,
-                            animation: 'pulse 1.5s ease-in-out infinite'
-                        }} 
-                    />
-                </Paper>
-            </Box>
-        );
-    }
-
-    // Return the main container for the chart
-    return (
-        <Box sx={{
-            flex: 1,
-            minWidth: { xs: '100%', md: '300px' }
-        }}>
-            <Paper
-                elevation={2}
-                sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 2,
-                    minHeight: 285,
-                    position: 'relative'
-                }}>
-                <Box sx={{ width: '100%', position: 'relative' }}>
-                    <BarChart
-                        xAxis={[{
-                            scaleType: 'band',
-                            data: [getMonthName(month)],
-                        }]}
-                        series={[
-                            {
-                                data: [income],
-                                label: t('dashboard.transactions.chart.income'),
-                                color: theme.palette.chart.income,
-                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
-                            },
-                            {
-                                data: [expenses],
-                                label: t('dashboard.transactions.chart.expenses'),
-                                color: theme.palette.chart.expenses,
-                                valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
-                            }
-                        ]}
-                        borderRadius={5}
-                        height={250}
-                        margin={{
-                            top: 20,
-                            left: 60,
-                            right: 20,
-                            bottom: 20
-                        }}
-                        slotProps={{
-                            legend: { hidden: true }
-                        }}
-                        yAxis={[{
-                            sx: {
-                                text: {
-                                    filter: isHidden ? 'blur(8px)' : 'none',
-                                    transition: 'filter 0.3s ease',
-                                    userSelect: isHidden ? 'none' : 'auto'
-                                }
-                            }
-                        }]}
-                        tooltip={isHidden ? {
-                            trigger: 'none'
-                        } : {
-                            trigger: 'axis'
-                        }}
-                    />
-                    {/* Display a message if there is no data */}
-                    {isDataEmpty && (
-                        <Typography
-                            variant="body1"
-                            color="text.secondary"
-                            sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                textAlign: 'center',
-                                bgcolor: 'background.paper',
-                                px: 2,
-                                py: 1,
-                                borderRadius: 1
-                            }}>
-                            {t('dashboard.common.noData')}
-                        </Typography>
+                    {/* Conditional rendering based on loading state */}
+                    {loading ? (
+                        // Fade in effect for the skeleton loader
+                        <Fade in timeout={300}>
+                            {/* Skeleton loader for the chart area */}
+                            <Skeleton variant="rectangular" width="100%" height={250} sx={{
+                                borderRadius: 3,
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }} />
+                        </Fade>
+                    ) : (
+                        // Fade in effect for the chart when not loading
+                        <Fade in timeout={500}>
+                            {/* Box to contain the chart */}
+                            <Box sx={{ width: '100%', position: 'relative' }}>
+                                {/* BarChart component to display income and expenses */}
+                                <BarChart
+                                    xAxis={[{
+                                        scaleType: 'band',
+                                        data: [getMonthName(month)],
+                                    }]}
+                                    series={[
+                                        {
+                                            data: [income],
+                                            label: t('dashboard.transactions.chart.income'),
+                                            color: theme.palette.chart.income,
+                                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                                        },
+                                        {
+                                            data: [expenses],
+                                            label: t('dashboard.transactions.chart.expenses'),
+                                            color: theme.palette.chart.expenses,
+                                            valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
+                                        }
+                                    ]}
+                                    borderRadius={5}
+                                    height={250}
+                                    margin={{
+                                        top: 20,
+                                        left: 60,
+                                        right: 20,
+                                        bottom: 20
+                                    }}
+                                    slotProps={{
+                                        legend: { hidden: true }
+                                    }}
+                                    yAxis={[{
+                                        sx: {
+                                            text: {
+                                                filter: isHidden ? 'blur(8px)' : 'none',
+                                                transition: 'filter 0.3s ease',
+                                                userSelect: isHidden ? 'none' : 'auto'
+                                            }
+                                        }
+                                    }]}
+                                    tooltip={isHidden ? {
+                                        trigger: 'none'
+                                    } : {
+                                        trigger: 'axis'
+                                    }}
+                                />
+                                {/* Display a message if there is no data */}
+                                {isDataEmpty && (
+                                    <Typography
+                                        variant="body1"
+                                        color="text.secondary"
+                                        sx={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            textAlign: 'center',
+                                            bgcolor: 'background.paper',
+                                            px: 2,
+                                            py: 1,
+                                            borderRadius: 1
+                                        }}>
+                                        {t('dashboard.common.noData')}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Fade>
                     )}
-                </Box>
-            </Paper>
+                </Paper>
+            </Fade>
         </Box>
     );
 } 

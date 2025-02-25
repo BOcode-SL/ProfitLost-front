@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
-import { Box, Paper, FormControl, Select, MenuItem, InputLabel, useTheme } from '@mui/material';
+import { Box, Paper, FormControl, Select, MenuItem, InputLabel, Fade, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -142,100 +142,105 @@ export default function Transactions() {
     }, [transactions, categories, theme.palette]);
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Year and Month selection section */}
-            <Box sx={{
-                display: 'flex',
-                gap: 2
-            }}>
-                {/* Year selection paper */}
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    width: '100%'
+        <Fade in timeout={400}>
+            {/* Main container with vertical layout and spacing */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {/* Year and Month selection section */}
+                <Box sx={{
+                    display: 'flex',
+                    gap: 2
                 }}>
-                    <FormControl size="small" sx={{ width: '100%' }}>
-                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                        <Select
-                            value={year}
-                            label={t('dashboard.common.year')}
-                            onChange={(e) => setYear(e.target.value)}
-                        >
-                            {/* Mapping through years with data to create menu items */}
-                            {yearsWithData.map(y => (
-                                <MenuItem key={y} value={y}>{y}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Paper>
+                    {/* Year selection paper */}
+                    <Paper elevation={2} sx={{
+                        p: 1,
+                        borderRadius: 3,
+                        width: '100%'
+                    }}>
+                        <FormControl size="small" sx={{ width: '100%' }}>
+                            <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                            <Select
+                                value={year}
+                                label={t('dashboard.common.year')}
+                                onChange={(e) => setYear(e.target.value)}
+                            >
+                                {/* Mapping through years with data to create menu items */}
+                                {yearsWithData.map(y => (
+                                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Paper>
 
-                {/* Month selection paper */}
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    width: '100%'
+                    {/* Month selection paper */}
+                    <Paper elevation={2} sx={{
+                        p: 1,
+                        borderRadius: 3,
+                        width: '100%'
+                    }}>
+                        <FormControl size="small" sx={{ width: '100%' }}>
+                            <InputLabel>{t('dashboard.common.month')}</InputLabel>
+                            <Select
+                                value={month}
+                                label={t('dashboard.common.month')}
+                                onChange={(e) => setMonth(e.target.value)}
+                            >
+                                {/* Generating month options */}
+                                {Array.from({ length: 12 }, (_, i) => {
+                                    const monthNum = (i + 1).toString().padStart(2, '0');
+                                    return (
+                                        <MenuItem key={monthNum} value={monthNum}>
+                                            {t(`dashboard.common.monthNames.${months[i]}`)}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Paper>
+                </Box>
+
+                {/* Section for displaying charts */}
+                <Box sx={{
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
                 }}>
-                    <FormControl size="small" sx={{ width: '100%' }}>
-                        <InputLabel>{t('dashboard.common.month')}</InputLabel>
-                        <Select
-                            value={month}
-                            label={t('dashboard.common.month')}
-                            onChange={(e) => setMonth(e.target.value)}
-                        >
-                            {/* Generating month options */}
-                            {Array.from({ length: 12 }, (_, i) => {
-                                const monthNum = (i + 1).toString().padStart(2, '0');
-                                return (
-                                    <MenuItem key={monthNum} value={monthNum}>
-                                        {t(`dashboard.common.monthNames.${months[i]}`)}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                </Paper>
+                    {/* Income pie chart */}
+                    <TransactionPie
+                        loading={loading}
+                        data={incomeData}
+                    />
+                    {/* Expenses pie chart */}
+                    <TransactionPie
+                        loading={loading}
+                        data={expensesData}
+                    />
+                    {/* Bar chart for income and expenses */}
+                    <TransactionBarChart
+                        loading={loading}
+                        month={month}
+                        income={totalIncome}
+                        expenses={totalExpenses}
+                    />
+                </Box>
+
+                {/* Component to display total balances */}
+                <TransactionBalances
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                    user={user as User}
+                    loading={loading}
+                />
+
+                {/* Table to display transaction data */}
+                <Box>
+                    <TransactionTable
+                        data={transactions}
+                        loading={loading}
+                        categories={categories}
+                        onReload={fetchData}
+                    />
+                </Box>
             </Box>
-
-            {/* Section for displaying charts */}
-            <Box sx={{
-                display: 'flex',
-                gap: 2,
-                flexWrap: 'wrap',
-            }}>
-                {/* Income pie chart */}
-                <TransactionPie
-                    loading={loading}
-                    data={incomeData}
-                />
-                {/* Expenses pie chart */}
-                <TransactionPie
-                    loading={loading}
-                    data={expensesData}
-                />
-                {/* Bar chart for income and expenses */}
-                <TransactionBarChart
-                    loading={loading}
-                    month={month}
-                    income={totalIncome}
-                    expenses={totalExpenses}
-                />
-            </Box>
-
-            {/* Component to display total balances */}
-            <TransactionBalances
-                totalIncome={totalIncome}
-                totalExpenses={totalExpenses}
-                user={user as User}
-                loading={loading}
-            />
-
-            {/* Table to display transaction data */}
-            <TransactionTable
-                data={transactions}
-                loading={loading}
-                categories={categories}
-                onReload={fetchData}
-            />
-        </Box>
+        </Fade>
     );
 }

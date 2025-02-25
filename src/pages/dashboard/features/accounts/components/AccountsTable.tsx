@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Typography, Button, Drawer, Collapse, Fade, CircularProgress } from '@mui/material';
+import { Box, Paper, Typography, Button, Drawer, Collapse, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -148,122 +148,118 @@ export default function AccountsTable({
     );
 
     return (
-        <Fade in timeout={400}>
-            <Paper sx={{
+        <Paper sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            p: 3,
+            borderRadius: 3
+        }}>
+            {/* Box for the button to create a new account */}
+            <Box sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                p: 3,
-                borderRadius: 3
+                justifyContent: 'flex-end',
+                mb: 2
             }}>
-                {/* Box for the button to create a new account */}
+                {/* Button to add a new account */}
+                <Button
+                    variant="contained"
+                    onClick={() => setIsDrawerOpen(true)}
+                    startIcon={<span className="material-symbols-rounded">add</span>}
+                    size="small"
+                >
+                    {t('dashboard.accounts.newAccount')}
+                </Button>
+            </Box>
+
+            {/* Loading state */}
+            {loading ? (
                 <Box sx={{
                     display: 'flex',
-                    justifyContent: 'flex-end',
-                    mb: 2
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: 200
                 }}>
-                    {/* Button to add a new account */}
-                    <Button
-                        variant="contained"
-                        onClick={() => setIsDrawerOpen(true)}
-                        startIcon={<span className="material-symbols-rounded">add</span>}
-                        size="small"
-                    >
-                        {t('dashboard.accounts.newAccount')}
-                    </Button>
+                    <CircularProgress />
                 </Box>
+            ) : (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {/* Render active accounts */}
+                    {accounts.map(account => renderAccount(account))}
 
-                {/* Loading state */}
-                {loading ? (
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        minHeight: 200
-                    }}>
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {/* Render active accounts */}
-                        {accounts.map(account => renderAccount(account))}
+                    {/* Banner for no accounts */}
+                    {accounts.length === 0 && (
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 3,
+                            minHeight: 200
+                        }}>
+                            <Typography variant="h5" color="text.secondary">
+                                {t('dashboard.accounts.table.addAccountBanner')}
+                            </Typography>
+                        </Box>
+                    )}
 
-                        {/* Banner for no accounts */}
-                        {accounts.length === 0 && (
-                            <Fade in timeout={300}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    p: 3,
-                                    minHeight: 200
-                                }}>
-                                    <Typography variant="h5" color="text.secondary">
-                                        {t('dashboard.accounts.table.addAccountBanner')}
-                                    </Typography>
+                    {/* Section for inactive accounts */}
+                    {inactiveAccounts.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <Button
+                                onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
+                                startIcon={
+                                    <span className="material-symbols-rounded">
+                                        {showInactiveAccounts ? 'expand_less' : 'expand_more'}
+                                    </span>
+                                }
+                                sx={{ mb: 1, color: 'text.primary' }}
+                            >
+                                {t('dashboard.accounts.table.inactiveAccounts')} ({inactiveAccounts.length})
+                            </Button>
+                            <Collapse in={showInactiveAccounts}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    {inactiveAccounts.map(account => renderAccount(account, true))}
                                 </Box>
-                            </Fade>
-                        )}
+                            </Collapse>
+                        </Box>
+                    )}
+                </Box>
+            )}
 
-                        {/* Section for inactive accounts */}
-                        {inactiveAccounts.length > 0 && (
-                            <Box sx={{ mt: 2 }}>
-                                <Button
-                                    onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
-                                    startIcon={
-                                        <span className="material-symbols-rounded">
-                                            {showInactiveAccounts ? 'expand_less' : 'expand_more'}
-                                        </span>
-                                    }
-                                    sx={{ mb: 1, color: 'text.primary' }}
-                                >
-                                    {t('dashboard.accounts.table.inactiveAccounts')} ({inactiveAccounts.length})
-                                </Button>
-                                <Collapse in={showInactiveAccounts}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                        {inactiveAccounts.map(account => renderAccount(account, true))}
-                                    </Box>
-                                </Collapse>
-                            </Box>
-                        )}
-                    </Box>
-                )}
-
-                {/* Drawer for the account form */}
-                <Drawer
-                    open={isDrawerOpen}
+            {/* Drawer for the account form */}
+            <Drawer
+                open={isDrawerOpen}
+                onClose={() => {
+                    setIsDrawerOpen(false);
+                    setSelectedAccount(null);
+                }}
+                anchor="right"
+                PaperProps={{
+                    sx: {
+                        width: { xs: '100%', sm: 450 }
+                    }
+                }}
+            >
+                {/* Component for the accounts form */}
+                <AccountsForm
                     onClose={() => {
                         setIsDrawerOpen(false);
                         setSelectedAccount(null);
                     }}
-                    anchor="right"
-                    PaperProps={{
-                        sx: {
-                            width: { xs: '100%', sm: 450 }
+                    onSuccess={async (account) => {
+                        if (selectedAccount) {
+                            await onUpdate(account);
+                        } else {
+                            await onCreate(account);
                         }
+                        setIsDrawerOpen(false);
+                        setSelectedAccount(null);
+                        return true;
                     }}
-                >
-                    {/* Component for the accounts form */}
-                    <AccountsForm
-                        onClose={() => {
-                            setIsDrawerOpen(false);
-                            setSelectedAccount(null);
-                        }}
-                        onSuccess={async (account) => {
-                            if (selectedAccount) {
-                                await onUpdate(account);
-                            } else {
-                                await onCreate(account);
-                            }
-                            setIsDrawerOpen(false);
-                            setSelectedAccount(null);
-                            return true;
-                        }}
-                        onDelete={onDelete}
-                        account={selectedAccount}
-                    />
-                </Drawer>
-            </Paper>
-        </Fade>
+                    onDelete={onDelete}
+                    account={selectedAccount}
+                />
+            </Drawer>
+        </Paper>
     );
 } 

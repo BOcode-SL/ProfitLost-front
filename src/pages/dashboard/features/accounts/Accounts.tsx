@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
-import { Box, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mui/material';
+import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -172,67 +172,64 @@ export default function Accounts() {
         };
     }, [orderedAccounts]);
 
-    // Fade transition for the entire content
+    // Return the component without the Fade wrapper for consistency with DashHome
     return (
-        <Fade in timeout={400}>
-            {/* Container for the main content, arranged in a column */}
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: '100%'
+        }}>
+            {/* Paper component for the year selection dropdown */}
+            <Paper elevation={2} sx={{
+                p: 1,
+                borderRadius: 3,
                 width: '100%'
             }}>
-                {/* Paper component for the year selection dropdown */}
-                <Paper elevation={2} sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    width: '100%'
-                }}>
-                    {/* Form control for selecting the year */}
-                    <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
-                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                        <Select
-                            value={selectedYear}
-                            label={t('dashboard.common.year')}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                        >
-                            {/* Mapping through available years to create menu items */}
-                            {availableYears.map(year => (
-                                <MenuItem key={year} value={year.toString()}>
-                                    {year}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Paper>
+                {/* Form control for selecting the year */}
+                <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
+                    <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                    <Select
+                        value={selectedYear}
+                        label={t('dashboard.common.year')}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                    >
+                        {/* Mapping through available years to create menu items */}
+                        {availableYears.map(year => (
+                            <MenuItem key={year} value={year.toString()}>
+                                {year}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Paper>
 
-                {/* Paper component for displaying the accounts chart */}
-                <Paper elevation={2} sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    width: '100%',
-                    height: '400px'
-                }}>
-                    {/* Accounts chart component with active accounts and selected year */}
-                    <AccountsChart
-                        accounts={activeAccounts}
-                        loading={loading}
-                        selectedYear={Number(selectedYear)}
-                    />
-                </Paper>
-
-                {/* Accounts table component for displaying active and inactive accounts */}
-                <AccountsTable
+            {/* Paper component for displaying the accounts chart */}
+            <Paper elevation={2} sx={{
+                p: 2,
+                borderRadius: 3,
+                width: '100%',
+                height: '400px'
+            }}>
+                {/* Accounts chart component with active accounts and selected year */}
+                <AccountsChart
                     accounts={activeAccounts}
-                    inactiveAccounts={inactiveAccounts}
                     loading={loading}
                     selectedYear={Number(selectedYear)}
-                    onUpdate={handleAccountUpdate}
-                    onCreate={handleAccountCreate}
-                    onDelete={handleAccountDelete}
-                    onOrderChange={handleOrderChange}
                 />
-            </Box>
-        </Fade>
+            </Paper>
+
+            {/* Accounts table component for displaying active and inactive accounts */}
+            <AccountsTable
+                accounts={activeAccounts}
+                inactiveAccounts={inactiveAccounts}
+                loading={loading}
+                selectedYear={Number(selectedYear)}
+                onUpdate={handleAccountUpdate}
+                onCreate={handleAccountCreate}
+                onDelete={handleAccountDelete}
+                onOrderChange={handleOrderChange}
+            />
+        </Box>
     );
 } 

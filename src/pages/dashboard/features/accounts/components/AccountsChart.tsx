@@ -57,7 +57,19 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
 
     // Show skeleton loading while data is being fetched
     if (loading) {
-        return <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 3 }} />;
+        return (
+            <Box sx={{ width: '100%', height: '100%' }}>
+                <Skeleton 
+                    variant="rectangular" 
+                    width="100%" 
+                    height="100%" 
+                    sx={{ 
+                        borderRadius: 3,
+                        animation: 'pulse 1.5s ease-in-out infinite'
+                    }} 
+                />
+            </Box>
+        );
     }
 
     // Filter to get only active accounts
@@ -175,7 +187,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                         py: 1,
                         borderRadius: 1
                     }}>
-                    {t('dashboard.common.noData')}
+                    {t('dashboard.accounts.chart.noData')}
                 </Typography>
             )}
         </Box>
