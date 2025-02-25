@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Fade, Skeleton } from '@mui/material';
+import { Box, Paper, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 // Utils
@@ -43,41 +43,39 @@ export default function TransactionBalances({
     // If loading, show skeletons
     if (loading) {
         return (
-            <Fade in timeout={500}>
-                <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                    gap: 1
-                }}>
-                    {[1, 2, 3].map((index) => (
-                        <Paper key={index} elevation={2} sx={{
-                            p: 1,
-                            borderRadius: 3,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 2
-                        }}>
-                            <Skeleton 
-                                variant="circular" 
-                                width={32} 
-                                height={32} 
-                                sx={{ 
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }} 
-                            />
-                            <Skeleton 
-                                variant="text" 
-                                width={100} 
-                                height={32} 
-                                sx={{ 
-                                    animation: 'pulse 1.5s ease-in-out infinite'
-                                }} 
-                            />
-                        </Paper>
-                    ))}
-                </Box>
-            </Fade>
+            <Box sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
+                gap: 2
+            }}>
+                {[1, 2, 3].map((index) => (
+                    <Paper key={index} elevation={3} sx={{
+                        p: 1,
+                        borderRadius: 3,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 2
+                    }}>
+                        <Skeleton 
+                            variant="circular" 
+                            width={32} 
+                            height={32} 
+                            sx={{ 
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }} 
+                        />
+                        <Skeleton 
+                            variant="text" 
+                            width={100} 
+                            height={36} 
+                            sx={{ 
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }} 
+                        />
+                    </Paper>
+                ))}
+            </Box>
         );
     }
 
@@ -88,32 +86,29 @@ export default function TransactionBalances({
     ];
 
     return (
-        <Fade in timeout={500}>
-            {/* Box to layout the transaction balances in a grid format */}
-            <Box sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
-                gap: 1
-            }}>
-                {balanceItems.map(({ label, value, color }, index) => (
-                    <Paper key={index} elevation={2} sx={{
-                        p: 1,
-                        borderRadius: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 2
-                    }}>
-                        <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
-                        <span style={{ 
-                            fontSize: '1.5rem',
-                            filter: isHidden ? 'blur(8px)' : 'none',
-                            transition: 'filter 0.3s ease',
-                            userSelect: isHidden ? 'none' : 'auto'
-                        }}>{formatCurrency(value, user)}</span>
-                    </Paper>
-                ))}
-            </Box>
-        </Fade>
+        <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
+            gap: 2
+        }}>
+            {balanceItems.map(({ label, value, color }, index) => (
+                <Paper key={index} elevation={3} sx={{
+                    p: 1,
+                    borderRadius: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 2
+                }}>
+                    <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
+                    <span style={{ 
+                        fontSize: '1.5rem',
+                        filter: isHidden ? 'blur(8px)' : 'none',
+                        transition: 'filter 0.3s ease',
+                        userSelect: isHidden ? 'none' : 'auto'
+                    }}>{formatCurrency(value, user)}</span>
+                </Paper>
+            ))}
+        </Box>
     );
 } 
