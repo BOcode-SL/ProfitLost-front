@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Slide, useTheme } from '@mui/material';
+import { Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Slide, useTheme, Divider } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { useTranslation } from 'react-i18next';
 
@@ -288,61 +288,68 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     </Box>
                 ) : (
                     // List of categories with their respective balances
-                    <List sx={{ width: '100%' }}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                    }}>
                         {categoriesBalance.map(({ category, balance }) => (
-                            <ListItem
-                                key={category._id}
-                                onClick={() => handleCategoryClick(category)}
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 2,
-                                    py: 1.5,
-                                    px: { xs: 1, sm: 2 },
-                                    borderRadius: 2,
-                                    cursor: 'pointer',
-                                    transition: 'background-color 0.3s ease',
-                                    '&:hover': {
-                                        bgcolor: `${category.color}20`
-                                    }
-                                }}
-                            >
-                                <Box
+                            <>
+                                <ListItem
+                                    key={category._id}
+                                    onClick={() => handleCategoryClick(category)}
                                     sx={{
-                                        width: { xs: 20, sm: 24 },
-                                        height: { xs: 20, sm: 24 },
-                                        borderRadius: '50%',
-                                        bgcolor: category.color,
-                                        flexShrink: 0
-                                    }}
-                                />
-                                <ListItemText
-                                    primary={category.name}
-                                    sx={{
-                                        flex: 1,
-                                        '& .MuiListItemText-primary': {
-                                            fontWeight: 400,
-                                            fontSize: { xs: '0.9rem', sm: '1rem' }
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        py: 1.5,
+                                        px: { xs: 1, sm: 2 },
+                                        borderRadius: 2,
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.3s ease',
+                                        '&:hover': {
+                                            bgcolor: `${category.color}20`
                                         }
                                     }}
-                                />
-                                <Box
-                                    sx={{
-                                        color: balance >= 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
-                                        fontWeight: 400,
-                                        fontSize: { xs: '0.9rem', sm: '1rem' },
-                                        textAlign: 'right',
-                                        minWidth: { xs: 80, sm: 120 },
-                                        filter: isHidden ? 'blur(8px)' : 'none',
-                                        transition: 'filter 0.3s ease',
-                                        userSelect: isHidden ? 'none' : 'auto' // Added no-select style when isHidden is true
-                                    }}
                                 >
-                                    {formatCurrency(balance, user)}
-                                </Box>
-                            </ListItem>
+                                    <Box
+                                        sx={{
+                                            width: { xs: 20, sm: 24 },
+                                            height: { xs: 20, sm: 24 },
+                                            borderRadius: '50%',
+                                            bgcolor: category.color,
+                                            flexShrink: 0
+                                        }}
+                                    />
+                                    <ListItemText
+                                        primary={category.name}
+                                        sx={{
+                                            flex: 1,
+                                            '& .MuiListItemText-primary': {
+                                                fontWeight: 400,
+                                                fontSize: { xs: '0.9rem', sm: '1rem' }
+                                            }
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            color: balance >= 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
+                                            fontWeight: 400,
+                                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                                            textAlign: 'right',
+                                            minWidth: { xs: 80, sm: 120 },
+                                            filter: isHidden ? 'blur(8px)' : 'none',
+                                            transition: 'filter 0.3s ease',
+                                            userSelect: isHidden ? 'none' : 'auto' // Added no-select style when isHidden is true
+                                        }}
+                                    >
+                                        {formatCurrency(balance, user)}
+                                    </Box>
+                                </ListItem>
+                                <Divider />
+                            </>
                         ))}
-                    </List>
+                    </Box>
                 )}
 
                 {/* Drawer for creating a new category */}

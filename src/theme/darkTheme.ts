@@ -68,10 +68,10 @@ const themeOptions: ThemeOptions = {
                 text: '#f77572'
             }
         },
-        divider: 'rgba(255,255,255,0.08)',
+        divider: 'rgba(128 128 128 / 0.27)',
         text: {
             primary: '#fff7ed',
-            secondary: '#ffecd4',
+            secondary: '#A1A1A1',
         },
     },
     typography: {

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, useTheme } from '@mui/material';
+import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, useTheme, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -224,73 +224,76 @@ export default function TransactionTable({
                         }}>
                             {/* Map through filtered and sorted transactions */}
                             {filteredAndSortedTransactions.map((transaction) => (
-                                <Box
-                                    key={transaction._id}
-                                    onClick={() => handleTransactionClick(transaction)}
-                                    sx={{
-                                        p: 1,
-                                        borderRadius: 3,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        transition: 'background-color 0.3s ease',
-                                        '&:hover': {
-                                            bgcolor: `${getCategoryColor(transaction.category)}20`
-                                        }
-                                    }}
-                                >
-                                    {/* Circle indicator for category color on mobile */}
-                                    <Box sx={{
-                                        width: 12,
-                                        height: 12,
-                                        borderRadius: '50%',
-                                        bgcolor: getCategoryColor(transaction.category),
-                                        display: { xs: 'block', md: 'none' }
-                                    }} />
-
-                                    {/* Transaction description and date */}
-                                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
-                                        <Typography variant="body1" fontWeight={500}>
-                                            {transaction.description}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            {formatDateTime(transaction.date, user)}
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Category display for larger screens */}
-                                    <Box sx={{
-                                        display: { xs: 'none', md: 'flex' },
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        flex: 1
-                                    }}>
-                                        <Box sx={{
-                                            width: 15,
-                                            height: 15,
-                                            borderRadius: '50%',
-                                            bgcolor: getCategoryColor(transaction.category)
-                                        }} />
-                                        <Typography>{transaction.category}</Typography>
-                                    </Box>
-
-                                    {/* Display transaction amount with conditional color */}
-                                    <Typography
+                                <>
+                                    <Box
+                                        key={transaction._id}
+                                        onClick={() => handleTransactionClick(transaction)}
                                         sx={{
-                                            color: transaction.amount >= 0
-                                                ? theme.palette.chart.income
-                                                : theme.palette.chart.expenses,
-                                            width: { xs: '25%', md: '20%' },
-                                            textAlign: 'right',
-                                            filter: isHidden ? 'blur(8px)' : 'none',
-                                            transition: 'filter 0.3s ease',
-                                            userSelect: isHidden ? 'none' : 'auto'
+                                            p: 1,
+                                            borderRadius: 3,
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 1,
+                                            transition: 'background-color 0.3s ease',
+                                            '&:hover': {
+                                                bgcolor: `${getCategoryColor(transaction.category)}20`
+                                            }
                                         }}
                                     >
-                                        {formatCurrency(transaction.amount, user)}
-                                    </Typography>
-                                </Box>
+                                        {/* Circle indicator for category color on mobile */}
+                                        <Box sx={{
+                                            width: 12,
+                                            height: 12,
+                                            borderRadius: '50%',
+                                            bgcolor: getCategoryColor(transaction.category),
+                                            display: { xs: 'block', md: 'none' }
+                                        }} />
+
+                                        {/* Transaction description and date */}
+                                        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
+                                            <Typography variant="body1" fontWeight={500}>
+                                                {transaction.description}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                {formatDateTime(transaction.date, user)}
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Category display for larger screens */}
+                                        <Box sx={{
+                                            display: { xs: 'none', md: 'flex' },
+                                            alignItems: 'center',
+                                            gap: 1,
+                                            flex: 1
+                                        }}>
+                                            <Box sx={{
+                                                width: 15,
+                                                height: 15,
+                                                borderRadius: '50%',
+                                                bgcolor: getCategoryColor(transaction.category)
+                                            }} />
+                                            <Typography>{transaction.category}</Typography>
+                                        </Box>
+
+                                        {/* Display transaction amount with conditional color */}
+                                        <Typography
+                                            sx={{
+                                                color: transaction.amount >= 0
+                                                    ? theme.palette.chart.income
+                                                    : theme.palette.chart.expenses,
+                                                width: { xs: '25%', md: '20%' },
+                                                textAlign: 'right',
+                                                filter: isHidden ? 'blur(8px)' : 'none',
+                                                transition: 'filter 0.3s ease',
+                                                userSelect: isHidden ? 'none' : 'auto'
+                                            }}
+                                        >
+                                            {formatCurrency(transaction.amount, user)}
+                                        </Typography>
+                                    </Box>
+                                    <Divider />
+                                </>
                             ))}
                         </Box>
                     )}
@@ -311,7 +314,7 @@ export default function TransactionTable({
                     sx: {
                         width: { xs: '100%', sm: 500 }
                     }
-                }} 
+                }}
             >
                 {selectedTransaction && (
                     <TransactionForm

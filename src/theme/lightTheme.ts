@@ -63,7 +63,7 @@ const themeOptions: ThemeOptions = {
                 text: '#d32f2f'
             }
         },
-        divider: 'rgba(0,0,0,0.11)',
+        divider: 'rgba(0 0 0 / 0.06)',
         text: {
             primary: '#000000',
             secondary: 'rgba(0,0,0,0.7)',
