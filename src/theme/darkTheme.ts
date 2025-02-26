@@ -40,33 +40,38 @@ const themeOptions: ThemeOptions = {
         mode: 'dark',
         primary: {
             main: '#fe6f14',
-            contrastText: '#e0e0e0',
+            light: '#ff8e38',
+            dark: '#c63b08',
+            contrastText: '#fff7ed',
         },
         secondary: {
-            main: '#ff6b22',
+            main: '#ff8e38',
+            light: '#ffb771',
+            dark: '#ef5107',
+            contrastText: '#fff7ed',
         },
         background: {
-            default: '#1A1A1A',
-            paper: '#231f1a',
+            default: '#0E0E11',
+            paper: '#18181B',
         },
         chart: {
-            income: '#dd9d77',
-            expenses: '#bf5626'
+            income: '#ffb771',
+            expenses: '#ef5107'
         },
         status: {
             success: {
                 bg: '#132f1a',
-                text: '#4caf50'
+                text: '#9dd89f'
             },
             error: {
-                bg: '#2d1215',
-                text: '#ef5350'
+                bg: '#441206',
+                text: '#f77572'
             }
         },
-        divider: 'rgba(255,255,255,0.11)',
+        divider: 'rgba(255,255,255,0.08)',
         text: {
-            primary: '#e0e0e0',
-            secondary: 'rgba(255,255,255,0.7)',
+            primary: '#fff7ed',
+            secondary: '#ffecd4',
         },
     },
     typography: {
@@ -121,7 +126,7 @@ const themeOptions: ThemeOptions = {
                     fontSize: '1rem',
                     fontWeight: 500,
                     boxShadow: 'none',
-                    transition: 'all 0.3s ease-in-out',
+                    transition: 'all 0.2s ease-in-out',
                 },
                 sizeSmall: {
                     height: '35px',
@@ -138,24 +143,24 @@ const themeOptions: ThemeOptions = {
                     fontSize: '1.1rem',
                 },
                 contained: {
-                    backgroundColor: '#ff6b22',
-                    color: '#ffffff',
+                    backgroundColor: '#fe6f14',
+                    color: '#fff7ed',
                     '&:hover': {
-                        backgroundColor: '#ff8f4c',
+                        backgroundColor: '#ff8e38',
                     },
                 },
                 outlined: {
-                    borderColor: '#ff6b22',
-                    color: '#ff6b22',
+                    borderColor: '#fe6f14',
+                    color: '#fe6f14',
                     '&:hover': {
-                        borderColor: '#ff8f4c',
-                        backgroundColor: 'rgba(255, 143, 76, 0.04)',
+                        borderColor: '#ff8e38',
+                        backgroundColor: 'rgba(254, 111, 20, 0.08)',
                     },
                 },
                 text: {
-                    color: '#ff6b22',
+                    color: '#fe6f14',
                     '&:hover': {
-                        backgroundColor: 'rgba(255, 143, 76, 0.04)',
+                        backgroundColor: 'rgba(254, 111, 20, 0.08)',
                     },
                 },
             },
@@ -168,7 +173,8 @@ const themeOptions: ThemeOptions = {
                 root: {
                     padding: '0.5rem 0rem',
                     boxShadow: 'none',
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.2s ease',
+                    backgroundColor: '#18181B',
                 },
                 elevation0: {
                     boxShadow: 'none',
@@ -188,12 +194,12 @@ const themeOptions: ThemeOptions = {
             styleOverrides: {
                 modal: {
                     '& .MuiBackdrop-root': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        backdropFilter: 'blur(5px)',
+                        backgroundColor: 'rgba(14, 14, 17, 0.8)',
+                        backdropFilter: 'blur(8px)',
                     }
                 },
                 paper: {
-                    backgroundColor: '#231b15',
+                    backgroundColor: '#18181B',
                 }
             }
         },
@@ -229,19 +235,17 @@ const themeOptions: ThemeOptions = {
                     fontSize: '0.9rem',
                     fontWeight: 500,
                     padding: '6px 16px',
-                    border: '1px solid rgba(255, 255, 255, 0.12)',
-                    transition: 'all 0.3s ease-in-out',
+                    border: '1px solid rgba(255, 247, 237, 0.12)',
+                    transition: 'all 0.2s ease-in-out',
                     '&.Mui-selected': {
-                        backgroundColor: '#ff6b22',
-                        color: '#ffffff',
+                        backgroundColor: '#fe6f14',
+                        color: '#fff7ed',
                         '&:hover': {
-                            backgroundColor: '#ff8f4c',
-                            transition: 'all 0.3s ease-in-out',
+                            backgroundColor: '#ff8e38',
                         },
                     },
                     '&:hover': {
-                        backgroundColor: 'rgba(254, 111, 20, 0.04)',
-                        transition: 'all 0.3s ease-in-out',
+                        backgroundColor: 'rgba(254, 111, 20, 0.08)',
                     },
                 },
                 sizeSmall: {
@@ -252,12 +256,12 @@ const themeOptions: ThemeOptions = {
         MuiToggleButtonGroup: {
             styleOverrides: {
                 root: {
-                    transition: 'all 0.3s ease-in-out',
+                    transition: 'all 0.2s ease-in-out',
                     '& .MuiToggleButton-root': {
-                        border: '1px solid rgba(255, 255, 255, 0.12)',
-                        transition: 'all 0.3s ease-in-out',
+                        border: '1px solid rgba(255, 247, 237, 0.12)',
+                        transition: 'all 0.2s ease-in-out',
                         '&:not(:first-of-type)': {
-                            borderLeft: '1px solid rgba(255, 255, 255, 0.12)',
+                            borderLeft: '1px solid rgba(255, 247, 237, 0.12)',
                             marginLeft: '0',
                         },
                     },
