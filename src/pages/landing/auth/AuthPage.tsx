@@ -14,6 +14,9 @@ import { authService } from '../../../services/auth.service';
 // Contexts
 import { useUser } from '../../../contexts/UserContext';
 
+// Utils
+import { isIOS } from '../../../utils/deviceDetection';
+
 // Components
 import Footer from '../components/Footer';
 import AuthLayout from './components/AuthLayout';
@@ -49,13 +52,13 @@ export default function AuthPage() {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    // Function to validate password strength
+    // Function to validate the password against defined criteria
     const validatePassword = (password: string): boolean => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         return passwordRegex.test(password);
     };
 
-    // Handle input changes for login and registration forms
+    // Handle input changes for both login and registration forms
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (isLogin) {
@@ -71,7 +74,7 @@ export default function AuthPage() {
         }
     };
 
-    // Handle form submission for login and registration
+    // Handle form submission for login and registration processes
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -107,7 +110,7 @@ export default function AuthPage() {
         } catch (err: unknown) {
             const error = err as AuthApiErrorResponse;
 
-            // Handle different error types
+            // Handle various error types and display appropriate messages
             switch (error.error as AuthErrorType) {
                 case 'MISSING_FIELDS':
                     toast.error(t('home.auth.errors.missingFields'));
@@ -152,7 +155,7 @@ export default function AuthPage() {
         }
     };
 
-    // Handle forgot password functionality
+    // Handle the functionality for forgotten passwords
     const handleForgotPassword = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -175,7 +178,7 @@ export default function AuthPage() {
         }
     };
 
-    // Handle token verification for password reset
+    // Handle the verification of the token for password reset
     const handleVerifyToken = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -190,7 +193,7 @@ export default function AuthPage() {
         }
     };
 
-    // Handle password reset functionality
+    // Handle the functionality for resetting the password
     const handleResetPassword = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -238,7 +241,7 @@ export default function AuthPage() {
         }
     };
 
-    // Handle successful Google login
+    // Handle the successful login via Google
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         setLoading(true);
         try {
@@ -252,7 +255,15 @@ export default function AuthPage() {
             if (response.success) {
                 await loadUserData();
                 toast.success(t('home.auth.success.welcome'));
-                navigate('/dashboard', { replace: true });
+                
+                // On iOS PWA, add a slight delay to ensure the token is saved
+                if (isIOS() && window.matchMedia('(display-mode: standalone)').matches) {
+                    setTimeout(() => {
+                        navigate('/dashboard', { replace: true });
+                    }, 500);
+                } else {
+                    navigate('/dashboard', { replace: true });
+                }
                 return;
             }
         } catch (error) {
@@ -267,7 +278,7 @@ export default function AuthPage() {
         }
     };
 
-    // Render the authentication layout with appropriate title and subtitle based on the state
+    // Render the authentication layout with the appropriate title and subtitle based on the current state
     return (
         <>
             <AuthLayout
