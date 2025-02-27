@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT, formatLargeNumber } from '../../../../../utils/currencyUtils';
 
 // Months
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -106,8 +106,6 @@ export default function TransactionBarChart({
                             height={250}
                             margin={{
                                 top: 20,
-                                left: 60,
-                                right: 20,
                                 bottom: 20
                             }}
                             slotProps={{
@@ -120,7 +118,8 @@ export default function TransactionBarChart({
                                         transition: 'filter 0.3s ease',
                                         userSelect: isHidden ? 'none' : 'auto'
                                     }
-                                }
+                                },
+                                valueFormatter: (value: number) => formatLargeNumber(value)
                             }]}
                             tooltip={isHidden ? {
                                 trigger: 'none'

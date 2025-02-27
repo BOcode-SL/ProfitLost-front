@@ -19,7 +19,7 @@ const UserSettings = React.lazy(() => import('../features/settings/UserSettings'
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
 
-import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/formatCurrency';
+import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';
 
 interface DashboardHeaderProps {
     user: User | null; // User object or null

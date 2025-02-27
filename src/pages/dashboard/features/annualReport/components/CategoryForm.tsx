@@ -15,7 +15,7 @@ import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {

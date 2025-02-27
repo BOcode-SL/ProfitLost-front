@@ -10,7 +10,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/formatCurrency';
+import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
@@ -123,8 +123,6 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
                 borderRadius={5}
                 margin={{
                     top: 20,
-                    left: 60,
-                    right: 30,
                     bottom: 30
                 }}
                 slotProps={{
@@ -147,7 +145,8 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
                             transition: 'filter 0.3s ease',
                             userSelect: isHidden ? 'none' : 'auto'
                         }
-                    }
+                    },
+                    valueFormatter: (value: number) => formatLargeNumber(value)
                 }]}
             />
             {/* Display message when there is no data */}

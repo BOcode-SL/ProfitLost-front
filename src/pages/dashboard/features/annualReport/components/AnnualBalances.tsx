@@ -5,7 +5,7 @@ import { Box, Paper, useTheme, Skeleton } from '@mui/material';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/formatCurrency';
+import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/currencyUtils';
 
 // Types
 import type { Transaction } from '../../../../../types/models/transaction';

@@ -9,7 +9,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Account, YearRecord } from '../../../../../types/models/account';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Components
 import AccountsForm from './AccountsForm';

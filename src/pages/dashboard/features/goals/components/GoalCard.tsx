@@ -2,7 +2,7 @@ import { Box, Paper, Typography, LinearProgress, Chip, useTheme } from '@mui/mat
 
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Goal } from '../../../../../types/models/goal';
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency } from '../../../../../utils/currencyUtils';
 import { formatDate } from '../../../../../utils/dateUtils';
 
 interface GoalCardProps {

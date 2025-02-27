@@ -15,7 +15,7 @@ interface MonthlyData {
 }
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT, formatLargeNumber } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the HomeChart component
 interface HomeChartProps {
@@ -200,7 +200,8 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                                     filter: isHidden ? 'blur(8px)' : 'none',
                                     transition: 'filter 0.3s ease'
                                 }
-                            }
+                            },
+                            valueFormatter: (value: number) => formatLargeNumber(value)
                         }]}
                         height={280}
                         margin={{
@@ -288,13 +289,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                                 filter: isHidden ? 'blur(8px)' : 'none',
                                 transition: 'filter 0.3s ease'
                             }
-                        }
+                        },
+                        valueFormatter: (value: number) => formatLargeNumber(value)
                     }]}
                     height={280}
                     margin={{
                         top: 25,
-                        left: 50,
-                        right: 35,
                         bottom: 25
                     }}
                     slotProps={{

@@ -3,7 +3,7 @@ import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button, Typo
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 
-import { formatCurrency } from '../../../../../utils/formatCurrency';
+import { formatCurrency } from '../../../../../utils/currencyUtils';
 import { formatDate } from '../../../../../utils/dateUtils';
 import { useUser } from '../../../../../contexts/UserContext';
 import type { Goal, GoalType } from '../../../../../types/models/goal';

@@ -3,7 +3,7 @@ import { Box, Paper, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Types
 import type { User } from '../../../../../types/models/user';

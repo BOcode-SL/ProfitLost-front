@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Types
 interface PieChartData {

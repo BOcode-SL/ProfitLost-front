@@ -10,7 +10,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 import type { Category } from '../../../../../types/models/category';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 import { formatDateTime } from '../../../../../utils/dateUtils';
 
 // Components

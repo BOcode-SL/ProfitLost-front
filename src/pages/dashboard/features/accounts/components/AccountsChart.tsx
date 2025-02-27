@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Skeleton, useTheme, Typography } from '@mui/material';
+import { Box, Skeleton, useTheme, Typography, useMediaQuery } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/formatCurrency';
+import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
 
 // Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
@@ -18,7 +18,6 @@ interface AccountsChartProps {
     loading: boolean;
     selectedYear: number;
 }
-
 // Interface for the data point
 interface DataPoint {
     month: string;
@@ -34,7 +33,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const { t } = useTranslation();
     const theme = useTheme();
 
-    // State to track currency visibility
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
     // Effect to listen for changes in currency visibility
@@ -134,7 +133,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     },
                     // Style for the tick labels on the x-axis
                     tickLabelStyle: {
-                        angle: 45,
+                        angle: isMobile ? 45 : 0,
                         textAnchor: 'start',
                         fontSize: 12,
                         fill: theme.palette.text.primary
@@ -146,6 +145,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                         fontSize: 12,
                         fill: theme.palette.text.primary
                     },
+                    valueFormatter: (value: number) => formatLargeNumber(value),
                     sx: {
                         text: {
                             filter: isHidden ? 'blur(8px)' : 'none',
@@ -166,8 +166,6 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                 height={400}
                 margin={{
                     top: 20,
-                    left: 60,
-                    right: 20,
                     bottom: 70
                 }}
             />

@@ -10,7 +10,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { formatDateTime } from '../../../../../utils/dateUtils';
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/formatCurrency';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the HomeHistory component
 interface HomeHistoryProps {
