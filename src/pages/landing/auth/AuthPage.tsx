@@ -253,6 +253,7 @@ export default function AuthPage() {
                 await loadUserData();
                 toast.success(t('home.auth.success.welcome'));
                 navigate('/dashboard', { replace: true });
+                return;
             }
         } catch (error) {
             const authError = error as AuthApiErrorResponse;
