@@ -61,9 +61,9 @@
                     "title": "Investments",
                     "description": "Monitor your investments and analyze their performance over time. Make smarter financial decisions."
                 },
-                "inbox": {
-                    "title": "Inbox",
-                    "description": "Receive notifications and stay up to date with your personal finances. Always informed, always in control."
+                "bankIntegration": {
+                    "title": "Bank Integration",
+                    "description": "Connect your bank accounts to Profit&Lost and automatically import your transactions. Save time and stay organized."
                 }
             }
         },

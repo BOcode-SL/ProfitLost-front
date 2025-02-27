@@ -413,9 +413,9 @@ export default function Home() {
                     </article>
 
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded no-select">account_balance</span>
-                        <h4>{t('home.features.cards.accounts.title')}</h4>
-                        <p>{t('home.features.cards.accounts.description')}</p>
+                        <span className="material-symbols-rounded no-select">account_balance_wallet</span>
+                        <h4>{t('home.features.cards.bankIntegration.title')}<span className="soon-badge">Soon</span></h4>
+                        <p>{t('home.features.cards.bankIntegration.description')}</p>
                     </article>
 
                     <article className="feature-card">
@@ -425,9 +425,9 @@ export default function Home() {
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">inbox</span>
-                        <h4>{t('home.features.cards.inbox.title')}<span className="soon-badge">Soon</span></h4>
-                        <p>{t('home.features.cards.inbox.description')}</p>
+                        <span className="material-symbols-rounded no-select">account_balance</span>
+                        <h4>{t('home.features.cards.accounts.title')}</h4>
+                        <p>{t('home.features.cards.accounts.description')}</p>
                     </article>
                 </div>
             </Box>

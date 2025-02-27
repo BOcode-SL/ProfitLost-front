@@ -61,9 +61,9 @@
                     "title": "Inversiones",
                     "description": "Monitorea tus inversiones y analiza su rendimiento a lo largo del tiempo"
                 },
-                "inbox": {
-                    "title": "Bandeja de entrada",
-                    "description": "Recibe notificaciones y mantente actualizado con tus finanzas personales"
+                "bankIntegration": {
+                    "title": "Integración bancaria",
+                    "description": "Conecta tus cuentas bancarias a Profit&Lost y automáticamente importa tus transacciones. Ahorra tiempo y mantente organizado."
                 }
             }
         },
