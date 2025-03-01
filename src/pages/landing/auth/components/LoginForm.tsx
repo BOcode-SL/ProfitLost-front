@@ -42,7 +42,6 @@ export default function LoginForm({
                         toast.error(t('home.auth.login.form.googleError'));
                     }}
                     useOneTap={false}
-                    width="100%"
                     text="continue_with"
                     shape="rectangular"
                     type="standard"
