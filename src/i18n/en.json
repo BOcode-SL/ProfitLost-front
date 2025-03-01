@@ -1247,6 +1247,7 @@
                 "engagement": "Engagement Metrics"
             },
             "metrics": {
+                "noData": "No data available",
                 "totalUsers": "Total Users",
                 "activeUsersDaily": "Daily Active Users",
                 "activeUsersWeekly": "Weekly Active Users",
@@ -1259,9 +1260,13 @@
                 "deviceStatsTablet": "Tablet",
                 "totalTransactions": "Total Transactions",
                 "transactionsToday": "Today's Transactions",
+                "transactionsThisMonth": "This Month's Transactions",
                 "averageTransactionsPerUser": "Average Transactions/User",
                 "userRetention": "User Retention",
                 "averageSessionDuration": "Average Session Duration"
+            },
+            "errors": {
+                "fetchError": "Error fetching analytics data"
             }
         }
     }

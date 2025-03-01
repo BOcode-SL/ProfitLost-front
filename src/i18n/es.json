@@ -1244,6 +1244,7 @@
                 "engagement": "Métricas de Engagement"
             },
             "metrics": {
+                "noData": "No hay datos disponibles",
                 "totalUsers": "Total de Usuarios",
                 "activeUsersDaily": "Usuarios Activos Diarios",
                 "activeUsersWeekly": "Usuarios Activos Semanales",
@@ -1256,9 +1257,13 @@
                 "deviceStatsTablet": "Tablet",
                 "totalTransactions": "Total de Transacciones",
                 "transactionsToday": "Transacciones de Hoy",
+                "transactionsThisMonth": "Transacciones de Este Mes",
                 "averageTransactionsPerUser": "Promedio de Transacciones/Usuario",
                 "userRetention": "Retención de Usuarios",
                 "averageSessionDuration": "Duración Media de Sesión"
+            },
+            "errors": {
+                "fetchError": "Error al cargar los datos de analíticas"
             }
         }
     }

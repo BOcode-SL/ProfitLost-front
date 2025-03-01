@@ -118,25 +118,34 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         );
     }
 
+    const calculatePercentageChange = (current: number, previous: number) => {
+        if (previous === 0) return 0;
+        return ((current - previous) / previous) * 100;
+    };
+
     const activeMetrics = [
         {
             label: t('dashboard.analytics.metrics.totalUsers'),
             value: data?.totalUsers || 0,
-            icon: 'groups_2'
+            icon: 'groups_2',
+            hideComparison: true
         },
         {
             label: t('dashboard.analytics.metrics.activeUsersDaily'),
             value: data?.activeUsers.daily || 0,
+            comparison: data?.comparison?.activeUsers.daily || 0,
             icon: 'person'
         },
         {
             label: t('dashboard.analytics.metrics.activeUsersWeekly'),
             value: data?.activeUsers.weekly || 0,
+            comparison: data?.comparison?.activeUsers.weekly || 0,
             icon: 'group'
         },
         {
             label: t('dashboard.analytics.metrics.activeUsersMonthly'),
             value: data?.activeUsers.monthly || 0,
+            comparison: data?.comparison?.activeUsers.monthly || 0,
             icon: 'group'
         }
     ];
@@ -145,78 +154,114 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         {
             label: t('dashboard.analytics.metrics.newUsersDaily'),
             value: data?.newUsers.daily || 0,
+            comparison: data?.comparison?.newUsers.daily || 0,
             icon: 'person_add'
         },
         {
             label: t('dashboard.analytics.metrics.newUsersWeekly'),
             value: data?.newUsers.weekly || 0,
+            comparison: data?.comparison?.newUsers.weekly || 0,
             icon: 'group_add'
         },
         {
             label: t('dashboard.analytics.metrics.newUsersMonthly'),
             value: data?.newUsers.monthly || 0,
+            comparison: data?.comparison?.newUsers.monthly || 0,
             icon: 'group_add'
         }
     ];
 
-    const MetricBox = ({ metric }: { metric: typeof activeMetrics[0] }) => (
-        <Box sx={{
-            flex: {
-                xs: '1 1 calc(50% - 8px)',
-                sm: '1 1 calc(33.33% - 16px)',
-                md: '1 1 200px'
-            },
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            minWidth: {
-                xs: 'auto',
-                sm: 150,
-                md: 180
-            },
-            maxWidth: {
-                xs: '100%',
-                sm: 'none',
-                md: 250
-            }
-        }}>
-            <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+    const MetricBox = ({ metric }: { metric: typeof activeMetrics[0] }) => {
+        const percentageChange = !metric.hideComparison ? calculatePercentageChange(metric.value, metric.comparison || 0) : null;
+        const isPositive = percentageChange !== null && percentageChange > 0;
+
+        return (
+            <Box sx={{
+                flex: {
+                    xs: '1 1 calc(50% - 8px)',
+                    sm: '1 1 calc(33.33% - 16px)',
+                    md: '1 1 200px'
+                },
+                display: 'flex',
+                flexDirection: 'column',
                 gap: 1,
-                minHeight: 24
+                minWidth: {
+                    xs: 'auto',
+                    sm: 150,
+                    md: 180
+                },
+                maxWidth: {
+                    xs: '100%',
+                    sm: 'none',
+                    md: 250
+                }
             }}>
-                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                    {metric.icon}
-                </span>
-                <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    sx={{
-                        fontSize: {
-                            xs: '0.75rem',
-                            sm: '0.875rem'
-                        }
-                    }}
-                >
-                    {metric.label}
-                </Typography>
+                <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 1,
+                    minHeight: 24
+                }}>
+                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
+                        {metric.icon}
+                    </span>
+                    <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                        sx={{
+                            fontSize: {
+                                xs: '0.75rem',
+                                sm: '0.875rem'
+                            }
+                        }}
+                    >
+                        {metric.label}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                    <Typography 
+                        variant="h4" 
+                        color="text.primary"
+                        sx={{
+                            fontSize: {
+                                xs: '1.5rem',
+                                sm: '1.75rem',
+                                md: '2rem'
+                            }
+                        }}
+                    >
+                        {metric.value.toLocaleString()}
+                    </Typography>
+                    {!metric.hideComparison && percentageChange !== null && (
+                        <Box sx={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            gap: 0.5
+                        }}>
+                            <span 
+                                className="material-symbols-rounded" 
+                                style={{ 
+                                    fontSize: '1rem',
+                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336'
+                                }}
+                            >
+                                {percentageChange === 0 ? 'trending_flat' : isPositive ? 'trending_up' : 'trending_down'}
+                            </span>
+                            <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336',
+                                    fontSize: '0.875rem'
+                                }}
+                            >
+                                {Math.abs(percentageChange).toFixed(1)}%
+                            </Typography>
+                        </Box>
+                    )}
+                </Box>
             </Box>
-            <Typography 
-                variant="h4" 
-                color="text.primary"
-                sx={{
-                    fontSize: {
-                        xs: '1.5rem',
-                        sm: '1.75rem',
-                        md: '2rem'
-                    }
-                }}
-            >
-                {metric.value.toLocaleString()}
-            </Typography>
-        </Box>
-    );
+        );
+    };
 
     return (
         <Paper elevation={3} sx={{

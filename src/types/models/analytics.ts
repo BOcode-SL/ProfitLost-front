@@ -15,6 +15,19 @@ export interface UserMetrics {
         thirtyDays: number;
         ninetyDays: number;
     };
+    comparison: {
+        totalUsers: number;
+        activeUsers: {
+            daily: number;
+            weekly: number;
+            monthly: number;
+        };
+        newUsers: {
+            daily: number;
+            weekly: number;
+            monthly: number;
+        };
+    };
 }
 
 export interface DeviceMetrics {
@@ -26,17 +39,23 @@ export interface DeviceMetrics {
 export interface TransactionMetrics {
     total: number;
     today: number;
+    thisMonth: number;
     averagePerUser: number;
+    comparison: {
+        total: number;
+        today: number;
+        thisMonth: number;
+        averagePerUser: number;
+    };
 }
 
-export interface EngagementMetrics {
-    userRetention: number;
-    averageSessionDuration: number;
+export interface TransactionHistory {
+    date: string;
+    count: number;
 }
 
 export interface AnalyticsData {
     users: UserMetrics;
     devices: DeviceMetrics;
     transactions: TransactionMetrics;
-    engagement: EngagementMetrics;
 }
