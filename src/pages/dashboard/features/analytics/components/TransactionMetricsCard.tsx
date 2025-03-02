@@ -42,6 +42,31 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         fetchChartData();
     }, [viewType]);
 
+    // Ensure that monthly chart data has unique dates
+    const getUniqueMonthlyData = () => {
+        if (viewType !== 'monthly' || chartData.length === 0) return chartData;
+        
+        // Create a map to store a unique value per month
+        const monthMap = new Map<string, TransactionHistory>();
+        
+        chartData.forEach(item => {
+            const date = new Date(item.date);
+            const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+            
+            // Only save the first value for each month
+            if (!monthMap.has(monthKey)) {
+                monthMap.set(monthKey, item);
+            }
+        });
+        
+        // Convert the map back to an array and sort it by date
+        return Array.from(monthMap.values())
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    };
+
+    // Get the processed data for the chart
+    const processedChartData = viewType === 'monthly' ? getUniqueMonthlyData() : chartData;
+
     if (loading) {
         return (
             <Paper elevation={3} sx={{
@@ -171,6 +196,39 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         }
     };
 
+    // Function to format the X-axis dates of the chart
+    const formatXAxisDate = (date: Date): string => {
+        if (viewType === 'daily') {
+            // For daily view, we need to translate the day of the week
+            const day = date.getDate();
+            const dayOfWeekIndex = date.getDay();
+            
+            // Map the day index to the translation key
+            const dayKeys = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const dayKey = dayKeys[dayOfWeekIndex];
+            
+            // Get the translation of the day from the language files
+            const translatedDay = t(`dashboard.common.dayNamesShort.${dayKey}`);
+            
+            // Different format based on the language:
+            const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
+            
+            if (currentLanguage.startsWith('es')) {
+                return `${translatedDay} ${day}`;
+            } else {
+                return `${day} ${translatedDay}`;
+            }
+        }
+        
+        const monthIndex = date.getMonth();
+        const monthKey = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][monthIndex];
+        
+        const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
+        const year = date.getFullYear().toString().slice(2);
+        
+        return `${translatedMonth} ${year}`;
+    };
+
     return (
         <Paper elevation={3} sx={{
             p: 2,
@@ -291,48 +349,18 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                             animation: 'pulse 1.5s ease-in-out infinite'
                         }}
                     />
-                ) : chartData.length > 0 ? (
+                ) : processedChartData.length > 0 ? (
                     <LineChart
                         xAxis={[{
-                            data: chartData.map(item => new Date(item.date)),
+                            data: processedChartData.map(item => new Date(item.date)),
                             scaleType: 'time',
-                            valueFormatter: (date: Date) => {
-                                if (viewType === 'daily') {
-                                    // For daily view, we need to translate the day of the week
-                                    const day = date.getDate();
-                                    const dayOfWeekIndex = date.getDay();
-                                    
-                                    // Map the day index to the translation key
-                                    const dayKeys = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                                    const dayKey = dayKeys[dayOfWeekIndex];
-                                    
-                                    // Get the translation of the day from the language files
-                                    const translatedDay = t(`dashboard.common.dayNamesShort.${dayKey}`);
-                                    
-                                    // Different format based on the language:
-                                    const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
-                                    
-                                    if (currentLanguage.startsWith('es')) {
-                                        return `${translatedDay} ${day}`;
-                                    } else {
-                                        return `${day} ${translatedDay}`;
-                                    }
-                                }
-                                
-                                const monthIndex = date.getMonth();
-                                const monthKey = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][monthIndex];
-                                
-                                const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
-                                const year = date.getFullYear().toString().slice(2);
-                                
-                                return `${translatedMonth} ${year}`;
-                            },
-                            min: new Date(chartData[0].date),
-                            max: new Date(chartData[chartData.length - 1].date),
-                            tickNumber: viewType === 'daily' ? chartData.length : undefined
+                            valueFormatter: formatXAxisDate,
+                            min: processedChartData.length > 0 ? new Date(processedChartData[0].date) : undefined,
+                            max: processedChartData.length > 0 ? new Date(processedChartData[processedChartData.length - 1].date) : undefined,
+                            tickNumber: viewType === 'monthly' ? Math.min(12, processedChartData.length) : processedChartData.length
                         }]}
                         series={[{
-                            data: chartData.map(item => item.count),
+                            data: processedChartData.map(item => item.count),
                             area: false,
                             showMark: false,
                             color: theme.palette.primary.main,
