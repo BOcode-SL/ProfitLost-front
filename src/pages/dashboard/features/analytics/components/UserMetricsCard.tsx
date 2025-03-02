@@ -68,19 +68,15 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                     flexDirection: 'column',
                     gap: { xs: 2, sm: 3, md: 4 }
                 }}>
-                    {/* Skeletons for Active Metrics */}
+                    {/* Skeletons for All User Metrics in a single row */}
                     <Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
                         gap: { xs: 1, sm: 2, md: 3 }
                     }}>
-                        {[1, 2, 3, 4].map((i) => (
-                            <Box key={`active-${i}`} sx={{
-                                flex: {
-                                    xs: '1 1 calc(50% - 8px)',
-                                    sm: '1 1 calc(33.33% - 16px)',
-                                    md: '1 1 200px'
-                                },
+                        {[1, 2, 3, 4, 5].map((i) => (
+                            <Box key={`metric-${i}`} sx={{
+                                flex: 1,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 gap: 1
@@ -107,49 +103,9 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                         ))}
                     </Box>
 
-                    {/* Skeleton for Divider */}
-                    <Skeleton variant="rectangular" height={1} sx={{
+                    <Divider sx={{
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
-
-                    {/* Skeletons for New Users Metrics */}
-                    <Box sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: { xs: 1, sm: 2, md: 3 }
-                    }}>
-                        {[1, 2, 3].map((i) => (
-                            <Box key={`new-${i}`} sx={{
-                                flex: {
-                                    xs: '1 1 calc(50% - 8px)',
-                                    sm: '1 1 calc(33.33% - 16px)',
-                                    md: '1 1 200px'
-                                },
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 1
-                            }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Skeleton variant="circular" width={20} height={20} sx={{
-                                        animation: 'pulse 1.5s ease-in-out infinite'
-                                    }} />
-                                    <Skeleton variant="text" width={100} height={24} sx={{
-                                        animation: 'pulse 1.5s ease-in-out infinite'
-                                    }} />
-                                </Box>
-                                <Skeleton 
-                                    variant="text" 
-                                    width={80} 
-                                    height={40}
-                                    sx={{ 
-                                        transform: 'none',
-                                        transformOrigin: '0 0',
-                                        animation: 'pulse 1.5s ease-in-out infinite'
-                                    }}
-                                />
-                            </Box>
-                        ))}
-                    </Box>
 
                     {/* Skeleton for Chart */}
                     <Box>
@@ -188,7 +144,8 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         return ((current - previous) / previous) * 100;
     };
 
-    const activeMetrics = [
+    // Combine all metrics into a single array
+    const allMetrics = [
         {
             label: t('dashboard.analytics.metrics.totalUsers'),
             value: data?.totalUsers || 0,
@@ -206,10 +163,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
             value: data?.activeUsers.monthly || 0,
             comparison: data?.comparison?.activeUsers.monthly || 0,
             icon: 'group'
-        }
-    ];
-
-    const newMetrics = [
+        },
         {
             label: t('dashboard.analytics.metrics.newUsersDaily'),
             value: data?.newUsers.daily || 0,
@@ -224,29 +178,20 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         }
     ];
 
-    const MetricBox = ({ metric }: { metric: typeof activeMetrics[0] }) => {
+    const MetricBox = ({ metric }: { metric: typeof allMetrics[0] }) => {
         const percentageChange = !metric.hideComparison ? calculatePercentageChange(metric.value, metric.comparison || 0) : null;
         const isPositive = percentageChange !== null && percentageChange > 0;
 
         return (
             <Box sx={{
-                flex: {
-                    xs: '1 1 calc(50% - 8px)',
-                    sm: '1 1 calc(33.33% - 16px)',
-                    md: '1 1 200px'
-                },
+                flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 1,
                 minWidth: {
                     xs: 'auto',
-                    sm: 150,
-                    md: 180
-                },
-                maxWidth: {
-                    xs: '100%',
-                    sm: 'none',
-                    md: 250
+                    sm: 100,
+                    md: 120
                 }
             }}>
                 <Box sx={{ 
@@ -265,7 +210,10 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                             fontSize: {
                                 xs: '0.75rem',
                                 sm: '0.875rem'
-                            }
+                            },
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
                         }}
                     >
                         {metric.label}
@@ -413,26 +361,14 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                 flexDirection: 'column',
                 gap: { xs: 2, sm: 3, md: 4 }
             }}>
+                {/* All metrics in a single row */}
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: { xs: 1, sm: 2, md: 3 },
-                    justifyContent: 'flex-start'
+                    justifyContent: 'space-between'
                 }}>
-                    {activeMetrics.map((metric, index) => (
-                        <MetricBox key={index} metric={metric} />
-                    ))}
-                </Box>
-
-                <Divider />
-
-                <Box sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: { xs: 1, sm: 2, md: 3 },
-                    justifyContent: 'flex-start'
-                }}>
-                    {newMetrics.map((metric, index) => (
+                    {allMetrics.map((metric, index) => (
                         <MetricBox key={index} metric={metric} />
                     ))}
                 </Box>

@@ -70,28 +70,26 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
     if (loading) {
         return (
             <Paper elevation={3} sx={{
-                p: 2,
+                p: { xs: 1.5, sm: 2 },
                 borderRadius: 3,
-                width: '100%',
-                minHeight: 400
+                width: '100%'
             }}>
                 {/* Title */}
-                <Box sx={{ mb: 2 }}>
+                <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
                     <Skeleton variant="text" width={200} height={32} sx={{
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
                 </Box>
 
-                {/* Metrics */}
+                {/* Metrics in a single row */}
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: 2,
-                    mb: 3
+                    gap: { xs: 1, sm: 2, md: 3 }
                 }}>
-                    {[1, 2, 3].map((i) => (
+                    {[1, 2, 3, 4].map((i) => (
                         <Box key={i} sx={{
-                            flex: '1 1 200px',
+                            flex: 1,
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 1
@@ -100,13 +98,13 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                 <Skeleton variant="circular" width={20} height={20} sx={{
                                     animation: 'pulse 1.5s ease-in-out infinite'
                                 }} />
-                                <Skeleton variant="text" width={120} height={24} sx={{
+                                <Skeleton variant="text" width={100} height={24} sx={{
                                     animation: 'pulse 1.5s ease-in-out infinite'
                                 }} />
                             </Box>
                             <Skeleton
                                 variant="text"
-                                width={100}
+                                width={80}
                                 height={40}
                                 sx={{
                                     transform: 'none',
@@ -119,14 +117,10 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                 </Box>
 
                 {/* Divider */}
-                <Skeleton
-                    variant="rectangular"
-                    height={1}
-                    sx={{
-                        my: 2,
-                        animation: 'pulse 1.5s ease-in-out infinite'
-                    }}
-                />
+                <Divider sx={{
+                    my: 2,
+                    animation: 'pulse 1.5s ease-in-out infinite'
+                }} />
 
                 {/* Toggle Buttons */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
@@ -231,159 +225,183 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
 
     return (
         <Paper elevation={3} sx={{
-            p: 2,
+            p: { xs: 1.5, sm: 2 },
             borderRadius: 3,
             width: '100%'
         }}>
-            <Typography variant="h6" color="primary" gutterBottom sx={{ mb: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom sx={{ mb: { xs: 1.5, sm: 2 } }}>
                 {t('dashboard.analytics.sections.transactions')}
             </Typography>
 
             <Box sx={{
                 display: 'flex',
-                flexWrap: 'wrap',
-                gap: { xs: 1, sm: 2 },
-                mb: { xs: 2, sm: 3 }
+                flexDirection: 'column',
+                gap: { xs: 2, sm: 3, md: 4 }
             }}>
-                {metrics.map((metric, index) => {
-                    const percentageChange = !metric.hideComparison ? calculatePercentageChange(metric.value, metric.comparison || 0) : null;
-                    const isPositive = percentageChange !== null && percentageChange > 0;
+                {/* All metrics in a single row */}
+                <Box sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: { xs: 1, sm: 2, md: 3 },
+                    justifyContent: 'space-between'
+                }}>
+                    {metrics.map((metric, index) => {
+                        const percentageChange = !metric.hideComparison ? calculatePercentageChange(metric.value, metric.comparison || 0) : null;
+                        const isPositive = percentageChange !== null && percentageChange > 0;
 
-                    return (
-                        <Box key={index} sx={{
-                            flex: {
-                                xs: '1 1 calc(50% - 8px)',
-                                sm: '1 1 200px'
-                            },
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: { xs: 0.5, sm: 1 }
-                        }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                                    {metric.icon}
-                                </span>
-                                <Typography variant="body2" color="text.secondary">
-                                    {metric.label}
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                <Typography variant="h4" color="text.primary" sx={{
-                                    fontSize: {
-                                        xs: '1.5rem',
-                                        sm: '1.75rem',
-                                        md: '2rem'
-                                    }
-                                }}>
-                                    {metric.isAverage
-                                        ? metric.value.toFixed(1)
-                                        : metric.value.toLocaleString()}
-                                </Typography>
-                                {!metric.hideComparison && percentageChange !== null && (
-                                    <Box sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 0.5
+                        return (
+                            <Box key={index} sx={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1,
+                                minWidth: {
+                                    xs: 'auto',
+                                    sm: 100,
+                                    md: 120
+                                }
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 24 }}>
+                                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
+                                        {metric.icon}
+                                    </span>
+                                    <Typography 
+                                        variant="body2" 
+                                        color="text.secondary"
+                                        sx={{
+                                            fontSize: {
+                                                xs: '0.75rem',
+                                                sm: '0.875rem'
+                                            },
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                        }}
+                                    >
+                                        {metric.label}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                                    <Typography variant="h4" color="text.primary" sx={{
+                                        fontSize: {
+                                            xs: '1.5rem',
+                                            sm: '1.75rem',
+                                            md: '2rem'
+                                        }
                                     }}>
-                                        <span
-                                            className="material-symbols-rounded"
-                                            style={{
-                                                fontSize: '1rem',
-                                                color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336'
-                                            }}
-                                        >
-                                            {percentageChange === 0 ? 'trending_flat' : isPositive ? 'trending_up' : 'trending_down'}
-                                        </span>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336',
-                                                fontSize: '0.875rem'
-                                            }}
-                                        >
-                                            {Math.abs(percentageChange).toFixed(1)}%
-                                        </Typography>
-                                    </Box>
-                                )}
+                                        {metric.isAverage
+                                            ? metric.value.toFixed(1)
+                                            : metric.value.toLocaleString()}
+                                    </Typography>
+                                    {!metric.hideComparison && percentageChange !== null && (
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 0.5
+                                        }}>
+                                            <span
+                                                className="material-symbols-rounded"
+                                                style={{
+                                                    fontSize: '1rem',
+                                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336'
+                                                }}
+                                            >
+                                                {percentageChange === 0 ? 'trending_flat' : isPositive ? 'trending_up' : 'trending_down'}
+                                            </span>
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336',
+                                                    fontSize: '0.875rem'
+                                                }}
+                                            >
+                                                {Math.abs(percentageChange).toFixed(1)}%
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
                             </Box>
-                        </Box>
-                    );
-                })}
-            </Box>
+                        );
+                    })}
+                </Box>
 
-            <Divider sx={{ my: 2 }} />
+                <Divider />
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-                <ToggleButtonGroup
-                    value={viewType}
-                    exclusive
-                    onChange={handleViewChange}
-                    size="small"
-                >
-                    <ToggleButton value="daily">
-                        {t('dashboard.common.daily')}
-                    </ToggleButton>
-                    <ToggleButton value="monthly">
-                        {t('dashboard.common.monthly')}
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            </Box>
+                {/* Chart Section */}
+                <Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                        <ToggleButtonGroup
+                            value={viewType}
+                            exclusive
+                            onChange={handleViewChange}
+                            size="small"
+                        >
+                            <ToggleButton value="daily">
+                                {t('dashboard.common.daily')}
+                            </ToggleButton>
+                            <ToggleButton value="monthly">
+                                {t('dashboard.common.monthly')}
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
 
-            <Box sx={{
-                height: { xs: 200, sm: 250 },
-                width: '100%',
-                mt: { xs: 1, sm: 2 },
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {chartLoading ? (
-                    <Skeleton
-                        variant="rectangular"
-                        height="100%"
-                        width="100%"
-                        sx={{
-                            borderRadius: 1,
-                            transform: 'none',
-                            transformOrigin: '0 0',
-                            animation: 'pulse 1.5s ease-in-out infinite'
-                        }}
-                    />
-                ) : processedChartData.length > 0 ? (
-                    <LineChart
-                        xAxis={[{
-                            data: processedChartData.map(item => new Date(item.date)),
-                            scaleType: 'time',
-                            valueFormatter: formatXAxisDate,
-                            min: processedChartData.length > 0 ? new Date(processedChartData[0].date) : undefined,
-                            max: processedChartData.length > 0 ? new Date(processedChartData[processedChartData.length - 1].date) : undefined,
-                            tickNumber: viewType === 'monthly' ? Math.min(12, processedChartData.length) : processedChartData.length
-                        }]}
-                        series={[{
-                            data: processedChartData.map(item => item.count),
-                            area: false,
-                            showMark: false,
-                            color: theme.palette.primary.main,
-                            valueFormatter: (value: number | null) => value ? value.toLocaleString() : '',
-                            connectNulls: true
-                        }]}
-                        height={undefined}
-                        margin={{ top: 20, right: 20, bottom: 30, left: 40 }}
-                        sx={{
-                            width: '100%',
-                            height: '100%',
-                            '.MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
-                                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                                transform: 'rotate(0deg)'
-                            }
-                        }}
-                        disableAxisListener
-                    />
-                ) : (
-                    <Typography variant="body2" color="text.secondary">
-                        {t('dashboard.analytics.metrics.noData')}
-                    </Typography>
-                )}
+                    <Box sx={{
+                        height: { xs: 200, sm: 250 },
+                        width: '100%',
+                        mt: { xs: 1, sm: 2 },
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        {chartLoading ? (
+                            <Skeleton
+                                variant="rectangular"
+                                height="100%"
+                                width="100%"
+                                sx={{
+                                    borderRadius: 1,
+                                    transform: 'none',
+                                    transformOrigin: '0 0',
+                                    animation: 'pulse 1.5s ease-in-out infinite'
+                                }}
+                            />
+                        ) : processedChartData.length > 0 ? (
+                            <LineChart
+                                xAxis={[{
+                                    data: processedChartData.map(item => new Date(item.date)),
+                                    scaleType: 'time',
+                                    valueFormatter: formatXAxisDate,
+                                    min: processedChartData.length > 0 ? new Date(processedChartData[0].date) : undefined,
+                                    max: processedChartData.length > 0 ? new Date(processedChartData[processedChartData.length - 1].date) : undefined,
+                                    tickNumber: viewType === 'monthly' ? Math.min(12, processedChartData.length) : processedChartData.length
+                                }]}
+                                series={[{
+                                    data: processedChartData.map(item => item.count),
+                                    area: false,
+                                    showMark: false,
+                                    color: theme.palette.primary.main,
+                                    valueFormatter: (value: number | null) => value ? value.toLocaleString() : '',
+                                    connectNulls: true
+                                }]}
+                                height={undefined}
+                                margin={{ top: 20, right: 20, bottom: 30, left: 40 }}
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    '.MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
+                                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                        transform: 'rotate(0deg)'
+                                    }
+                                }}
+                                disableAxisListener
+                            />
+                        ) : (
+                            <Typography variant="body2" color="text.secondary">
+                                {t('dashboard.analytics.metrics.noData')}
+                            </Typography>
+                        )}
+                    </Box>
+                </Box>
             </Box>
         </Paper>
     );
