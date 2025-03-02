@@ -90,6 +90,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     {[1, 2, 3, 4].map((i) => (
                         <Box key={i} sx={{
                             flex: 1,
+                            minWidth: { xs: '45%', sm: 'auto' },
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 1
@@ -252,14 +253,11 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                         return (
                             <Box key={index} sx={{
                                 flex: 1,
+                                minWidth: { xs: '45%', sm: 'auto' },
                                 display: 'flex',
                                 flexDirection: 'column',
                                 gap: 1,
-                                minWidth: {
-                                    xs: 'auto',
-                                    sm: 100,
-                                    md: 120
-                                }
+                                mb: { xs: 1, sm: 0 }
                             }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 24 }}>
                                     <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
@@ -284,9 +282,9 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                                     <Typography variant="h4" color="text.primary" sx={{
                                         fontSize: {
-                                            xs: '1.5rem',
-                                            sm: '1.75rem',
-                                            md: '2rem'
+                                            xs: '1.25rem',
+                                            sm: '1.5rem',
+                                            md: '1.75rem'
                                         }
                                     }}>
                                         {metric.isAverage
@@ -302,7 +300,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                             <span
                                                 className="material-symbols-rounded"
                                                 style={{
-                                                    fontSize: '1rem',
+                                                    fontSize: '0.875rem',
                                                     color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336'
                                                 }}
                                             >
@@ -312,7 +310,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                                 variant="body2"
                                                 sx={{
                                                     color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336',
-                                                    fontSize: '0.875rem'
+                                                    fontSize: '0.75rem'
                                                 }}
                                             >
                                                 {Math.abs(percentageChange).toFixed(1)}%

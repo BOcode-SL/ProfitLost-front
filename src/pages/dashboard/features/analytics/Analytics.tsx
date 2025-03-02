@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, Button, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -24,6 +24,8 @@ import type { AnalyticsErrorType } from '../../../../types/api/errors';
 export default function Analytics() {
     const { t } = useTranslation();
     const { user } = useUser();
+    const theme = useTheme();
+    const isXsScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -142,21 +144,29 @@ export default function Analytics() {
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
             {/* Current Date and Time with Save Metrics Button */}
             <Paper elevation={3} sx={{
                 p: { xs: 1.5, sm: 2 },
                 borderRadius: 3,
                 width: '100%',
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: { xs: isXsScreen ? 'column' : 'row', sm: 'row' },
+                alignItems: { xs: isXsScreen ? 'flex-start' : 'center', sm: 'center' },
+                gap: { xs: 1, sm: 0 },
                 justifyContent: 'space-between'
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
                         schedule
                     </span>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{
+                            fontSize: { xs: '0.875rem', sm: '1rem' }
+                        }}
+                    >
                         {formatDateTime(currentDateTime.toISOString(), user)}
                     </Typography>
                 </Box>
@@ -175,30 +185,37 @@ export default function Analytics() {
                             </span>
                         )
                     }
+                    sx={{
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        py: { xs: 0.5, sm: 0.75 },
+                        px: { xs: 1, sm: 1.5 },
+                        width: { xs: '100%', sm: 'auto' }
+                    }}
                 >
                     {savingMetrics
                         ? t('dashboard.common.saving')
                         : t('dashboard.analytics.saveMetrics')}
                 </Button>
-            </Paper>
+            </Paper >
 
-            {/* Card displaying user metrics */}
-            <Box sx={{ width: '100%' }}>
-                <UserMetricsCard data={data?.users || null} loading={loading} />
-            </Box>
+        {/* Card displaying user metrics */ }
+        < Box sx = {{ width: '100%' }
+}>
+    <UserMetricsCard data={data?.users || null} loading={loading} />
+            </Box >
 
-            {/* Card displaying transaction metrics */}
-            <Box sx={{ width: '100%' }}>
-                <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
-            </Box>
+    {/* Card displaying transaction metrics */ }
+    < Box sx = {{ width: '100%' }}>
+        <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
+            </Box >
 
-            {/* Cards for Device (1/3) and Engagement (2/3) metrics */}
-            <Box sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: 2,
-                minHeight: { xs: 'auto', md: 320 }
-            }}>
+    {/* Cards for Device (1/3) and Engagement (2/3) metrics */ }
+    < Box sx = {{
+    display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+    gap: { xs: 1.5, sm: 2 },
+    minHeight: { xs: 'auto', md: 320 }
+}}>
                 <Box sx={{
                     flex: { xs: '1', md: '1' },
                     minWidth: { xs: '100%', md: '300px' },
@@ -210,7 +227,7 @@ export default function Analytics() {
                     minWidth: { xs: '100%', md: '400px' }
                 }}>
                 </Box>
-            </Box>
-        </Box>
+            </Box >
+        </Box >
     );
 } 
