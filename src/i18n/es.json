@@ -788,6 +788,9 @@
             "viewMode": {
                 "yearToday": "Hasta hoy",
                 "fullYear": "Año completo"
+            },
+            "actions": {
+                "saving": "Guardando..."
             }
         },
         "onboarding": {
@@ -1237,6 +1240,7 @@
         },
         "analytics": {
             "title": "Analíticas",
+            "saveMetrics": "Guardar métricas",
             "sections": {
                 "users": "Métricas de Usuarios",
                 "devices": "Distribución de Dispositivos",
@@ -1263,7 +1267,11 @@
                 "averageSessionDuration": "Duración Media de Sesión"
             },
             "errors": {
-                "fetchError": "Error al cargar los datos de analíticas"
+                "fetchError": "Error al obtener los datos de analíticas",
+                "saveError": "Error al guardar las métricas"
+            },
+            "success": {
+                "saveSuccess": "Métricas guardadas correctamente"
             }
         }
     }

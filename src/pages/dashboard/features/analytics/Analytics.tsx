@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper, Button, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -26,9 +26,10 @@ export default function Analytics() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [savingMetrics, setSavingMetrics] = useState(false);
 
     useEffect(() => {
-        // Actualizar la fecha y hora cada minuto
+        // Update the date and time every minute
         const timer = setInterval(() => {
             setCurrentDateTime(new Date());
         }, 60000);
@@ -58,7 +59,7 @@ export default function Analytics() {
                 setData({
                     users: userMetricsResponse.data!,
                     transactions: transactionMetricsResponse.data!,
-                    // esto es temporal, se debe obtener de la base de datos
+                    // This is temporary, it should be obtained from the database
                     devices: {
                         desktop: 60,
                         mobile: 30,
@@ -77,6 +78,34 @@ export default function Analytics() {
         fetchAnalyticsData();
     }, [t, user]);
 
+    // Function to manually save metrics
+    const handleSaveMetrics = async () => {
+        if (savingMetrics) return;
+
+        setSavingMetrics(true);
+        try {
+            const response = await analyticsService.saveUserMetrics();
+            if (response.success) {
+                toast.success(t('dashboard.analytics.success.saveSuccess'));
+                // Reload the data after saving
+                const userMetricsResponse = await analyticsService.getUserMetrics();
+                if (userMetricsResponse.success && data) {
+                    setData({
+                        ...data,
+                        users: userMetricsResponse.data!
+                    });
+                }
+            } else {
+                toast.error(response.message || t('dashboard.analytics.errors.saveError'));
+            }
+        } catch (error) {
+            console.error('Error saving metrics:', error);
+            toast.error(t('dashboard.analytics.errors.saveError'));
+        } finally {
+            setSavingMetrics(false);
+        }
+    };
+
     // Verify if the user has administrator privileges
     if (!user?.role || user.role !== 'admin') {
         return (
@@ -90,21 +119,43 @@ export default function Analytics() {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Current Date and Time */}
+            {/* Current Date and Time with Save Metrics Button */}
             <Paper elevation={3} sx={{
                 p: { xs: 1.5, sm: 2 },
                 borderRadius: 3,
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1
+                justifyContent: 'space-between'
             }}>
-                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                    schedule
-                </span>
-                <Typography variant="body1" color="text.secondary">
-                    {formatDateTime(currentDateTime.toISOString(), user)}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
+                        schedule
+                    </span>
+                    <Typography variant="body1" color="text.secondary">
+                        {formatDateTime(currentDateTime.toISOString(), user)}
+                    </Typography>
+                </Box>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={handleSaveMetrics}
+                    disabled={savingMetrics}
+                    startIcon={
+                        savingMetrics ? (
+                            <CircularProgress size={16} color="inherit" />
+                        ) : (
+                            <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
+                                save
+                            </span>
+                        )
+                    }
+                >
+                    {savingMetrics
+                        ? t('common.actions.saving')
+                        : t('dashboard.analytics.saveMetrics')}
+                </Button>
             </Paper>
 
             {/* Card displaying user metrics */}
