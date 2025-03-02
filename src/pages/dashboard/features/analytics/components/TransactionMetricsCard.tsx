@@ -298,12 +298,34 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                             scaleType: 'time',
                             valueFormatter: (date: Date) => {
                                 if (viewType === 'daily') {
-                                    return new Date(date).toLocaleDateString(undefined, {
-                                        weekday: 'short',
-                                        day: 'numeric'
-                                    });
+                                    // For daily view, we need to translate the day of the week
+                                    const day = date.getDate();
+                                    const dayOfWeekIndex = date.getDay();
+                                    
+                                    // Map the day index to the translation key
+                                    const dayKeys = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                    const dayKey = dayKeys[dayOfWeekIndex];
+                                    
+                                    // Get the translation of the day from the language files
+                                    const translatedDay = t(`dashboard.common.dayNamesShort.${dayKey}`);
+                                    
+                                    // Different format based on the language:
+                                    const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
+                                    
+                                    if (currentLanguage.startsWith('es')) {
+                                        return `${translatedDay} ${day}`;
+                                    } else {
+                                        return `${day} ${translatedDay}`;
+                                    }
                                 }
-                                return date.toLocaleDateString(undefined, { month: 'short' });
+                                
+                                const monthIndex = date.getMonth();
+                                const monthKey = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][monthIndex];
+                                
+                                const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
+                                const year = date.getFullYear().toString().slice(2);
+                                
+                                return `${translatedMonth} ${year}`;
                             },
                             min: new Date(chartData[0].date),
                             max: new Date(chartData[chartData.length - 1].date),

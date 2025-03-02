@@ -3,7 +3,8 @@
         "header": {
             "login": "Iniciar sesión",
             "language": {
-                "en": "Change to English"
+                "en": "Change to English",
+                "es": "Change to Spanish"
             }
         },
         "hero": {
@@ -784,6 +785,15 @@
                 "Oct": "Oct",
                 "Nov": "Nov",
                 "Dec": "Dic"
+            },
+            "dayNamesShort": {
+                "Mon": "Lun",
+                "Tue": "Mar",
+                "Wed": "Mie",
+                "Thu": "Jue",
+                "Fri": "Vie",
+                "Sat": "Sab",
+                "Sun": "Dom"
             },
             "viewMode": {
                 "yearToday": "Hasta hoy",
