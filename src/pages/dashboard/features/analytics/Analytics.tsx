@@ -19,6 +19,7 @@ import { formatDateTime } from '../../../../utils/dateUtils';
 
 // Types
 import type { AnalyticsData } from '../../../../types/models/analytics';
+import type { AnalyticsErrorType } from '../../../../types/api/errors';
 
 export default function Analytics() {
     const { t } = useTranslation();
@@ -42,6 +43,7 @@ export default function Analytics() {
             if (!user?.role || user.role !== 'admin') return;
 
             setLoading(true);
+
             try {
                 // Fetch user metrics
                 const userMetricsResponse = await analyticsService.getUserMetrics();
@@ -59,7 +61,7 @@ export default function Analytics() {
                 setData({
                     users: userMetricsResponse.data!,
                     transactions: transactionMetricsResponse.data!,
-                    // This is temporary, it should be obtained from the database
+                    // This is temporary; it should be obtained from the database
                     devices: {
                         desktop: 60,
                         mobile: 30,
@@ -69,7 +71,22 @@ export default function Analytics() {
             } catch (err) {
                 const error = err as Error;
                 console.error('Error fetching analytics data:', error);
-                toast.error(error.message);
+
+                // Determine the type of error to display a more specific message
+                let errorType: AnalyticsErrorType = 'ANALYTICS_PROCESSING_ERROR';
+                if (error.message.toLowerCase().includes('connection')) {
+                    errorType = 'CONNECTION_ERROR';
+                } else if (error.message.toLowerCase().includes('database')) {
+                    errorType = 'DATABASE_ERROR';
+                }
+
+                // Show error message with toast
+                const commonErrorTypes: string[] = ['CONNECTION_ERROR', 'DATABASE_ERROR', 'SERVER_ERROR', 'NETWORK_ERROR', 'FETCH_ERROR', 'UNAUTHORIZED'];
+                if (commonErrorTypes.includes(errorType)) {
+                    toast.error(t(`dashboard.common.error.${errorType}`));
+                } else {
+                    toast.error(t(`dashboard.analytics.errors.${errorType.toLowerCase()}`));
+                }
             } finally {
                 setLoading(false);
             }
@@ -96,11 +113,18 @@ export default function Analytics() {
                     });
                 }
             } else {
-                toast.error(response.message || t('dashboard.analytics.errors.saveError'));
+                // Show a more specific error message based on the error type
+                const errorMessage = response.error === 'DATABASE_ERROR'
+                    ? t('dashboard.common.error.DATABASE_ERROR')
+                    : response.error === 'METRICS_SAVE_ERROR'
+                        ? t('dashboard.analytics.errors.metrics_save_error')
+                        : response.message;
+
+                toast.error(errorMessage);
             }
         } catch (error) {
             console.error('Error saving metrics:', error);
-            toast.error(t('dashboard.analytics.errors.saveError'));
+            toast.error(t('dashboard.analytics.errors.metrics_save_error'));
         } finally {
             setSavingMetrics(false);
         }
@@ -111,7 +135,7 @@ export default function Analytics() {
         return (
             <Box sx={{ p: 3, textAlign: 'center' }}>
                 <Typography variant="h6" color="error">
-                    {t('common.errors.unauthorized')}
+                    {t('dashboard.common.error.UNAUTHORIZED')}
                 </Typography>
             </Box>
         );

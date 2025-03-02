@@ -1279,7 +1279,13 @@
             },
             "errors": {
                 "fetchError": "Error fetching analytics data",
-                "saveError": "Error saving metrics"
+                "saveError": "Error saving metrics",
+                "data_unavailable": "Data unavailable. Please try again later.",
+                "metrics_save_error": "Error saving metrics. Please try again.",
+                "invalid_date_range": "Invalid date range. Please select valid dates.",
+                "insufficient_data": "Insufficient data to generate analytics.",
+                "analytics_processing_error": "Error processing analytics data. Please try again.",
+                "title": "Analytics error"
             },
             "success": {
                 "saveSuccess": "Metrics saved successfully"

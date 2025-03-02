@@ -1,7 +1,7 @@
 // Types
 import { HttpStatusCode } from '../types/api/common';
-import { CommonErrorType } from '../types/api/errors';
-import type { ApiResponse } from '../types/api/common';
+import { AnalyticsErrorType } from '../types/api/errors';
+import type { ApiResponse, ApiErrorResponse } from '../types/api/common';
 import type { UserMetrics, TransactionMetrics, TransactionHistory } from '../types/models/analytics';
 
 // Utils
@@ -11,16 +11,16 @@ import { getAuthHeaders } from '../utils/apiHeaders';
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Function to handle analytics errors
-const handleAnalyticsError = (error: unknown): ApiResponse<never> => {
+const handleAnalyticsError = (error: unknown): ApiResponse<never, AnalyticsErrorType> => {
     // Check if the error has a statusCode and is an API response
     if ((error as ApiResponse<never>).statusCode) {
-        return error as ApiResponse<never>;
+        return error as ApiResponse<never, AnalyticsErrorType>;
     }
     // Handle network errors
     return {
         success: false,
         message: 'Connection error. Please check your internet connection.',
-        error: 'CONNECTION_ERROR' as CommonErrorType,
+        error: 'CONNECTION_ERROR' as AnalyticsErrorType,
         statusCode: 0 as HttpStatusCode
     };
 };
@@ -29,7 +29,7 @@ export const analyticsService = {
     /**
      * Get user metrics
      */
-    async getUserMetrics(): Promise<ApiResponse<UserMetrics>> {
+    async getUserMetrics(): Promise<ApiResponse<UserMetrics, AnalyticsErrorType>> {
         try {
             const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/api/analytics/users`, {
@@ -41,7 +41,7 @@ export const analyticsService = {
                 }
             });
 
-            const data: ApiResponse<UserMetrics> = await response.json();
+            const data: ApiResponse<UserMetrics, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
                 console.error('Analytics error:', data);
@@ -53,7 +53,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Analytics service error:', error);
+            console.error('Error in analytics service:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -61,7 +61,7 @@ export const analyticsService = {
     /**
      * Save current user metrics to history
      */
-    async saveUserMetrics(): Promise<ApiResponse<void>> {
+    async saveUserMetrics(): Promise<ApiResponse<void, AnalyticsErrorType>> {
         try {
             const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/api/analytics/users/save-metrics`, {
@@ -73,19 +73,21 @@ export const analyticsService = {
                 }
             });
 
-            const data: ApiResponse<void> = await response.json();
+            const data: ApiResponse<void, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
                 console.error('Analytics error:', data);
+                const errorData = data as ApiErrorResponse<AnalyticsErrorType>;
                 throw {
                     ...data,
+                    error: errorData.error || 'METRICS_SAVE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 };
             }
 
             return data;
         } catch (error) {
-            console.error('Analytics service error:', error);
+            console.error('Error in analytics service:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -93,7 +95,7 @@ export const analyticsService = {
     /**
      * Get transaction metrics
      */
-    async getTransactionMetrics(): Promise<ApiResponse<TransactionMetrics>> {
+    async getTransactionMetrics(): Promise<ApiResponse<TransactionMetrics, AnalyticsErrorType>> {
         try {
             const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/api/analytics/transactions`, {
@@ -105,7 +107,7 @@ export const analyticsService = {
                 }
             });
 
-            const data: ApiResponse<TransactionMetrics> = await response.json();
+            const data: ApiResponse<TransactionMetrics, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
                 console.error('Analytics error:', data);
@@ -117,7 +119,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Analytics service error:', error);
+            console.error('Error in analytics service:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -125,7 +127,7 @@ export const analyticsService = {
     /**
      * Get transaction history
      */
-    async getTransactionHistory(type: 'daily' | 'monthly' = 'monthly'): Promise<ApiResponse<TransactionHistory[]>> {
+    async getTransactionHistory(type: 'daily' | 'monthly' = 'monthly'): Promise<ApiResponse<TransactionHistory[], AnalyticsErrorType>> {
         try {
             const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/api/analytics/transactions/history?type=${type}`, {
@@ -137,10 +139,20 @@ export const analyticsService = {
                 }
             });
 
-            const data: ApiResponse<TransactionHistory[]> = await response.json();
+            const data: ApiResponse<TransactionHistory[], AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
                 console.error('Analytics error:', data);
+                
+                // If the error is due to an invalid date range, specify it
+                if (response.status === 400 && data.message?.toLowerCase().includes('date')) {
+                    throw {
+                        ...data,
+                        error: 'INVALID_DATE_RANGE',
+                        statusCode: response.status as HttpStatusCode
+                    };
+                }
+                
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
@@ -149,7 +161,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Analytics service error:', error);
+            console.error('Error in analytics service:', error);
             return handleAnalyticsError(error);
         }
     }

@@ -1,10 +1,11 @@
 import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from '../api/common';
-import type { AuthErrorType, TransactionErrorType, UserErrorType, CategoryErrorType, AccountErrorType, NoteErrorType } from '../api/errors';
+import type { AuthErrorType, TransactionErrorType, UserErrorType, CategoryErrorType, AccountErrorType, NoteErrorType, AnalyticsErrorType } from '../api/errors';
 import type { User } from '../models/user';
 import type { RecurrenceType, Transaction } from '../models/transaction';
 import type { Category } from '../models/category';
 import type { Note } from '../models/note';
 import type { Account, YearRecord, AccountConfiguration } from '../models/account';
+import type { UserMetrics, TransactionMetrics, TransactionHistory } from '../models/analytics';
 
 /**
  * Types for authentication API responses
@@ -86,6 +87,24 @@ export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]
 }
 
 export type NoteApiResponse = NoteApiSuccessResponse | NoteApiErrorResponse;
+
+/**
+ * Types for analytics API responses
+ */
+export interface AnalyticsApiErrorResponse extends ApiErrorResponse<AnalyticsErrorType> {
+    details?: {
+        field?: string;
+        message?: string;
+    };
+}
+
+export interface AnalyticsApiSuccessResponse extends ApiSuccessResponse<UserMetrics | TransactionMetrics | TransactionHistory[]> {
+    metadata?: {
+        lastUpdated?: ISODateString;
+    };
+}
+
+export type AnalyticsApiResponse = AnalyticsApiSuccessResponse | AnalyticsApiErrorResponse;
 
 /**
  * Request Types for authentication

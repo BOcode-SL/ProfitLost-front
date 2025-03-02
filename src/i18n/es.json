@@ -1276,7 +1276,13 @@
             },
             "errors": {
                 "fetchError": "Error al obtener los datos de analíticas",
-                "saveError": "Error al guardar las métricas"
+                "saveError": "Error al guardar las métricas",
+                "data_unavailable": "Datos no disponibles. Por favor, inténtalo más tarde.",
+                "metrics_save_error": "Error al guardar las métricas. Por favor, inténtalo de nuevo.",
+                "invalid_date_range": "Rango de fechas inválido. Por favor, selecciona fechas válidas.",
+                "insufficient_data": "Datos insuficientes para generar analíticas.",
+                "analytics_processing_error": "Error al procesar los datos de analíticas. Por favor, inténtalo de nuevo.",
+                "title": "Error en analíticas"
             },
             "success": {
                 "saveSuccess": "Métricas guardadas correctamente"
