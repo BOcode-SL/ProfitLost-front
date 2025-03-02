@@ -97,6 +97,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     );
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [isRecurrent, setIsRecurrent] = useState(() => {
         return transaction?.isRecurrent || false;
@@ -150,9 +151,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
 
         try {
+            setIsSubmitting(true);
+            
             const numAmount = parseFloat(amount);
             if (isNaN(numAmount)) {
                 toast.error(t('dashboard.transactions.form.errors.invalidAmount'));
+                setIsSubmitting(false);
                 return;
             }
 
@@ -172,6 +176,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             if (transaction?.isRecurrent) {
                 setTransactionDataToUpdate(transactionData);
                 setEditRecurrentDialog(true);
+                setIsSubmitting(false);
                 return;
             }
 
@@ -193,6 +198,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         } catch (error) {
             console.error('Error submitting transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
+            setIsSubmitting(false);
         }
     };
 
@@ -225,6 +231,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         if (!transaction || !transactionDataToUpdate) return;
 
         try {
+            setIsSubmitting(true);
+            
             const dataToUpdate: UpdateData = {
                 description: transactionDataToUpdate.description,
                 amount: transactionDataToUpdate.amount,
@@ -246,6 +254,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         } catch (error) {
             console.error('Error updating recurrent transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
+            setIsSubmitting(false);
         } finally {
             setEditRecurrentDialog(false);
         }
@@ -685,7 +694,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                     onClick={handleDeleteClick}
                                     variant="outlined"
                                     color="error"
-                                    disabled={isDeleting}
+                                    disabled={isDeleting || isSubmitting}
                                     fullWidth
                                 >
                                     {t('dashboard.common.delete')}
@@ -693,9 +702,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 <Button
                                     type="submit"
                                     variant="contained"
+                                    disabled={isSubmitting}
                                     fullWidth
                                 >
-                                    {t('dashboard.common.update')}
+                                    {isSubmitting ? (
+                                        <CircularProgress size={24} color="inherit" />
+                                    ) : (
+                                        t('dashboard.common.update')
+                                    )}
                                 </Button>
                             </>
                         ) : (
@@ -703,6 +717,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 <Button
                                     onClick={onClose}
                                     variant="outlined"
+                                    disabled={isSubmitting}
                                     fullWidth
                                 >
                                     {t('dashboard.common.cancel')}
@@ -710,9 +725,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 <Button
                                     type="submit"
                                     variant="contained"
+                                    disabled={isSubmitting}
                                     fullWidth
                                 >
-                                    {t('dashboard.common.create')}
+                                    {isSubmitting ? (
+                                        <CircularProgress size={24} color="inherit" />
+                                    ) : (
+                                        t('dashboard.common.create')
+                                    )}
                                 </Button>
                             </>
                         )}

@@ -25,6 +25,7 @@ export default function Analytics() {
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
+    
     const isXsScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
