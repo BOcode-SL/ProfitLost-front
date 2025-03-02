@@ -2,9 +2,30 @@
 import type { ISODateString } from '../types/api/common';
 import type { User } from '../types/models/user';
 
-// Converts a Date object to an ISO date string
+// Regular expression to validate ISO UTC date format
+// Format: YYYY-MM-DDTHH:mm:ss.sssZ
+export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+
+/**
+ * Converts a given date to an ISO UTC string.
+ * If the input is a string, it validates the format before converting.
+ * 
+ * @param date - The input date, either a string in ISO format or a Date object.
+ * @returns The date as an ISO UTC string.
+ * @throws Error if the input string is not in a valid ISO UTC format.
+ */
+export const toUTCDate = (date: string | Date): ISODateString => {
+    // Validate the date string if it is a string and not in the correct format
+    if (typeof date === 'string' && !DATE_REGEX.test(date)) {
+        throw new Error('Invalid date format. Must be ISO UTC format (YYYY-MM-DDTHH:mm:ss.sssZ)');
+    }
+    // Convert the date to an ISO string
+    return new Date(date).toISOString();
+};
+
+// Alias for backward compatibility
 export const toUTCString = (date: Date): ISODateString => {
-    return date.toISOString();
+    return toUTCDate(date);
 };
 
 // Converts an ISO date string to a Date object
@@ -12,15 +33,18 @@ export const fromUTCString = (isoString: ISODateString): Date => {
     return new Date(isoString);
 };
 
-// Gets the current date in UTC as an ISO date string
+/**
+ * Returns the current date and time in ISO UTC format.
+ * 
+ * @returns The current date as an ISO UTC string.
+ */
 export const getCurrentUTCDate = (): ISODateString => {
     return new Date().toISOString();
 };
 
 // Validates if a string is a valid ISO date string
 export const isValidISOString = (dateString: string): boolean => {
-    const ISO_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-    return ISO_REGEX.test(dateString);
+    return DATE_REGEX.test(dateString);
 };
 
 // Formats a date string and user preferences into a readable date and time format
