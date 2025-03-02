@@ -4,7 +4,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
-import { formatDate, toUTCDate, fromUTCString, getCurrentUTCDate, toUTCString } from '../../../../../utils/dateUtils';
+import { formatDate, fromUTCString, toUTCString, localToUTC, utcToLocalString } from '../../../../../utils/dateUtils';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -13,6 +13,7 @@ import { transactionService } from '../../../../../services/transaction.service'
 import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
 import type { RecurrenceType } from '../../../../../types/models/transaction';
+
 interface TransactionUpdateData {
     date: string;
     description: string;
@@ -22,6 +23,7 @@ interface TransactionUpdateData {
     recurrenceType?: RecurrenceType;
     recurrenceEndDate?: string;
 }
+
 interface UpdateData {
     description: string;
     amount: number;
@@ -50,9 +52,9 @@ const Transition = forwardRef(function Transition(
 
 // Helper function to calculate recurring dates based on start date, end date, and recurrence type
 const calculateRecurringDates = (startDate: string, endDate: string, recurrenceType: RecurrenceType): Date[] => {
-    // Convert the dates to Date objects using the utility function
-    const start = fromUTCString(startDate);
-    const end = fromUTCString(endDate);
+    // Create Date objects directly from the local dates from the form
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     
     const dates: Date[] = [];
     // Create a copy to avoid modifying the original date
@@ -85,12 +87,21 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     const [date, setDate] = useState(() => {
         if (transaction) {
-            const txDate = fromUTCString(transaction.date);
-            // Extract the date and time without milliseconds (YYYY-MM-DDTHH:mm:ss)
-            return toUTCString(txDate).substring(0, 19);
+            // Convert UTC date to local format for the datetime-local input
+            return utcToLocalString(transaction.date);
         }
-        // Extract the current UTC date and time without milliseconds
-        return getCurrentUTCDate().substring(0, 19);
+        // For a new transaction, use the current local date and time
+        const now = new Date();
+        // Format the local date for the datetime-local input
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        
+        // Format as YYYY-MM-DDTHH:mm:ss
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     });
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
@@ -123,8 +134,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     // Effect to update the form with the transaction data when the transaction prop changes
     useEffect(() => {
         if (transaction) {
-            const txDate = fromUTCString(transaction.date);
-            setDate(toUTCString(txDate).substring(0, 19));
+            // Convert UTC date to local format for the datetime-local input
+            setDate(utcToLocalString(transaction.date));
+            
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
 
@@ -134,9 +146,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setIsIncome(transaction.amount >= 0);
             setIsRecurrent(transaction.isRecurrent);
             setRecurrenceType(transaction.recurrenceType || null);
+            
             if (transaction.recurrenceEndDate) {
-                const endDate = fromUTCString(transaction.recurrenceEndDate);
-                setRecurrenceEndDate(toUTCString(endDate).substring(0, 10));
+                // Convert recurrence end date to local format
+                setRecurrenceEndDate(utcToLocalString(transaction.recurrenceEndDate).substring(0, 10));
             }
         }
     }, [transaction, categories]);
@@ -167,7 +180,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             const finalDescription = description.trim() || category.name || '';
             const localDate = new Date(date);
-            const utcDate = toUTCDate(localDate);
+            // Convert local date to UTC for storage
+            const utcDate = localToUTC(localDate);
 
             const transactionData: TransactionUpdateData = {
                 date: utcDate,
@@ -191,9 +205,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     transactionData.isRecurrent = true;
                     transactionData.recurrenceType = recurrenceType;
                     // Ensure the recurrence end date is in ISO UTC format
-                    // First create a Date object with the full date (adding the time)
-                    const endDateWithTime = new Date(`${recurrenceEndDate}T23:59:59.999Z`);
-                    transactionData.recurrenceEndDate = toUTCDate(endDateWithTime);
+                    // Create a Date object with the full date (adding the time)
+                    const endDateWithTime = new Date(`${recurrenceEndDate}T23:59:59`);
+                    transactionData.recurrenceEndDate = localToUTC(endDateWithTime);
                 }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
@@ -202,7 +216,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('Error occurred while submitting the transaction:', error);
+            console.error('An error occurred while submitting the transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         }
@@ -224,7 +238,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             toast.success(t('dashboard.transactions.success.deleted'));
             onSubmit();
         } catch (error) {
-            console.error('Error occurred while deleting the transaction:', error);
+            console.error('An error occurred while deleting the transaction:', error);
             toast.error(t('dashboard.transactions.errors.deleteError'));
         } finally {
             setIsDeleting(false);
@@ -258,7 +272,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('Error occurred while updating the recurrent transaction:', error);
+            console.error('An error occurred while updating the recurrent transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         } finally {
