@@ -2,7 +2,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { AnalyticsErrorType } from '../types/api/errors';
 import type { ApiResponse, ApiErrorResponse } from '../types/api/common';
-import type { UserMetrics, TransactionMetrics, TransactionHistory } from '../types/models/analytics';
+import type { UserMetrics, TransactionMetrics, TransactionHistory, UserMetricsHistory } from '../types/models/analytics';
 
 // Utils
 import { getAuthHeaders } from '../utils/apiHeaders';
@@ -44,7 +44,7 @@ export const analyticsService = {
             const data: ApiResponse<UserMetrics, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
-                console.error('Analytics error:', data);
+                console.error('An error occurred while fetching user metrics:', data);
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
@@ -53,7 +53,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Error in analytics service:', error);
+            console.error('Error in analytics service while retrieving user metrics:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -76,7 +76,7 @@ export const analyticsService = {
             const data: ApiResponse<void, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
-                console.error('Analytics error:', data);
+                console.error('An error occurred while saving user metrics:', data);
                 const errorData = data as ApiErrorResponse<AnalyticsErrorType>;
                 throw {
                     ...data,
@@ -87,7 +87,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Error in analytics service:', error);
+            console.error('Error in analytics service while saving user metrics:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -110,7 +110,7 @@ export const analyticsService = {
             const data: ApiResponse<TransactionMetrics, AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
-                console.error('Analytics error:', data);
+                console.error('An error occurred while fetching transaction metrics:', data);
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
@@ -119,7 +119,7 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Error in analytics service:', error);
+            console.error('Error in analytics service while retrieving transaction metrics:', error);
             return handleAnalyticsError(error);
         }
     },
@@ -142,7 +142,7 @@ export const analyticsService = {
             const data: ApiResponse<TransactionHistory[], AnalyticsErrorType> = await response.json();
 
             if (!response.ok) {
-                console.error('Analytics error:', data);
+                console.error('An error occurred while fetching transaction history:', data);
                 
                 // If the error is due to an invalid date range, specify it
                 if (response.status === 400 && data.message?.toLowerCase().includes('date')) {
@@ -161,7 +161,49 @@ export const analyticsService = {
 
             return data;
         } catch (error) {
-            console.error('Error in analytics service:', error);
+            console.error('Error in analytics service while retrieving transaction history:', error);
+            return handleAnalyticsError(error);
+        }
+    },
+
+    /**
+     * Get user metrics history
+     */
+    async getUserMetricsHistory(type: 'daily' | 'monthly' = 'monthly'): Promise<ApiResponse<UserMetricsHistory[], AnalyticsErrorType>> {
+        try {
+            const headers = await getAuthHeaders();
+            const response = await fetch(`${API_URL}/api/analytics/users/history?type=${type}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data: ApiResponse<UserMetricsHistory[], AnalyticsErrorType> = await response.json();
+
+            if (!response.ok) {
+                console.error('An error occurred while fetching user metrics history:', data);
+                
+                // If the error is due to an invalid date range, specify it
+                if (response.status === 400 && data.message?.toLowerCase().includes('date')) {
+                    throw {
+                        ...data,
+                        error: 'INVALID_DATE_RANGE',
+                        statusCode: response.status as HttpStatusCode
+                    };
+                }
+                
+                throw {
+                    ...data,
+                    statusCode: response.status as HttpStatusCode
+                };
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error in analytics service while retrieving user metrics history:', error);
             return handleAnalyticsError(error);
         }
     }

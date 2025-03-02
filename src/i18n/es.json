@@ -21,7 +21,7 @@
                     "description": "Regístrate gratis y configura tu perfil con tus preferencias"
                 },
                 "step2": {
-                    "title": "Añade tus categorías y transacciones",
+                    "title": "Añade tus categorías y movimientos",
                     "description": "Comienza a añadir tus ingresos y gastos. Profit&Lost los organiza automáticamente en tus categorías elegidas."
                 },
                 "step3": {
@@ -64,7 +64,7 @@
                 },
                 "bankIntegration": {
                     "title": "Integración bancaria",
-                    "description": "Conecta tus cuentas bancarias a Profit&Lost y automáticamente importa tus transacciones. Ahorra tiempo y mantente organizado."
+                    "description": "Conecta tus cuentas bancarias a Profit&Lost y automáticamente importa tus movimientos. Ahorra tiempo y mantente organizado."
                 }
             }
         },
@@ -533,9 +533,9 @@
                     "step2": {
                         "title": "Paso 2: Añade tus ingresos y gastos",
                         "items": [
-                            "Ve a la sección de Transacciones. 📊",
+                            "Ve a la sección de Movimientos. 📊",
                             "Añade tus ingresos (salario, freelance, etc.) y tus gastos (compras, facturas, etc.). 🏦",
-                            "Asigna cada transacción a la categoría correspondiente. 🏷️"
+                            "Asigna cada movimiento a la categoría correspondiente. 🏷️"
                         ]
                     },
                     "step3": {
@@ -555,7 +555,7 @@
                     "additionalTips": {
                         "title": "Consejos adicionales",
                         "items": [
-                            "Revisa tus transacciones semanales para mantener el control. 📅",
+                            "Revisa tus movimientos semanales para mantener el control. 📅",
                             "Usa la sección de Notas para escribir detalles importantes (ej: \"Este mes gasté más en ocio\"). 📝"
                         ]
                     },
@@ -693,6 +693,7 @@
             "year": "Año",
             "month": "Mes",
             "daily": "Diario",
+            "weekly": "Semanal",
             "monthly": "Mensual",
             "save": "Guardar",
             "saving": "Guardando...",
@@ -752,7 +753,7 @@
                 "INVALID_DATA": "Datos inválidos",
                 "INVALID_AMOUNT": "Cantidad inválida",
                 "INVALID_DESCRIPTION": "Descripción inválida",
-                "TRANSACTION_NOT_FOUND": "Transacción no encontrada",
+                "TRANSACTION_NOT_FOUND": "Movimiento no encontrado",
                 "DUPLICATE_CATEGORY": "Categoría ya existe",
                 "CATEGORY_IN_USE": "Categoría en uso y no puede ser eliminada",
                 "CATEGORY_NOT_FOUND": "Categoría no encontrada",
@@ -920,7 +921,7 @@
                     "Esta es tu central financiera, donde podrás ver un resumen de tus finanzas.",
                     "📊 Visualiza tus ingresos, gastos y EBITDA del mes actual comparado con el anterior.",
                     "📈 Consulta un gráfico interactivo de los últimos 6 meses.",
-                    "🔄 Revisa tus últimas transacciones."
+                    "🔄 Revisa tus últimos Movimientos."
                 ]
             },
             "balance": {
@@ -935,7 +936,7 @@
                 "noDataLast6Months": "No hay datos disponibles para los últimos 6 meses"
             },
             "history": {
-                "lastTransactions": "Últimas transacciones"
+                "lastTransactions": "Últimos Movimientos"
             },
             "thanLastMonth": "que el mes anterior"
         },
@@ -983,7 +984,7 @@
                 "delete": {
                     "title": "Delete Category",
                     "confirmMessage": "¿Estás seguro de que quieres eliminar la categoría ",
-                    "warning": "Las categorías con transacciones asociadas no se pueden eliminar. Debes reasignar o eliminar esas transacciones primero.",
+                    "warning": "Las categorías con movimientos asociados no se pueden eliminar. Debes reasignar o eliminar esos movimientos primero.",
                     "cannotUndo": "Esta acción no se puede deshacer"
                 },
                 "errors": {
@@ -1134,8 +1135,8 @@
                 "delete": {
                     "title": "Eliminar movimiento",
                     "message": "¿Estás seguro de que deseas eliminar el movimiento",
-                    "thisTransaction": "esta transacción",
-                    "recurrentWarning": "Esta es una transacción recurrente. ¿Deseas eliminar todas las recurrencias futuras?",
+                    "thisTransaction": "este movimiento",
+                    "recurrentWarning": "Esto es un movimiento recurrente. ¿Deseas eliminar todas las recurrencias futuras?",
                     "deleteAll": "Eliminar todas"
                 },
                 "recurrentUpdate": {
@@ -1144,9 +1145,9 @@
                     "all": "Eliminar todas las recurrencias"
                 },
                 "editRecurrent": {
-                    "title": "Editar transacción recurrente",
-                    "message": "¿Deseas actualizar todas las transacciones futuras de esta serie?",
-                    "updateAll": "Actualizar todas"
+                    "title": "Editar movimiento recurrente",
+                    "message": "¿Deseas actualizar todos los movimientos futuros de esta serie?",
+                    "updateAll": "Actualizar todos"
                 }
             },
             "delete": {
@@ -1252,7 +1253,7 @@
             "sections": {
                 "users": "Métricas de Usuarios",
                 "devices": "Distribución de Dispositivos",
-                "transactions": "Métricas de Transacciones",
+                "transactions": "Métricas de Movimientos",
                 "engagement": "Métricas de Engagement"
             },
             "metrics": {
@@ -1267,10 +1268,10 @@
                 "deviceStatsDesktop": "Escritorio",
                 "deviceStatsMobile": "Móvil",
                 "deviceStatsTablet": "Tablet",
-                "totalTransactions": "Total de Transacciones",
-                "transactionsToday": "Transacciones de Hoy",
-                "transactionsThisMonth": "Transacciones de Este Mes",
-                "averageTransactionsPerUser": "Promedio de Transacciones/Usuario",
+                "totalTransactions": "Total de Movimientos",
+                "transactionsToday": "Movimientos de Hoy",
+                "transactionsThisMonth": "Movimientos de Este Mes",
+                "averageTransactionsPerUser": "Movimientos/Usuario",
                 "userRetention": "Retención de Usuarios",
                 "averageSessionDuration": "Duración Media de Sesión"
             },
@@ -1282,6 +1283,12 @@
                 "invalid_date_range": "Rango de fechas inválido. Por favor, selecciona fechas válidas.",
                 "insufficient_data": "Datos insuficientes para generar analíticas.",
                 "analytics_processing_error": "Error al procesar los datos de analíticas. Por favor, inténtalo de nuevo.",
+                "connection_error": "Error de conexión. Por favor, verifica tu conexión a internet.",
+                "database_error": "Error de base de datos. Por favor, inténtalo de nuevo más tarde.",
+                "server_error": "Error del servidor. Por favor, inténtalo de nuevo más tarde.",
+                "network_error": "Error de red. Por favor, verifica tu conexión.",
+                "fetch_error": "Error al obtener los datos. Por favor, inténtalo de nuevo.",
+                "unauthorized": "No tienes permisos para acceder a estas analíticas.",
                 "title": "Error en analíticas"
             },
             "success": {

@@ -54,6 +54,13 @@ export interface TransactionHistory {
     count: number;
 }
 
+export interface UserMetricsHistory {
+    date: string;
+    dailyActive: number;
+    monthlyActive: number;
+    isManualSave?: boolean;
+}
+
 export interface AnalyticsData {
     users: UserMetrics;
     devices: DeviceMetrics;

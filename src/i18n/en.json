@@ -692,6 +692,7 @@
             "understood": "Understood",
             "year": "Year",
             "month": "Month",
+            "weekly": "Weekly",
             "daily": "Daily",
             "monthly": "Monthly",
             "save": "Save",
@@ -1273,7 +1274,7 @@
                 "totalTransactions": "Total Transactions",
                 "transactionsToday": "Today's Transactions",
                 "transactionsThisMonth": "This Month's Transactions",
-                "averageTransactionsPerUser": "Average Transactions/User",
+                "averageTransactionsPerUser": "Transactions/User",
                 "userRetention": "User Retention",
                 "averageSessionDuration": "Average Session Duration"
             },
