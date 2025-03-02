@@ -153,7 +153,7 @@ export default function Analytics() {
                     }
                 >
                     {savingMetrics
-                        ? t('common.actions.saving')
+                        ? t('dashboard.common.saving')
                         : t('dashboard.analytics.saveMetrics')}
                 </Button>
             </Paper>

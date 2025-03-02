@@ -695,6 +695,7 @@
             "daily": "Diario",
             "monthly": "Mensual",
             "save": "Guardar",
+            "saving": "Guardando...",
             "update": "Actualizar",
             "create": "Crear",
             "delete": "Eliminar",
@@ -798,9 +799,6 @@
             "viewMode": {
                 "yearToday": "Hasta hoy",
                 "fullYear": "Año completo"
-            },
-            "actions": {
-                "saving": "Guardando..."
             }
         },
         "onboarding": {
