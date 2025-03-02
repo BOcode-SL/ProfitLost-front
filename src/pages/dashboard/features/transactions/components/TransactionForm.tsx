@@ -4,7 +4,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
-import { formatDate } from '../../../../../utils/dateUtils';
+import { formatDate, toUTCDate, fromUTCString, getCurrentUTCDate, toUTCString } from '../../../../../utils/dateUtils';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -50,13 +50,17 @@ const Transition = forwardRef(function Transition(
 
 // Helper function to calculate recurring dates based on start date, end date, and recurrence type
 const calculateRecurringDates = (startDate: string, endDate: string, recurrenceType: RecurrenceType): Date[] => {
+    // Convert the dates to Date objects using the utility function
+    const start = fromUTCString(startDate);
+    const end = fromUTCString(endDate);
+    
     const dates: Date[] = [];
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const currentDate = new Date(start);
+    // Create a copy to avoid modifying the original date
+    const currentDate = new Date(start.getTime());
 
     while (currentDate <= end) {
-        dates.push(new Date(currentDate));
+        // Add a copy of the current date
+        dates.push(new Date(currentDate.getTime()));
 
         switch (recurrenceType) {
             case 'weekly':
@@ -81,13 +85,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     const [date, setDate] = useState(() => {
         if (transaction) {
-            const txDate = new Date(transaction.date);
-            return txDate.toISOString().slice(0, 19);
+            const txDate = fromUTCString(transaction.date);
+            // Extract the date and time without milliseconds (YYYY-MM-DDTHH:mm:ss)
+            return toUTCString(txDate).substring(0, 19);
         }
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000;
-        const localDate = new Date(now.getTime() - offset);
-        return localDate.toISOString().slice(0, 19);
+        // Extract the current UTC date and time without milliseconds
+        return getCurrentUTCDate().substring(0, 19);
     });
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
@@ -107,7 +110,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     });
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
         if (transaction?.recurrenceEndDate) {
-            return new Date(transaction.recurrenceEndDate).toISOString().split('T')[0];
+            const endDate = fromUTCString(transaction.recurrenceEndDate);
+            // Extract only the date part (YYYY-MM-DD)
+            return toUTCString(endDate).substring(0, 10);
         }
         return '';
     });
@@ -118,8 +123,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     // Effect to update the form with the transaction data when the transaction prop changes
     useEffect(() => {
         if (transaction) {
-            const txDate = new Date(transaction.date);
-            setDate(txDate.toISOString().slice(0, 19));
+            const txDate = fromUTCString(transaction.date);
+            setDate(toUTCString(txDate).substring(0, 19));
             setDescription(transaction.description);
             setAmount(Math.abs(transaction.amount).toString());
 
@@ -130,8 +135,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setIsRecurrent(transaction.isRecurrent);
             setRecurrenceType(transaction.recurrenceType || null);
             if (transaction.recurrenceEndDate) {
-                const endDate = new Date(transaction.recurrenceEndDate);
-                setRecurrenceEndDate(endDate.toISOString().split('T')[0]);
+                const endDate = fromUTCString(transaction.recurrenceEndDate);
+                setRecurrenceEndDate(toUTCString(endDate).substring(0, 10));
             }
         }
     }, [transaction, categories]);
@@ -162,9 +167,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             const finalDescription = description.trim() || category.name || '';
             const localDate = new Date(date);
-            const utcDate = new Date(
-                localDate.getTime() - localDate.getTimezoneOffset() * 60000
-            ).toISOString();
+            const utcDate = toUTCDate(localDate);
 
             const transactionData: TransactionUpdateData = {
                 date: utcDate,
@@ -187,7 +190,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 if (isRecurrent) {
                     transactionData.isRecurrent = true;
                     transactionData.recurrenceType = recurrenceType;
-                    transactionData.recurrenceEndDate = new Date(recurrenceEndDate).toISOString();
+                    // Ensure the recurrence end date is in ISO UTC format
+                    // First create a Date object with the full date (adding the time)
+                    const endDateWithTime = new Date(`${recurrenceEndDate}T23:59:59.999Z`);
+                    transactionData.recurrenceEndDate = toUTCDate(endDateWithTime);
                 }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
@@ -196,7 +202,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('Error submitting transaction:', error);
+            console.error('Error occurred while submitting the transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         }
@@ -218,7 +224,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             toast.success(t('dashboard.transactions.success.deleted'));
             onSubmit();
         } catch (error) {
-            console.error('Error deleting transaction:', error);
+            console.error('Error occurred while deleting the transaction:', error);
             toast.error(t('dashboard.transactions.errors.deleteError'));
         } finally {
             setIsDeleting(false);
@@ -252,7 +258,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('Error updating recurrent transaction:', error);
+            console.error('Error occurred while updating the recurrent transaction:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         } finally {
@@ -401,7 +407,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 color="text.secondary"
                                 sx={{ mb: 0.5 }}
                             >
-                                {formatDate(date.toISOString(), user)}
+                                {formatDate(toUTCString(date), user)}
                             </Typography>
                         ))}
                     </Box>

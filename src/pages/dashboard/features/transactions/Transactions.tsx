@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 // Contexts
 import { useUser } from '../../../../contexts/UserContext';
+import { getCurrentUTCDate, fromUTCString } from '../../../../utils/dateUtils';
 
 // Types
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
@@ -31,10 +32,12 @@ export default function Transactions() {
     const theme = useTheme();
     const { user } = useUser();
 
-    const currentYear = new Date().getFullYear().toString();
+    // Use the current UTC date for consistency
+    const currentDate = fromUTCString(getCurrentUTCDate());
+    const currentYear = currentDate.getFullYear().toString();
     const [year, setYear] = useState<string>(currentYear);
     const [month, setMonth] = useState<string>(
-        (new Date().getMonth() + 1).toString().padStart(2, '0')
+        (currentDate.getMonth() + 1).toString().padStart(2, '0')
     );
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -109,7 +112,7 @@ export default function Transactions() {
         transactions.forEach((transaction) => {
             const category = categories.find(c => c.name === transaction.category);
             if (!category) {
-                console.warn('⚠️ No category found for transaction:', transaction);
+                console.warn('⚠️ No category found for the transaction:', transaction);
                 return;
             }
 
