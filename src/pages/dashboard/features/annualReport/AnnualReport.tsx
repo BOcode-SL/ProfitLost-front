@@ -14,6 +14,9 @@ import { userService } from '../../../../services/user.service';
 import type { Transaction } from '../../../../types/models/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
+// Utils
+import { fromUTCString } from '../../../../utils/dateUtils';
+
 // Components
 import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
@@ -47,7 +50,7 @@ export default function AnnualReport() {
                 if (response.success && Array.isArray(response.data)) {
                     const transactionYears = new Set(
                         response.data.map((transaction: Transaction) =>
-                            new Date(transaction.date).getFullYear().toString()
+                            fromUTCString(transaction.date).getFullYear().toString()
                         )
                     );
 
@@ -123,7 +126,7 @@ export default function AnnualReport() {
     const filteredTransactions = transactions.filter(transaction => {
         if (viewMode === 'yearToday') {
             const today = new Date();
-            const transactionDate = new Date(transaction.date);
+            const transactionDate = fromUTCString(transaction.date);
             return transactionDate <= today;
         }
         return true;

@@ -11,6 +11,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
+import { fromUTCString } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
@@ -56,7 +57,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         }));
 
         transactions.forEach(transaction => {
-            const month = new Date(transaction.date).getMonth();
+            const month = fromUTCString(transaction.date).getMonth();
             if (transaction.amount > 0) {
                 monthsData[month].income += transaction.amount;
             } else {

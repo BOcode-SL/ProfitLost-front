@@ -16,6 +16,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { formatCurrency } from '../../../../../utils/currencyUtils';
+import { fromUTCString } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {
@@ -55,7 +56,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     const years = new Set(
                         response.data
                             .filter(tx => tx.category === category.name)
-                            .map(tx => new Date(tx.date).getFullYear().toString())
+                            .map(tx => fromUTCString(tx.date).getFullYear().toString())
                     );
                     setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
                 }
@@ -89,7 +90,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Function to group transactions by month
     const groupedTransactions = useMemo(() => {
         return transactions.reduce((groups: GroupedTransactions, transaction) => {
-            const month = new Date(transaction.date).toLocaleString('es-ES', { month: 'long' });
+            const month = fromUTCString(transaction.date).toLocaleString('es-ES', { month: 'long' });
             if (!groups[month]) {
                 groups[month] = [];
             }
@@ -268,7 +269,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                         {transaction.description || category.name}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
-                                                        {new Date(transaction.date).toLocaleDateString()}
+                                                        {fromUTCString(transaction.date).toLocaleDateString()}
                                                     </Typography>
                                                 </Box>
                                                 <Typography sx={{
