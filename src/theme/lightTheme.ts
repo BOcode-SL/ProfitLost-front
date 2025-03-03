@@ -46,8 +46,8 @@ const themeOptions: ThemeOptions = {
             main: '#c84f03',
         },
         background: {
-            default: '#f7f7f7',
-            paper: '#ffffff',
+            default: '#f0f2f5',
+            paper: '#f8f9fa',
         },
         chart: {
             income: '#ff8e38',
@@ -63,10 +63,10 @@ const themeOptions: ThemeOptions = {
                 text: '#d32f2f'
             }
         },
-        divider: 'rgba(0 0 0 / 0.06)',
+        divider: 'rgba(0 0 0 / 0.05)',
         text: {
-            primary: '#000000',
-            secondary: 'rgba(0,0,0,0.7)',
+            primary: '#2c3e50',
+            secondary: 'rgba(44, 62, 80, 0.7)',
         },
     },
     typography: {
@@ -166,8 +166,8 @@ const themeOptions: ThemeOptions = {
             styleOverrides: {
                 root: {
                     padding: '0.5rem 0rem',
-                    backgroundColor: '#ffffff',
-                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px',
+                    backgroundColor: '#f8f9fa',
+                    boxShadow: 'rgba(0, 0, 0, 0.08) 0px 1px 4px',
                     transition: 'all 0.3s ease',
                 },
                 elevation0: {
@@ -184,7 +184,7 @@ const themeOptions: ThemeOptions = {
         MuiDrawer: {
             styleOverrides: {
                 paper: {
-                    backgroundColor: '#f7f7f7',
+                    backgroundColor: '#f0f2f5',
                 },
                 modal: {
                     '& .MuiBackdrop-root': {
