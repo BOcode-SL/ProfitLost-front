@@ -33,13 +33,11 @@ export const fromUTCtoLocal = (isoString: ISODateString): Date => {
  * The date remains in local time, backend will handle UTC conversion.
  * 
  * @param localDate The local date to prepare
- * @returns The date string in ISO format without the Z suffix to indicate it's local time
+ * @returns The date string in ISO format
  */
 export const prepareForBackend = (localDate: Date): string => {
-    // Formato ISO sin la Z para indicar que es hora local
-    // Ejemplo: 2023-10-03T16:01:05.000
-    const isoString = localDate.toISOString();
-    return isoString.substring(0, isoString.length - 1);
+    // Ejemplo: 2023-10-03T16:01:05.000Z
+    return localDate.toISOString();
 };
 
 /**
