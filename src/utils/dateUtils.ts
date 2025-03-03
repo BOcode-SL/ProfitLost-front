@@ -7,84 +7,83 @@ import type { User } from '../types/models/user';
 export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
 /**
- * Converts a given date to an ISO UTC string.
- * If the input is a string, it validates the format before converting.
+ * Converts a date to local time string format.
+ * This is used when sending dates to the backend.
  * 
- * @param date - The input date, either a string in ISO format or a Date object.
- * @returns The date as an ISO UTC string.
- * @throws Error if the input string is not in a valid ISO UTC format.
+ * @param date - The input date, either a string or a Date object.
+ * @returns The date as a local time string.
  */
-export const toUTCDate = (date: string | Date): ISODateString => {
-    // Validate the date string if it is a string and not in the correct format
-    if (typeof date === 'string' && !DATE_REGEX.test(date)) {
-        throw new Error('Invalid date format. Must be ISO UTC format (YYYY-MM-DDTHH:mm:ss.sssZ)');
-    }
-    // Convert the date to an ISO string
-    return new Date(date).toISOString();
+export const toLocalString = (date: string | Date): string => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 };
 
-// Alias for backward compatibility
-export const toUTCString = (date: Date): ISODateString => {
-    return toUTCDate(date);
-};
-
-// Converts an ISO date string to a Date object
-export const fromUTCString = (isoString: ISODateString): Date => {
+/**
+ * Converts a UTC ISO string from the backend to a local Date object
+ * 
+ * @param isoString - The UTC ISO string from backend
+ * @returns Date object in local time
+ */
+export const fromUTCtoLocal = (isoString: ISODateString): Date => {
     return new Date(isoString);
 };
 
 /**
- * Converts a local date to UTC, adjusting for timezone offset.
- * This is useful when converting user input dates to UTC for storage.
+ * Prepares a local date for sending to the backend.
+ * The date remains in local time, backend will handle UTC conversion.
  * 
- * @param localDate The local date to convert.
- * @returns The date in ISO UTC format.
+ * @param localDate The local date to prepare
+ * @returns The date string in ISO format without the Z suffix to indicate it's local time
  */
-export const localToUTC = (localDate: Date): ISODateString => {
-    // Create a UTC date from the local date.
-    // No need to adjust the offset because toISOString() already converts to UTC.
-    return localDate.toISOString();
+export const prepareForBackend = (localDate: Date): string => {
+    // Formato ISO sin la Z para indicar que es hora local
+    // Ejemplo: 2023-10-03T16:01:05.000
+    const isoString = localDate.toISOString();
+    return isoString.substring(0, isoString.length - 1);
 };
 
 /**
- * Converts a UTC date to local date for display in forms.
- * This is useful when showing UTC dates from storage in local time for editing.
+ * Converts a UTC date string to local date for display in forms.
+ * This is useful when showing UTC dates from backend in local time for editing.
  * 
  * @param utcString The UTC date string to convert.
  * @returns A string in the format YYYY-MM-DDTHH:mm:ss for use in datetime-local inputs.
  */
 export const utcToLocalString = (utcString: ISODateString): string => {
-    const date = new Date(utcString);
+    const localDate = fromUTCtoLocal(utcString);
     
-    // Get year, month, day, hour, minute, second in local timezone.
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
+    // Get year, month, day, hour, minute, second in local timezone
+    const year = localDate.getFullYear();
+    const month = (localDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = localDate.getDate().toString().padStart(2, '0');
+    const hours = localDate.getHours().toString().padStart(2, '0');
+    const minutes = localDate.getMinutes().toString().padStart(2, '0');
+    const seconds = localDate.getSeconds().toString().padStart(2, '0');
     
-    // Format as YYYY-MM-DDTHH:mm:ss.
+    // Format as YYYY-MM-DDTHH:mm:ss
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
 /**
- * Returns the current date and time in ISO UTC format.
+ * Returns the current date and time in local format.
  * 
- * @returns The current date as an ISO UTC string.
+ * @returns The current date as a local string.
  */
-export const getCurrentUTCDate = (): ISODateString => {
-    return new Date().toISOString();
+export const getCurrentDate = (): string => {
+    return toLocalString(new Date());
 };
 
-// Validates if a string is a valid ISO date string.
+// Validates if a string is a valid ISO string.
 export const isValidISOString = (dateString: string): boolean => {
     return DATE_REGEX.test(dateString);
 };
 
 // Formats a date string and user preferences into a readable date and time format.
-export const formatDateTime = (date: string, user: User | null) => {
-    const dateObj = new Date(date);
+export const formatDateTime = (date: string | Date, user: User | null) => {
+    // Si la fecha viene en formato ISO UTC del backend, convertirla a local
+    const dateObj = typeof date === 'string' && DATE_REGEX.test(date) 
+        ? fromUTCtoLocal(date as ISODateString)
+        : new Date(date);
     
     // Get user's date and time format preferences.
     const dateFormat = user?.preferences.dateFormat || 'MM/DD/YYYY';
@@ -117,8 +116,11 @@ export const formatDateTime = (date: string, user: User | null) => {
 };
 
 // Formats a date string based on user preferences.
-export const formatDate = (date: string, user: User | null) => {
-    const dateObj = new Date(date);
+export const formatDate = (date: string | Date, user: User | null) => {
+    // Si la fecha viene en formato ISO UTC del backend, convertirla a local
+    const dateObj = typeof date === 'string' && DATE_REGEX.test(date)
+        ? fromUTCtoLocal(date as ISODateString)
+        : new Date(date);
     
     // Get user's date format preference.
     const dateFormat = user?.preferences.dateFormat || 'MM/DD/YYYY';

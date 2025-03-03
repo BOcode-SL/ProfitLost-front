@@ -9,7 +9,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { formatDateTime, fromUTCString } from '../../../../../utils/dateUtils';
+import { formatDateTime, fromUTCtoLocal } from '../../../../../utils/dateUtils';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the HomeHistory component
@@ -46,10 +46,10 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         return transactions
             .filter((transaction): transaction is Transaction => {
                 if (!transaction) return false;
-                const transactionDate = fromUTCString(transaction.date);
+                const transactionDate = fromUTCtoLocal(transaction.date);
                 return transactionDate <= now; // Filter transactions that are not in the future
             })
-            .sort((a, b) => fromUTCString(b.date).getTime() - fromUTCString(a.date).getTime()) // Sort transactions by date
+            .sort((a, b) => fromUTCtoLocal(b.date).getTime() - fromUTCtoLocal(a.date).getTime()) // Sort transactions by date
             .slice(0, 8); // Limit to the most recent 8 transactions
     }, [transactions, isLoading]);
 

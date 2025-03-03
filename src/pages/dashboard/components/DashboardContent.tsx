@@ -1,6 +1,10 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
+
+// Contexts
 import { useUser } from '../../../contexts/UserContext';
+
+// Services
 import { userService } from '../../../services/user.service';
 
 import SectionIntroDialog from './SectionIntroDialog';

@@ -11,7 +11,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
-import { fromUTCString } from '../../../../../utils/dateUtils';
+import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the HomeBalances component
 interface HomeBalancesProps {
@@ -127,12 +127,12 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         const lastDayOfPreviousMonth = new Date(currentYear, now.getMonth(), 0);
 
         const currentMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCString(transaction.date);
+            const date = fromUTCtoLocal(transaction.date);
             return date >= firstDayOfMonth && date <= now;
         });
 
         const previousMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCString(transaction.date);
+            const date = fromUTCtoLocal(transaction.date);
             return date >= firstDayOfPreviousMonth && date <= lastDayOfPreviousMonth;
         });
 

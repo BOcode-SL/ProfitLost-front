@@ -4,7 +4,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
-import { formatDate, fromUTCString, toUTCString, localToUTC, utcToLocalString } from '../../../../../utils/dateUtils';
+import { formatDate, prepareForBackend, utcToLocalString } from '../../../../../utils/dateUtils';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -121,9 +121,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     });
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
         if (transaction?.recurrenceEndDate) {
-            const endDate = fromUTCString(transaction.recurrenceEndDate);
-            // Extract only the date part (YYYY-MM-DD)
-            return toUTCString(endDate).substring(0, 10);
+            return utcToLocalString(transaction.recurrenceEndDate).substring(0, 10);
         }
         return '';
     });
@@ -181,7 +179,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             const finalDescription = description.trim() || category.name || '';
             const localDate = new Date(date);
             // Convert local date to UTC for storage
-            const utcDate = localToUTC(localDate);
+            const utcDate = prepareForBackend(localDate);
 
             const transactionData: TransactionUpdateData = {
                 date: utcDate,
@@ -207,7 +205,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     // Ensure the recurrence end date is in ISO UTC format
                     // Create a Date object with the full date (adding the time)
                     const endDateWithTime = new Date(`${recurrenceEndDate}T23:59:59`);
-                    transactionData.recurrenceEndDate = localToUTC(endDateWithTime);
+                    transactionData.recurrenceEndDate = prepareForBackend(endDateWithTime);
                 }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
@@ -421,7 +419,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                 color="text.secondary"
                                 sx={{ mb: 0.5 }}
                             >
-                                {formatDate(toUTCString(date), user)}
+                                {formatDate(date, user)}
                             </Typography>
                         ))}
                     </Box>

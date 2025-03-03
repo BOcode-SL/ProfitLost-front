@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton, Select, MenuItem, FormControl, InputLabel, Link, useTheme } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -13,10 +13,13 @@ import { transactionService } from '../../../../../services/transaction.service'
 // Types
 import type { Category } from '../../../../../types/models/category';
 import type { Transaction } from '../../../../../types/models/transaction';
+interface GroupedTransactions {
+    [key: string]: Transaction[];
+}
 
 // Utils
 import { formatCurrency } from '../../../../../utils/currencyUtils';
-import { fromUTCString } from '../../../../../utils/dateUtils';
+import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {
@@ -24,11 +27,6 @@ interface CategoryFormProps {
     onSubmit: () => void; // Function to call upon form submission
     onClose: () => void; // Function to call to close the form
     onDelete?: () => void; // Optional function to call for deletion
-}
-
-// Types
-interface GroupedTransactions {
-    [key: string]: Transaction[];
 }
 
 // CategoryForm component
@@ -56,7 +54,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     const years = new Set(
                         response.data
                             .filter(tx => tx.category === category.name)
-                            .map(tx => fromUTCString(tx.date).getFullYear().toString())
+                            .map(tx => fromUTCtoLocal(tx.date).getFullYear().toString())
                     );
                     setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
                 }
@@ -87,17 +85,16 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         fetchTransactions();
     }, [category, selectedYear, showTransactions]);
 
-    // Function to group transactions by month
-    const groupedTransactions = useMemo(() => {
-        return transactions.reduce((groups: GroupedTransactions, transaction) => {
-            const month = fromUTCString(transaction.date).toLocaleString('es-ES', { month: 'long' });
-            if (!groups[month]) {
-                groups[month] = [];
-            }
-            groups[month].push(transaction);
-            return groups;
-        }, {});
-    }, [transactions]);
+    // Group transactions by month
+    const groupedTransactions: GroupedTransactions = {};
+    transactions.forEach(tx => {
+        const date = fromUTCtoLocal(tx.date);
+        const month = date.toLocaleString('default', { month: 'long' });
+        if (!groupedTransactions[month]) {
+            groupedTransactions[month] = [];
+        }
+        groupedTransactions[month].push(tx);
+    });
 
     // Handle the submission of the form
     const handleSubmit = async () => {
@@ -269,7 +266,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                         {transaction.description || category.name}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
-                                                        {fromUTCString(transaction.date).toLocaleDateString()}
+                                                        {fromUTCtoLocal(transaction.date).toLocaleDateString()}
                                                     </Typography>
                                                 </Box>
                                                 <Typography sx={{

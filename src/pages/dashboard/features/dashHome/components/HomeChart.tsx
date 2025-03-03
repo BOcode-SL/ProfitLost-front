@@ -16,7 +16,7 @@ interface MonthlyData {
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT, formatLargeNumber } from '../../../../../utils/currencyUtils';
-import { fromUTCString } from '../../../../../utils/dateUtils';
+import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the HomeChart component
 interface HomeChartProps {
@@ -69,13 +69,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
         // Filter transactions within the last six months
         const filteredTransactions = transactions.filter(transaction => {
-            const transactionDate = fromUTCString(transaction.date);
+            const transactionDate = fromUTCtoLocal(transaction.date);
             return transactionDate >= sixMonthsAgo && transactionDate <= today;
         });
 
         // Aggregate income and expenses for each month
         filteredTransactions.forEach(transaction => {
-            const transactionDate = fromUTCString(transaction.date);
+            const transactionDate = fromUTCtoLocal(transaction.date);
             const monthKey = MONTH_KEYS[transactionDate.getMonth()];
 
             if (monthlyDataMap[monthKey]) {

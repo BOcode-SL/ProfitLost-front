@@ -29,6 +29,9 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
     const [chartData, setChartData] = useState<UserMetricsHistory[]>([]);
     const [chartLoading, setChartLoading] = useState(false);
 
+    // Log the data received from Analytics component
+    console.log('Datos recibidos en UserMetricsCard:', data);
+
     useEffect(() => {
         const fetchChartData = async () => {
             try {
@@ -36,6 +39,8 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                 const response = await analyticsService.getUserMetricsHistory(viewType);
                 if (response.success && response.data) {
                     setChartData(response.data);
+                    // Log the history data received from API
+                    console.log('Datos de historial recibidos del backend:', response.data);
                 } else {
                     console.error('Error fetching user metrics history: ', response.message);
                 }

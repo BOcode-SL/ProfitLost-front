@@ -11,7 +11,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
-import { fromUTCString } from '../../../../../utils/dateUtils';
+import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
@@ -49,6 +49,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
+    // Process transactions data for the chart
     const chartData = useMemo(() => {
         const monthsData = Array.from({ length: 12 }, (_, i) => ({
             month: i + 1,
@@ -57,7 +58,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         }));
 
         transactions.forEach(transaction => {
-            const month = fromUTCString(transaction.date).getMonth();
+            const month = fromUTCtoLocal(transaction.date).getMonth();
             if (transaction.amount > 0) {
                 monthsData[month].income += transaction.amount;
             } else {
@@ -83,7 +84,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
     }
 
     // Check if the data is empty and show a message if it is
-    const isDataEmpty = chartData.every(item => item.income === 0 && item.expenses === 0);
+    const isDataEmpty = Object.values(chartData).every(item => item.income === 0 && item.expenses === 0);
 
     // Main container for the chart
     return (
@@ -100,13 +101,13 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
             <BarChart
                 series={[
                     {
-                        data: chartData.map(item => item.income),
+                        data: Object.values(chartData).map(item => item.income),
                         label: t('dashboard.annualReport.chart.income'),
                         color: theme.palette.chart.income,
                         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
                     },
                     {
-                        data: chartData.map(item => item.expenses),
+                        data: Object.values(chartData).map(item => item.expenses),
                         label: t('dashboard.annualReport.chart.expenses'),
                         color: theme.palette.chart.expenses,
                         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),

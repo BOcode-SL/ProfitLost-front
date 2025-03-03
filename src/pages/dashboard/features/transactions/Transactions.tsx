@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 // Contexts
 import { useUser } from '../../../../contexts/UserContext';
-import { getCurrentUTCDate, fromUTCString } from '../../../../utils/dateUtils';
 
 // Types
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
@@ -32,8 +31,8 @@ export default function Transactions() {
     const theme = useTheme();
     const { user } = useUser();
 
-    // Use the current UTC date for consistency
-    const currentDate = fromUTCString(getCurrentUTCDate());
+    // Get the current date
+    const currentDate = new Date();
     const currentYear = currentDate.getFullYear().toString();
     const [year, setYear] = useState<string>(currentYear);
     const [month, setMonth] = useState<string>(

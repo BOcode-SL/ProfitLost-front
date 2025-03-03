@@ -71,6 +71,9 @@ export default function Analytics() {
                         tablet: 10
                     }
                 });
+
+                // Log the user metrics data from backend
+                console.log('Datos de usuarios recibidos del backend:', userMetricsResponse.data);
             } catch (err) {
                 const error = err as Error;
                 console.error('Error fetching analytics data:', error);
@@ -168,7 +171,7 @@ export default function Analytics() {
                             fontSize: { xs: '0.875rem', sm: '1rem' }
                         }}
                     >
-                        {formatDateTime(currentDateTime.toISOString(), user)}
+                        {formatDateTime(currentDateTime, user)}
                     </Typography>
                 </Box>
                 <Button
