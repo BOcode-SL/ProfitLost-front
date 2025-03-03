@@ -15,19 +15,6 @@ export interface UserMetrics {
         thirtyDays: number;
         ninetyDays: number;
     };
-    comparison: {
-        totalUsers: number;
-        activeUsers: {
-            daily: number;
-            weekly: number;
-            monthly: number;
-        };
-        newUsers: {
-            daily: number;
-            weekly: number;
-            monthly: number;
-        };
-    };
 }
 
 export interface DeviceMetrics {
@@ -52,13 +39,6 @@ export interface TransactionMetrics {
 export interface TransactionHistory {
     date: string;
     count: number;
-}
-
-export interface UserMetricsHistory {
-    date: string;
-    dailyActive: number;
-    monthlyActive: number;
-    isManualSave?: boolean;
 }
 
 export interface AnalyticsData {

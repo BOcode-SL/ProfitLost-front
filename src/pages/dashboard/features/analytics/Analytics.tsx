@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Button, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Typography, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -30,7 +30,6 @@ export default function Analytics() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
-    const [savingMetrics, setSavingMetrics] = useState(false);
 
     useEffect(() => {
         // Update the date and time every minute
@@ -72,8 +71,6 @@ export default function Analytics() {
                     }
                 });
 
-                // Log the user metrics data from backend
-                console.log('Datos de usuarios recibidos del backend:', userMetricsResponse.data);
             } catch (err) {
                 const error = err as Error;
                 console.error('Error fetching analytics data:', error);
@@ -101,41 +98,6 @@ export default function Analytics() {
         fetchAnalyticsData();
     }, [t, user]);
 
-    // Function to manually save metrics
-    const handleSaveMetrics = async () => {
-        if (savingMetrics) return;
-
-        setSavingMetrics(true);
-        try {
-            const response = await analyticsService.saveUserMetrics();
-            if (response.success) {
-                toast.success(t('dashboard.analytics.success.saveSuccess'));
-                // Reload the data after saving
-                const userMetricsResponse = await analyticsService.getUserMetrics();
-                if (userMetricsResponse.success && data) {
-                    setData({
-                        ...data,
-                        users: userMetricsResponse.data!
-                    });
-                }
-            } else {
-                // Show a more specific error message based on the error type
-                const errorMessage = response.error === 'DATABASE_ERROR'
-                    ? t('dashboard.common.error.DATABASE_ERROR')
-                    : response.error === 'METRICS_SAVE_ERROR'
-                        ? t('dashboard.analytics.errors.metrics_save_error')
-                        : response.message;
-
-                toast.error(errorMessage);
-            }
-        } catch (error) {
-            console.error('Error saving metrics:', error);
-            toast.error(t('dashboard.analytics.errors.metrics_save_error'));
-        } finally {
-            setSavingMetrics(false);
-        }
-    };
-
     // Verify if the user has administrator privileges
     if (!user?.role || user.role !== 'admin') {
         return (
@@ -149,7 +111,7 @@ export default function Analytics() {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-            {/* Current Date and Time with Save Metrics Button */}
+            {/* Current Date and Time */}
             <Paper elevation={3} sx={{
                 p: { xs: 1.5, sm: 2 },
                 borderRadius: 3,
@@ -174,64 +136,19 @@ export default function Analytics() {
                         {formatDateTime(currentDateTime, user)}
                     </Typography>
                 </Box>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={handleSaveMetrics}
-                    disabled={savingMetrics}
-                    startIcon={
-                        savingMetrics ? (
-                            <CircularProgress size={16} color="inherit" />
-                        ) : (
-                            <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                                save
-                            </span>
-                        )
-                    }
-                    sx={{
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                        py: { xs: 0.5, sm: 0.75 },
-                        px: { xs: 1, sm: 1.5 },
-                        width: { xs: '100%', sm: 'auto' }
-                    }}
-                >
-                    {savingMetrics
-                        ? t('dashboard.common.saving')
-                        : t('dashboard.analytics.saveMetrics')}
-                </Button>
-            </Paper >
+            </Paper>
 
-        {/* Card displaying user metrics */ }
-        < Box sx = {{ width: '100%' }
-}>
-    <UserMetricsCard data={data?.users || null} loading={loading} />
-            </Box >
+            {/* Analytics Cards */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
+                {/* User Metrics Card */}
+                <UserMetricsCard data={data?.users || null} loading={loading} />
 
-    {/* Card displaying transaction metrics */ }
-    < Box sx = {{ width: '100%' }}>
-        <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
-            </Box >
+                {/* Transaction Metrics Card */}
+                <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
 
-    {/* Cards for Device (1/3) and Engagement (2/3) metrics */ }
-    < Box sx = {{
-    display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-    gap: { xs: 1.5, sm: 2 },
-    minHeight: { xs: 'auto', md: 320 }
-}}>
-                <Box sx={{
-                    flex: { xs: '1', md: '1' },
-                    minWidth: { xs: '100%', md: '300px' },
-                }}>
-                    <DeviceMetricsCard data={data?.devices || null} loading={loading} />
-                </Box>
-                <Box sx={{
-                    flex: { xs: '1', md: '2' },
-                    minWidth: { xs: '100%', md: '400px' }
-                }}>
-                </Box>
-            </Box >
-        </Box >
+                {/* Device Metrics Card */}
+                <DeviceMetricsCard data={data?.devices || null} loading={loading} />
+            </Box>
+        </Box>
     );
 } 
