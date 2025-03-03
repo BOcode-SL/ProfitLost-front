@@ -11,6 +11,7 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
+import { fromUTCString } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the HomeBalances component
 interface HomeBalancesProps {
@@ -112,20 +113,27 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
     const balanceData = useMemo(() => {
         if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0 };
 
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth() + 1;
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
         const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
         const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
 
+        // Get the first day of the current month
+        const firstDayOfMonth = new Date(currentYear, now.getMonth(), 1);
+        // Get the first day of the previous month
+        const firstDayOfPreviousMonth = new Date(previousYear, previousMonth - 1, 1);
+        // Get the last day of the previous month
+        const lastDayOfPreviousMonth = new Date(currentYear, now.getMonth(), 0);
+
         const currentMonthTransactions = transactions.filter(transaction => {
-            const date = new Date(transaction.date);
-            return date.getFullYear() === currentYear && date.getMonth() + 1 === currentMonth;
+            const date = fromUTCString(transaction.date);
+            return date >= firstDayOfMonth && date <= now;
         });
 
         const previousMonthTransactions = transactions.filter(transaction => {
-            const date = new Date(transaction.date);
-            return date.getFullYear() === previousYear && date.getMonth() + 1 === previousMonth;
+            const date = fromUTCString(transaction.date);
+            return date >= firstDayOfPreviousMonth && date <= lastDayOfPreviousMonth;
         });
 
         let currentAmount = 0;

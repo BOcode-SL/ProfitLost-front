@@ -9,13 +9,13 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { formatDateTime } from '../../../../../utils/dateUtils';
+import { formatDateTime, fromUTCString } from '../../../../../utils/dateUtils';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Interface for the props of the HomeHistory component
 interface HomeHistoryProps {
     transactions: Transaction[]; // Array of transactions
-    isLoading: boolean; // Indicates if the component is loading data
+    isLoading: boolean; // Indicates if the component is currently loading data
 }
 
 // HomeHistory component
@@ -46,11 +46,11 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         return transactions
             .filter((transaction): transaction is Transaction => {
                 if (!transaction) return false;
-                const transactionDate = new Date(transaction.date);
-                return transactionDate <= now;
+                const transactionDate = fromUTCString(transaction.date);
+                return transactionDate <= now; // Filter transactions that are not in the future
             })
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .slice(0, 8);
+            .sort((a, b) => fromUTCString(b.date).getTime() - fromUTCString(a.date).getTime()) // Sort transactions by date
+            .slice(0, 8); // Limit to the most recent 8 transactions
     }, [transactions, isLoading]);
 
     // Show a skeleton while transactions are loading
