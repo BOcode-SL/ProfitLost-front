@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 // Services
 import { authService } from '../../../services/auth.service';
+import notificationService from '../../../services/notification.service';
 
 // Types
 import { User } from '../../../types/models/user';
@@ -18,6 +19,8 @@ import { useUser } from '../../../contexts/UserContext';
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
+const NotificationsInbox = React.lazy(() => import('../features/notifications/NotificationsInbox'));
+const NotificationPreferences = React.lazy(() => import('../features/settings/NotificationPreferences'));
 
 import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';
 
@@ -33,6 +36,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const navigate = useNavigate();
 
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [notificationsDrawerOpen, setNotificationsDrawerOpen] = useState(false);
     const [settingsDrawer, setSettingsDrawer] = useState<{
         open: boolean;
         component: string;
@@ -41,6 +45,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         component: ''
     });
     const [isDisabledCurrencyAmount, setIsDisabledCurrencyAmount] = useState(isCurrencyHidden());
+    // State for unread notifications count
+    const [unreadNotifications, setUnreadNotifications] = useState(3); // Initial value for testing
 
     // Listen for changes in currency visibility
     useEffect(() => {
@@ -64,7 +70,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
             navigate('/auth', { replace: true });
         } catch (error) {
             toast.error('Logout error');
-            console.error('Logout error:', error);
+            console.error('Error during logout:', error);
         }
     };
 
@@ -72,6 +78,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const menuItems1 = [
         { icon: 'person', text: t('dashboard.settings.userSettings.title') },
         { icon: 'security', text: t('dashboard.settings.securityPrivacy.title') },
+        { icon: 'notifications', text: t('dashboard.settings.notifications.title') },
     ];
 
     const menuItems2 = [
@@ -101,6 +108,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 return <SecurityPrivacy onSuccess={handleCloseSettingsDrawer} />;
             case t('dashboard.settings.help.title'):
                 return <Help />;
+            case t('dashboard.settings.notifications.title'):
+                return <NotificationPreferences onSuccess={handleCloseSettingsDrawer} />;
             default:
                 return null;
         }
@@ -110,6 +119,39 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const handleToggleCurrency = () => {
         toggleCurrencyVisibility();
     };
+
+    // Handler to open the notifications drawer
+    const handleOpenNotifications = () => {
+        setNotificationsDrawerOpen(true);
+    };
+
+    // Handler to close the notifications drawer
+    const handleCloseNotifications = () => {
+        setNotificationsDrawerOpen(false);
+    };
+
+    // Handler to mark all notifications as read
+    const handleMarkAllAsRead = () => {
+        setUnreadNotifications(0);
+        // Logic to mark all notifications as read in the database will be implemented here
+        // For now, we just update the local state
+        toast.success(t('dashboard.notifications.success.markedAllAsRead'));
+    };
+
+    // Load the unread notifications count when the component mounts
+    useEffect(() => {
+        const loadUnreadCount = async () => {
+            try {
+                const count = await notificationService.getUnreadCount();
+                setUnreadNotifications(count);
+            } catch (error) {
+                console.error('Error loading unread notifications count:', error);
+                // Keep the default value in case of error
+            }
+        };
+
+        loadUnreadCount();
+    }, []);
 
     // Main return statement for the DashboardHeader component
     return (
@@ -139,7 +181,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                     }}
                 >
                     {/* Box for theme toggle and notifications */}
-                    <Box >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         {/* IconButton for toggling currency visibility */}
                         <IconButton onClick={handleToggleCurrency}>
                             <Tooltip title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 'enable_currency_amount' : 'disable_currency_amount'}`)}>
@@ -157,14 +199,15 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                         </IconButton>
 
                         {/* IconButton for notifications */}
-                        <IconButton disabled={true}>
+                        <IconButton onClick={handleOpenNotifications} disabled={user?.role !== 'admin'}>
                             <Badge
                                 color="primary"
-                            // variant="dot"
+                                variant="dot"
+                                invisible={unreadNotifications === 0}
                             >
                                 <Tooltip title={t('dashboard.tooltips.inbox')}>
-                                    <span className="material-symbols-rounded no-select">
-                                        mail
+                                    <span className="material-symbols-rounded">
+                                        notifications
                                     </span>
                                 </Tooltip>
                             </Badge>
@@ -201,6 +244,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                             xs: '100%',
                             sm: 450
                         },
+                        height: '100dvh',
+                        maxHeight: '100dvh',
                         p: 2
                     }
                 }}
@@ -321,6 +366,63 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 </Box>
             </Drawer>
 
+            {/* Drawer for notifications */}
+            <Drawer
+                anchor="right"
+                open={notificationsDrawerOpen}
+                onClose={handleCloseNotifications}
+                PaperProps={{
+                    sx: {
+                        width: {
+                            xs: '100%',
+                            sm: 450
+                        },
+                        p: 2,
+                        height: '100dvh',
+                        maxHeight: '100dvh',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton onClick={handleCloseNotifications} sx={{ mr: 2 }}>
+                            <span className="material-symbols-rounded">close</span>
+                        </IconButton>
+                        <Typography variant="h6">
+                            {t('dashboard.notifications.title')}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Tooltip title={t('dashboard.settings.notifications.title')}>
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    handleCloseNotifications();
+                                    handleSettingsClick(t('dashboard.settings.notifications.title'));
+                                }}
+                            >
+                                <span className="material-symbols-rounded">settings</span>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
+
+                <Suspense fallback={
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexGrow: 1
+                    }}>
+                        <CircularProgress />
+                    </Box>
+                }>
+                    <NotificationsInbox onClose={handleCloseNotifications} onMarkAllAsRead={handleMarkAllAsRead} unreadCount={unreadNotifications} />
+                </Suspense>
+            </Drawer>
+
             {/* Drawer for settings component */}
             <Drawer
                 anchor="right"
@@ -332,6 +434,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                             xs: '100%',
                             sm: 450
                         },
+                        height: '100dvh',
+                        maxHeight: '100dvh',
                         p: 2
                     }
                 }}

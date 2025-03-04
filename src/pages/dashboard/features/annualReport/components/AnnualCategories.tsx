@@ -360,7 +360,9 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     PaperProps={{
                         elevation: 3,
                         sx: {
-                            width: { xs: '100%', sm: 450 }
+                            width: { xs: '100%', sm: 450 },
+                            height: '100dvh',
+                            maxHeight: '100dvh'
                         }
                     }}
                 >
@@ -378,7 +380,9 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     PaperProps={{
                         elevation: 3,
                         sx: {
-                            width: { xs: '100%', sm: 450 }
+                            width: { xs: '100%', sm: 450 },
+                            height: '100dvh',
+                            maxHeight: '100dvh'
                         }
                     }}
                 >

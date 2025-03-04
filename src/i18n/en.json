@@ -706,6 +706,7 @@
             "loading": "Loading...",
             "logout": "Log out",
             "noData": "No data available",
+            "retry": "Retry",
             "colors": {
                 "background": "Background color",
                 "text": "Text color"
@@ -825,7 +826,7 @@
                 "finish": "Finish"
             },
             "errors": {
-                "title": "Error in onboarding process",
+                "title": "Setup Process Error",
                 "description": "There was an error during the setup process. Please try again.",
                 "selectCategory": "Please select at least one category to continue"
             }
@@ -911,6 +912,91 @@
                 "deleteAccountSuccess": "Account deleted successfully",
                 "deleteAccountError": "Error deleting account",
                 "username": "Username"
+            },
+            "notifications": {
+                "title": "Notifications preferences",
+                "inApp": {
+                    "title": "In-App Notifications",
+                    "description": "Configure how you want to receive notifications within the application.",
+                    "enable": "Enable in-app notifications"
+                },
+                "email": {
+                    "title": "Email Notifications",
+                    "description": "Configure which notifications you want to receive by email.",
+                    "enable": "Enable email notifications"
+                },
+                "success": {
+                    "saved": "Notification preferences saved successfully"
+                },
+                "errors": {
+                    "loadingError": "Error loading notification preferences",
+                    "savingError": "Error saving notification preferences"
+                }
+            }
+        },
+        "notifications": {
+            "title": "Notifications",
+            "settings": "Notification Settings",
+            "markAllAsRead": "Mark all as read",
+            "unread": "Unread",
+            "empty": {
+                "title": "No notifications",
+                "description": "When you receive notifications, they will appear here."
+            },
+            "filters": {
+                "all": "All",
+                "payment_reminder": "Reminders",
+                "achievement": "Achievements",
+                "goal_progress": "Goals",
+                "tip": "Tips",
+                "system": "System",
+                "announcement": "Announcements"
+            },
+            "types": {
+                "payment_reminder": "Reminder",
+                "achievement": "Achievement",
+                "goal_progress": "Goal",
+                "tip": "Tip",
+                "system": "System",
+                "announcement": "Announcement"
+            },
+            "actions": {
+                "markAsRead": "Mark as read",
+                "archive": "Archive",
+                "delete": "Delete"
+            },
+            "success": {
+                "markedAsRead": "Notification marked as read",
+                "markedAllAsRead": "All notifications marked as read",
+                "archived": "Notification archived",
+                "deleted": "Notification deleted"
+            },
+            "errors": {
+                "loadingError": "Error loading notifications",
+                "markAsReadError": "Error marking as read",
+                "markAllAsReadError": "Error marking all as read",
+                "archiveError": "Error archiving notification",
+                "deleteError": "Error deleting notification"
+            },
+            "preferences": {
+                "title": "Notification Preferences",
+                "inApp": {
+                    "title": "In-App Notifications",
+                    "description": "Configure how you want to receive notifications within the application.",
+                    "enable": "Enable in-app notifications"
+                },
+                "email": {
+                    "title": "Email Notifications",
+                    "description": "Configure which notifications you want to receive by email.",
+                    "enable": "Enable email notifications"
+                },
+                "success": {
+                    "saved": "Notification preferences saved successfully"
+                },
+                "errors": {
+                    "loadingError": "Error loading notification preferences",
+                    "savingError": "Error saving notification preferences"
+                }
             }
         },
         "dashhome": {

@@ -275,7 +275,9 @@ export default function AccountsTable({
                 anchor="right"
                 PaperProps={{
                     sx: {
-                        width: { xs: '100%', sm: 450 }
+                        width: { xs: '100%', sm: 450 },
+                        height: '100dvh',
+                        maxHeight: '100dvh'
                     }
                 }}
             >

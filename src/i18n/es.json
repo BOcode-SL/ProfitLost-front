@@ -706,6 +706,7 @@
             "loading": "Cargando...",
             "logout": "Cerrar sesión",
             "noData": "No hay datos disponibles",
+            "retry": "Reintentar",
             "colors": {
                 "background": "Color de fondo",
                 "text": "Color de texto"
@@ -830,6 +831,51 @@
                 "selectCategory": "Por favor, selecciona al menos una categoría para continuar"
             }
         },
+        "notifications": {
+            "title": "Notificaciones",
+            "settings": "Configuración de notificaciones",
+            "markAllAsRead": "Marcar todo como leído",
+            "unread": "No leída",
+            "empty": {
+                "title": "No tienes notificaciones",
+                "description": "Cuando recibas notificaciones, aparecerán aquí."
+            },
+            "filters": {
+                "all": "Todas",
+                "payment_reminder": "Recordatorios",
+                "achievement": "Logros",
+                "goal_progress": "Metas",
+                "tip": "Consejos",
+                "system": "Sistema",
+                "announcement": "Anuncios"
+            },
+            "types": {
+                "payment_reminder": "Recordatorio",
+                "achievement": "Logro",
+                "goal_progress": "Meta",
+                "tip": "Consejo",
+                "system": "Sistema",
+                "announcement": "Anuncio"
+            },
+            "actions": {
+                "markAsRead": "Marcar como leída",
+                "archive": "Archivar",
+                "delete": "Eliminar"
+            },
+            "success": {
+                "markedAsRead": "Notificación marcada como leída",
+                "markedAllAsRead": "Todas las notificaciones marcadas como leídas",
+                "archived": "Notificación archivada",
+                "deleted": "Notificación eliminada"
+            },
+            "errors": {
+                "loadingError": "Error al cargar las notificaciones",
+                "markAsReadError": "Error al marcar como leída",
+                "markAllAsReadError": "Error al marcar todas como leídas",
+                "archiveError": "Error al archivar la notificación",
+                "deleteError": "Error al eliminar la notificación"
+            }
+        },
         "settings": {
             "userSettings": {
                 "title": "Configuración de usuario",
@@ -911,6 +957,26 @@
                 "deleteAccountSuccess": "Cuenta eliminada correctamente",
                 "deleteAccountError": "Error al eliminar la cuenta",
                 "username": "Nombre de usuario"
+            },
+            "notifications": {
+                "title": "Preferencias de notificaciones",
+                "inApp": {
+                    "title": "Notificaciones en la aplicación",
+                    "description": "Configura cómo quieres recibir notificaciones dentro de la aplicación.",
+                    "enable": "Activar notificaciones en la aplicación"
+                },
+                "email": {
+                    "title": "Notificaciones por email",
+                    "description": "Configura qué notificaciones quieres recibir por correo electrónico.",
+                    "enable": "Activar notificaciones por email"
+                },
+                "success": {
+                    "saved": "Preferencias de notificaciones guardadas correctamente"
+                },
+                "errors": {
+                    "loadingError": "Error al cargar las preferencias de notificaciones",
+                    "savingError": "Error al guardar las preferencias de notificaciones"
+                }
             }
         },
         "dashhome": {

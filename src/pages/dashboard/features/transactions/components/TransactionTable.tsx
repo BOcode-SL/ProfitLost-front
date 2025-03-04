@@ -312,7 +312,9 @@ export default function TransactionTable({
                 }}
                 PaperProps={{
                     sx: {
-                        width: { xs: '100%', sm: 500 }
+                        width: { xs: '100%', sm: 500 },
+                        height: '100dvh',
+                        maxHeight: '100dvh'
                     }
                 }}
             >
@@ -340,7 +342,11 @@ export default function TransactionTable({
                     },
                 }}
                 PaperProps={{
-                    sx: { width: { xs: '100%', sm: 500 } }
+                    sx: { 
+                        width: { xs: '100%', sm: 500 },
+                        height: '100dvh',
+                        maxHeight: '100dvh'
+                    }
                 }}
             >
                 <TransactionForm
