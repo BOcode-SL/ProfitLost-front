@@ -1378,5 +1378,11 @@
                 "saveSuccess": "Metrics saved successfully"
             }
         }
+    },
+    "notFound": {
+        "title": "Page Not Found",
+        "message": "Sorry, the page you are looking for does not exist or has been moved.",
+        "backHome": "Back to Home",
+        "contactSupport": "If you believe this is an error, please contact support"
     }
 }

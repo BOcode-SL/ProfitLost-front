@@ -1361,5 +1361,11 @@
                 "saveSuccess": "Métricas guardadas correctamente"
             }
         }
+    },
+    "notFound": {
+        "title": "Página no encontrada",
+        "message": "Lo sentimos, la página que estás buscando no existe o ha sido movida.",
+        "backHome": "Volver al inicio",
+        "contactSupport": "Si crees que esto es un error, por favor contacta con soporte"
     }
 }

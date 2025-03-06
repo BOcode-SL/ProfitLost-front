@@ -16,6 +16,7 @@ const PrivacyPolicy = React.lazy(() => import('./pages/landing/legal/PrivacyPoli
 const CookiePolicy = React.lazy(() => import('./pages/landing/legal/CookiePolicy'));
 const TermsOfService = React.lazy(() => import('./pages/landing/legal/TermsOfService'));
 const Contact = React.lazy(() => import('./pages/landing/legal/Contact'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Defining the type for private route props
 interface PrivateRouteProps {
@@ -28,8 +29,7 @@ export default function App() {
   const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const { user, isLoading } = useUser(); // Accessing user context
 
-
-    // Display loading state while user data is being fetched
+    // Show loading state while user data is being fetched
     if (isLoading) {
       return (
         <div className='loading-container'>
@@ -38,7 +38,7 @@ export default function App() {
       );
     }
 
-    // Render children if user is authenticated, otherwise redirect to auth page
+    // Render children if user is authenticated; otherwise, redirect to the authentication page
     return user ? (
       <DashboardThemeProvider>
         {children}
@@ -70,6 +70,8 @@ export default function App() {
             </PrivateRoute>
           }
         />
+        {/* Route for the 404 page - this must be the last one */}
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </UserProvider>
   );
