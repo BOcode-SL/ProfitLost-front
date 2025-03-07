@@ -10,15 +10,14 @@ import {
     Chip,
     Menu,
     MenuItem,
-    Divider,
     Dialog,
     DialogContent,
-    DialogActions,
     Button,
     Paper,
     Avatar,
     useTheme,
-    alpha
+    alpha,
+    useMediaQuery
 } from '@mui/material';
 
 // Date utilities
@@ -40,6 +39,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const open = Boolean(anchorEl);
@@ -154,89 +154,93 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
             <ListItem
                 alignItems="flex-start"
                 sx={{
-                    bgcolor: notification.status === 'unread' ? 'action.hover' : 'transparent',
-                    borderRadius: 1,
-                    mb: 1,
+                    bgcolor: 'background.paper',
+                    borderRadius: 3,
+                    mb: 2,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                     transition: 'background-color 0.3s ease',
                     '&:hover': {
-                        bgcolor: 'action.selected',
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.08)',
                     },
-                    cursor: hasExtraContent ? 'pointer' : 'default'
+                    cursor: hasExtraContent ? 'pointer' : 'default',
+                    p: 0,
+                    overflow: 'hidden'
                 }}
-                secondaryAction={
-                    <IconButton edge="end" onClick={handleOpenMenu}>
-                        <span className="material-symbols-rounded">more_vert</span>
-                    </IconButton>
-                }
                 onClick={handleNotificationClick}
+                disableGutters
             >
-                <ListItemIcon>
+                <Box
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+                    {/* Notification header with colored bar */}
                     <Box
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: 40,
-                            height: 40,
-                            borderRadius: '50%',
-                            bgcolor: `${getNotificationColor(notification.type)}.light`,
-                            color: `${getNotificationColor(notification.type)}.main`,
-                            fontSize: '1.5rem'
+                            width: '100%',
+                            height: '2px',
+                            bgcolor: notification.status === 'unread' ? `${getNotificationColor(notification.type)}.main` : 'transparent'
                         }}
-                    >
-                        {getNotificationEmoji(notification.type)}
-                    </Box>
-                </ListItemIcon>
-                <ListItemText
-                    primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                    />
+
+                    <Box sx={{ p: 2, width: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%', mb: 1 }}>
                             <Typography
                                 variant="subtitle1"
                                 sx={{
-                                    fontWeight: notification.status === 'unread' ? 600 : 400,
+                                    fontWeight: notification.status === 'unread' ? 600 : 500,
+                                    fontSize: '1rem',
+                                    color: 'text.primary'
                                 }}
                             >
                                 {notification.title}
                             </Typography>
+
+                            <IconButton
+                                edge="end"
+                                onClick={handleOpenMenu}
+                                size="small"
+                                sx={{ ml: 1, mt: -0.5 }}
+                            >
+                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>more_vert</span>
+                            </IconButton>
+                        </Box>
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1.5, fontSize: '0.875rem', lineHeight: 1.5 }}
+                        >
+                            {notification.message}
+                        </Typography>
+
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ fontSize: '0.75rem' }}
+                            >
+                                {formatDate(notification.createdAt)}
+                            </Typography>
+
                             {notification.status === 'unread' && (
-                                <Chip
-                                    label={t('dashboard.notifications.unread')}
-                                    size="small"
-                                    color="primary"
-                                    sx={{ height: 20 }}
+                                <Box
+                                    sx={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: '50%',
+                                        bgcolor: `${getNotificationColor(notification.type)}.main`,
+                                        ml: 1
+                                    }}
                                 />
                             )}
                         </Box>
-                    }
-                    secondary={
-                        <>
-                            <Typography
-                                variant="body2"
-                                color="text.primary"
-                                sx={{ mb: 1, display: 'block' }}
-                            >
-                                {notification.message}
-                            </Typography>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Chip
-                                    label={t(`dashboard.notifications.types.${notification.type}`)}
-                                    size="small"
-                                    color={getNotificationColor(notification.type)}
-                                    sx={{ height: 20 }}
-                                />
-                                <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                >
-                                    {formatDate(notification.createdAt)}
-                                </Typography>
-                            </Box>
-                        </>
-                    }
-                />
+                    </Box>
+                </Box>
             </ListItem>
-
-            <Divider variant="inset" component="li" />
 
             {/* Options menu */}
             <Menu
@@ -273,10 +277,28 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                     onClose={handleCloseDialog}
                     maxWidth="sm"
                     fullWidth
+                    fullScreen={isMobile}
                     PaperProps={{
                         sx: {
                             overflow: 'hidden',
-                            borderRadius: 3
+                            borderRadius: isMobile ? 0 : 3,
+                            height: isMobile ? '100dvh' : 'auto',
+                            m: isMobile ? 0 : 2
+                        }
+                    }}
+                    TransitionProps={{
+                        onEntered: () => {
+                            // Scroll al inicio cuando se abre el diálogo
+                            if (isMobile) {
+                                window.scrollTo(0, 0);
+                                document.body.style.overflow = 'hidden';
+                            }
+                        },
+                        onExited: () => {
+                            // Restaurar scroll cuando se cierra
+                            if (isMobile) {
+                                document.body.style.overflow = '';
+                            }
                         }
                     }}
                 >
@@ -286,7 +308,8 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                             p: 3,
                             position: 'relative',
                             borderRadius: 3,
-                            mx: 1
+                            mx: 1,
+                            boxShadow: isMobile ? 'none' : undefined
                         }}
                     >
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
@@ -301,7 +324,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                             >
                                 {getNotificationEmoji(notification.type)}
                             </Avatar>
-                            <Box>
+                            <Box sx={{ flexGrow: 1 }}>
                                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                                     {notification.title}
                                 </Typography>
@@ -316,15 +339,28 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                     </Typography>
                                 </Box>
                             </Box>
+                            <IconButton
+                                edge="end"
+                                onClick={handleCloseDialog}
+                                sx={{ mt: -1, mr: -1 }}
+                            >
+                                <span className="material-symbols-rounded">close</span>
+                            </IconButton>
                         </Box>
                     </Paper>
 
-                    <DialogContent sx={{ p: 3 }}>
+                    <DialogContent
+                        sx={{
+                            p: 3,
+                            height: isMobile ? 'calc(100dvh - 150px)' : 'auto',
+                            overflow: 'auto'
+                        }}
+                    >
                         <Typography variant="body1" paragraph sx={{ fontWeight: 500 }}>
                             {notification.message}
                         </Typography>
 
-                        <Box 
+                        <Box
                             sx={{
                                 lineHeight: 1.6,
                                 '& p': { mb: 1.5 },
@@ -332,7 +368,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                 '& ul, & ol': { pl: 2, mb: 1.5 },
                                 '& li': { mb: 0.5 },
                                 '& h3, & h4': { mt: 2, mb: 1, fontWeight: 600 },
-                                '& a': { 
+                                '& a': {
                                     color: theme.palette[getNotificationColor(notification.type)].main,
                                     textDecoration: 'underline',
                                     '&:hover': {
@@ -388,12 +424,6 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                             </Box>
                         )}
                     </DialogContent>
-
-                    <DialogActions sx={{ px: 3, py: 2 }}>
-                        <Button onClick={handleCloseDialog}>
-                            {t('dashboard.common.close')}
-                        </Button>
-                    </DialogActions>
                 </Dialog>
             )}
         </>

@@ -10,6 +10,8 @@ class NotificationService {
      */
     async getNotifications(): Promise<Notification[]> {
         // This function is simulated in the NotificationsInbox component
+        // Cuando se implemente, asegurar que las notificaciones estén ordenadas
+        // de más recientes a más antiguas por fecha de creación
         return [];
     }
 

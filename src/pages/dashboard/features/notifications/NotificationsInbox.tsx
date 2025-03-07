@@ -7,10 +7,7 @@ import {
     List,
     Button,
     Skeleton,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Divider
+    ListItem
 } from '@mui/material';
 import React from 'react';
 
@@ -26,19 +23,19 @@ const mockNotifications: Notification[] = [
         _id: '1',
         user_id: 'user123',
         type: 'payment_reminder',
-        title: 'Payment Reminder',
-        message: 'You have a pending payment due tomorrow for your monthly subscription.',
+        title: 'Take off with bonus Miles',
+        message: 'Get 20% more Miles when you redeem RevPoints with Turkish Airlines. Ends 16/03. T&Cs apply',
         status: 'unread',
         origin: 'automatic',
-        createdAt: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
-        updatedAt: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     },
     {
         _id: '2',
         user_id: 'user123',
         type: 'achievement',
-        title: 'Congratulations! You have achieved a milestone',
-        message: 'You have logged activities for 7 consecutive days. Keep it up!',
+        title: 'Invite friends, get paid',
+        message: 'You can earn €40 for each friend you refer by March 25! T&Cs apply',
         status: 'unread',
         origin: 'automatic',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 3)).toISOString(),
@@ -48,8 +45,8 @@ const mockNotifications: Notification[] = [
         _id: '3',
         user_id: 'user123',
         type: 'goal_progress',
-        title: 'Progress on your savings goal',
-        message: 'You have reached 75% of your "Vacation" goal. Almost there!',
+        title: 'Show continued support for Ukraine',
+        message: 'Unlock a special edition card by donating to UNHCR before 30 March 2025. T&Cs apply',
         status: 'read',
         origin: 'automatic',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString(),
@@ -59,8 +56,8 @@ const mockNotifications: Notification[] = [
         _id: '4',
         user_id: 'user123',
         type: 'tip',
-        title: 'Financial Tip',
-        message: 'Consider creating an emergency fund for unexpected expenses.',
+        title: 'Only 7 days left',
+        message: 'Earn €40 for every friend you refer by March 4. T&Cs apply',
         status: 'read',
         origin: 'automatic',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
@@ -70,8 +67,8 @@ const mockNotifications: Notification[] = [
         _id: '5',
         user_id: 'user123',
         type: 'system',
-        title: 'System Update',
-        message: 'We have updated our platform with new features.',
+        title: '15% off train fares',
+        message: 'Save money on travel across Europe with Trainline. Offer ends 28/02. T&Cs apply',
         status: 'read',
         origin: 'manual',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 10)).toISOString(),
@@ -292,7 +289,7 @@ interface NotificationsInboxProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function NotificationsInbox({ onClose, onMarkAllAsRead, unreadCount }: NotificationsInboxProps) {
+export default function NotificationsInbox(_props: NotificationsInboxProps) {
     const { t } = useTranslation();
 
     // State variables
@@ -355,50 +352,113 @@ export default function NotificationsInbox({ onClose, onMarkAllAsRead, unreadCou
         }
     };
 
+    // Group notifications by date
+    const groupNotificationsByDate = () => {
+        const groups: { [key: string]: Notification[] } = {};
+
+        // Ordenar todas las notificaciones de más recientes a más antiguas
+        const sortedNotifications = [...notifications].sort((a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+        sortedNotifications.forEach(notification => {
+            const date = new Date(notification.createdAt);
+            let groupKey = '';
+
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                groupKey = 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                groupKey = 'Yesterday';
+            } else {
+                // Format as "Month Day" (e.g., "March 5")
+                groupKey = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+            }
+
+            if (!groups[groupKey]) {
+                groups[groupKey] = [];
+            }
+
+            groups[groupKey].push(notification);
+        });
+
+        // Definir el orden de los grupos
+        const orderedGroups: { [key: string]: Notification[] } = {};
+
+        // Primero "Today"
+        if (groups['Today']) {
+            orderedGroups['Today'] = groups['Today'];
+        }
+
+        // Luego "Yesterday"
+        if (groups['Yesterday']) {
+            orderedGroups['Yesterday'] = groups['Yesterday'];
+        }
+
+        // Obtener las fechas restantes y ordenarlas de más reciente a más antigua
+        const otherDates = Object.keys(groups).filter(key => key !== 'Today' && key !== 'Yesterday');
+
+        otherDates.sort((a, b) => {
+            // Convertir "Month Day" a objetos Date para comparar
+            const monthsMap: { [key: string]: number } = {
+                'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+                'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+            };
+
+            const parseDate = (dateStr: string): Date => {
+                const [month, dayStr] = dateStr.split(' ');
+                const day = parseInt(dayStr);
+                const year = new Date().getFullYear();
+                return new Date(year, monthsMap[month], day);
+            };
+
+            const dateA = parseDate(a);
+            const dateB = parseDate(b);
+            return dateB.getTime() - dateA.getTime();
+        });
+
+        // Agregar las fechas restantes en orden
+        otherDates.forEach(date => {
+            orderedGroups[date] = groups[date];
+        });
+
+        return orderedGroups;
+    };
+
     // Render the notifications list
     const renderNotificationsList = () => {
         if (loading) {
             // Show improved skeletons during loading
             return (
-                <List sx={{ width: '100%' }}>
+                <List sx={{ width: '100%', px: 2 }}>
                     {[1, 2, 3, 4, 5, 6].map((item) => (
                         <React.Fragment key={item}>
                             <ListItem
                                 alignItems="flex-start"
                                 sx={{
                                     bgcolor: 'background.paper',
-                                    borderRadius: 3,
-                                    mb: 1,
+                                    borderRadius: 2,
+                                    mb: 2,
                                     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                                     p: 2
                                 }}
-                                secondaryAction={
-                                    <Skeleton variant="circular" width={24} height={24} />
-                                }
                             >
-                                <ListItemIcon>
-                                    <Skeleton variant="circular" width={40} height={40} />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                            <Skeleton variant="text" width="60%" height={24} />
-                                            <Skeleton variant="rounded" width={60} height={20} sx={{ borderRadius: 10 }} />
-                                        </Box>
-                                    }
-                                    secondary={
-                                        <>
-                                            <Skeleton variant="text" width="90%" height={20} sx={{ mb: 0.5 }} />
-                                            <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <Skeleton variant="rounded" width={80} height={20} sx={{ borderRadius: 10 }} />
-                                                <Skeleton variant="text" width={100} height={20} />
-                                            </Box>
-                                        </>
-                                    }
-                                />
+                                <Box sx={{ width: '100%' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', mb: 1 }}>
+                                        <Skeleton variant="text" width="60%" height={24} />
+                                        <Skeleton variant="circular" width={20} height={20} />
+                                    </Box>
+                                    <Skeleton variant="text" width="90%" height={20} sx={{ mb: 0.5 }} />
+                                    <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Skeleton variant="text" width={80} height={16} />
+                                        <Skeleton variant="circular" width={8} height={8} />
+                                    </Box>
+                                </Box>
                             </ListItem>
-                            <Divider variant="inset" component="li" />
                         </React.Fragment>
                     ))}
                 </List>
@@ -432,35 +492,41 @@ export default function NotificationsInbox({ onClose, onMarkAllAsRead, unreadCou
             );
         }
 
+        const groupedNotifications = groupNotificationsByDate();
+
         return (
-            <List sx={{ width: '100%' }}>
-                {notifications.map((notification) => (
-                    <NotificationItem
-                        key={notification._id}
-                        notification={notification}
-                        onMarkAsRead={handleMarkAsRead}
-                        onDelete={handleDeleteNotification}
-                    />
+            <Box sx={{ width: '100%', px: 2 }}>
+                {Object.entries(groupedNotifications).map(([date, notifs]) => (
+                    <Box key={date} sx={{ mb: 3 }}>
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                fontSize: '1.25rem',
+                                fontWeight: 600,
+                                mb: 2,
+                                color: 'text.primary'
+                            }}
+                        >
+                            {date}
+                        </Typography>
+                        <List sx={{ width: '100%', p: 0 }} disablePadding>
+                            {notifs.map((notification) => (
+                                <NotificationItem
+                                    key={notification._id}
+                                    notification={notification}
+                                    onMarkAsRead={handleMarkAsRead}
+                                    onDelete={handleDeleteNotification}
+                                />
+                            ))}
+                        </List>
+                    </Box>
                 ))}
-            </List>
+            </Box>
         );
     };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-            {/* Title and button to mark all as read */}
-            {unreadCount > 0 && (
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-                    <Button
-                        size="small"
-                        onClick={onMarkAllAsRead}
-                        startIcon={<span className="material-symbols-rounded">mark_email_read</span>}
-                    >
-                        {t('dashboard.notifications.markAllAsRead')}
-                    </Button>
-                </Box>
-            )}
-
             {/* Notifications list */}
             <Box sx={{
                 flexGrow: 1,
@@ -469,7 +535,8 @@ export default function NotificationsInbox({ onClose, onMarkAllAsRead, unreadCou
                     display: 'none'
                 },
                 scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
+                msOverflowStyle: 'none',
+                pt: 2
             }}>
                 {renderNotificationsList()}
             </Box>
