@@ -978,6 +978,61 @@
                 "archiveError": "Error archiving notification",
                 "deleteError": "Error deleting notification"
             },
+            "editor": {
+                "title": "Notifications Editor",
+                "submit": "Send Notification",
+                "success": "Notification sent successfully",
+                "error": "Error sending notification",
+                "sending": "Sending...",
+                "preview": "Preview",
+                "previewTitle": "Notification Preview",
+                "previewInfo": "This is how your notification will appear to recipients",
+                "previewNoTitle": "No title provided",
+                "previewNoMessage": "No message provided",
+                "previewSentNow": "Just now",
+                "previewTargetAudience": "Target audience",
+                "previewScheduledFor": "Scheduled for",
+                "fields": {
+                    "type": {
+                        "label": "Notification Type"
+                    },
+                    "targetAudience": {
+                        "label": "Recipients",
+                        "options": {
+                            "all": "All Users",
+                            "free": "Free Users",
+                            "paid": "Paid Users",
+                            "specific": "Specific Users"
+                        }
+                    },
+                    "specificUsers": {
+                        "label": "User IDs",
+                        "helper": "Enter user IDs separated by commas"
+                    },
+                    "title": {
+                        "label": "Title"
+                    },
+                    "message": {
+                        "label": "Message",
+                        "helper": "Brief description that will appear in the notification"
+                    },
+                    "content": {
+                        "label": "HTML Content",
+                        "helper": "Detailed content in HTML format (optional)"
+                    },
+                    "scheduledAt": {
+                        "label": "Schedule Delivery",
+                        "helper": "Date and time to send the notification (optional)"
+                    }
+                },
+                "errors": {
+                    "typeRequired": "Notification type is required",
+                    "targetRequired": "You must select recipients",
+                    "specificUsersRequired": "You must specify at least one user ID",
+                    "titleRequired": "Title is required",
+                    "messageRequired": "Message is required"
+                }
+            },
             "preferences": {
                 "title": "Notification Preferences",
                 "inApp": {

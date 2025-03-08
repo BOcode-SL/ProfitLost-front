@@ -8,7 +8,6 @@ export type NotificationType =
     | 'achievement'         // Achievement reached
     | 'goal_progress'       // Progress on a goal
     | 'tip'                 // Financial tip
-    | 'system'              // System notification
     | 'announcement';       // Announcement or news
 
 /**
@@ -24,7 +23,6 @@ export type NotificationOrigin =
 export type NotificationStatus = 
     | 'unread'              // Unread
     | 'read'                // Read
-    | 'archived';           // Archived
 
 /**
  * Type for notification metadata

@@ -17,6 +17,7 @@ const Accounts = lazy(() => import('../features/accounts/Accounts'));
 // const Goals = lazy(() => import('../features/goals/Goals'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 const Analytics = lazy(() => import('../features/analytics/Analytics'));
+const NotificationsEditor = lazy(() => import('../features/notifications/editor/NotificationsEditor'));
 
 // Interface for the props of the DashboardContent component
 interface DashboardContentProps {
@@ -87,6 +88,8 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
                 return <Notes />;
             case 'analytics':
                 return <Analytics />;
+            case 'notifications':
+                return <NotificationsEditor />;
             default:
                 return (
                     <Paper

@@ -12,10 +12,10 @@ import {
 import React from 'react';
 
 // Types
-import { Notification } from '../../../../types/models/notification';
+import { Notification } from '../../../../../types/models/notification';
 
 // Components
-import NotificationItem from './components/NotificationItem';
+import NotificationItem from './NotificationItem';
 
 // Mock data for notifications
 const mockNotifications: Notification[] = [
@@ -66,7 +66,7 @@ const mockNotifications: Notification[] = [
     {
         _id: '5',
         user_id: 'user123',
-        type: 'system',
+        type: 'announcement',
         title: '15% off train fares',
         message: 'Save money on travel across Europe with Trainline. Offer ends 28/02. T&Cs apply',
         status: 'read',

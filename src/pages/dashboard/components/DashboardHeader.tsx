@@ -19,7 +19,7 @@ import { useUser } from '../../../contexts/UserContext';
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
-const NotificationsInbox = React.lazy(() => import('../features/notifications/NotificationsInbox'));
+const NotificationsInbox = React.lazy(() => import('../features/notifications/inbox/NotificationsInbox'));
 const NotificationPreferences = React.lazy(() => import('../features/settings/NotificationPreferences'));
 
 import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';

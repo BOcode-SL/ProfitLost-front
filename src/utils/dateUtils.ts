@@ -1,3 +1,15 @@
+// Frontend:
+// 1. Works in local time (LocalTime)
+// 2. Sends dates to the backend in LocalTime formatted as ISO
+// 3. Receives dates from the backend in UTC ISO and converts them to LocalTime
+
+// Backend:
+// 1. Works in UTC
+// 1. Receives LocalTime from the frontend formatted as ISO
+// 2. Converts to UTC ISO for storage
+// 3. Returns UTC ISO to the frontend
+
+
 // Importing types for ISO date strings and user preferences
 import type { ISODateString } from '../types/api/common';
 import type { User } from '../types/models/user';
@@ -19,10 +31,10 @@ export const toLocalString = (date: string | Date): string => {
 };
 
 /**
- * Converts a UTC ISO string from the backend to a local Date object
+ * Converts a UTC ISO string from the backend to a local Date object.
  * 
- * @param isoString - The UTC ISO string from backend
- * @returns Date object in local time
+ * @param isoString - The UTC ISO string from the backend.
+ * @returns Date object in local time.
  */
 export const fromUTCtoLocal = (isoString: ISODateString): Date => {
     return new Date(isoString);
@@ -30,21 +42,21 @@ export const fromUTCtoLocal = (isoString: ISODateString): Date => {
 
 /**
  * Prepares a local date for sending to the backend.
- * The date remains in local time, backend will handle UTC conversion.
+ * The date remains in local time; the backend will handle UTC conversion.
  * 
- * @param localDate The local date to prepare
- * @returns The date string in ISO format
+ * @param localDate - The local date to prepare.
+ * @returns The date string in ISO format.
  */
 export const prepareForBackend = (localDate: Date): string => {
-    // Ejemplo: 2023-10-03T16:01:05.000Z
+    // Example: 2023-10-03T16:01:05.000Z
     return localDate.toISOString();
 };
 
 /**
- * Converts a UTC date string to local date for display in forms.
- * This is useful when showing UTC dates from backend in local time for editing.
+ * Converts a UTC date string to a local date for display in forms.
+ * This is useful when showing UTC dates from the backend in local time for editing.
  * 
- * @param utcString The UTC date string to convert.
+ * @param utcString - The UTC date string to convert.
  * @returns A string in the format YYYY-MM-DDTHH:mm:ss for use in datetime-local inputs.
  */
 export const utcToLocalString = (utcString: ISODateString): string => {
@@ -78,7 +90,7 @@ export const isValidISOString = (dateString: string): boolean => {
 
 // Formats a date string and user preferences into a readable date and time format.
 export const formatDateTime = (date: string | Date, user: User | null) => {
-    // Si la fecha viene en formato ISO UTC del backend, convertirla a local
+    // If the date comes in ISO UTC format from the backend, convert it to local
     const dateObj = typeof date === 'string' && DATE_REGEX.test(date) 
         ? fromUTCtoLocal(date as ISODateString)
         : new Date(date);
@@ -115,7 +127,7 @@ export const formatDateTime = (date: string | Date, user: User | null) => {
 
 // Formats a date string based on user preferences.
 export const formatDate = (date: string | Date, user: User | null) => {
-    // Si la fecha viene en formato ISO UTC del backend, convertirla a local
+    // If the date comes in ISO UTC format from the backend, convert it to local
     const dateObj = typeof date === 'string' && DATE_REGEX.test(date)
         ? fromUTCtoLocal(date as ISODateString)
         : new Date(date);
