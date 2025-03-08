@@ -228,18 +228,6 @@ export default function NotificationsEditor() {
         setPreviewOpen(false);
     };
 
-    // Obtener emoji basado en el tipo de notificación
-    const getNotificationEmoji = (type: NotificationType): string => {
-        switch (type) {
-            case 'tip':
-                return '💡';
-            case 'announcement':
-                return '📢';
-            default:
-                return '📩';
-        }
-    };
-
     return (
         <Box sx={{
             height: '100%',
@@ -247,12 +235,6 @@ export default function NotificationsEditor() {
             overflow: 'hidden'
         }}>
             <Paper elevation={3} sx={{ p: 3, borderRadius: 2, height: '100%' }}>
-                <Typography variant="h5" component="h1" gutterBottom>
-                    {t('dashboard.notifications.editor.title')}
-                </Typography>
-
-                <Divider sx={{ my: 2 }} />
-
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
                         {/* Tipo de notificación */}
@@ -430,7 +412,6 @@ export default function NotificationsEditor() {
                     zIndex: 1,
                     flexShrink: 0
                 }}>
-                    <span>{getNotificationEmoji(formData.type)}</span>
                     <Typography variant="h6">
                         {t('dashboard.notifications.editor.previewTitle')}
                     </Typography>
