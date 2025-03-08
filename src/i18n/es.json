@@ -1002,7 +1002,8 @@
                 "noDataLast6Months": "No hay datos disponibles para los últimos 6 meses"
             },
             "history": {
-                "lastTransactions": "Últimos Movimientos"
+                "lastTransactions": "Últimos Movimientos",
+                "noDataLastTransactions": "No hay datos disponibles para los últimos movimientos"
             },
             "thanLastMonth": "que el mes anterior"
         },

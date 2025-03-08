@@ -128,43 +128,52 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.history.lastTransactions')}
             </Typography>
-            {/* Iterate through recent transactions */}
-            {recentTransactionsMemo.map((transaction, index) => (
-                <Box key={transaction._id}>
-                    {/* Container for each transaction item */}
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        py: 1
-                    }}>
-                        <Box>
-                            {/* Description of the transaction */}
-                            <Typography variant="body1" sx={{ fontWeight: '600' }}>
-                                {transaction.description}
-                            </Typography>
-                            {/* Date of the transaction */}
-                            <Typography variant="body2" color="text.secondary">
-                                {formatDateTime(transaction.date, user)}
+            {/* Show message when no transactions are available */}
+            {recentTransactionsMemo.length === 0 ? (
+                <Box sx={{ py: 2, textAlign: 'center' }}>
+                    <Typography variant="body1" color="text.secondary">
+                        {t('dashboard.dashhome.history.noDataLastTransactions')}
+                    </Typography>
+                </Box>
+            ) : (
+                /* Iterate through recent transactions */
+                recentTransactionsMemo.map((transaction, index) => (
+                    <Box key={transaction._id}>
+                        {/* Container for each transaction item */}
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            py: 1
+                        }}>
+                            <Box>
+                                {/* Description of the transaction */}
+                                <Typography variant="body1" sx={{ fontWeight: '600' }}>
+                                    {transaction.description}
+                                </Typography>
+                                {/* Date of the transaction */}
+                                <Typography variant="body2" color="text.secondary">
+                                    {formatDateTime(transaction.date, user)}
+                                </Typography>
+                            </Box>
+                            {/* Amount of the transaction */}
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    color: transaction.amount > 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
+                                    fontWeight: 'medium',
+                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                    transition: 'filter 0.3s ease',
+                                    userSelect: isHidden ? 'none' : 'auto'
+                                }}
+                            >
+                                {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount, user)}
                             </Typography>
                         </Box>
-                        {/* Amount of the transaction */}
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                color: transaction.amount > 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
-                                fontWeight: 'medium',
-                                filter: isHidden ? 'blur(8px)' : 'none',
-                                transition: 'filter 0.3s ease',
-                                userSelect: isHidden ? 'none' : 'auto'
-                            }}
-                        >
-                            {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount, user)}
-                        </Typography>
+                        {index < recentTransactionsMemo.length - 1 && <Divider />}
                     </Box>
-                    {index < recentTransactionsMemo.length - 1 && <Divider />}
-                </Box>
-            ))}
+                ))
+            )}
         </Paper>
     );
 }
