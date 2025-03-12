@@ -25,8 +25,25 @@ export const toggleCurrencyVisibility = (): void => {
 export const formatCurrency = (amount: number, user: User | null): string => {
     // Get the user's preferred currency or default to 'USD'
     const currency = user?.preferences.currency || 'USD';
-    // Set the locale based on the currency (EUR uses 'es-ES', otherwise 'en-US')
-    const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
+    
+    // Map currencies to their appropriate locales
+    const currencyLocaleMap: Record<string, string> = {
+        'USD': 'en-US',
+        'EUR': 'es-ES',
+        'GBP': 'en-GB',
+        'MXN': 'es-MX',
+        'ARS': 'es-AR',
+        'CLP': 'es-CL',
+        'COP': 'es-CO',
+        'PEN': 'es-PE',
+        'UYU': 'es-UY',
+        'PYG': 'es-PY',
+        'BOB': 'es-BO',
+        'VES': 'es-VE'
+    };
+    
+    // Get the appropriate locale for the currency or default to 'en-US'
+    const locale = currencyLocaleMap[currency] || 'en-US';
 
     try {
         // Format the amount using Intl.NumberFormat with currency style options

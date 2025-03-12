@@ -25,7 +25,16 @@ const timeFormatOptions = [
 const currencyOptions = [
     { label: 'USD - US Dollar', value: 'USD' as Currency },
     { label: 'EUR - Euro', value: 'EUR' as Currency },
-    { label: 'GBP - British Pound', value: 'GBP' as Currency }
+    { label: 'GBP - British Pound', value: 'GBP' as Currency },
+    { label: 'MXN - Peso Mexicano', value: 'MXN' as Currency },
+    { label: 'ARS - Peso Argentino', value: 'ARS' as Currency },
+    { label: 'CLP - Peso Chileno', value: 'CLP' as Currency },
+    { label: 'COP - Peso Colombiano', value: 'COP' as Currency },
+    { label: 'PEN - Sol Peruano', value: 'PEN' as Currency },
+    { label: 'UYU - Peso Uruguayo', value: 'UYU' as Currency },
+    { label: 'PYG - Guaraní Paraguayo', value: 'PYG' as Currency },
+    { label: 'BOB - Boliviano', value: 'BOB' as Currency },
+    { label: 'VES - Bolívar Venezolano', value: 'VES' as Currency }
 ];
 const languageOptions = [
     {
