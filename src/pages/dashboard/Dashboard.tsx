@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Drawer, useTheme } from '@mui/material';
 
 // Contexts
 import { useUser } from '../../contexts/UserContext';
@@ -14,7 +13,7 @@ import DashboardContent from './components/DashboardContent';
 import GlobalOnboardingDialog from './components/GlobalOnboardingDialog';
 import LoadingScreen from './components/LoadingScreen';
 import TransactionForm from './features/transactions/components/TransactionForm';
-
+import DrawerBase from './components/ui/DrawerBase';
 // Services
 import { categoryService } from '../../services/category.service';
 
@@ -26,7 +25,6 @@ export default function Dashboard() {
     const { t } = useTranslation();
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
-    const theme = useTheme();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeSection, setActiveSection] = useState('dashhome');
@@ -151,33 +149,16 @@ export default function Dashboard() {
                 onClose={handleOnboardingClose}
             />
 
-            <Drawer
-                anchor="bottom"
+            <DrawerBase
                 open={transactionDrawerOpen}
                 onClose={handleTransactionDrawerClose}
-                PaperProps={{
-                    sx: {
-                        width: { xs: '100%', sm: '450px' },
-                        borderRadius: { xs: '15px 15px 0 0', sm: '0' },
-                        height: { xs: 'calc(100% - 56px)', sm: '100%' },
-                        top: { xs: 'auto', sm: '0' },
-                        bottom: { xs: '0', sm: 'auto' },
-                        [theme.breakpoints.up('sm')]: {
-                            left: 'auto',
-                            right: 0
-                        }
-                    }
-                }}
-                SlideProps={{
-                    direction: 'up'
-                }}
             >
                 <TransactionForm
                     onClose={handleTransactionDrawerClose}
                     onSubmit={handleTransactionSubmit}
                     categories={categories}
                 />
-            </Drawer>
+            </DrawerBase>
         </>
     );
 }

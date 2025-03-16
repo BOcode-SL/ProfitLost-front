@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { Box, Button, Drawer, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Slide, useTheme, Divider } from '@mui/material';
+import { Box, Button, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Slide, useTheme, Divider } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +27,7 @@ interface EditCategoryState {
 
 // Components
 import CategoryForm from './CategoryForm';
+import DrawerBase from '../../../components/ui/DrawerBase';
 
 // Interface for the props of the AnnualCategories component
 interface AnnualCategoriesProps {
@@ -353,38 +354,20 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                 )}
 
                 {/* Drawer for creating a new category */}
-                <Drawer
-                    anchor="right"
+                <DrawerBase
                     open={drawerOpen}
                     onClose={() => setDrawerOpen(false)}
-                    PaperProps={{
-                        elevation: 3,
-                        sx: {
-                            width: { xs: '100%', sm: 450 },
-                            height: '100dvh',
-                            maxHeight: '100dvh'
-                        }
-                    }}
                 >
                     <CategoryForm
                         onSubmit={handleCreateCategory}
                         onClose={() => setDrawerOpen(false)}
                     />
-                </Drawer>
+                </DrawerBase>
 
                 {/* Drawer for editing an existing category */}
-                <Drawer
-                    anchor="right"
+                <DrawerBase
                     open={editCategory.isOpen}
                     onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}
-                    PaperProps={{
-                        elevation: 3,
-                        sx: {
-                            width: { xs: '100%', sm: 450 },
-                            height: '100dvh',
-                            maxHeight: '100dvh'
-                        }
-                    }}
                 >
                     <CategoryForm
                         category={editCategory.category || undefined}
@@ -399,7 +382,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                             }
                         }}
                     />
-                </Drawer>
+                </DrawerBase>
 
                 {/* Dialog for confirming category deletion */}
                 <Dialog

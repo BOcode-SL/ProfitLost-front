@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useContext, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Box, Badge, Avatar, Paper, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
+import { Box, Badge, Avatar, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Services
@@ -21,6 +21,7 @@ const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPr
 const Help = React.lazy(() => import('../features/settings/Help'));
 const NotificationsInbox = React.lazy(() => import('../features/notifications/inbox/NotificationsInbox'));
 const NotificationPreferences = React.lazy(() => import('../features/settings/NotificationPreferences'));
+import DrawerBase from './ui/DrawerBase';
 
 import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';
 
@@ -313,18 +314,11 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
     const { t } = useTranslation();
     
     return (
-        <Drawer
-            anchor="right"
+        <DrawerBase
             open={open}
             onClose={onClose}
             PaperProps={{
                 sx: {
-                    width: {
-                        xs: '100%',
-                        sm: 450
-                    },
-                    height: '100dvh',
-                    maxHeight: '100dvh',
                     p: 2
                 }
             }}
@@ -438,7 +432,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                     {t('dashboard.common.logout')}
                 </Button>
             </Box>
-        </Drawer>
+        </DrawerBase>
     );
 }
 
@@ -455,19 +449,12 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
     const { t } = useTranslation();
     
     return (
-        <Drawer
-            anchor="right"
+        <DrawerBase
             open={open}
             onClose={onClose}
             PaperProps={{
                 sx: {
-                    width: {
-                        xs: '100%',
-                        sm: 450
-                    },
                     p: 2,
-                    height: '100dvh',
-                    maxHeight: '100dvh',
                     display: 'flex',
                     flexDirection: 'column'
                 }
@@ -510,7 +497,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                     unreadCount={unreadCount} 
                 />
             </Suspense>
-        </Drawer>
+        </DrawerBase>
     );
 }
 
@@ -525,18 +512,11 @@ interface SettingsDrawerProps {
 
 function SettingsDrawer({ open, component, onClose, onBack, children }: SettingsDrawerProps) {
     return (
-        <Drawer
-            anchor="right"
+        <DrawerBase
             open={open}
             onClose={onClose}
             PaperProps={{
                 sx: {
-                    width: {
-                        xs: '100%',
-                        sm: 450
-                    },
-                    height: '100dvh',
-                    maxHeight: '100dvh',
                     p: 2
                 }
             }}
@@ -559,6 +539,6 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
             }>
                 {children}
             </Suspense>
-        </Drawer>
+        </DrawerBase>
     );
 }

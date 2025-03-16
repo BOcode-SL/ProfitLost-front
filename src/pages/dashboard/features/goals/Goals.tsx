@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Box, Paper, Button, Fade, Skeleton, FormControl, InputLabel, Select, MenuItem, Drawer } from '@mui/material';
+import { Box, Paper, Button, Fade, Skeleton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 import type { Goal } from '../../../../types/models/goal';
 import GoalCard from './components/GoalCard';
 import GoalForm from './components/GoalForm';
+import DrawerBase from '../../components/ui/DrawerBase';
 
 const mockGoals: Goal[] = [
     {
@@ -268,23 +269,16 @@ export default function Goals() {
                     )}
                 </Box>
 
-                <Drawer
-                    anchor="right"
+                <DrawerBase
                     open={formOpen}
                     onClose={handleClose}
-                    PaperProps={{
-                        elevation: 3,
-                        sx: {
-                            width: { xs: '100%', sm: 450 }
-                        }
-                    }}
                 >
                     <GoalForm
                         goal={selectedGoal}
                         onSubmit={handleSubmit}
                         onClose={handleClose}
                     />
-                </Drawer>
+                </DrawerBase>
             </Box>
         </Fade>
     );

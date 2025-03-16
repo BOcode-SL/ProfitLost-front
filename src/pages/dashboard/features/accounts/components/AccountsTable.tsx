@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Typography, Button, Drawer, Collapse, CircularProgress, TextField } from '@mui/material';
+import { Box, Paper, Typography, Button, Collapse, CircularProgress, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -13,6 +13,7 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 
 // Components
 import AccountsForm from './AccountsForm';
+import DrawerBase from '../../../components/ui/DrawerBase';
 
 // Interface for the props of the AccountsTable component
 interface AccountsTableProps {
@@ -266,19 +267,11 @@ export default function AccountsTable({
             )}
 
             {/* Drawer for the account form */}
-            <Drawer
+            <DrawerBase
                 open={isDrawerOpen}
                 onClose={() => {
                     setIsDrawerOpen(false);
                     setSelectedAccount(null);
-                }}
-                anchor="right"
-                PaperProps={{
-                    sx: {
-                        width: { xs: '100%', sm: 450 },
-                        height: '100dvh',
-                        maxHeight: '100dvh'
-                    }
                 }}
             >
                 {/* Component for the accounts form */}
@@ -300,7 +293,7 @@ export default function AccountsTable({
                     onDelete={onDelete}
                     account={selectedAccount}
                 />
-            </Drawer>
+            </DrawerBase>
         </Paper>
     );
 } 

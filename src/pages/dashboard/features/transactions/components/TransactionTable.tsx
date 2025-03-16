@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Drawer, Button, FormControl, InputLabel, useTheme, Divider } from '@mui/material';
+import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Button, FormControl, InputLabel, useTheme, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Contexts
@@ -15,6 +15,7 @@ import { formatDateTime } from '../../../../../utils/dateUtils';
 
 // Components
 import TransactionForm from './TransactionForm';
+import DrawerBase from '../../../components/ui/DrawerBase';
 
 // Interface for the props of the TransactionTable component
 interface TransactionTableProps {
@@ -301,22 +302,9 @@ export default function TransactionTable({
             </Paper>
 
             {/* Drawer for editing a selected transaction */}
-            <Drawer
-                anchor="right"
+            <DrawerBase
                 open={editDrawerOpen}
                 onClose={handleCloseEditDrawer}
-                slotProps={{
-                    backdrop: {
-                        timeout: 300,
-                    },
-                }}
-                PaperProps={{
-                    sx: {
-                        width: { xs: '100%', sm: 500 },
-                        height: '100dvh',
-                        maxHeight: '100dvh'
-                    }
-                }}
             >
                 {selectedTransaction && (
                     <TransactionForm
@@ -329,25 +317,12 @@ export default function TransactionTable({
                         categories={categories}
                     />
                 )}
-            </Drawer>
+            </DrawerBase>
 
             {/* Drawer for creating a new transaction */}
-            <Drawer
-                anchor="right"
+            <DrawerBase
                 open={createDrawerOpen}
                 onClose={() => setCreateDrawerOpen(false)}
-                slotProps={{
-                    backdrop: {
-                        timeout: 300,
-                    },
-                }}
-                PaperProps={{
-                    sx: { 
-                        width: { xs: '100%', sm: 500 },
-                        height: '100dvh',
-                        maxHeight: '100dvh'
-                    }
-                }}
             >
                 <TransactionForm
                     onSubmit={() => {
@@ -357,7 +332,7 @@ export default function TransactionTable({
                     onClose={() => setCreateDrawerOpen(false)}
                     categories={categories}
                 />
-            </Drawer>
+            </DrawerBase>
         </Box>
     );
 }
