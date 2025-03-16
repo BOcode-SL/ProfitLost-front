@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
-import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Icon } from '@mui/material';
+import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Icon, Fab } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -17,6 +18,7 @@ interface DashboardNavProps {
     activeSection: string; // The currently active section
     handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
     menuItems: { label: string; icon: string; key: string; adminOnly?: boolean; }[]; // Array containing the menu items
+    onAddTransaction?: () => void; // Function to handle add transaction button click
 }
 
 // Logo component
@@ -86,22 +88,66 @@ const MobileNavItem = ({
   item: MenuItem; 
   activeSection: string; 
   handleMenuItemClick: (key: string) => void;
-}) => (
-  <Box
-    onClick={() => handleMenuItemClick(item.key)}
-    sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 0.5,
-      cursor: 'pointer',
-      color: activeSection === item.key ? 'primary.main' : 'text.primary'
-    }}
-  >
-    <Icon className="material-symbols-rounded">{item.icon}</Icon>
-    <Box sx={{ fontSize: '0.75rem' }}>{item.label}</Box>
-  </Box>
-);
+}) => {
+  // Display shortened label for Annual Report / Reporte anual
+  const displayLabel = () => {
+    if (item.key === 'annualReport') {
+      // For Annual Report / Reporte anual, use specific shortened versions
+      const isEnglish = item.label.includes('Annual');
+      const shortLabel = isEnglish ? 'Annual' : 'Anual';
+      
+      // Check if we need to use the shortened version
+      // This is a simplified check - in a real app you might want to measure actual width
+      const useShortVersion = window.innerWidth < 360; // Example threshold
+      
+      if (useShortVersion) {
+        return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{shortLabel}</Box>;
+      } else {
+        return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{item.label}</Box>;
+      }
+    }
+    
+    // For other labels, split long labels into two lines if needed
+    const words = item.label.split(' ');
+    if (words.length > 1 && item.label.length > 10) {
+      // For labels with multiple words that are longer than 10 characters
+      // Split into two parts, trying to balance the length
+      const midpoint = Math.floor(words.length / 2);
+      const firstLine = words.slice(0, midpoint).join(' ');
+      const secondLine = words.slice(midpoint).join(' ');
+      
+      return (
+        <>
+          <Box sx={{ fontSize: '0.7rem', textAlign: 'center', lineHeight: 1.1 }}>{firstLine}</Box>
+          <Box sx={{ fontSize: '0.7rem', textAlign: 'center', lineHeight: 1.1 }}>{secondLine}</Box>
+        </>
+      );
+    }
+    
+    return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{item.label}</Box>;
+  };
+
+  return (
+    <Box
+      onClick={() => handleMenuItemClick(item.key)}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0.5,
+        cursor: 'pointer',
+        color: activeSection === item.key ? 'primary.main' : 'text.primary',
+        width: '25%', // Equal width for all items
+        height: '100%',
+        px: 0.5
+      }}
+    >
+      <Icon className="material-symbols-rounded" sx={{ fontSize: '1.4rem' }}>{item.icon}</Icon>
+      {displayLabel()}
+    </Box>
+  );
+};
 
 // Desktop navigation
 const DesktopNav = ({ 
@@ -156,7 +202,8 @@ const MobileNav = ({
   moreAnchorEl,
   handleMoreClick,
   handleMoreClose,
-  handleMoreItemClick
+  handleMoreItemClick,
+  onAddTransaction
 }: { 
   mainMenuItems: MenuItem[]; 
   moreMenuItems: MenuItem[];
@@ -166,82 +213,129 @@ const MobileNav = ({
   handleMoreClick: (event: React.MouseEvent<HTMLElement>) => void;
   handleMoreClose: () => void;
   handleMoreItemClick: (key: string) => void;
-}) => (
-  <Box sx={{
-    display: { xs: 'block', md: 'none' },
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    zIndex: 999
-  }}>
-    <Paper
-      elevation={3}
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        pt: 2,
-        px: 1,
-        pb: 4,
-        borderRadius: '15px 15px 0 0',
-      }}
-    >
-      {mainMenuItems.map((item) => (
-        <MobileNavItem 
-          key={item.key}
-          item={item} 
-          activeSection={activeSection} 
-          handleMenuItemClick={handleMenuItemClick} 
-        />
-      ))}
-      
-      <Box
-        onClick={handleMoreClick}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 0.5,
-          cursor: 'pointer',
-          color: moreMenuItems.some(item => activeSection === item.key) ? 'primary.main' : 'text.primary'
-        }}
-      >
-        <Icon className="material-symbols-rounded">more_horiz</Icon>
-        <Box sx={{ fontSize: '0.75rem' }}>More</Box>
-      </Box>
-    </Paper>
-
-    <Menu
-      anchorEl={moreAnchorEl}
-      open={Boolean(moreAnchorEl)}
-      onClose={handleMoreClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-    >
-      {moreMenuItems.map((item) => (
-        <MenuItem
-          key={item.key}
-          onClick={() => handleMoreItemClick(item.key)}
+  onAddTransaction?: () => void;
+}) => {
+  const { t } = useTranslation();
+  
+  return (
+    <Box sx={{
+      display: { xs: 'block', md: 'none' },
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      width: '100%',
+      zIndex: 999
+    }}>
+      {onAddTransaction && (
+        <Fab 
+          color="primary" 
+          aria-label="add transaction"
+          onClick={onAddTransaction}
           sx={{
-            color: activeSection === item.key ? 'primary.main' : 'text.primary',
-            gap: 2
+            position: 'absolute',
+            top: -18,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            boxShadow: 3,
+            borderRadius: '12px',
+            width: '48px',
+            height: '36px',
+            minHeight: 'unset',
+            '&:hover': {
+              backgroundColor: 'primary.dark'
+            }
           }}
         >
-          <Icon className="material-symbols-rounded">{item.icon}</Icon>
-          {item.label}
-        </MenuItem>
-      ))}
-    </Menu>
-  </Box>
-);
+          <Icon className="material-symbols-rounded">add</Icon>
+        </Fab>
+      )}
+      
+      <Paper
+        elevation={3}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pt: 2.5,
+          px: 1,
+          pb: 3.5,
+          borderRadius: '15px 15px 0 0',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: -1,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '56px',
+            height: '18px',
+            backgroundColor: (theme) => theme.palette.background.paper,
+            borderRadius: '0 0 4px 4px',
+            zIndex: 999
+          }
+        }}
+      >
+        {mainMenuItems.map((item) => (
+          <MobileNavItem 
+            key={item.key}
+            item={item} 
+            activeSection={activeSection} 
+            handleMenuItemClick={handleMenuItemClick} 
+          />
+        ))}
+        
+        <Box
+          onClick={handleMoreClick}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 0.5,
+            cursor: 'pointer',
+            color: moreMenuItems.some(item => activeSection === item.key) ? 'primary.main' : 'text.primary',
+            width: '25%', // Equal width for all items
+            height: '100%'
+          }}
+        >
+          <Icon className="material-symbols-rounded" sx={{ fontSize: '1.4rem' }}>more_horiz</Icon>
+          <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{t('dashboard.common.more')}</Box>
+        </Box>
+      </Paper>
 
-export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems }: DashboardNavProps) {
+      <Menu
+        anchorEl={moreAnchorEl}
+        open={Boolean(moreAnchorEl)}
+        onClose={handleMoreClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        {moreMenuItems.map((item) => (
+          <MenuItem
+            key={item.key}
+            onClick={() => handleMoreItemClick(item.key)}
+            sx={{
+              color: activeSection === item.key ? 'primary.main' : 'text.primary',
+              gap: 2
+            }}
+          >
+            <Icon className="material-symbols-rounded">{item.icon}</Icon>
+            {item.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+};
+
+export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems, onAddTransaction }: DashboardNavProps) {
   const { isDarkMode } = useContext(ThemeContext);
   const { user } = useUser();
   const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -285,6 +379,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
         handleMoreClick={handleMoreClick}
         handleMoreClose={handleMoreClose}
         handleMoreItemClick={handleMoreItemClick}
+        onAddTransaction={onAddTransaction}
       />
     </>
   );

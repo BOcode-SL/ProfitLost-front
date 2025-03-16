@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Drawer, useTheme } from '@mui/material';
 
 // Contexts
 import { useUser } from '../../contexts/UserContext';
@@ -12,16 +13,26 @@ import DashboardNav from './components/DashboardNav';
 import DashboardContent from './components/DashboardContent';
 import GlobalOnboardingDialog from './components/GlobalOnboardingDialog';
 import LoadingScreen from './components/LoadingScreen';
+import TransactionForm from './features/transactions/components/TransactionForm';
+
+// Services
+import { categoryService } from '../../services/category.service';
+
+// Types
+import type { Category } from '../../types/models/category';
 
 // Dashboard component
 export default function Dashboard() {
     const { t } = useTranslation();
     const { user, isLoading } = useUser();
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeSection, setActiveSection] = useState('dashhome');
     const [showOnboarding, setShowOnboarding] = useState(false);
+    const [transactionDrawerOpen, setTransactionDrawerOpen] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     // Redirect to the authentication page if the user is not logged in
     useEffect(() => {
@@ -29,6 +40,22 @@ export default function Dashboard() {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
+
+    // Fetch categories for transaction form
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await categoryService.getAllCategories();
+                if (response.success) {
+                    setCategories(response.data as Category[]);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     // Manage the visibility of the onboarding dialog
     useEffect(() => {
@@ -77,6 +104,22 @@ export default function Dashboard() {
         setShowOnboarding(false);
     };
 
+    const handleAddTransaction = () => {
+        setTransactionDrawerOpen(true);
+    };
+
+    const handleTransactionDrawerClose = () => {
+        setTransactionDrawerOpen(false);
+    };
+
+    const handleTransactionSubmit = () => {
+        setTransactionDrawerOpen(false);
+        // If we're on the transactions page, navigate to it to refresh the data
+        if (activeSection === 'transactions') {
+            handleMenuItemClick('transactions');
+        }
+    };
+
     // Display loading screen while data is being fetched
     if (isLoading) {
         return <LoadingScreen />;
@@ -98,6 +141,7 @@ export default function Dashboard() {
                     activeSection={activeSection}
                     handleMenuItemClick={handleMenuItemClick}
                     menuItems={menuItems}
+                    onAddTransaction={handleAddTransaction}
                 />
                 <DashboardContent activeSection={activeSection} />
             </Box>
@@ -106,6 +150,34 @@ export default function Dashboard() {
                 open={showOnboarding}
                 onClose={handleOnboardingClose}
             />
+
+            <Drawer
+                anchor="bottom"
+                open={transactionDrawerOpen}
+                onClose={handleTransactionDrawerClose}
+                PaperProps={{
+                    sx: {
+                        width: { xs: '100%', sm: '450px' },
+                        borderRadius: { xs: '15px 15px 0 0', sm: '0' },
+                        height: { xs: 'calc(100% - 56px)', sm: '100%' },
+                        top: { xs: 'auto', sm: '0' },
+                        bottom: { xs: '0', sm: 'auto' },
+                        [theme.breakpoints.up('sm')]: {
+                            left: 'auto',
+                            right: 0
+                        }
+                    }
+                }}
+                SlideProps={{
+                    direction: 'up'
+                }}
+            >
+                <TransactionForm
+                    onClose={handleTransactionDrawerClose}
+                    onSubmit={handleTransactionSubmit}
+                    categories={categories}
+                />
+            </Drawer>
         </>
     );
 }

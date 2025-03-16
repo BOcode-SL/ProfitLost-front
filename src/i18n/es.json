@@ -707,6 +707,7 @@
             "logout": "Cerrar sesión",
             "noData": "No hay datos disponibles",
             "retry": "Reintentar",
+            "more": "Más",
             "colors": {
                 "background": "Color de fondo",
                 "text": "Color de texto"

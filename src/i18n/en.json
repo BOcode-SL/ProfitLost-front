@@ -707,6 +707,7 @@
             "logout": "Log out",
             "noData": "No data available",
             "retry": "Retry",
+            "more": "More",
             "colors": {
                 "background": "Background color",
                 "text": "Text color"
