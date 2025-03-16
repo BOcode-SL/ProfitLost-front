@@ -15,10 +15,10 @@ interface MenuItem {
 }
 
 interface DashboardNavProps {
-    activeSection: string; // The currently active section
-    handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
-    menuItems: { label: string; icon: string; key: string; adminOnly?: boolean; }[]; // Array containing the menu items
-    onAddTransaction?: () => void; // Function to handle add transaction button click
+  activeSection: string; // The currently active section of the dashboard
+  handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
+  menuItems: { label: string; icon: string; key: string; adminOnly?: boolean; }[]; // Array of menu items available in the navigation
+  onAddTransaction?: () => void; // Optional function to handle the click event for adding a transaction
 }
 
 // Logo component
@@ -34,7 +34,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
   }}>
     <img
       className="no-select"
-      src={isDarkMode 
+      src={isDarkMode
         ? "https://res.cloudinary.com/dnhlagojg/image/upload/v1737624634/logoPL3_white.png"
         : "https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"}
       alt="logo"
@@ -43,13 +43,13 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
 );
 
 // Desktop navigation item
-const DesktopNavItem = ({ 
-  item, 
-  activeSection, 
-  handleMenuItemClick 
-}: { 
-  item: MenuItem; 
-  activeSection: string; 
+const DesktopNavItem = ({
+  item,
+  activeSection,
+  handleMenuItemClick
+}: {
+  item: MenuItem;
+  activeSection: string;
   handleMenuItemClick: (key: string) => void;
 }) => (
   <ListItem
@@ -80,50 +80,32 @@ const DesktopNavItem = ({
 );
 
 // Mobile navigation item
-const MobileNavItem = ({ 
-  item, 
-  activeSection, 
-  handleMenuItemClick 
-}: { 
-  item: MenuItem; 
-  activeSection: string; 
+const MobileNavItem = ({
+  item,
+  activeSection,
+  handleMenuItemClick
+}: {
+  item: MenuItem;
+  activeSection: string;
   handleMenuItemClick: (key: string) => void;
 }) => {
-  // Display shortened label for Annual Report / Reporte anual
+  // Function to display a shortened label for the Annual Report
   const displayLabel = () => {
     if (item.key === 'annualReport') {
-      // For Annual Report / Reporte anual, use specific shortened versions
+      // Use specific shortened versions for the Annual Report
       const isEnglish = item.label.includes('Annual');
       const shortLabel = isEnglish ? 'Annual' : 'Anual';
-      
-      // Check if we need to use the shortened version
-      // This is a simplified check - in a real app you might want to measure actual width
+
+      // Determine if the shortened version should be used based on screen width
       const useShortVersion = window.innerWidth < 360; // Example threshold
-      
-      if (useShortVersion) {
-        return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{shortLabel}</Box>;
-      } else {
-        return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{item.label}</Box>;
-      }
-    }
-    
-    // For other labels, split long labels into two lines if needed
-    const words = item.label.split(' ');
-    if (words.length > 1 && item.label.length > 10) {
-      // For labels with multiple words that are longer than 10 characters
-      // Split into two parts, trying to balance the length
-      const midpoint = Math.floor(words.length / 2);
-      const firstLine = words.slice(0, midpoint).join(' ');
-      const secondLine = words.slice(midpoint).join(' ');
-      
+
       return (
-        <>
-          <Box sx={{ fontSize: '0.7rem', textAlign: 'center', lineHeight: 1.1 }}>{firstLine}</Box>
-          <Box sx={{ fontSize: '0.7rem', textAlign: 'center', lineHeight: 1.1 }}>{secondLine}</Box>
-        </>
+        <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>
+          {useShortVersion ? shortLabel : item.label}
+        </Box>
       );
     }
-    
+
     return <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{item.label}</Box>;
   };
 
@@ -150,15 +132,15 @@ const MobileNavItem = ({
 };
 
 // Desktop navigation
-const DesktopNav = ({ 
-  allMenuItems, 
-  activeSection, 
-  handleMenuItemClick, 
-  isDarkMode 
-}: { 
-  allMenuItems: MenuItem[]; 
-  activeSection: string; 
-  handleMenuItemClick: (key: string) => void; 
+const DesktopNav = ({
+  allMenuItems,
+  activeSection,
+  handleMenuItemClick,
+  isDarkMode
+}: {
+  allMenuItems: MenuItem[];
+  activeSection: string;
+  handleMenuItemClick: (key: string) => void;
   isDarkMode: boolean;
 }) => (
   <Box sx={{
@@ -178,14 +160,14 @@ const DesktopNav = ({
       }}
     >
       <Logo isDarkMode={isDarkMode} />
-      
+
       <List sx={{ px: 2 }}>
         {allMenuItems.map((item) => (
-          <DesktopNavItem 
+          <DesktopNavItem
             key={item.key}
-            item={item} 
-            activeSection={activeSection} 
-            handleMenuItemClick={handleMenuItemClick} 
+            item={item}
+            activeSection={activeSection}
+            handleMenuItemClick={handleMenuItemClick}
           />
         ))}
       </List>
@@ -194,20 +176,20 @@ const DesktopNav = ({
 );
 
 // Mobile navigation
-const MobileNav = ({ 
-  mainMenuItems, 
-  moreMenuItems, 
-  activeSection, 
+const MobileNav = ({
+  mainMenuItems,
+  moreMenuItems,
+  activeSection,
   handleMenuItemClick,
   moreAnchorEl,
   handleMoreClick,
   handleMoreClose,
   handleMoreItemClick,
   onAddTransaction
-}: { 
-  mainMenuItems: MenuItem[]; 
+}: {
+  mainMenuItems: MenuItem[];
   moreMenuItems: MenuItem[];
-  activeSection: string; 
+  activeSection: string;
   handleMenuItemClick: (key: string) => void;
   moreAnchorEl: null | HTMLElement;
   handleMoreClick: (event: React.MouseEvent<HTMLElement>) => void;
@@ -216,7 +198,7 @@ const MobileNav = ({
   onAddTransaction?: () => void;
 }) => {
   const { t } = useTranslation();
-  
+
   return (
     <Box sx={{
       display: { xs: 'block', md: 'none' },
@@ -227,8 +209,8 @@ const MobileNav = ({
       zIndex: 999
     }}>
       {onAddTransaction && (
-        <Fab 
-          color="primary" 
+        <Fab
+          color="primary"
           aria-label="add transaction"
           onClick={onAddTransaction}
           sx={{
@@ -238,19 +220,23 @@ const MobileNav = ({
             transform: 'translateX(-50%)',
             zIndex: 1000,
             boxShadow: 3,
-            borderRadius: '12px',
+            borderRadius: '8px',
             width: '48px',
             height: '36px',
             minHeight: 'unset',
+            textTransform: 'none',
+            fontSize: '1rem',
+            fontWeight: 500,
+            transition: 'all 0.2s ease-in-out',
             '&:hover': {
-              backgroundColor: 'primary.dark'
-            }
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.main,
+            },
           }}
         >
           <Icon className="material-symbols-rounded">add</Icon>
         </Fab>
       )}
-      
+
       <Paper
         elevation={3}
         sx={{
@@ -262,29 +248,17 @@ const MobileNav = ({
           pb: 3.5,
           borderRadius: '15px 15px 0 0',
           position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: -1,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '56px',
-            height: '18px',
-            backgroundColor: (theme) => theme.palette.background.paper,
-            borderRadius: '0 0 4px 4px',
-            zIndex: 999
-          }
         }}
       >
         {mainMenuItems.map((item) => (
-          <MobileNavItem 
+          <MobileNavItem
             key={item.key}
-            item={item} 
-            activeSection={activeSection} 
-            handleMenuItemClick={handleMenuItemClick} 
+            item={item}
+            activeSection={activeSection}
+            handleMenuItemClick={handleMenuItemClick}
           />
         ))}
-        
+
         <Box
           onClick={handleMoreClick}
           sx={{
@@ -341,7 +315,7 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
   const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
   // Filter menu items based on user role
-  const allMenuItems = menuItems.filter(item => 
+  const allMenuItems = menuItems.filter(item =>
     !item.adminOnly || (item.adminOnly && user?.role === 'admin')
   );
 
@@ -363,14 +337,14 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
 
   return (
     <>
-      <DesktopNav 
-        allMenuItems={allMenuItems} 
-        activeSection={activeSection} 
-        handleMenuItemClick={handleMenuItemClick} 
-        isDarkMode={isDarkMode} 
+      <DesktopNav
+        allMenuItems={allMenuItems}
+        activeSection={activeSection}
+        handleMenuItemClick={handleMenuItemClick}
+        isDarkMode={isDarkMode}
       />
-      
-      <MobileNav 
+
+      <MobileNav
         mainMenuItems={mainMenuItems}
         moreMenuItems={moreMenuItems}
         activeSection={activeSection}
