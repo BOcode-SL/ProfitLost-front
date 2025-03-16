@@ -7,6 +7,7 @@ import { useUser } from '../../../contexts/UserContext';
 // Services
 import { userService } from '../../../services/user.service';
 
+// Components
 import SectionIntroDialog from './SectionIntroDialog';
 
 // Components
@@ -24,21 +25,16 @@ interface DashboardContentProps {
     activeSection: string; // The currently active section
 }
 
-// DashboardContent component
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
-    // Initialize user context and state for displaying the introduction dialog
     const { user, setUser } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
-    // Effect to scroll to the top of the page when the active section changes
+    // Scroll to top when section changes
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeSection]);
 
-    // Effect to display the introduction dialog only if:
-    // 1. The user is logged in
-    // 2. The onboarding process is completed
-    // 3. The current section has not been previously shown
+    // Show introduction dialog for new sections
     useEffect(() => {
         if (user && activeSection && user.onboarding.completed) {
             const sectionIntro = user.onboarding.sections.find(
@@ -51,7 +47,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
         }
     }, [activeSection, user]);
 
-    // Function to handle the close of the introduction dialog
+    // Handle introduction dialog close
     const handleIntroClose = async () => {
         try {
             await userService.updateOnboardingSection(activeSection);
@@ -73,48 +69,6 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
         setShowIntro(false);
     };
 
-    // Function to render the content based on the active section
-    const renderContent = () => {
-        switch (activeSection) {
-            case 'dashhome':
-                return <DashHome />;
-            case 'annualReport':
-                return <AnnualReport />;
-            case 'transactions':
-                return <Transactions />;
-            case 'accounts':
-                return <Accounts />;
-            case 'notes':
-                return <Notes />;
-            case 'analytics':
-                return <Analytics />;
-            case 'notifications':
-                return <NotificationsEditor />;
-            default:
-                return (
-                    <Paper
-                        elevation={3}
-                        sx={{
-                            p: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: '12px',
-                            backdropFilter: 'blur(10px)',
-                            '& p': {
-                                fontSize: '2rem',
-                                margin: 0
-                            }
-                        }}
-                    >
-                        <p>🚧 {activeSection} is under construction 🚧</p>
-                    </Paper>
-                );
-        }
-    };
-
-    // Main container for the dashboard content
     return (
         <Box sx={{
             gridArea: 'Content',
@@ -124,18 +78,10 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
             pl: { xs: 2, md: 0 },
             width: '100%'
         }}>
-            <Suspense fallback={
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '50vh'
-                }}>
-                    <CircularProgress size={48} sx={{ color: 'primary.main' }} />
-                </Box>
-            }>
-                {renderContent()}
+            <Suspense fallback={<LoadingIndicator />}>
+                <SectionContent activeSection={activeSection} />
             </Suspense>
+            
             {showIntro && (
                 <SectionIntroDialog
                     open={showIntro}
@@ -145,4 +91,72 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
             )}
         </Box>
     );
-};
+}
+
+// Loading indicator component
+function LoadingIndicator() {
+    return (
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh'
+        }}>
+            <CircularProgress size={48} sx={{ color: 'primary.main' }} />
+        </Box>
+    );
+}
+
+// Section content component
+interface SectionContentProps {
+    activeSection: string;
+}
+
+function SectionContent({ activeSection }: SectionContentProps) {
+    switch (activeSection) {
+        case 'dashhome':
+            return <DashHome />;
+        case 'annualReport':
+            return <AnnualReport />;
+        case 'transactions':
+            return <Transactions />;
+        case 'accounts':
+            return <Accounts />;
+        case 'notes':
+            return <Notes />;
+        case 'analytics':
+            return <Analytics />;
+        case 'notifications':
+            return <NotificationsEditor />;
+        default:
+            return <UnderConstructionSection name={activeSection} />;
+    }
+}
+
+// Under construction section component
+interface UnderConstructionSectionProps {
+    name: string;
+}
+
+function UnderConstructionSection({ name }: UnderConstructionSectionProps) {
+    return (
+        <Paper
+            elevation={3}
+            sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '12px',
+                backdropFilter: 'blur(10px)',
+                '& p': {
+                    fontSize: '2rem',
+                    margin: 0
+                }
+            }}
+        >
+            <p>🚧 {name} is under construction 🚧</p>
+        </Paper>
+    );
+}
