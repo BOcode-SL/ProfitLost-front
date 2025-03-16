@@ -1057,12 +1057,13 @@
         "dashhome": {
             "title": "Dashboard",
             "intro": {
-                "title": "Welcome to your Dashboard",
+                "title": "Welcome to Your Financial Command Center",
                 "content": [
-                    "This is your financial command center, where you'll find a quick overview of your accounts, recent transactions, and financial status.",
-                    "📊 Visualize your income, expenses, and EBITDA for the current month compared to the previous month.",
-                    "📈 Consult an interactive graph of the last 6 months.",
-                    "🔄 Review your latest transactions."
+                    "This is your main panel, designed to give you a clear and complete view of your current financial situation.",
+                    "📊 Get a quick overview of your income, expenses, and balance for the current month compared to the previous one.",
+                    "📈 Analyze trends with the interactive chart of the last 6 months to make better decisions.",
+                    "🔄 Quickly access your latest transactions without needing to change sections.",
+                    "💡 Get a global perspective of your finances to better plan your economic future."
                 ]
             },
             "balance": {
@@ -1085,14 +1086,14 @@
         "annualReport": {
             "title": "Annual Report",
             "intro": {
-                "title": "Annual Financial Report",
+                "title": "Annual Financial Analysis",
                 "content": [
-                    "Get a comprehensive overview of your financial year with detailed analysis and trends.",
-                    "💰 Visualize your annual summary of income and expenses.",
-                    "📈 Analyze the monthly evolution of your finances.",
-                    "🎯 Identify patterns and trends in your expenses.",
-                    "📋 Manage and customize your categories.",
-                    "💡 Make smart decisions based on real data."
+                    "Discover a complete and detailed view of your financial year with advanced analysis and personalized trends.",
+                    "💰 Visualize the complete picture of your annual income and expenses with an intuitive breakdown.",
+                    "📈 Analyze the month-by-month evolution to identify seasonal patterns in your finances.",
+                    "🎯 Automatically detect trends and patterns in your spending habits to optimize your budget.",
+                    "📋 Manage and customize your categories to adapt the analysis to your specific needs.",
+                    "💡 Make smarter financial decisions based on real data and clear visualizations."
                 ]
             },
             "chart": {
@@ -1151,14 +1152,15 @@
         "accounts": {
             "title": "Accounts",
             "intro": {
-                "title": "Account Management",
+                "title": "Total Control of Your Accounts",
                 "content": [
-                    "Centralize and monitor all your financial accounts efficiently.",
-                    "💳 Manage multiple accounts in one place.",
-                    "💰 Visualize your total available assets.",
-                    "📊 Analyze the distribution of your money.",
-                    "⚡ Access your information quickly.",
-                    "🎨 Customize the visualization of each account."
+                    "Centralize and monitor all your financial accounts in a single intuitive and customizable space.",
+                    "💳 Manage multiple banking, savings, and investment accounts in one platform.",
+                    "💰 Visualize your total assets with a detailed breakdown by account and asset type.",
+                    "📊 Analyze the optimal distribution of your money with interactive charts and comparisons.",
+                    "⚡ Instantly access all your financial information from any device.",
+                    "🎨 Customize the visualization of each account with colors and labels for quick identification.",
+                    "🔄 Keep constant track of your balances to avoid overdrafts and optimize your resources."
                 ]
             },
             "newAccount": "New Account",
@@ -1227,14 +1229,15 @@
         "transactions": {
             "title": "Transactions",
             "intro": {
-                "title": "Your Transactions",
+                "title": "Intelligent Transaction Management",
                 "content": [
-                    "Manage and organize all your financial transactions in one place.",
-                    "📝 Easily record income and expenses.",
-                    "🗂️ Organize with personalized categories.",
-                    "📅 Visualize the detail month by month.",
-                    "📊 Analyze with interactive graphs.",
-                    "🔍 Keep a detailed control of each movement."
+                    "Organize and control all your financial transactions with advanced tools and clear visualizations.",
+                    "📝 Easily record income and expenses with an intuitive and fast system.",
+                    "🗂️ Automatically classify your transactions with customized categories for precise analysis.",
+                    "📅 Visualize month-by-month details with advanced filters to find exactly what you're looking for.",
+                    "📊 Analyze spending patterns with interactive charts that reveal saving opportunities.",
+                    "🔍 Maintain detailed control of each transaction with powerful searches and filters.",
+                    "💡 Identify areas for improvement in your finances with personalized suggestions based on your habits."
                 ]
             },
             "form": {
@@ -1343,14 +1346,15 @@
         "notes": {
             "title": "Notes",
             "intro": {
-                "title": "Your Notes",
+                "title": "Financial Notes",
                 "content": [
-                    "Your personal space to organize ideas and financial reminders.",
-                    "📝 Create detailed notes about your finances.",
-                    "⏰ Set important reminders.",
-                    "📌 Save relevant information and goals.",
-                    "✏️ Easily customize and edit.",
-                    "🔍 Find what you need quickly."
+                    "Your personal space to organize ideas, goals, and reminders related to your finances.",
+                    "📝 Create detailed notes about financial decisions, goals, and personal strategies.",
+                    "⏰ Set important reminders for payments, due dates, and financial opportunities.",
+                    "📌 Save relevant information about investments, loans, and long-term financial goals.",
+                    "✏️ Customize and organize your notes with an intuitive editor and formatting options.",
+                    "🔍 Quickly find any information with advanced searches and filters.",
+                    "🔄 Sync your notes across devices to have access to your financial information anywhere."
                 ]
             },
             "form": {

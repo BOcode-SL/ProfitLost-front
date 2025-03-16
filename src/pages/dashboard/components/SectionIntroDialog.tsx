@@ -1,20 +1,124 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, List, ListItem, ListItemText, Box, useTheme, useMediaQuery, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect, useMemo } from 'react';
 
-// Define the props for the SectionIntroDialog component
+// Types
+interface SectionInfo {
+    title: string;
+    content: string[];
+    icon: string;
+}
+
 interface SectionIntroDialogProps {
     open: boolean; // Controls the visibility of the dialog
     onClose: () => void; // Function to call when the dialog is closed
     section: string; // The section for which the introduction is displayed
 }
 
-// Main functional component for the SectionIntroDialog
-export default function SectionIntroDialog({ open, onClose, section }: SectionIntroDialogProps) {
+// Component for the dialog title with icon
+const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) => {
+    return (
+        <DialogTitle
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                pb: 1,
+                pt: { xs: 3, sm: 2 },
+                px: { xs: 3, sm: 3 }
+            }}
+        >
+            <IconCircle icon={icon} />
+            <Typography
+                variant="h5"
+                component="span"
+                fontWeight="500"
+                sx={{
+                    fontSize: { xs: '1.25rem', sm: '1.5rem' }
+                }}
+            >
+                {title}
+            </Typography>
+        </DialogTitle>
+    );
+};
+
+// Component for the circular icon
+const IconCircle = ({ icon }: { icon: string }) => {
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: { xs: 40, sm: 48 },
+                height: { xs: 40, sm: 48 },
+                minWidth: { xs: 40, sm: 48 },
+                minHeight: { xs: 40, sm: 48 },
+                borderRadius: '50%',
+                backgroundColor: theme => theme.palette.primary.main,
+                color: theme => theme.palette.primary.contrastText,
+                overflow: 'hidden'
+            }}
+        >
+            <Box
+                component="span"
+                className="material-symbols-rounded"
+                sx={{
+                    fontSize: { xs: 24, sm: 28 },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    lineHeight: 1
+                }}
+            >
+                {icon}
+            </Box>
+        </Box>
+    );
+};
+
+// Component for animated content items
+const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: number; isVisible: boolean }) => {
+    return (
+        <ListItem
+            key={index}
+            sx={{
+                py: 1,
+                opacity: 0,
+                transform: 'translateY(10px)',
+                animation: isVisible ? `fadeInUp 0.5s ease forwards ${index * 0.1}s` : 'none',
+                '@keyframes fadeInUp': {
+                    '0%': {
+                        opacity: 0,
+                        transform: 'translateY(10px)'
+                    },
+                    '100%': {
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    }
+                }
+            }}
+        >
+            <ListItemText
+                primary={item}
+                sx={{
+                    '& .MuiListItemText-primary': {
+                        fontSize: '1rem',
+                        lineHeight: 1.5
+                    }
+                }}
+            />
+        </ListItem>
+    );
+};
+
+// Hook to get section information
+const useSectionInfo = (section: string): SectionInfo => {
     const { t } = useTranslation();
 
-    // Function to retrieve content based on the section
-    const getSectionContent = (section: string) => {
-        return {
+    return useMemo(() => {
+        const sectionMap: Record<string, SectionInfo> = {
             dashhome: {
                 title: t('dashboard.dashhome.intro.title'),
                 content: t('dashboard.dashhome.intro.content', { returnObjects: true }) as string[],
@@ -40,67 +144,84 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
                 content: t('dashboard.notes.intro.content', { returnObjects: true }) as string[],
                 icon: 'note_alt'
             }
-        }[section] || { title: '', content: [], icon: '' };
-    };
+        };
 
-    const sectionInfo = getSectionContent(section);
+        return sectionMap[section] || { title: '', content: [], icon: '' };
+    }, [section, t]);
+};
+
+// Main component
+export default function SectionIntroDialog({ open, onClose, section }: SectionIntroDialogProps) {
+    const { t } = useTranslation();
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isVisible, setIsVisible] = useState(false);
+
+    const sectionInfo = useSectionInfo(section);
+
+    const contentArray = useMemo(() =>
+        Array.isArray(sectionInfo.content) ? sectionInfo.content : [sectionInfo.content as string],
+        [sectionInfo.content]
+    );
+
+    // Handle animation visibility
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+
+        if (open) {
+            timeoutId = setTimeout(() => {
+                setIsVisible(true);
+            }, 100);
+        } else {
+            setIsVisible(false);
+        }
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [open]);
 
     return (
         <Dialog
             open={open}
             onClose={onClose}
-            maxWidth="sm"
+            maxWidth="md"
             fullWidth
+            fullScreen={fullScreen}
             sx={{
                 '& .MuiPaper-root': {
-                    borderRadius: 3
+                    borderRadius: { xs: 0, sm: 3 },
+                    maxHeight: { xs: '100%', sm: '80vh' }
                 }
             }}
         >
-            <DialogTitle
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    pb: 1
-                }}
-            >
-                <span className="material-symbols-rounded" style={{ fontSize: 28 }}>
-                    {sectionInfo.icon}
-                </span>
-                <Typography variant="h6" component="span">
-                    {sectionInfo.title}
-                </Typography>
-            </DialogTitle>
-            <DialogContent>
-                <List>
-                    {Array.isArray(sectionInfo.content) ? sectionInfo.content.map((item: string, index: number) => (
-                        <ListItem key={index} sx={{ py: 0.5 }}>
-                            <ListItemText
-                                primary={item}
-                                sx={{
-                                    '& .MuiListItemText-primary': {
-                                        fontSize: '0.95rem'
-                                    }
-                                }}
-                            />
-                        </ListItem>
-                    )) : (
-                        <ListItem sx={{ py: 0.5 }}>
-                            <ListItemText
-                                primary={sectionInfo.content as string}
-                            />
-                        </ListItem>
-                    )}
+            <DialogTitleWithIcon title={sectionInfo.title} icon={sectionInfo.icon} />
+
+            <Divider />
+
+            <DialogContent sx={{ px: { xs: 3, sm: 3 }, py: 2 }}>
+                <List sx={{ pt: 1 }}>
+                    {contentArray.map((item: string, index: number) => (
+                        <AnimatedListItem
+                            key={index}
+                            item={item}
+                            index={index}
+                            isVisible={isVisible}
+                        />
+                    ))}
                 </List>
             </DialogContent>
-            <DialogActions>
+
+            <DialogActions sx={{ px: 3, py: 2 }}>
                 <Button
                     onClick={onClose}
                     color="primary"
+                    size="large"
                     sx={{
                         textTransform: 'none',
-                        fontWeight: 500
+                        fontWeight: 500,
+                        px: 4,
+                        borderRadius: 2
                     }}
                 >
                     {t('dashboard.common.understood')}
