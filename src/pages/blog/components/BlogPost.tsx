@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, alpha } from '@mui/material';
+import { Box, Paper, Typography, alpha, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -25,6 +25,8 @@ const formatBlogDate = (dateString: string) => {
 export default function BlogPost({ post }: BlogPostProps) {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <Paper
@@ -35,12 +37,13 @@ export default function BlogPost({ post }: BlogPostProps) {
                 height: '100%',
                 cursor: 'pointer',
                 overflow: 'hidden',
-                borderRadius: 4,
+                borderRadius: { xs: 3, sm: 4 },
                 bgcolor: 'background.paper',
                 transition: 'all 0.3s ease',
                 p: 0,
                 '&:hover': {
                     boxShadow: theme => `0 12px 24px ${alpha(theme.palette.primary.main, 0.12)}`,
+                    transform: 'translateY(-4px)',
                     '& .blog-image-container': {
                         transform: 'scale(1.1)'
                     }
@@ -82,7 +85,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        p: 2,
+                        p: { xs: 1.5, sm: 2 },
                         zIndex: 1
                     }}
                 >
@@ -91,10 +94,11 @@ export default function BlogPost({ post }: BlogPostProps) {
                         sx={{
                             color: 'white',
                             bgcolor: 'primary.main',
-                            px: 1.5,
-                            py: 0.5,
-                            borderRadius: 2,
-                            fontWeight: 500
+                            px: { xs: 1.2, sm: 1.5 },
+                            py: { xs: 0.4, sm: 0.5 },
+                            borderRadius: { xs: 1.5, sm: 2 },
+                            fontWeight: 500,
+                            fontSize: { xs: '0.7rem', sm: '0.75rem' }
                         }}
                     >
                         {t(`blog.categories.${post.category}`)}
@@ -102,18 +106,24 @@ export default function BlogPost({ post }: BlogPostProps) {
                 </Box>
             </Box>
 
-            <Box sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ 
+                p: { xs: 2, sm: 2.5, md: 3 }, 
+                flexGrow: 1, 
+                display: 'flex', 
+                flexDirection: 'column' 
+            }}>
                 <Typography
                     variant="h5"
                     sx={{
                         fontWeight: 700,
-                        mb: 2,
+                        mb: { xs: 1.5, sm: 2 },
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
                         color: 'primary.main',
-                        lineHeight: 1.3
+                        lineHeight: 1.3,
+                        fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.35rem' }
                     }}
                 >
                     {t(post.title)}
@@ -123,12 +133,13 @@ export default function BlogPost({ post }: BlogPostProps) {
                     variant="body2"
                     sx={{
                         color: 'text.secondary',
-                        mb: 3,
+                        mb: { xs: 2, sm: 2.5, md: 3 },
                         display: '-webkit-box',
                         WebkitLineClamp: 3,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
-                        lineHeight: 1.6
+                        lineHeight: 1.6,
+                        fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                     }}
                 >
                     {t(post.excerpt)}
@@ -139,7 +150,9 @@ export default function BlogPost({ post }: BlogPostProps) {
                         mt: 'auto',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        flexWrap: isMobile ? 'wrap' : 'nowrap',
+                        gap: isMobile ? 1 : 0
                     }}
                 >
                     <Typography
@@ -147,12 +160,14 @@ export default function BlogPost({ post }: BlogPostProps) {
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 1,
+                            gap: 0.5,
                             color: 'text.secondary',
-                            fontWeight: 500
+                            fontWeight: 500,
+                            fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
+                            width: isMobile ? '100%' : 'auto'
                         }}
                     >
-                        <span className="material-symbols-rounded" style={{ fontSize: 20 }}>person</span>
+                        <span className="material-symbols-rounded" style={{ fontSize: isMobile ? 16 : 20 }}>person</span>
                         {t(post.author)}
                     </Typography>
                     <Typography
@@ -160,11 +175,14 @@ export default function BlogPost({ post }: BlogPostProps) {
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 1,
-                            color: 'text.secondary'
+                            gap: 0.5,
+                            color: 'text.secondary',
+                            fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
+                            width: isMobile ? '100%' : 'auto',
+                            justifyContent: isMobile ? 'flex-start' : 'flex-end'
                         }}
                     >
-                        <span className="material-symbols-rounded" style={{ fontSize: 20 }}>calendar_today</span>
+                        <span className="material-symbols-rounded" style={{ fontSize: isMobile ? 16 : 20 }}>calendar_today</span>
                         {formatBlogDate(post.date)}
                     </Typography>
                 </Box>

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 // Define the Footer component
 export default function Footer() {
     const { t } = useTranslation();
-
+    
     // Define footer links with their corresponding text and href attributes
     const footerLinks = [
         { text: t('home.footer.links.privacy'), href: '/privacy' },
@@ -21,45 +21,46 @@ export default function Footer() {
             component="footer"
             sx={{
                 bgcolor: '#F7F7F7',
-                pb: 4,
+                pb: { xs: 3, sm: 4 },
                 mt: 'auto'
             }}
         >
-            <Divider sx={{ mb: 4 }} />
+            <Divider sx={{ mb: { xs: 3, sm: 4 } }} />
             <Container maxWidth="lg">
                 <Stack
                     direction={{ xs: 'column', md: 'row' }}
-                    spacing={{ xs: 3, md: 4 }}
+                    spacing={{ xs: 4, sm: 5, md: 6 }}
                     justifyContent="space-between"
-                    alignItems={{ xs: 'flex-start', md: 'flex-start' }}
+                    alignItems={{ xs: 'center', md: 'flex-start' }}
                 >
                     {/* Logo and Description Section */}
                     <Box sx={{ 
                         width: { xs: '100%', md: '60%' },
-                        px: { xs: 2, sm: 0 }
+                        px: { xs: 2, sm: 0 },
+                        textAlign: { xs: 'center', md: 'left' }
                     }}>
                         <Box
                             component="img"
                             src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
                             alt="logo"
                             sx={{
-                                width: { xs: 120, sm: 150, md: 200 },
+                                width: { xs: 160, sm: 160, md: 200 },
                                 mb: { xs: 2, sm: 3 },
                                 height: 'auto',
                                 display: 'block',
                                 marginLeft: { xs: 'auto', md: 0 },
-                                marginRight: { xs: 'auto', md: 0 },
-                                textAlign: { xs: 'center', md: 'left' }
+                                marginRight: { xs: 'auto', md: 0 }
                             }}
                         />
                         <Typography
                             variant="body2"
                             color="text.secondary"
                             sx={{
-                                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
-                                width: { xs: '100%', md: '80%' },
-                                lineHeight: 1.6,
-                                mb: 2
+                                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                                width: { xs: '100%', sm: '90%', md: '80%' },
+                                lineHeight: 1.7,
+                                mb: 2,
+                                mx: { xs: 'auto', md: 0 }
                             }}
                         >
                             {t('home.footer.description')}
@@ -68,27 +69,37 @@ export default function Footer() {
 
                     {/* Links Section */}
                     <Box sx={{
-                        textAlign: { xs: 'left', md: 'right' },
-                        minWidth: { md: '200px' }
+                        textAlign: { xs: 'center', md: 'right' },
+                        minWidth: { sm: '180px', md: '220px' },
+                        width: { xs: '100%', md: 'auto' }
                     }}>
                         <Typography
                             variant="h6"
                             gutterBottom
                             sx={{
-                                fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                                mb: { xs: 1, sm: 2 }
+                                fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.25rem' },
+                                mb: { xs: 1.5, sm: 2 },
+                                fontWeight: 600
                             }}
                         >
                             {t('home.footer.company')}
                         </Typography>
-                        <List sx={{ p: 0 }}>
+                        <List sx={{ 
+                            p: 0,
+                            display: { xs: 'flex', md: 'block' },
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            gap: { xs: 1, sm: 2 }
+                        }}>
                             {footerLinks.map(({ text, href }) => (
                                 <ListItem
                                     key={text}
                                     sx={{
                                         p: 0,
-                                        mb: { xs: 1, sm: 1.5 },
-                                        justifyContent: { xs: 'flex-start', md: 'flex-end' }
+                                        mb: { xs: 0.5, sm: 1, md: 1.5 },
+                                        justifyContent: { xs: 'center', md: 'flex-end' },
+                                        width: { xs: 'auto', md: '100%' },
+                                        mx: { xs: 1, md: 0 }
                                     }}
                                 >
                                     {href.startsWith('mailto:') ? (
@@ -97,8 +108,9 @@ export default function Footer() {
                                                 primary={text}
                                                 primaryTypographyProps={{
                                                     sx: {
-                                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                                        '&:hover': { color: '#fe6f14' }
+                                                        fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                                                        '&:hover': { color: '#fe6f14' },
+                                                        transition: 'color 0.2s ease'
                                                     }
                                                 }}
                                             />
@@ -109,8 +121,9 @@ export default function Footer() {
                                                 primary={text}
                                                 primaryTypographyProps={{
                                                     sx: {
-                                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                                        '&:hover': { color: '#fe6f14' }
+                                                        fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                                                        '&:hover': { color: '#fe6f14' },
+                                                        transition: 'color 0.2s ease'
                                                     }
                                                 }}
                                             />
@@ -125,8 +138,8 @@ export default function Footer() {
                 {/* Copyright Section */}
                 <Box
                     sx={{
-                        mt: { xs: 3, sm: 4 },
-                        pt: { xs: 2, sm: 4 },
+                        mt: { xs: 4, sm: 5 },
+                        pt: { xs: 2, sm: 3 },
                         borderTop: 1,
                         borderColor: 'divider',
                         textAlign: 'center'
@@ -136,7 +149,8 @@ export default function Footer() {
                         variant="body2"
                         color="text.secondary"
                         sx={{
-                            fontSize: { xs: '0.8rem', sm: '0.85rem' }
+                            fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+                            py: { xs: 1, md: 0 }
                         }}
                     >
                         {t('home.footer.copyright')} {' '}

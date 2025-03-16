@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination } from '@mui/material';
+import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination, useTheme, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { CategoryType } from '../../types/models/blogPost';
 import { blogPosts } from './data/blogData';
@@ -34,10 +34,12 @@ const searchInContent = (content: string, searchTerm: string): boolean => {
 // Blog page component
 export default function BlogPage() {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedCategory, setSelectedCategory] = useState<'all' | CategoryType>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 4;
+  const postsPerPage = isMobile ? 3 : 4; // Fewer posts per page on mobile
 
   // Scroll to the top of the page when the component mounts
   useEffect(() => {
@@ -88,17 +90,18 @@ export default function BlogPage() {
       <LanguageSelector />
       <Header />
       <Container maxWidth="lg" sx={{ 
-        py: { xs: 4, sm: 6, md: 8 }, 
-        pt: { xs: 16, sm: 18, md: 20 },
+        py: { xs: 3, sm: 5, md: 8 }, 
+        pt: { xs: 14, sm: 16, md: 20 },
         px: { xs: 2, sm: 3, md: 4 }
       }}>
-        <Box sx={{ mb: 8, textAlign: 'center' }}>
+        <Box sx={{ mb: { xs: 5, sm: 6, md: 8 }, textAlign: 'center' }}>
           <Typography
             variant="h2"
             component="h1"
             gutterBottom
             sx={{
               fontWeight: 800,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               background: 'linear-gradient(135deg, #f9701a 10%, #662803 90%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
@@ -108,11 +111,11 @@ export default function BlogPage() {
               '&::after': {
                 content: '""',
                 position: 'absolute',
-                bottom: '-10px',
+                bottom: { xs: '-8px', sm: '-10px' },
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: '60px',
-                height: '4px',
+                width: { xs: '40px', sm: '50px', md: '60px' },
+                height: { xs: '3px', sm: '4px' },
                 background: 'linear-gradient(135deg, #fe6f14 0%, #ff8f4c 100%)',
                 borderRadius: '2px'
               }
@@ -124,12 +127,13 @@ export default function BlogPage() {
             variant="h5"
             color="text.secondary"
             sx={{
-              maxWidth: '800px',
+              maxWidth: { xs: '100%', sm: '90%', md: '800px' },
               mx: 'auto',
-              mt: 4,
-              fontSize: 'clamp(1.125rem, 2vw, 1.5rem)',
+              mt: { xs: 3, sm: 4 },
+              fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
               opacity: 0.8,
-              lineHeight: 1.4
+              lineHeight: 1.5,
+              px: { xs: 1, sm: 0 }
             }}
           >
             {t('blog.subtitle')}
@@ -137,22 +141,34 @@ export default function BlogPage() {
         </Box>
 
         {/* Display blog categories */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ 
+          mb: { xs: 3, sm: 4 }, 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: { xs: 1, sm: 1.5, md: 2 }, 
+          flexWrap: 'wrap',
+          px: { xs: 1, sm: 0 }
+        }}>
           {availableCategories.map((category) => (
             <Chip
               key={category}
               label={t(`blog.categories.${category.toLowerCase()}`)}
               onClick={() => handleCategoryFilter(category)}
               sx={{
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                height: { xs: '28px', sm: '32px' },
                 '&:hover': { backgroundColor: 'primary.light' },
-                backgroundColor: selectedCategory === category ? 'primary.main' : 'default'
+                backgroundColor: selectedCategory === category ? 'primary.main' : 'default',
+                color: selectedCategory === category ? 'white' : 'inherit',
+                fontWeight: selectedCategory === category ? 600 : 400,
+                transition: 'all 0.2s ease'
               }}
             />
           ))}
         </Box>
 
         {/* Search bar for filtering posts */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: { xs: 4, sm: 5, md: 6 } }}>
           <TextField
             fullWidth
             variant="outlined"
@@ -163,9 +179,28 @@ export default function BlogPage() {
                   <span className="material-symbols-rounded">search</span>
                 </InputAdornment>
               ),
+              sx: {
+                borderRadius: '8px',
+                height: { xs: '48px', sm: '56px' },
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }
             }}
             onChange={(e) => handleSearch(e.target.value)}
-            sx={{ maxWidth: 600, mx: 'auto', display: 'block', backgroundColor: 'primary.contrastText' }}
+            sx={{ 
+              maxWidth: { xs: '100%', sm: '500px', md: '600px' }, 
+              mx: 'auto', 
+              display: 'block', 
+              backgroundColor: 'primary.contrastText',
+              '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'primary.main',
+                  borderWidth: 2
+                }
+              }
+            }}
           />
         </Box>
 
@@ -175,24 +210,39 @@ export default function BlogPage() {
           gridTemplateColumns: { 
             xs: '1fr',
             sm: 'repeat(auto-fill, minmax(280px, 1fr))',
-            md: 'repeat(2, 1fr)' 
+            md: 'repeat(auto-fill, minmax(320px, 1fr))' 
           },
-          gap: { xs: 2, sm: 3, md: 4 }
+          gap: { xs: 3, sm: 3, md: 4 }
         }}>
-          {currentPosts.map((post) => (
-            <Box key={post.id}>
-              <BlogPost post={post} />
+          {currentPosts.length > 0 ? (
+            currentPosts.map((post) => (
+              <Box key={post.id}>
+                <BlogPost post={post} />
+              </Box>
+            ))
+          ) : (
+            <Box sx={{ 
+              gridColumn: '1 / -1', 
+              textAlign: 'center', 
+              py: 8,
+              px: 2
+            }}>
+              <Typography variant="h6" color="text.secondary">
+                {t('blog.noPostsFound')}
+              </Typography>
             </Box>
-          ))}
+          )}
         </Box>
 
         {/* Pagination controls */}
-        <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mt: { xs: 4, sm: 5, md: 6 }, display: 'flex', justifyContent: 'center' }}>
           <Pagination
             count={Math.ceil(filteredPosts.length / postsPerPage)}
             page={currentPage}
             onChange={handlePageChange}
             color="primary"
+            size={isMobile ? "small" : "medium"}
+            siblingCount={isMobile ? 0 : 1}
           />
         </Box>
       </Container>
