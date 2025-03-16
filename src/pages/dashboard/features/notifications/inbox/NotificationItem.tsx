@@ -105,8 +105,6 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                 return '🎯';
             case 'tip':
                 return '💡';
-            case 'system':
-                return 'ℹ️';
             case 'announcement':
                 return '📢';
             default:
@@ -125,8 +123,6 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                 return 'info';
             case 'tip':
                 return 'warning';
-            case 'system':
-                return 'secondary';
             case 'announcement':
                 return 'primary';
             default:

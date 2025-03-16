@@ -38,7 +38,6 @@ export default function NotificationPreferences({ onSuccess }: NotificationPrefe
                 achievement: true,
                 goal_progress: true,
                 tip: true,
-                system: true,
                 announcement: true
             }
         },
@@ -49,7 +48,6 @@ export default function NotificationPreferences({ onSuccess }: NotificationPrefe
                 achievement: true,
                 goal_progress: true,
                 tip: false,
-                system: true,
                 announcement: true
             }
         }
@@ -122,7 +120,6 @@ export default function NotificationPreferences({ onSuccess }: NotificationPrefe
             'achievement',
             'goal_progress',
             'tip',
-            'system',
             'announcement'
         ];
 

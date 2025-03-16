@@ -66,7 +66,6 @@ class NotificationService {
                     achievement: true,
                     goal_progress: true,
                     tip: true,
-                    system: true,
                     announcement: true
                 }
             },
@@ -77,7 +76,6 @@ class NotificationService {
                     achievement: true,
                     goal_progress: true,
                     tip: false,
-                    system: false,
                     announcement: true
                 }
             }

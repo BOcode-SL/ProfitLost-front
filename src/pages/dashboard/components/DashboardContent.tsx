@@ -15,7 +15,6 @@ const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
-// const Goals = lazy(() => import('../features/goals/Goals'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 const Analytics = lazy(() => import('../features/analytics/Analytics'));
 const NotificationsEditor = lazy(() => import('../features/notifications/editor/NotificationsEditor'));
