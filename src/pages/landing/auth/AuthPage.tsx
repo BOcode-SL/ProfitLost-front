@@ -24,6 +24,17 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import ResetPasswordForm from './components/ResetPasswordForm';
 
+// Declare dataLayer for GTM
+declare global {
+    interface Window {
+        dataLayer: Array<{
+            event?: string;
+            login_method?: 'email' | 'google';
+            [key: string]: string | undefined;
+        }>;
+    }
+}
+
 // AuthPage component
 export default function AuthPage() {
     const navigate = useNavigate();
@@ -74,6 +85,16 @@ export default function AuthPage() {
         }
     };
 
+    // Function to push login_success event to dataLayer
+    const pushLoginSuccessEvent = (method: 'email' | 'google') => {
+        // Push to dataLayer for GTM
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'login_success',
+            login_method: method
+        });
+    };
+
     // Handle form submission for login and registration processes
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -84,6 +105,8 @@ export default function AuthPage() {
                 const response = await authService.login(loginData);
                 if (response.success) {
                     await loadUserData();
+                    // Push login_success event to dataLayer
+                    pushLoginSuccessEvent('email');
                     toast.success(t('home.auth.login.title'));
                     navigate('/dashboard', { replace: true });
                 }
@@ -254,6 +277,8 @@ export default function AuthPage() {
 
             if (response.success) {
                 await loadUserData();
+                // Push login_success event to dataLayer
+                pushLoginSuccessEvent('google');
                 toast.success(t('home.auth.success.welcome'));
                 
                 // On iOS PWA, add a slight delay to ensure the token is saved
