@@ -30,6 +30,7 @@ declare global {
         dataLayer: Array<{
             event?: string;
             login_method?: 'email' | 'google';
+            register_method?: 'email';
             [key: string]: string | undefined;
         }>;
     }
@@ -95,6 +96,16 @@ export default function AuthPage() {
         });
     };
 
+    // Function to push register_success event to dataLayer
+    const pushRegisterSuccessEvent = (method: 'email') => {
+        // Push to dataLayer for GTM
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'register_success',
+            register_method: method
+        });
+    };
+
     // Handle form submission for login and registration processes
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -126,6 +137,8 @@ export default function AuthPage() {
                 const response = await authService.register(registerData);
                 if (response.success) {
                     await loadUserData();
+                    // Push register_success event to dataLayer
+                    pushRegisterSuccessEvent('email');
                     toast.success(t('home.auth.success.registration'));
                     navigate('/dashboard');
                 }
