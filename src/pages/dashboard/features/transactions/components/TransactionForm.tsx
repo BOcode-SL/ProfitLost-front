@@ -549,7 +549,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             {/* Form submission handler */}
             <form onSubmit={handleSubmit}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 6 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
                     {/* Date input field */}
                     <Paper
