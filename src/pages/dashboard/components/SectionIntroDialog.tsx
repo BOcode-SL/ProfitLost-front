@@ -10,12 +10,12 @@ interface SectionInfo {
 }
 
 interface SectionIntroDialogProps {
-    open: boolean; // Controls the visibility of the dialog
-    onClose: () => void; // Function to call when the dialog is closed
+    open: boolean; // Indicates whether the dialog is visible
+    onClose: () => void; // Callback function to execute when the dialog is closed
     section: string; // The section for which the introduction is displayed
 }
 
-// Component for the dialog title with icon
+// Component for the dialog title with an icon
 const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) => {
     return (
         <DialogTitle
@@ -113,7 +113,7 @@ const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: num
     );
 };
 
-// Hook to get section information
+// Hook to retrieve section information
 const useSectionInfo = (section: string): SectionInfo => {
     const { t } = useTranslation();
 
@@ -164,7 +164,7 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
         [sectionInfo.content]
     );
 
-    // Handle animation visibility
+    // Manage the visibility of the animation
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
 
