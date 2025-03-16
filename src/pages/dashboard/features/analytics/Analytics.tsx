@@ -8,7 +8,6 @@ import { useUser } from '../../../../contexts/UserContext';
 
 // Components
 import UserMetricsCard from './components/UserMetricsCard';
-import DeviceMetricsCard from './components/DeviceMetricsCard';
 import TransactionMetricsCard from './components/TransactionMetricsCard';
 
 // Services
@@ -145,9 +144,6 @@ export default function Analytics() {
 
                 {/* Transaction Metrics Card */}
                 <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
-
-                {/* Device Metrics Card */}
-                <DeviceMetricsCard data={data?.devices || null} loading={loading} />
             </Box>
         </Box>
     );
