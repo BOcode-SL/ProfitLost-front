@@ -440,7 +440,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                                 alignItems="flex-start"
                                 sx={{
                                     bgcolor: 'background.paper',
-                                    borderRadius: 2,
+                                    borderRadius: 3,
                                     mb: 2,
                                     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                                     p: 2
