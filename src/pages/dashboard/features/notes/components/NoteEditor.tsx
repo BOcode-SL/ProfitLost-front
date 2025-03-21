@@ -198,11 +198,13 @@ export default function NoteEditor({
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={() => setDeleteDialog(false)}
-                PaperProps={{
-                    sx: {
-                        borderRadius: 3,
-                        width: '90%',
-                        maxWidth: '400px'
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: 3,
+                            width: '90%',
+                            maxWidth: '400px'
+                        }
                     }
                 }}
             >

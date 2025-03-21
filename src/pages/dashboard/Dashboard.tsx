@@ -85,7 +85,6 @@ export default function Dashboard() {
         { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars', key: 'annualReport' },
         { label: t('dashboard.transactions.title'), icon: 'receipt_long', key: 'transactions' },
         { label: t('dashboard.accounts.title'), icon: 'account_balance', key: 'accounts' },
-        // { label: 'Goals', icon: 'task_alt', key: 'goals' },
         { label: t('dashboard.notes.title'), icon: 'note_alt', key: 'notes' },
         { label: t('dashboard.analytics.title'), icon: 'analytics', key: 'analytics', adminOnly: true },
         { label: t('dashboard.notifications.title'), icon: 'notifications', key: 'notifications', adminOnly: true }

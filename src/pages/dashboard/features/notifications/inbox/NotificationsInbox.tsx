@@ -495,7 +495,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
         const groupedNotifications = groupNotificationsByDate();
 
         return (
-            <Box sx={{ width: '100%', px: 2 }}>
+            <Box sx={{ width: '100%', px: 3 }}>
                 {Object.entries(groupedNotifications).map(([date, notifs]) => (
                     <Box key={date} sx={{ mb: 3 }}>
                         <Typography
@@ -536,7 +536,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                 },
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
-                pt: 2
+                pt: 3
             }}>
                 {renderNotificationsList()}
             </Box>

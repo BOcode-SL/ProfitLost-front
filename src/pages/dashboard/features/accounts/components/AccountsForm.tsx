@@ -384,11 +384,13 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             <Dialog
                 open={deleteDialog}
                 onClose={() => setDeleteDialog(false)}
-                PaperProps={{
-                    sx: {
-                        borderRadius: 3,
-                        width: '90%',
-                        maxWidth: '400px'
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: 3,
+                            width: '90%',
+                            maxWidth: '400px'
+                        }
                     }
                 }}
             >

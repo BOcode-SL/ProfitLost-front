@@ -274,12 +274,14 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                     maxWidth="sm"
                     fullWidth
                     fullScreen={isMobile}
-                    PaperProps={{
-                        sx: {
-                            overflow: 'hidden',
-                            borderRadius: isMobile ? 0 : 3,
-                            height: isMobile ? '100dvh' : 'auto',
-                            m: isMobile ? 0 : 2
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                overflow: 'hidden',
+                                borderRadius: isMobile ? 0 : 3,
+                                height: isMobile ? '100dvh' : 'auto',
+                                m: isMobile ? 0 : 2
+                            }
                         }
                     }}
                     TransitionProps={{

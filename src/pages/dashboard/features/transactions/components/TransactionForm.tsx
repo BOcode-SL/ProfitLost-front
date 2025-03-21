@@ -294,11 +294,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             open={deleteDialog}
             onClose={() => setDeleteDialog(false)}
             TransitionComponent={Transition}
-            PaperProps={{
-                sx: {
-                    borderRadius: 3,
-                    width: '90%',
-                    maxWidth: '400px'
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: 3,
+                        width: '90%',
+                        maxWidth: '400px'
+                    }
                 }
             }}
         >
@@ -480,11 +482,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             TransitionComponent={Transition}
             keepMounted
             onClose={() => setEditRecurrentDialog(false)}
-            PaperProps={{
-                sx: {
-                    borderRadius: 3,
-                    width: '90%',
-                    maxWidth: '400px'
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: 3,
+                        width: '90%',
+                        maxWidth: '400px'
+                    }
                 }
             }}
         >

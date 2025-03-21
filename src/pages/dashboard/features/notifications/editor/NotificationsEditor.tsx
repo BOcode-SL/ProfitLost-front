@@ -391,10 +391,12 @@ export default function NotificationsEditor() {
                 maxWidth="md"
                 fullWidth
                 scroll="paper"
-                PaperProps={{
-                    sx: {
-                        borderRadius: 3,
-                        backgroundColor: 'background.paper'
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: 3,
+                            backgroundColor: 'background.paper'
+                        }
                     }
                 }}
             >

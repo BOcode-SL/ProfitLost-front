@@ -390,11 +390,13 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     TransitionComponent={Transition}
                     keepMounted
                     onClose={() => setDeleteDialog({ open: false, categoryName: '' })}
-                    PaperProps={{
-                        sx: {
-                            borderRadius: 3,
-                            width: '90%',
-                            maxWidth: '400px'
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                borderRadius: 3,
+                                width: '90%',
+                                maxWidth: '400px'
+                            }
                         }
                     }}
                 >

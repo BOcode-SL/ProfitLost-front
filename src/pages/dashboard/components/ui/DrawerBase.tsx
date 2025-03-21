@@ -1,16 +1,21 @@
 import { ReactNode } from 'react';
-import { Drawer, DrawerProps, useTheme, useMediaQuery, SlideProps } from '@mui/material';
+import { Drawer, DrawerProps, useTheme, useMediaQuery, SlideProps, SxProps, Theme } from '@mui/material';
 
 interface DrawerBaseProps extends Omit<DrawerProps, 'children'> {
   children: ReactNode;
   onClose: () => void;
+  slotProps?: {
+    paper?: {
+      sx?: SxProps<Theme>;
+    };
+  };
 }
 
 export default function DrawerBase({
   children,
   onClose,
   open,
-  PaperProps,
+  slotProps,
   ...rest
 }: DrawerBaseProps) {
   const theme = useTheme();
@@ -22,29 +27,30 @@ export default function DrawerBase({
   // Define SlideProps for mobile
   const slideProps: Partial<SlideProps> | undefined = isMobile ? { direction: 'up' as const } : undefined;
   
-  // Definir los PaperProps por defecto
-  const defaultPaperProps = {
-    sx: {
-      width: { xs: '100%', sm: 500 },
-      height: isMobile ? 'calc(100% - 56px)' : '100dvh',
-      maxHeight: isMobile ? 'calc(100% - 56px)' : '100dvh',
-      ...(isMobile && {
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-      })
-    }
+  // Define default paper props
+  const defaultPaperSx = {
+    width: { xs: '100%', sm: 450 },
+    height: isMobile ? 'calc(100% - 56px)' : '100dvh',
+    maxHeight: isMobile ? 'calc(100% - 56px)' : '100dvh',
+    ...(isMobile && {
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+    })
   };
 
-  // Combinar los PaperProps por defecto con los proporcionados
-  const mergedPaperProps = PaperProps
-    ? {
-        ...PaperProps,
-        sx: {
-          ...defaultPaperProps.sx,
-          ...(PaperProps.sx || {})
-        }
+  // Merge default paper props with provided ones
+  const mergedSlotProps = {
+    backdrop: {
+      timeout: 300,
+    },
+    paper: {
+      sx: {
+        ...defaultPaperSx,
+        ...(slotProps?.paper?.sx || {}),
       }
-    : defaultPaperProps;
+    },
+    ...slotProps
+  };
 
   return (
     <Drawer
@@ -52,12 +58,7 @@ export default function DrawerBase({
       open={open}
       onClose={onClose}
       SlideProps={slideProps}
-      slotProps={{
-        backdrop: {
-          timeout: 300,
-        },
-      }}
-      PaperProps={mergedPaperProps}
+      slotProps={mergedSlotProps}
       {...rest}
     >
       {children}

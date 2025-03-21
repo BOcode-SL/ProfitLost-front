@@ -317,13 +317,8 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
         <DrawerBase
             open={open}
             onClose={onClose}
-            PaperProps={{
-                sx: {
-                    p: 2
-                }
-            }}
         >
-            <Box>
+            <Box sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
                     <IconButton onClick={onClose}>
                         <span className="material-symbols-rounded">close</span>
@@ -417,7 +412,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                 </Paper>
             </Box>
 
-            <Box sx={{ mt: 'auto', mb: 2 }}>
+            <Box sx={{ mt: 'auto', mb: 2, p: 3 }}>
                 <Button
                     fullWidth
                     variant="outlined"
@@ -452,13 +447,6 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
         <DrawerBase
             open={open}
             onClose={onClose}
-            PaperProps={{
-                sx: {
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column'
-                }
-            }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -515,11 +503,6 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
         <DrawerBase
             open={open}
             onClose={onClose}
-            PaperProps={{
-                sx: {
-                    p: 2
-                }
-            }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onBack} sx={{ mr: 2 }}>
