@@ -175,7 +175,6 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                 flexDirection: 'column',
                 gap: 3
             }}>
-                {/* Profile Image Paper */}
                 {/* Profile Image Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography

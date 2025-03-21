@@ -22,12 +22,21 @@ import type { NotificationPreferences as NotificationPreferencesType, Notificati
 // Interface for the props of the NotificationPreferences component
 interface NotificationPreferencesProps {
     onSuccess?: () => void; // Optional function called on successful save
+    source?: 'notifications' | 'settings'; // Identifies where the component was opened from
 }
 
 // NotificationPreferences component
-export default function NotificationPreferences({ onSuccess }: NotificationPreferencesProps) {
+export default function NotificationPreferences({ onSuccess, source = 'settings' }: NotificationPreferencesProps) {
     const { t } = useTranslation();
-
+    
+    // The source parameter ('notifications' or 'settings') determines 
+    // how the back navigation behavior works in the parent component
+    
+    // Log the source for debugging and to fix linter error
+    useEffect(() => {
+        console.log(`NotificationPreferences opened from: ${source}`);
+    }, [source]);
+    
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
     const [preferences, setPreferences] = useState<NotificationPreferencesType>({
@@ -104,7 +113,10 @@ export default function NotificationPreferences({ onSuccess }: NotificationPrefe
             setLoading(true);
             await notificationService.updateNotificationPreferences(preferences);
             toast.success(t('dashboard.settings.notifications.success.saved'));
-            onSuccess?.();
+            // Only call onSuccess if provided
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (error) {
             console.error('Error saving notification preferences:', error);
             toast.error(t('dashboard.settings.notifications.errors.savingError'));
@@ -148,6 +160,7 @@ export default function NotificationPreferences({ onSuccess }: NotificationPrefe
         );
     };
 
+    // Display the loading state
     if (initialLoading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>

@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useContext, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Box, Badge, Avatar, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip } from '@mui/material';
+import { Box, Avatar, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip, useTheme, alpha } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Services
@@ -33,6 +33,7 @@ interface DashboardHeaderProps {
 interface SettingsDrawerState {
     open: boolean;
     component: string;
+    source?: 'notifications' | 'settings';
 }
 
 export default function DashboardHeader({ user }: DashboardHeaderProps) {
@@ -107,7 +108,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         setDrawerOpen(false);
         setSettingsDrawer({
             open: true,
-            component
+            component,
+            source: 'settings'
         });
     };
 
@@ -142,7 +144,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
             case t('dashboard.settings.help.title'):
                 return <Help />;
             case t('dashboard.settings.notifications.title'):
-                return <NotificationPreferences onSuccess={handleCloseSettingsDrawer} />;
+                return <NotificationPreferences onSuccess={handleCloseSettingsDrawer} source={settingsDrawer.source} />;
             default:
                 return null;
         }
@@ -180,7 +182,11 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 onMarkAllAsRead={handleMarkAllAsRead}
                 onOpenSettings={() => {
                     handleCloseNotifications();
-                    handleSettingsClick(t('dashboard.settings.notifications.title'));
+                    setSettingsDrawer({
+                        open: true,
+                        component: t('dashboard.settings.notifications.title'),
+                        source: 'notifications'
+                    });
                 }}
             />
 
@@ -190,8 +196,14 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 component={settingsDrawer.component}
                 onClose={handleCloseSettingsDrawer}
                 onBack={() => {
-                    setSettingsDrawer({ open: false, component: '' });
-                    setDrawerOpen(true);
+                    if (settingsDrawer.component === t('dashboard.settings.notifications.title') && 
+                        settingsDrawer.source === 'notifications') {
+                        setSettingsDrawer({ open: false, component: '' });
+                        setNotificationsDrawerOpen(true);
+                    } else {
+                        setSettingsDrawer({ open: false, component: '' });
+                        setDrawerOpen(true);
+                    }
                 }}
             >
                 {renderSettingsComponent()}
@@ -261,20 +273,43 @@ function HeaderBar({
                             <span className="material-symbols-rounded">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
                         </Tooltip>
                     </IconButton>
-
-                    <IconButton onClick={onOpenNotifications} disabled={user?.role !== 'admin'}>
-                        <Badge
-                            color="primary"
-                            variant="dot"
-                            invisible={unreadNotifications === 0}
-                        >
-                            <Tooltip title={t('dashboard.tooltips.inbox')}>
-                                <span className="material-symbols-rounded">
-                                    notifications
-                                </span>
-                            </Tooltip>
-                        </Badge>
+                    {user?.role === 'admin' && (
+                        <IconButton 
+                            onClick={onOpenNotifications}
+                        sx={{ 
+                            position: 'relative',
+                            '&::after': unreadNotifications > 0 ? {
+                                content: '""',
+                                position: 'absolute',
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                bgcolor: 'primary.main',
+                                top: '10px',
+                                right: '10px',
+                                boxShadow: '0 0 0 2px #fff',
+                                animation: 'pulse 2s infinite',
+                                '@keyframes pulse': {
+                                    '0%': {
+                                        boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0.7)'
+                                    },
+                                    '70%': {
+                                        boxShadow: '0 0 0 6px rgba(var(--mui-palette-primary-mainChannel) / 0)'
+                                    },
+                                    '100%': {
+                                        boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0)'
+                                    }
+                                }
+                            } : {}
+                        }}
+                    >
+                        <Tooltip title={t('dashboard.tooltips.inbox')}>
+                            <span className="material-symbols-rounded">
+                                {unreadNotifications > 0 ? 'notifications_active' : 'notifications'}
+                            </span>
+                        </Tooltip>
                     </IconButton>
+                    )}
                 </Box>
 
                 <Avatar
@@ -318,7 +353,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
             open={open}
             onClose={onClose}
         >
-            <Box sx={{ p: 3 }}>
+            <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
                     <IconButton onClick={onClose}>
                         <span className="material-symbols-rounded">close</span>
@@ -410,22 +445,22 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                         ))}
                     </List>
                 </Paper>
-            </Box>
 
-            <Box sx={{ mt: 'auto', mb: 2, p: 3 }}>
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    color="primary"
-                    onClick={onLogout}
-                    startIcon={
-                        <span className="material-symbols-rounded">
-                            logout
-                        </span>
-                    }
-                >
-                    {t('dashboard.common.logout')}
-                </Button>
+                <Box sx={{ mt: 'auto', mb: 2 }}>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        color="primary"
+                        onClick={onLogout}
+                        startIcon={
+                            <span className="material-symbols-rounded">
+                                logout
+                            </span>
+                        }
+                    >
+                        {t('dashboard.common.logout')}
+                    </Button>
+                </Box>
             </Box>
         </DrawerBase>
     );
@@ -442,49 +477,113 @@ interface NotificationsDrawerProps {
 
 function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOpenSettings }: NotificationsDrawerProps) {
     const { t } = useTranslation();
+    const theme = useTheme();
     
     return (
         <DrawerBase
             open={open}
             onClose={onClose}
         >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                        <span className="material-symbols-rounded">close</span>
-                    </IconButton>
-                    <Typography variant="h6">
-                        {t('dashboard.notifications.title')}
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Tooltip title={t('dashboard.settings.notifications.title')}>
-                        <IconButton
-                            size="small"
-                            onClick={onOpenSettings}
+            <Box 
+                sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    height: '100%'
+                }}
+            >
+                <Box 
+                    sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        borderBottom: 1,
+                        borderColor: 'divider',
+                        px: 3,
+                        py: 2,
+                        position: 'sticky',
+                        top: 0,
+                        backdropFilter: 'blur(8px)',
+                        zIndex: 1000
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton 
+                            onClick={onClose} 
+                            sx={{ 
+                                mr: 2,
+                                color: 'text.primary',
+                                '&:hover': {
+                                    bgcolor: alpha(theme.palette.primary.main, 0.1)
+                                }
+                            }}
                         >
-                            <span className="material-symbols-rounded">settings</span>
+                            <span className="material-symbols-rounded">arrow_back</span>
                         </IconButton>
-                    </Tooltip>
+                        <Box>
+                            <Typography variant="h6" fontWeight={600}>
+                                {t('dashboard.notifications.title')}
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {unreadCount > 0 && (
+                            <Tooltip title={t('dashboard.notifications.markAllAsRead')}>
+                                <IconButton
+                                    size="small"
+                                    onClick={onMarkAllAsRead}
+                                    sx={{
+                                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                        color: 'primary.main',
+                                        '&:hover': {
+                                            bgcolor: alpha(theme.palette.primary.main, 0.2)
+                                        }
+                                    }}
+                                >
+                                    <span className="material-symbols-rounded" style={{ fontSize: 20 }}>mark_email_read</span>
+                                </IconButton>
+                            </Tooltip>
+                        )}
+
+                        <Tooltip title={t('dashboard.settings.notifications.title')}>
+                            <IconButton
+                                size="small"
+                                onClick={onOpenSettings}
+                                sx={{
+                                    bgcolor: alpha(theme.palette.background.paper, 0.6),
+                                    border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+                                    color: 'text.secondary',
+                                    '&:hover': {
+                                        bgcolor: alpha(theme.palette.background.paper, 0.8)
+                                    }
+                                }}
+                            >
+                                <span className="material-symbols-rounded" style={{ fontSize: 20 }}>settings</span>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
+
+                <Box sx={{ flexGrow: 1, overflow: 'hidden', p: 3 }}>
+                    <Suspense fallback={
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexGrow: 1,
+                            height: '100%'
+                        }}>
+                            <CircularProgress size={40} thickness={4} />
+                        </Box>
+                    }>
+                        <NotificationsInbox 
+                            onClose={onClose} 
+                            onMarkAllAsRead={onMarkAllAsRead} 
+                            unreadCount={unreadCount} 
+                        />
+                    </Suspense>
                 </Box>
             </Box>
-
-            <Suspense fallback={
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexGrow: 1
-                }}>
-                    <CircularProgress />
-                </Box>
-            }>
-                <NotificationsInbox 
-                    onClose={onClose} 
-                    onMarkAllAsRead={onMarkAllAsRead} 
-                    unreadCount={unreadCount} 
-                />
-            </Suspense>
         </DrawerBase>
     );
 }
@@ -504,24 +603,26 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
             open={open}
             onClose={onClose}
         >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <IconButton onClick={onBack} sx={{ mr: 2 }}>
-                    <span className="material-symbols-rounded">arrow_back</span>
-                </IconButton>
-                <Typography variant="h6">{component}</Typography>
-            </Box>
-            
-            <Suspense fallback={
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    <CircularProgress />
+            <Box sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <IconButton onClick={onBack} sx={{ mr: 2 }}>
+                        <span className="material-symbols-rounded">arrow_back</span>
+                    </IconButton>
+                    <Typography variant="h6">{component}</Typography>
                 </Box>
-            }>
-                {children}
-            </Suspense>
+                
+                <Suspense fallback={
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <CircularProgress />
+                    </Box>
+                }>
+                    {children}
+                </Suspense>
+            </Box>
         </DrawerBase>
     );
 }

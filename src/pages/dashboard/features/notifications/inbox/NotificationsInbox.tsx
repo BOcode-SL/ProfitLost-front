@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import {
     Box,
     Typography,
-    List,
     Button,
     Skeleton,
-    ListItem
+    Paper,
+    useTheme,
+    alpha
 } from '@mui/material';
-import React from 'react';
 
 // Types
 import { Notification } from '../../../../../types/models/notification';
@@ -218,32 +218,37 @@ const mockNotifications: Notification[] = [
     }
 ];
 
-// Integrated empty state component
-const InlineEmptyState = ({
-    icon,
+// Empty state component with modern design
+const EmptyState = ({
     title,
     description,
     actionText,
-    onAction
+    onAction,
+    icon
 }: {
-    icon: string;
     title: string;
     description: string;
     actionText?: string;
     onAction?: () => void;
+    icon: string;
 }) => {
+    const theme = useTheme();
+    
     return (
-        <Box
+        <Paper
+            elevation={0}
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textAlign: 'center',
-                py: 4,
-                px: 2,
+                p: 4,
+                borderRadius: 4,
+                bgcolor: alpha(theme.palette.primary.main, 0.04),
                 height: '100%',
-                minHeight: 200
+                minHeight: 300,
+                border: `1px dashed ${alpha(theme.palette.primary.main, 0.2)}`
             }}
         >
             <Box
@@ -251,34 +256,39 @@ const InlineEmptyState = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: 64,
-                    height: 64,
+                    width: 80,
+                    height: 80,
                     borderRadius: '50%',
-                    backgroundColor: 'action.hover',
-                    mb: 2
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    mb: 3,
+                    color: 'primary.main'
                 }}
             >
-                <span className="material-symbols-rounded" style={{ fontSize: 32 }}>
+                <span className="material-symbols-rounded" style={{ fontSize: 40 }}>
                     {icon}
                 </span>
             </Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h5" gutterBottom fontWeight={600}>
                 {title}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: actionText ? 2 : 0 }}>
+            <Typography 
+                variant="body1" 
+                color="text.secondary" 
+                sx={{ mb: actionText ? 3 : 0, maxWidth: 320 }}
+            >
                 {description}
             </Typography>
             {actionText && onAction && (
                 <Button
-                    variant="outlined"
-                    size="small"
+                    variant="contained"
+                    disableElevation
                     onClick={onAction}
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, borderRadius: 2, px: 3 }}
                 >
                     {actionText}
                 </Button>
             )}
-        </Box>
+        </Paper>
     );
 };
 
@@ -291,6 +301,7 @@ interface NotificationsInboxProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function NotificationsInbox(_props: NotificationsInboxProps) {
     const { t } = useTranslation();
+    const theme = useTheme();
 
     // State variables
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -331,7 +342,6 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                         : notification
                 )
             );
-            toast.success(t('dashboard.notifications.success.markedAsRead'));
         } catch (error) {
             console.error('Error marking notification as read:', error);
             toast.error(t('dashboard.notifications.errors.markAsReadError'));
@@ -351,12 +361,12 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
             toast.error(t('dashboard.notifications.errors.deleteError'));
         }
     };
-
+    
     // Group notifications by date
-    const groupNotificationsByDate = () => {
+    const groupedNotifications = useMemo(() => {
         const groups: { [key: string]: Notification[] } = {};
 
-        // Ordenar todas las notificaciones de más recientes a más antiguas
+        // Sort all notifications from newest to oldest
         const sortedNotifications = [...notifications].sort((a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -385,96 +395,54 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
             groups[groupKey].push(notification);
         });
 
-        // Definir el orden de los grupos
-        const orderedGroups: { [key: string]: Notification[] } = {};
-
-        // Primero "Today"
-        if (groups['Today']) {
-            orderedGroups['Today'] = groups['Today'];
-        }
-
-        // Luego "Yesterday"
-        if (groups['Yesterday']) {
-            orderedGroups['Yesterday'] = groups['Yesterday'];
-        }
-
-        // Obtener las fechas restantes y ordenarlas de más reciente a más antigua
-        const otherDates = Object.keys(groups).filter(key => key !== 'Today' && key !== 'Yesterday');
-
-        otherDates.sort((a, b) => {
-            // Convertir "Month Day" a objetos Date para comparar
-            const monthsMap: { [key: string]: number } = {
-                'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
-                'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
-            };
-
-            const parseDate = (dateStr: string): Date => {
-                const [month, dayStr] = dateStr.split(' ');
-                const day = parseInt(dayStr);
-                const year = new Date().getFullYear();
-                return new Date(year, monthsMap[month], day);
-            };
-
-            const dateA = parseDate(a);
-            const dateB = parseDate(b);
-            return dateB.getTime() - dateA.getTime();
-        });
-
-        // Agregar las fechas restantes en orden
-        otherDates.forEach(date => {
-            orderedGroups[date] = groups[date];
-        });
-
-        return orderedGroups;
-    };
+        return groups;
+    }, [notifications]);
 
     // Render the notifications list
     const renderNotificationsList = () => {
         if (loading) {
-            // Show improved skeletons during loading
             return (
-                <List sx={{ width: '100%', px: 2 }}>
-                    {[1, 2, 3, 4, 5, 6].map((item) => (
-                        <React.Fragment key={item}>
-                            <ListItem
-                                alignItems="flex-start"
-                                sx={{
-                                    bgcolor: 'background.paper',
-                                    borderRadius: 3,
-                                    mb: 2,
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                                    p: 2
-                                }}
-                            >
-                                <Box sx={{ width: '100%' }}>
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', mb: 1 }}>
-                                        <Skeleton variant="text" width="60%" height={24} />
-                                        <Skeleton variant="circular" width={20} height={20} />
-                                    </Box>
-                                    <Skeleton variant="text" width="90%" height={20} sx={{ mb: 0.5 }} />
-                                    <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1 }} />
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Skeleton variant="text" width={80} height={16} />
-                                        <Skeleton variant="circular" width={8} height={8} />
-                                    </Box>
-                                </Box>
-                            </ListItem>
-                        </React.Fragment>
+                <Box>
+                    {[1, 2, 3].map((item) => (
+                        <Paper
+                            key={item}
+                            elevation={0}
+                            sx={{
+                                p: 2,
+                                mb: 2,
+                                borderRadius: 3,
+                                bgcolor: alpha(theme.palette.background.paper, 0.6),
+                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+                                <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1.5 }} />
+                                <Skeleton variant="text" width="70%" height={24} />
+                            </Box>
+                            <Skeleton variant="text" width="90%" height={20} sx={{ mb: 1 }} />
+                            <Skeleton variant="text" width="50%" height={20} sx={{ mb: 1 }} />
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
+                                <Skeleton variant="text" width={80} height={16} />
+                                <Skeleton variant="circular" width={16} height={16} />
+                            </Box>
+                        </Paper>
                     ))}
-                </List>
+                </Box>
             );
         }
 
         if (error) {
             return (
-                <Box sx={{ py: 4, textAlign: 'center' }}>
-                    <Typography color="error" gutterBottom>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <Typography color="error" variant="h6" gutterBottom>
                         {error}
                     </Typography>
                     <Button
-                        variant="outlined"
+                        variant="contained"
+                        color="primary"
                         onClick={fetchNotifications}
                         startIcon={<span className="material-symbols-rounded">refresh</span>}
+                        sx={{ mt: 2, borderRadius: 2 }}
                     >
                         {t('dashboard.common.retry')}
                     </Button>
@@ -484,33 +452,42 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
 
         if (notifications.length === 0) {
             return (
-                <InlineEmptyState
-                    icon="notifications"
+                <EmptyState
+                    icon="notifications_off"
                     title={t('dashboard.notifications.empty.title')}
                     description={t('dashboard.notifications.empty.description')}
                 />
             );
         }
 
-        const groupedNotifications = groupNotificationsByDate();
-
         return (
-            <Box sx={{ width: '100%', px: 3 }}>
-                {Object.entries(groupedNotifications).map(([date, notifs]) => (
+            <Box sx={{ pb: 4 }}>
+                {Object.entries(groupedNotifications).map(([date, dateNotifications]) => (
                     <Box key={date} sx={{ mb: 3 }}>
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                fontSize: '1.25rem',
-                                fontWeight: 600,
-                                mb: 2,
-                                color: 'text.primary'
+                        <Box 
+                            sx={{ 
+                                position: 'sticky', 
+                                top: 0, 
+                                zIndex: 2,
+                                py: 2, 
+                                bgcolor: theme.palette.background.default
                             }}
                         >
-                            {date}
-                        </Typography>
-                        <List sx={{ width: '100%', p: 0 }} disablePadding>
-                            {notifs.map((notification) => (
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem',
+                                    color: 'text.secondary',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px'
+                                }}
+                            >
+                                {date}
+                            </Typography>
+                        </Box>
+                        <Box>
+                            {dateNotifications.map((notification) => (
                                 <NotificationItem
                                     key={notification._id}
                                     notification={notification}
@@ -518,7 +495,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                                     onDelete={handleDeleteNotification}
                                 />
                             ))}
-                        </List>
+                        </Box>
                     </Box>
                 ))}
             </Box>
@@ -526,18 +503,30 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-            {/* Notifications list */}
-            <Box sx={{
-                flexGrow: 1,
-                overflow: 'auto',
-                '&::-webkit-scrollbar': {
-                    display: 'none'
-                },
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-                pt: 3
-            }}>
+        <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            height: '100%', 
+            overflow: 'hidden'
+        }}>
+            {/* Notifications content */}
+            <Box 
+                sx={{
+                    flexGrow: 1,
+                    overflow: 'auto',
+                    scrollbarWidth: 'thin',
+                    '&::-webkit-scrollbar': {
+                        width: '4px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: alpha(theme.palette.primary.main, 0.05),
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: alpha(theme.palette.primary.main, 0.2),
+                        borderRadius: '4px',
+                    },
+                }}
+            >
                 {renderNotificationsList()}
             </Box>
         </Box>
