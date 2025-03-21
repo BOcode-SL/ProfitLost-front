@@ -229,11 +229,7 @@ export default function NotificationsEditor() {
     };
 
     return (
-        <Box sx={{
-            height: '100%',
-            maxWidth: '100%',
-            overflow: 'hidden'
-        }}>
+        <>
             <Paper elevation={3} sx={{ p: 3, borderRadius: 3, height: '100%'}}>
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
@@ -567,6 +563,6 @@ export default function NotificationsEditor() {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </>
     );
 }
