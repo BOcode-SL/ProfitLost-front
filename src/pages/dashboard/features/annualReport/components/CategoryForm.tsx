@@ -21,6 +21,12 @@ interface GroupedTransactions {
 import { formatCurrency } from '../../../../../utils/currencyUtils';
 import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
+// Constants - Month order for proper sorting
+const MONTH_ORDER = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
 // Interface for the props of the CategoryForm component
 interface CategoryFormProps {
     category?: Category; // Optional category prop
@@ -87,13 +93,28 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
 
     // Group transactions by month
     const groupedTransactions: GroupedTransactions = {};
+    
+    // Create an object to store transactions grouped by month key (short name)
+    const tempGroupedByMonthKey: Record<string, Transaction[]> = {};
+    
     transactions.forEach(tx => {
         const date = fromUTCtoLocal(tx.date);
-        const month = date.toLocaleString('default', { month: 'long' });
-        if (!groupedTransactions[month]) {
-            groupedTransactions[month] = [];
+        // Get the short name of the month (Jan, Feb, etc.) for sorting
+        const monthKey = date.toLocaleString('en-US', { month: 'short' });
+        
+        if (!tempGroupedByMonthKey[monthKey]) {
+            tempGroupedByMonthKey[monthKey] = [];
         }
-        groupedTransactions[month].push(tx);
+        tempGroupedByMonthKey[monthKey].push(tx);
+    });
+    
+    // Sort months by calendar order and translate them
+    MONTH_ORDER.forEach(monthKey => {
+        if (tempGroupedByMonthKey[monthKey]) {
+            // Use the translation for display
+            const translatedMonth = t(`dashboard.common.monthNames.${monthKey}`);
+            groupedTransactions[translatedMonth] = tempGroupedByMonthKey[monthKey];
+        }
     });
 
     // Handle the submission of the form
@@ -138,7 +159,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Main container for the category form
     return (
         <Box sx={{ p: 3 }}>
-            {/* Header section containing the close button and title */}
+            {/* Header section with the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <span className="material-symbols-rounded">close</span>
@@ -204,7 +225,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 </Box>
             </Box>
 
-            {/* New section for transactions (only visible in edit mode) */}
+            {/* Category transactions section (visible only in edit mode) */}
             {category && yearsWithData.length > 0 && (
                 <Paper elevation={3} sx={{ mt: 3, p: 2, borderRadius: 3 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 2 }}>
