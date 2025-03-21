@@ -233,7 +233,7 @@ const EmptyState = ({
     icon: string;
 }) => {
     const theme = useTheme();
-    
+
     return (
         <Paper
             elevation={0}
@@ -271,9 +271,9 @@ const EmptyState = ({
             <Typography variant="h5" gutterBottom fontWeight={600}>
                 {title}
             </Typography>
-            <Typography 
-                variant="body1" 
-                color="text.secondary" 
+            <Typography
+                variant="body1"
+                color="text.secondary"
                 sx={{ mb: actionText ? 3 : 0, maxWidth: 320 }}
             >
                 {description}
@@ -361,7 +361,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
             toast.error(t('dashboard.notifications.errors.deleteError'));
         }
     };
-    
+
     // Group notifications by date
     const groupedNotifications = useMemo(() => {
         const groups: { [key: string]: Notification[] } = {};
@@ -403,27 +403,54 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
         if (loading) {
             return (
                 <Box>
-                    {[1, 2, 3].map((item) => (
+                    {[1, 2, 3, 4, 5].map((item) => (
                         <Paper
                             key={item}
                             elevation={0}
                             sx={{
                                 p: 2,
                                 mb: 2,
-                                borderRadius: 3,
-                                bgcolor: alpha(theme.palette.background.paper, 0.6),
-                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+                                borderRadius: 2,
+                                bgcolor: 'background.paper',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: 1.5,
+                                position: 'relative',
+                                overflow: 'hidden'
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                                <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1.5 }} />
-                                <Skeleton variant="text" width="70%" height={24} />
-                            </Box>
-                            <Skeleton variant="text" width="90%" height={20} sx={{ mb: 1 }} />
-                            <Skeleton variant="text" width="50%" height={20} sx={{ mb: 1 }} />
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
-                                <Skeleton variant="text" width={80} height={16} />
-                                <Skeleton variant="circular" width={16} height={16} />
+                            {/* Top indicator bar */}
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '3px',
+                                    bgcolor: alpha(theme.palette.primary.main, 0.2)
+                                }}
+                            />
+
+                            {/* Avatar skeleton */}
+                            <Skeleton
+                                variant="circular"
+                                width={32}
+                                height={32}
+                                sx={{
+                                    bgcolor: alpha(theme.palette.primary.main, 0.08)
+                                }}
+                            />
+
+                            {/* Content */}
+                            <Box sx={{ flex: 1, pt: 0.5 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                    <Skeleton variant="text" width="60%" height={22} />
+                                    <Skeleton variant="circular" width={20} height={20} />
+                                </Box>
+                                <Skeleton variant="text" width="90%" height={16} sx={{ mb: 0.5 }} />
+                                <Skeleton variant="text" width="40%" height={16} />
                             </Box>
                         </Paper>
                     ))}
@@ -464,12 +491,12 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
             <Box sx={{ pb: 4 }}>
                 {Object.entries(groupedNotifications).map(([date, dateNotifications]) => (
                     <Box key={date} sx={{ mb: 3 }}>
-                        <Box 
-                            sx={{ 
-                                position: 'sticky', 
-                                top: 0, 
+                        <Box
+                            sx={{
+                                position: 'sticky',
+                                top: 0,
                                 zIndex: 2,
-                                py: 2, 
+                                py: 2,
                                 bgcolor: theme.palette.background.default
                             }}
                         >
@@ -503,14 +530,14 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
     };
 
     return (
-        <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            height: '100%', 
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
             overflow: 'hidden'
         }}>
             {/* Notifications content */}
-            <Box 
+            <Box
                 sx={{
                     flexGrow: 1,
                     overflow: 'auto',
