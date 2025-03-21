@@ -173,16 +173,13 @@ export default function BlogPage() {
             fullWidth
             variant="outlined"
             placeholder={t('blog.searchPlaceholder')}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <span className="material-symbols-rounded">search</span>
-                </InputAdornment>
-              ),
-              sx: {
-                borderRadius: '8px',
-                height: { xs: '48px', sm: '56px' },
-                fontSize: { xs: '0.875rem', sm: '1rem' }
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <span className="material-symbols-rounded">search</span>
+                  </InputAdornment>
+                )
               }
             }}
             onChange={(e) => handleSearch(e.target.value)}
@@ -190,8 +187,11 @@ export default function BlogPage() {
               maxWidth: { xs: '100%', sm: '500px', md: '600px' }, 
               mx: 'auto', 
               display: 'block', 
-              backgroundColor: 'primary.contrastText',
               '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                height: { xs: '48px', sm: '56px' },
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                backgroundColor: 'primary.contrastText',
                 '&:hover fieldset': {
                   borderColor: 'primary.main',
                 },

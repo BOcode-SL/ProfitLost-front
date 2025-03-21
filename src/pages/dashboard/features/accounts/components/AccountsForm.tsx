@@ -291,9 +291,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         <TextField
                                             size="small"
                                             type="text"
-                                            inputProps={{
-                                                inputMode: 'decimal',
-                                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                            slotProps={{
+                                                htmlInput: {
+                                                    inputMode: 'decimal',
+                                                    pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                                }
                                             }}
                                             value={monthlyInput[month] || ''}
                                             onChange={(e) => {

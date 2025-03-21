@@ -684,9 +684,11 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             size="small"
                             label={t('dashboard.transactions.form.fields.amount')}
                             type="text"
-                            inputProps={{
-                                inputMode: 'decimal',
-                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: 'decimal',
+                                    pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                }
                             }}
                             value={amount}
                             onChange={(e) => {

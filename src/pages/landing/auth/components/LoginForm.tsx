@@ -79,16 +79,18 @@ export default function LoginForm({
                 name="password"
                 value={loginData.password}
                 onChange={handleChange}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                <span className="material-symbols-rounded">
-                                    {showPassword ? 'visibility' : 'visibility_off'}
-                                </span>
-                            </IconButton>
-                        </InputAdornment>
-                    )
+                slotProps={{
+                    input: {
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                    <span className="material-symbols-rounded">
+                                        {showPassword ? 'visibility' : 'visibility_off'}
+                                    </span>
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }
                 }}
             />
 

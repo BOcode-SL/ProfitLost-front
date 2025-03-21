@@ -117,16 +117,18 @@ export default function ResetPasswordForm({
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         margin="normal"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowNewPassword(!showNewPassword)} edge="end">
-                                        <span className="material-symbols-rounded">
-                                            {showNewPassword ? 'visibility' : 'visibility_off'}
-                                        </span>
-                                    </IconButton>
-                                </InputAdornment>
-                            )
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowNewPassword(!showNewPassword)} edge="end">
+                                            <span className="material-symbols-rounded">
+                                                {showNewPassword ? 'visibility' : 'visibility_off'}
+                                            </span>
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }
                         }}
                     />
                     {/* Confirm New Password Input */}
@@ -139,16 +141,18 @@ export default function ResetPasswordForm({
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         margin="normal"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
-                                        <span className="material-symbols-rounded">
-                                            {showConfirmPassword ? 'visibility' : 'visibility_off'}
-                                        </span>
-                                    </IconButton>
-                                </InputAdornment>
-                            )
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                                            <span className="material-symbols-rounded">
+                                                {showConfirmPassword ? 'visibility' : 'visibility_off'}
+                                            </span>
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }
                         }}
                     />
                     {/* Reset Password Button */}

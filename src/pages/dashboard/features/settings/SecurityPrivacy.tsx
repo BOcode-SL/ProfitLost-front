@@ -167,17 +167,19 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 label={t('dashboard.settings.securityPrivacy.currentPassword')}
                                 value={formData.currentPassword}
                                 onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
-                                                edge="end"
-                                            >
-                                                {showPassword.current ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
+                                                    edge="end"
+                                                >
+                                                    {showPassword.current ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
@@ -189,17 +191,19 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 label={t('dashboard.settings.securityPrivacy.newPassword')}
                                 value={formData.newPassword}
                                 onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
-                                                edge="end"
-                                            >
-                                                {showPassword.new ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
+                                                    edge="end"
+                                                >
+                                                    {showPassword.new ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
@@ -211,17 +215,19 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 label={t('dashboard.settings.securityPrivacy.confirmNewPassword')}
                                 value={formData.confirmPassword}
                                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
-                                                edge="end"
-                                            >
-                                                {showPassword.confirm ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
+                                                    edge="end"
+                                                >
+                                                    {showPassword.confirm ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
