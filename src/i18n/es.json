@@ -403,6 +403,10 @@
                     "alternativeAction": "¿No tienes una cuenta? Regístrate"
                 }
             },
+            "logout": {
+                "success": "¡Hasta luego! 💸",
+                "error": "Error al cerrar sesión"
+            },
             "register": {
                 "title": "Crea una cuenta",
                 "subtitle": "Únete a nosotros y comienza a gestionar tus finanzas",

@@ -403,6 +403,10 @@
                     "alternativeAction": "Don't have an account? Sign up"
                 }
             },
+            "logout": {
+                "success": "See you soon! 💸",
+                "error": "Logout error"
+            },
             "register": {
                 "title": "Create Account",
                 "subtitle": "Join us and start managing your finances",

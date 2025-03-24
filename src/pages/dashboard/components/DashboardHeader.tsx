@@ -96,10 +96,10 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         try {
             await authService.logout();
             setUser(null);
-            toast.success('See you soon!');
+            toast.success(t('home.auth.logout.success'));
             navigate('/auth', { replace: true });
         } catch (error) {
-            toast.error('Logout error');
+            toast.error(t('home.auth.logout.error'));
             console.error('Error during logout:', error);
         }
     };
