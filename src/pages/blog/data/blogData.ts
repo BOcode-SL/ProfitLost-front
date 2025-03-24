@@ -193,5 +193,31 @@ export const blogPosts: BlogPost[] = [
         author: "blog.post.4.author",
         contentType: 'html',
         category: 'tutorials'
+    },
+    {
+        id: 5,
+        title: "blog.post.5.title",
+        excerpt: "blog.post.5.excerpt",
+        content: `
+            <p>{{blog.post.5.content.intro}}</p>
+
+            <h3>{{blog.post.5.content.howItWorks.title}}</h3>
+            <ol>
+                <li>{{blog.post.5.content.howItWorks.steps.0}}</li>
+                <li>{{blog.post.5.content.howItWorks.steps.1}}</li>
+                <li>{{blog.post.5.content.howItWorks.steps.2}}</li>
+            </ol>
+
+            <p>{{blog.post.5.content.adaptation}}</p>
+
+            <p>{{blog.post.5.content.callToAction}}</p>
+
+            <p><a href="https://profit-lost.com">profit-lost.com</a></p>
+        `,
+        date: "2025-03-21",
+        image: "https://res.cloudinary.com/dnhlagojg/image/upload/v1742837549/blog/hvhlu9j5qp1ecalrntpd.png",
+        author: "blog.post.5.author",
+        contentType: 'html',
+        category: 'tips'
     }
 ];

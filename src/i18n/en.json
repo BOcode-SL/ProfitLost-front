@@ -677,6 +677,24 @@
                     },
                     "conclusion": "👉 Start managing your finances in a practical way!\n\nWith this installation, you will be able to access Profit&Lost quickly and enjoy a fluid experience.\n\nIf you have any questions or need help, write to us. We are here to help you improve your financial management!"
                 }
+            },
+            "5": {
+                "title": "💰 The \"Envelope System\" trick to save over 2,500€ a year 💡",
+                "excerpt": "Saving can seem complicated, but this simple and effective method helps you do it without realizing it.",
+                "author": "Profit&Lost Team",
+                "content": {
+                    "intro": "Saving can seem complicated, but this simple and effective method helps you do it without realizing it.",
+                    "howItWorks": {
+                        "title": "How it works:",
+                        "steps": [
+                            "1️⃣ Prepare 50 envelopes and number them with even amounts from 2 to 100.",
+                            "2️⃣ Each week, choose a random envelope and save the indicated amount.",
+                            "3️⃣ At the end of the year, you will have saved 2,550€ without major sacrifices."
+                        ]
+                    },
+                    "adaptation": "The best thing is that you can adapt it to your budget and do it at your own pace. Saving is a habit!",
+                    "callToAction": "In Profit&Lost, we know that organizing your finances in a clear way makes the difference. That's why we're working on improving the app, as well as our future version for Android and iOS. 📱\n\nTry it and tell us what you think. Your feedback helps us improve!"
+                }
             }
         }
     },

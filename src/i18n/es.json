@@ -677,6 +677,24 @@
                     },
                     "conclusion": "👉 ¡Empieza a gestionar tus finanzas de manera práctica!\n\nCon esta instalación, podrás acceder a Profit&Lost rápidamente y disfrutar de una experiencia fluida.\n\nSi tienes dudas o necesitas ayuda, escríbenos. ¡Estamos aquí para ayudarte a mejorar tu gestión financiera!"
                 }
+            },
+            "5": {
+                "title": "💰 El truco del \"Sistema del Sobre\" para ahorrar más de 2.500€ al año 💡",
+                "excerpt": "Ahorrar puede parecer complicado, pero este método simple y efectivo te ayuda a hacerlo sin darte cuenta.",
+                "author": "Profit&Lost Team",
+                "content": {
+                    "intro": "Ahorrar puede parecer complicado, pero este método simple y efectivo te ayuda a hacerlo sin darte cuenta.",
+                    "howItWorks": {
+                        "title": "Así funciona:",
+                        "steps": [
+                            "1️⃣ Prepara 50 sobres y numéralos con cantidades pares del 2 al 100.",
+                            "2️⃣ Cada semana, elige un sobre al azar y guarda la cantidad indicada.",
+                            "3️⃣ Al final del año, habrás ahorrado 2.550€ sin grandes sacrificios."
+                        ]
+                    },
+                    "adaptation": "Lo mejor es que puedes adaptarlo a tu presupuesto y hacerlo a tu ritmo. ¡El ahorro es un hábito!",
+                    "callToAction": "En Profit&Lost, sabemos que organizar tus finanzas de forma clara hace la diferencia. Por eso, estamos trabajando en mejorar la app, además de nuestra futura version para Android y iOS. 📱\n\nPruébala y dinos qué te parece. ¡Tu feedback nos ayuda a mejorar!"
+                }
             }
         }
     },
