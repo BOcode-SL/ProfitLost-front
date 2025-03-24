@@ -1193,6 +1193,9 @@
                 "invalidYear": "Año inválido. Debe estar entre 1900 y 9999",
                 "yearExists": "Este año ya existe en la cuenta"
             },
+            "chart": {
+                "noData": "No hay datos disponibles"
+            },
             "form": {
                 "title": {
                     "edit": "Editar cuenta",
