@@ -496,8 +496,10 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                                 position: 'sticky',
                                 top: 0,
                                 zIndex: 2,
-                                py: 2,
-                                bgcolor: theme.palette.background.default
+                                p: 2,
+                                bgcolor: alpha(theme.palette.background.paper, 0.1),
+                                backdropFilter: 'blur(8px)',
+                                borderRadius: '8px', 
                             }}
                         >
                             <Typography
