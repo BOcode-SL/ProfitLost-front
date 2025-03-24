@@ -32,7 +32,7 @@ i18n
             }
         },
         fallbackLng: 'en',
-        debug: process.env.NODE_ENV === 'development',
+        debug: false,
         detection: {
             order: ['localStorage', 'navigator'],
             lookupLocalStorage: 'i18nextLng',
