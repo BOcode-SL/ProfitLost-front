@@ -6,6 +6,7 @@ import type { Category } from '../models/category';
 import type { Note } from '../models/note';
 import type { Account, YearRecord, AccountConfiguration } from '../models/account';
 import type { UserMetrics, TransactionMetrics, TransactionHistory } from '../models/analytics';
+import { HttpStatusCode } from './common';
 
 /**
  * Types for authentication API responses
@@ -28,7 +29,19 @@ export interface AuthApiSuccessResponse extends ApiSuccessResponse {
     };
 }
 
-export type AuthApiResponse = AuthApiSuccessResponse | AuthApiErrorResponse;
+export interface AuthApiResponse {
+    success: boolean;
+    message: string;
+    error?: AuthErrorType;
+    statusCode: HttpStatusCode;
+    token?: string;
+    data?: {
+        _id: string;
+        username: string;
+        email: string;
+    };
+    isNewUser?: boolean;
+}
 
 /**
  * Types for user API responses

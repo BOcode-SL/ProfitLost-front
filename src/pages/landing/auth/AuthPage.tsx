@@ -30,7 +30,7 @@ declare global {
         dataLayer: Array<{
             event?: string;
             login_method?: 'email' | 'google';
-            register_method?: 'email';
+            register_method?: 'email' | 'google';
             [key: string]: string | undefined;
         }>;
     }
@@ -97,7 +97,7 @@ export default function AuthPage() {
     };
 
     // Function to push register_success event to dataLayer
-    const pushRegisterSuccessEvent = (method: 'email') => {
+    const pushRegisterSuccessEvent = (method: 'email' | 'google') => {
         // Push to dataLayer for GTM
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -290,8 +290,12 @@ export default function AuthPage() {
 
             if (response.success) {
                 await loadUserData();
-                // Push login_success event to dataLayer
-                pushLoginSuccessEvent('google');
+                // Push register_success event to dataLayer if it's a new user
+                if (response.isNewUser) {
+                    pushRegisterSuccessEvent('google');
+                } else {
+                    pushLoginSuccessEvent('google');
+                }
                 toast.success(t('home.auth.success.welcome'));
                 
                 // On iOS PWA, add a slight delay to ensure the token is saved
