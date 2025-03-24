@@ -14,6 +14,7 @@ import GlobalOnboardingDialog from './components/GlobalOnboardingDialog';
 import LoadingScreen from './components/LoadingScreen';
 import TransactionForm from './features/transactions/components/TransactionForm';
 import DrawerBase from './components/ui/DrawerBase';
+
 // Services
 import { categoryService } from '../../services/category.service';
 
