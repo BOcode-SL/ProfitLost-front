@@ -9,7 +9,7 @@ import Header from './components/Header';
 import LanguageSelector from './components/LanguageSelector';
 
 // Styles
-import './Home.scss';
+import './Home.css';
 
 // Home component for the landing page
 export default function Home() {

@@ -12,7 +12,7 @@ import { GlobalThemeProvider } from './contexts/ThemeContext';
 import './i18n';
 
 // Styles
-import './index.scss';
+import './index.css';
 
 // Importing the main application component
 import App from './App.tsx';
