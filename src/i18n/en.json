@@ -1144,8 +1144,9 @@
                     "categoryName": "Category Name",
                     "categoryNameRequired": "The category name is required",
                     "color": "Color",
-                    "showTransactions": "Show transactions from {{year}}",
-                    "hideTransactions": "Hide transactions from {{year}}"
+                    "history": "History",
+                    "showTransactions": "Show",
+                    "hideTransactions": "Hide"
                 },
                 "delete": {
                     "title": "Delete Category",
