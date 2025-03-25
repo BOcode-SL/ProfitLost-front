@@ -1,7 +1,7 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { CredentialResponse } from '@react-oauth/google';
+import { TokenResponse } from '@react-oauth/google';
 import { useTranslation } from 'react-i18next';
 
 // Types
@@ -278,16 +278,15 @@ export default function AuthPage() {
     };
 
     // Handle the successful login via Google
-    const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    const handleGoogleSuccess = async (tokenResponse: TokenResponse) => {
         setLoading(true);
         try {
-            if (!credentialResponse.credential) {
+            if (!tokenResponse.access_token) {
                 toast.error(t('home.auth.login.form.googleError'));
                 return;
             }
 
-            const response = await authService.googleLogin(credentialResponse.credential);
-
+            const response = await authService.googleLogin(tokenResponse.access_token);
             if (response.success) {
                 await loadUserData();
                 // Push register_success event to dataLayer if it's a new user

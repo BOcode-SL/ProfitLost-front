@@ -1,5 +1,5 @@
 import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography, Link } from '@mui/material';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ interface LoginFormProps {
     setShowResetPassword: (show: boolean) => void; // Function to show/hide reset password form
     isFormValid: () => boolean; // Function to validate the form
     handleSubmit: (e: React.FormEvent) => void; // Function to handle form submission
-    handleGoogleSuccess: (credentialResponse: CredentialResponse) => Promise<void>; // Function to handle Google login success
+    handleGoogleSuccess: (tokenResponse: TokenResponse) => Promise<void>; // Function to handle Google login success
 }
 
 // LoginForm component definition
@@ -32,20 +32,23 @@ export default function LoginForm({
 }: LoginFormProps) {
     const { t } = useTranslation();
 
+    const loginWithGoogle = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: () => { toast.error(t('home.auth.login.form.googleError')); }
+    });
+
     return (
         <Box component="form" onSubmit={handleSubmit}>
             {/* Google Login button */}
             <Box sx={{ width: '100%', mb: 2 }}>
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => {
-                        toast.error(t('home.auth.login.form.googleError'));
-                    }}
-                    useOneTap={false}
-                    text="continue_with"
-                    shape="rectangular"
-                    type="standard"
-                />
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => loginWithGoogle()}
+                >
+                    {t('home.auth.login.form.googleButton')}
+                </Button>
             </Box>
 
             {/* Divider for visual separation */}
