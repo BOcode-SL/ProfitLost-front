@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    IconButton,
-    Typography,
-    Box,
-    Chip,
-    Menu,
-    MenuItem,
-    Dialog,
-    DialogContent,
-    Button,
-    Paper,
-    Avatar,
-    useTheme,
-    alpha,
-    useMediaQuery
-} from '@mui/material';
+import { ListItem, ListItemText, ListItemIcon, IconButton, Typography, Box, Chip, Menu, MenuItem, Dialog, DialogContent, Button, Paper, Avatar, useTheme, alpha, useMediaQuery } from '@mui/material';
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Date utilities
 import { formatDateTime } from '../../../../../utils/dateUtils';
@@ -95,20 +88,20 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
     };
 
     // Get icon based on notification type
-    const getNotificationIcon = (type: NotificationType): string => {
+    const getNotificationIcon = (type: NotificationType) => {
         switch (type) {
             case 'payment_reminder':
-                return 'payments';
+                return <PaymentsOutlinedIcon sx={{ fontSize: 'inherit' }} />;
             case 'achievement':
-                return 'emoji_events';
+                return <EmojiEventsOutlinedIcon sx={{ fontSize: 'inherit' }} />;
             case 'goal_progress':
-                return 'flag';
+                return <FlagOutlinedIcon sx={{ fontSize: 'inherit' }} />;
             case 'tip':
-                return 'tips_and_updates';
+                return <TipsAndUpdatesOutlinedIcon sx={{ fontSize: 'inherit' }} />;
             case 'announcement':
-                return 'campaign';
+                return <CampaignOutlinedIcon sx={{ fontSize: 'inherit' }} />;
             default:
-                return 'notifications';
+                return <NotificationsOutlinedIcon sx={{ fontSize: 'inherit' }} />;
         }
     };
 
@@ -184,8 +177,8 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                         }}
                     />
 
-                    <Box sx={{ 
-                        p: 2, 
+                    <Box sx={{
+                        p: 2,
                         width: '100%',
                         display: 'flex',
                         alignItems: 'flex-start',
@@ -198,12 +191,10 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                 height: 32,
                                 bgcolor: alpha(theme.palette[getNotificationColor(notification.type)].main, 0.15),
                                 color: theme.palette[getNotificationColor(notification.type)].main,
-                                fontSize: '1rem'
+                                fontSize: '1.2rem'
                             }}
                         >
-                            <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                                {getNotificationIcon(notification.type)}
-                            </span>
+                            {getNotificationIcon(notification.type)}
                         </Avatar>
 
                         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -238,14 +229,14 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                         edge="end"
                                         onClick={handleOpenMenu}
                                         size="small"
-                                        sx={{ 
+                                        sx={{
                                             width: 28,
                                             height: 28,
-                                            ml: 0.5, 
-                                            mt: -0.5 
+                                            ml: 0.5,
+                                            mt: -0.5
                                         }}
                                     >
-                                        <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>more_vert</span>
+                                        <MoreVertIcon sx={{ fontSize: '1.2rem' }} />
                                     </IconButton>
                                 </Box>
                             </Box>
@@ -253,8 +244,8 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                sx={{ 
-                                    fontSize: '0.825rem', 
+                                sx={{
+                                    fontSize: '0.825rem',
                                     lineHeight: 1.4,
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
@@ -283,7 +274,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                 {notification.status === 'unread' && (
                     <MenuItem onClick={handleMarkAsRead}>
                         <ListItemIcon>
-                            <span className="material-symbols-rounded">mark_email_read</span>
+                            <MarkEmailReadOutlinedIcon />
                         </ListItemIcon>
                         <ListItemText>
                             {t('dashboard.notifications.actions.markAsRead')}
@@ -292,7 +283,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                 )}
                 <MenuItem onClick={handleDelete}>
                     <ListItemIcon>
-                        <span className="material-symbols-rounded">delete</span>
+                        <DeleteOutlineIcon />
                     </ListItemIcon>
                     <ListItemText>
                         {t('dashboard.notifications.actions.delete')}
@@ -354,9 +345,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                     fontSize: '2rem'
                                 }}
                             >
-                                <span className="material-symbols-rounded" style={{ fontSize: '2rem' }}>
-                                    {getNotificationIcon(notification.type)}
-                                </span>
+                                {getNotificationIcon(notification.type)}
                             </Avatar>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Typography variant="h5" fontWeight="bold" gutterBottom>
@@ -378,7 +367,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                 onClick={handleCloseDialog}
                                 sx={{ mt: -1, mr: -1 }}
                             >
-                                <span className="material-symbols-rounded">close</span>
+                                <CloseIcon />
                             </IconButton>
                         </Box>
                     </Paper>
@@ -450,7 +439,7 @@ export default function NotificationItem({ notification, onMarkAsRead, onDelete 
                                 <Button
                                     variant="outlined"
                                     color={getNotificationColor(notification.type) === 'secondary' ? 'primary' : getNotificationColor(notification.type)}
-                                    startIcon={<span className="material-symbols-rounded">open_in_new</span>}
+                                    startIcon={<OpenInNewIcon />}
                                     href={String(notification.metadata.link)}
                                 >
                                     {t('dashboard.notifications.actions.viewDetails')}

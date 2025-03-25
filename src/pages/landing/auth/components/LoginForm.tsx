@@ -2,6 +2,8 @@ import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Types
 import type { LoginCredentials } from '../../../../types/api/responses';
@@ -87,9 +89,7 @@ export default function LoginForm({
                         endAdornment: (
                             <InputAdornment position="end">
                                 <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                    <span className="material-symbols-rounded">
-                                        {showPassword ? 'visibility' : 'visibility_off'}
-                                    </span>
+                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                 </IconButton>
                             </InputAdornment>
                         )

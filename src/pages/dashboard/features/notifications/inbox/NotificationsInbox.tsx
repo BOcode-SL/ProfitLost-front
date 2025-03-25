@@ -10,6 +10,8 @@ import {
     useTheme,
     alpha
 } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
 
 // Types
 import { Notification } from '../../../../../types/models/notification';
@@ -230,7 +232,7 @@ const EmptyState = ({
     description: string;
     actionText?: string;
     onAction?: () => void;
-    icon: string;
+    icon: React.ReactNode;
 }) => {
     const theme = useTheme();
 
@@ -264,9 +266,7 @@ const EmptyState = ({
                     color: 'primary.main'
                 }}
             >
-                <span className="material-symbols-rounded" style={{ fontSize: 40 }}>
-                    {icon}
-                </span>
+                {icon}
             </Box>
             <Typography variant="h5" gutterBottom fontWeight={600}>
                 {title}
@@ -468,7 +468,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
                         variant="contained"
                         color="primary"
                         onClick={fetchNotifications}
-                        startIcon={<span className="material-symbols-rounded">refresh</span>}
+                        startIcon={<RefreshIcon />}
                         sx={{ mt: 2, borderRadius: 2 }}
                     >
                         {t('dashboard.common.retry')}
@@ -480,7 +480,7 @@ export default function NotificationsInbox(_props: NotificationsInboxProps) {
         if (notifications.length === 0) {
             return (
                 <EmptyState
-                    icon="notifications_off"
+                    icon={<NotificationsOffOutlinedIcon sx={{ fontSize: 40 }} />}
                     title={t('dashboard.notifications.empty.title')}
                     description={t('dashboard.notifications.empty.description')}
                 />

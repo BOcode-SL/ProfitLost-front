@@ -2,6 +2,8 @@ import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTit
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 // Types
 import type { Note } from '../../../../../types/models/note';
@@ -161,7 +163,7 @@ export default function NoteEditor({
                     <Button
                         variant="outlined"
                         color="primary"
-                        startIcon={<span className="material-symbols-rounded">delete</span>}
+                        startIcon={<DeleteOutlineIcon />}
                         onClick={handleDeleteClick}
                         disabled={isSaving}
                         size="small"
@@ -178,7 +180,7 @@ export default function NoteEditor({
                         startIcon={
                             isSaving ?
                                 <CircularProgress size={20} color="inherit" /> :
-                                <span className="material-symbols-rounded">save</span>
+                                <SaveOutlinedIcon />
                         }
                         onClick={onSave}
                         disabled={isSaving}

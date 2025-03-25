@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 // Contexts
 import { useUser } from '../../../../contexts/UserContext';
@@ -122,9 +123,7 @@ export default function Analytics() {
                 justifyContent: 'space-between'
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                        schedule
-                    </span>
+                    <ScheduleIcon sx={{ fontSize: '1.2rem' }} />
                     <Typography
                         variant="body1"
                         color="text.secondary"

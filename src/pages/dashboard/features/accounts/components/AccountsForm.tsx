@@ -4,6 +4,8 @@ import {
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 
 // Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
@@ -195,7 +197,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             {/* Container for the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <span className="material-symbols-rounded">close</span>
+                    <CloseIcon />
                 </IconButton>
                 <Typography variant="h6">
                     {account ? t('dashboard.accounts.editAccount') : t('dashboard.accounts.newAccount')}
@@ -242,9 +244,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         </MenuItem>
                                     ))}
                                     <MenuItem value="add">
-                                        <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>
-                                            add
-                                        </span>
+                                        <AddIcon sx={{ mr: 1 }} />
                                         {t('dashboard.accounts.form.addYear')}
                                     </MenuItem>
                                 </Select>
@@ -266,7 +266,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         onClick={handleAddYear}
                                         sx={{ minWidth: 'auto', px: 2 }}
                                     >
-                                        <span className="material-symbols-rounded">add</span>
+                                        <AddIcon />
                                     </Button>
                                     <Button
                                         variant="outlined"
@@ -276,7 +276,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         }}
                                         sx={{ minWidth: 'auto', px: 2 }}
                                     >
-                                        <span className="material-symbols-rounded">close</span>
+                                        <CloseIcon />
                                     </Button>
                                 </Box>
                             )}

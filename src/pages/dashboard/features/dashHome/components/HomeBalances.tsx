@@ -2,6 +2,9 @@ import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -46,13 +49,19 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
         : percentage >= 0;
 
     // Get the appropriate trend icon based on the type and percentage
-    const trendIcon = type === 'Spendings'
-        ? percentage === 0 ? 'trending_flat'
-            : isPositiveTrend ? 'trending_down'
-                : 'trending_up'
-        : percentage === 0 ? 'trending_flat'
-            : isPositiveTrend ? 'trending_up'
-                : 'trending_down';
+    const getTrendIcon = () => {
+        if (percentage === 0) {
+            return <TrendingFlatIcon sx={{ fontSize: '1.2rem' }} />;
+        }
+        if (type === 'Spendings') {
+            return isPositiveTrend ? 
+                <TrendingDownIcon sx={{ fontSize: '1.2rem' }} /> : 
+                <TrendingUpIcon sx={{ fontSize: '1.2rem' }} />;
+        }
+        return isPositiveTrend ? 
+            <TrendingUpIcon sx={{ fontSize: '1.2rem' }} /> : 
+            <TrendingDownIcon sx={{ fontSize: '1.2rem' }} />;
+    };
 
     return (
         <Paper elevation={3} sx={{
@@ -91,12 +100,23 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     px: 1,
                     py: 0.3,
                     borderRadius: 2,
-                    fontSize: '0.8rem'
+                    fontSize: '0.8rem',
+                    lineHeight: 1
                 }}>
-                    <span className="material-symbols-rounded">
-                        {trendIcon}
-                    </span>
-                    {percentage.toFixed(1)}%
+                    <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>
+                        {getTrendIcon()}
+                    </Box>
+                    <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>
+                        {percentage.toFixed(1)}%
+                    </Box>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
                     {t('dashboard.dashhome.balance.thanLastMonth')}

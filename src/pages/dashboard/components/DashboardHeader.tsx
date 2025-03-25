@@ -3,6 +3,21 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Box, Avatar, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip, useTheme, alpha } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 // Services
 import { authService } from '../../../services/auth.service';
@@ -55,12 +70,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     // Menu items for settings
     const menuItems = {
         primary: [
-            { icon: 'person', text: t('dashboard.settings.userSettings.title') },
-            { icon: 'security', text: t('dashboard.settings.securityPrivacy.title') },
-            { icon: 'notifications', text: t('dashboard.settings.notifications.title') },
+            { icon: <PersonOutlineOutlinedIcon />, text: t('dashboard.settings.userSettings.title') },
+            { icon: <SecurityOutlinedIcon />, text: t('dashboard.settings.securityPrivacy.title') },
+            { icon: <NotificationsNoneOutlinedIcon />, text: t('dashboard.settings.notifications.title') },
         ],
         secondary: [
-            { icon: 'help', text: t('dashboard.settings.help.title') },
+            { icon: <HelpOutlineOutlinedIcon />, text: t('dashboard.settings.help.title') },
         ]
     };
 
@@ -262,15 +277,13 @@ function HeaderBar({
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <IconButton onClick={onToggleCurrency}>
                         <Tooltip title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 'enable_currency_amount' : 'disable_currency_amount'}`)}>
-                            <span className="material-symbols-rounded">
-                                {isDisabledCurrencyAmount ? 'visibility' : 'visibility_off'}
-                            </span>
+                            {isDisabledCurrencyAmount ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                         </Tooltip>
                     </IconButton>
 
                     <IconButton onClick={toggleTheme}>
                         <Tooltip title={t(`dashboard.tooltips.${isDarkMode ? 'light_mode' : 'dark_mode'}`)}>
-                            <span className="material-symbols-rounded">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
+                            {isDarkMode ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
                         </Tooltip>
                     </IconButton>
                     {user?.role === 'admin' && (
@@ -304,9 +317,7 @@ function HeaderBar({
                         }}
                     >
                         <Tooltip title={t('dashboard.tooltips.inbox')}>
-                            <span className="material-symbols-rounded">
-                                {unreadNotifications > 0 ? 'notifications_active' : 'notifications'}
-                            </span>
+                            {unreadNotifications > 0 ? <NotificationsActiveOutlinedIcon /> : <NotificationsOutlinedIcon />}
                         </Tooltip>
                     </IconButton>
                     )}
@@ -337,8 +348,8 @@ interface UserDrawerProps {
     open: boolean;
     user: User | null;
     menuItems: {
-        primary: Array<{ icon: string; text: string }>;
-        secondary: Array<{ icon: string; text: string }>;
+        primary: Array<{ icon: React.ReactNode; text: string }>;
+        secondary: Array<{ icon: React.ReactNode; text: string }>;
     };
     onClose: () => void;
     onSettingsClick: (component: string) => void;
@@ -356,7 +367,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
             <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
                     <IconButton onClick={onClose}>
-                        <span className="material-symbols-rounded">close</span>
+                        <CloseOutlinedIcon />
                     </IconButton>
                 </Box>
 
@@ -416,7 +427,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                             <ListItem key={item.text} disablePadding>
                                 <ListItemButton onClick={() => onSettingsClick(item.text)}>
                                     <ListItemIcon>
-                                        <span className="material-symbols-rounded">{item.icon}</span>
+                                        {item.icon}
                                     </ListItemIcon>
                                     <ListItemText primary={item.text} />
                                 </ListItemButton>
@@ -437,7 +448,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                             <ListItem key={item.text} disablePadding>
                                 <ListItemButton onClick={() => onSettingsClick(item.text)}>
                                     <ListItemIcon>
-                                        <span className="material-symbols-rounded">{item.icon}</span>
+                                        {item.icon}
                                     </ListItemIcon>
                                     <ListItemText primary={item.text} />
                                 </ListItemButton>
@@ -452,11 +463,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                         variant="outlined"
                         color="primary"
                         onClick={onLogout}
-                        startIcon={
-                            <span className="material-symbols-rounded">
-                                logout
-                            </span>
-                        }
+                        startIcon={<LogoutOutlinedIcon />}
                     >
                         {t('dashboard.common.logout')}
                     </Button>
@@ -517,7 +524,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                                 }
                             }}
                         >
-                            <span className="material-symbols-rounded">arrow_back</span>
+                            <ArrowBackOutlinedIcon />
                         </IconButton>
                         <Box>
                             <Typography variant="h6" fontWeight={600}>
@@ -540,7 +547,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                                         }
                                     }}
                                 >
-                                    <span className="material-symbols-rounded" style={{ fontSize: 20 }}>mark_email_read</span>
+                                    <MarkEmailReadOutlinedIcon sx={{ fontSize: 20 }} />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -558,7 +565,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                                     }
                                 }}
                             >
-                                <span className="material-symbols-rounded" style={{ fontSize: 20 }}>settings</span>
+                                <SettingsOutlinedIcon sx={{ fontSize: 20 }} />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -606,7 +613,7 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
             <Box sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                     <IconButton onClick={onBack} sx={{ mr: 2 }}>
-                        <span className="material-symbols-rounded">arrow_back</span>
+                        <ArrowBackOutlinedIcon />
                     </IconButton>
                     <Typography variant="h6">{component}</Typography>
                 </Box>

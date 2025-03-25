@@ -2,6 +2,7 @@ import { Box, Button, Paper, CircularProgress } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 
 // Types
 import type { Note } from '../../../../types/models/note';
@@ -188,7 +189,7 @@ export default function Notes() {
                         fullWidth
                         onClick={handleCreateNote}
                         disabled={isSaving}
-                        startIcon={<span className="material-symbols-rounded">add</span>}
+                        startIcon={<AddIcon />}
                     >
                         {isSaving ? <CircularProgress size={24} /> : t('dashboard.notes.list.createNote')}
                     </Button>

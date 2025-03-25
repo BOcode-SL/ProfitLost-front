@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, CircularProgress, Paper, IconButton, Select, MenuItem, FormControl, useTheme } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import CloseIcon from '@mui/icons-material/Close';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import SearchIcon from '@mui/icons-material/Search';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -177,7 +184,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
             {/* Header section with the close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <span className="material-symbols-rounded">close</span>
+                    <CloseIcon />
                 </IconButton>
                 <Typography variant="h6">
                     {category ? t('dashboard.annualReport.categories.editCategory') : t('dashboard.annualReport.categories.addFirstCategory')}
@@ -302,9 +309,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                 variant="outlined"
                                 size="small"
                                 onClick={() => setShowTransactions(!showTransactions)}
-                                startIcon={<span className="material-symbols-rounded">
-                                    {showTransactions ? 'visibility_off' : 'visibility'}
-                                </span>}
+                                startIcon={showTransactions ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                 sx={{ 
                                     borderRadius: 2,
                                     width: '100%'
@@ -321,13 +326,11 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     InputProps={{
                                         startAdornment: (
-                                            <span className="material-symbols-rounded" style={{ 
+                                            <SearchIcon sx={{ 
                                                 fontSize: 20, 
-                                                marginRight: 8,
-                                                color: theme.palette.text.secondary 
-                                            }}>
-                                                search
-                                            </span>
+                                                mr: 1,
+                                                color: 'text.secondary'
+                                            }} />
                                         ),
                                         sx: {
                                             borderRadius: 2,
@@ -366,9 +369,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                     fontSize: { xs: '0.9rem', sm: '1rem' }
                                                 }}
                                             >
-                                                <span className="material-symbols-rounded" style={{ fontSize: 20 }}>
-                                                    calendar_month
-                                                </span>
+                                                <CalendarMonthIcon sx={{ fontSize: 20 }} />
                                                 {month}
                                             </Typography>
                                             <Box sx={{ 
@@ -459,9 +460,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                                     mt: 'auto'
                                                                 }}
                                                             >
-                                                                <span className="material-symbols-rounded" style={{ fontSize: 16 }}>
-                                                                    schedule
-                                                                </span>
+                                                                <ScheduleIcon sx={{ fontSize: 16 }} />
                                                                 {fromUTCtoLocal(transaction.date).toLocaleDateString()}
                                                             </Typography>
                                                         </Paper>
@@ -481,13 +480,11 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                     px: 2,
                                     textAlign: 'center'
                                 }}>
-                                    <span className="material-symbols-rounded" style={{ 
+                                    <SearchOffIcon sx={{ 
                                         fontSize: 48,
-                                        marginBottom: 16,
-                                        color: theme.palette.text.secondary
-                                    }}>
-                                        search_off
-                                    </span>
+                                        mb: 2,
+                                        color: 'text.secondary'
+                                    }} />
                                     <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
                                         {t('dashboard.annualReport.categories.form.noSearchResults')}
                                     </Typography>

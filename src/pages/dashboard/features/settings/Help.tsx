@@ -1,5 +1,6 @@
 import { Box, Paper, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Help component
 export default function Help() {
@@ -34,9 +35,7 @@ export default function Help() {
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     {/* Accordion for How to Start */}
                     <Accordion>
-                        <AccordionSummary
-                            expandIcon={<span className="material-symbols-rounded">expand_more</span>}
-                        >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -66,7 +65,7 @@ export default function Help() {
 
                     {/* Accordion for Manage Accounts */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -96,7 +95,7 @@ export default function Help() {
 
                     {/* Accordion for Categories Work */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -124,7 +123,7 @@ export default function Help() {
 
                     {/* Accordion for Protect Data */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -152,7 +151,7 @@ export default function Help() {
 
                     {/* Accordion for View Reports */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -180,7 +179,7 @@ export default function Help() {
 
                     {/* Accordion for Mobile Usage */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -204,7 +203,7 @@ export default function Help() {
 
                     {/* Accordion for Contact Support */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<span className="material-symbols-rounded">expand_more</span>}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
                                 variant="h3"
                                 sx={{

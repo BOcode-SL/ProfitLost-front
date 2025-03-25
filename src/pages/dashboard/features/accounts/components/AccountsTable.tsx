@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Collapse, CircularProgress, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -126,16 +130,13 @@ export default function AccountsTable({
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {/* Show drag indicator if the account is active */}
                 {!isInactive && (
-                    <span
-                        className="material-symbols-rounded"
-                        style={{
+                    <DragIndicatorIcon
+                        sx={{
                             cursor: 'grab',
                             fontSize: '20px',
                             opacity: 0.7
                         }}
-                    >
-                        drag_indicator
-                    </span>
+                    />
                 )}
                 {/* Account name */}
                 <Typography variant="h6" sx={{ color: account.configuration.color }}>
@@ -190,7 +191,7 @@ export default function AccountsTable({
                 <Button
                     variant="contained"
                     onClick={() => setIsDrawerOpen(true)}
-                    startIcon={<span className="material-symbols-rounded">add</span>}
+                    startIcon={<AddIcon />}
                     size="small"
                     sx={{
                         width: { xs: '100%', sm: 'auto' }
@@ -247,11 +248,7 @@ export default function AccountsTable({
                         <Box sx={{ mt: 2 }}>
                             <Button
                                 onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
-                                startIcon={
-                                    <span className="material-symbols-rounded">
-                                        {showInactiveAccounts ? 'expand_less' : 'expand_more'}
-                                    </span>
-                                }
+                                startIcon={showInactiveAccounts ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                 sx={{ mb: 1, color: 'text.primary' }}
                             >
                                 {t('dashboard.accounts.table.inactiveAccounts')} ({filteredInactiveAccounts.length})

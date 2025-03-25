@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 // Services
 import { userService } from '../../../../services/user.service';
@@ -175,7 +178,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
                                                     edge="end"
                                                 >
-                                                    {showPassword.current ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                    {showPassword.current ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -199,7 +202,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
                                                     edge="end"
                                                 >
-                                                    {showPassword.new ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                    {showPassword.new ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -223,7 +226,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
                                                     edge="end"
                                                 >
-                                                    {showPassword.confirm ? <span className="material-symbols-rounded">visibility_off</span> : <span className="material-symbols-rounded">visibility</span>}
+                                                    {showPassword.confirm ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -269,7 +272,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             variant="outlined"
                             color="error"
                             onClick={() => setShowDeleteConfirmation(true)}
-                            startIcon={<span className="material-symbols-rounded">delete_forever</span>}
+                            startIcon={<DeleteForeverIcon />}
                             sx={{
                                 borderColor: 'red',
                                 color: 'red',

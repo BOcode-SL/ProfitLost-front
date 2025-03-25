@@ -91,8 +91,7 @@ body .soon-badge {
     font-size: 0.8rem;
 }
 
-body .no-select,
-body .material-symbols-rounded {
+body .no-select {
     user-select: none;
 }
 

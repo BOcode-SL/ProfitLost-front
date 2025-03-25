@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 import { formatDate, prepareForBackend, utcToLocalString } from '../../../../../utils/dateUtils';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -546,7 +547,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <span className="material-symbols-rounded">close</span>
+                    <CloseIcon />
                 </IconButton>
                 <Typography variant="h6">{transaction ? t('dashboard.transactions.form.title.edit') : t('dashboard.transactions.form.title.new')}</Typography>
             </Box>

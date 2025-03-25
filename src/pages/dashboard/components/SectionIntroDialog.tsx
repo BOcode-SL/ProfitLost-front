@@ -2,6 +2,9 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
 
+// Utils
+import { getIconComponent } from '../../../utils/sectionIconUtils';
+
 // Types
 interface SectionInfo {
     title: string;
@@ -62,8 +65,6 @@ const IconCircle = ({ icon }: { icon: string }) => {
             }}
         >
             <Box
-                component="span"
-                className="material-symbols-rounded"
                 sx={{
                     fontSize: { xs: 24, sm: 28 },
                     display: 'flex',
@@ -72,7 +73,7 @@ const IconCircle = ({ icon }: { icon: string }) => {
                     lineHeight: 1
                 }}
             >
-                {icon}
+                {getIconComponent(icon)}
             </Box>
         </Box>
     );

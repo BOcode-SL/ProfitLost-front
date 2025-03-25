@@ -1,6 +1,8 @@
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 import { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Types
 interface ResetPasswordFormProps {
@@ -122,9 +124,7 @@ export default function ResetPasswordForm({
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <IconButton onClick={() => setShowNewPassword(!showNewPassword)} edge="end">
-                                            <span className="material-symbols-rounded">
-                                                {showNewPassword ? 'visibility' : 'visibility_off'}
-                                            </span>
+                                            {showNewPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                         </IconButton>
                                     </InputAdornment>
                                 )
@@ -146,9 +146,7 @@ export default function ResetPasswordForm({
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
-                                            <span className="material-symbols-rounded">
-                                                {showConfirmPassword ? 'visibility' : 'visibility_off'}
-                                            </span>
+                                            {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                         </IconButton>
                                     </InputAdornment>
                                 )
