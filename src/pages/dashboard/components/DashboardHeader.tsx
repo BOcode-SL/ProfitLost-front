@@ -389,7 +389,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                                 m: 0
                             }}
                         >
-                            {user?.name}
+                            {user?.name} {user?.surname}
                         </Typography>
                         <Typography
                             sx={{
