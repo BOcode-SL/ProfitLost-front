@@ -1,6 +1,8 @@
 import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Types
 import type { RegisterCredentials } from '../../../../types/api/responses';
@@ -106,9 +108,7 @@ export default function RegisterForm({
                         endAdornment: (
                             <InputAdornment position="end">
                                 <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                    <span className="material-symbols-rounded">
-                                        {showPassword ? 'visibility' : 'visibility_off'}
-                                    </span>
+                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                 </IconButton>
                             </InputAdornment>
                         )

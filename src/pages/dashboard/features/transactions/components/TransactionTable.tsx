@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Button, FormControl, InputLabel, useTheme, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -181,7 +182,7 @@ export default function TransactionTable({
                         <Button
                             variant="contained"
                             onClick={handleCreateClick}
-                            startIcon={<span className="material-symbols-rounded">add</span>}
+                            startIcon={<AddIcon />}
                             size="small"
                         >
                             {t('dashboard.transactions.table.addTransaction')}

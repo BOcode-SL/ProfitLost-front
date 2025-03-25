@@ -1124,8 +1124,12 @@
                     "categoryName": "Nombre de la categoría",
                     "categoryNameRequired": "El nombre de la categoría es requerido",
                     "color": "Color",
-                    "showTransactions": "Mostrar movimientos de {{year}}",
-                    "hideTransactions": "Ocultar movimientos de {{year}}"
+                    "history": "Historial",
+                    "showTransactions": "Mostrar",
+                    "hideTransactions": "Ocultar",
+                    "searchPlaceholder": "Buscar movimientos...",
+                    "noSearchResults": "No se encontraron movimientos",
+                    "tryDifferentSearch": "Intenta con otros términos de búsqueda"
                 },
                 "delete": {
                     "title": "Delete Category",

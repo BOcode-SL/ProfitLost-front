@@ -1,6 +1,10 @@
 import { useState, useContext } from 'react';
-import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Icon, Fab } from '@mui/material';
+import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Fab } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
+
+import { getIconComponent } from '../../../utils/sectionIconUtils';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -73,7 +77,7 @@ const DesktopNavItem = ({
     }}
   >
     <ListItemIcon sx={{ color: 'inherit' }}>
-      <Icon className="material-symbols-rounded">{item.icon}</Icon>
+      {getIconComponent(item.icon)}
     </ListItemIcon>
     <ListItemText primary={item.label} />
   </ListItem>
@@ -125,7 +129,7 @@ const MobileNavItem = ({
         px: 0.5
       }}
     >
-      <Icon className="material-symbols-rounded" sx={{ fontSize: '1.4rem' }}>{item.icon}</Icon>
+      {getIconComponent(item.icon)}
       {displayLabel()}
     </Box>
   );
@@ -233,7 +237,7 @@ const MobileNav = ({
             },
           }}
         >
-          <Icon className="material-symbols-rounded">add</Icon>
+          <AddOutlinedIcon />
         </Fab>
       )}
 
@@ -273,7 +277,7 @@ const MobileNav = ({
             height: '100%'
           }}
         >
-          <Icon className="material-symbols-rounded" sx={{ fontSize: '1.4rem' }}>more_horiz</Icon>
+          <MoreHorizOutlinedIcon sx={{ fontSize: '1.4rem' }} />
           <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{t('dashboard.common.more')}</Box>
         </Box>
       </Paper>
@@ -300,7 +304,7 @@ const MobileNav = ({
               gap: 2
             }}
           >
-            <Icon className="material-symbols-rounded">{item.icon}</Icon>
+            {getIconComponent(item.icon)}
             {item.label}
           </MenuItem>
         ))}

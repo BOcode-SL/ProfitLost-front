@@ -2,6 +2,15 @@ import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 
 // Components
 import Footer from './components/Footer';
@@ -9,7 +18,7 @@ import Header from './components/Header';
 import LanguageSelector from './components/LanguageSelector';
 
 // Styles
-import './Home.scss';
+import './Home.css';
 
 // Home component for the landing page
 export default function Home() {
@@ -305,7 +314,7 @@ export default function Home() {
                                         }
                                     }}
                                 >
-                                    <span className="material-symbols-rounded">arrow_back_ios</span>
+                                    <ArrowBackIosIcon />
                                 </IconButton>
 
                                 {/* Step indicators */}
@@ -333,7 +342,7 @@ export default function Home() {
                                         }
                                     }}
                                 >
-                                    <span className="material-symbols-rounded">arrow_forward_ios</span>
+                                    <ArrowForwardIosIcon />
                                 </IconButton>
                             </Box>
                         </Box>
@@ -389,43 +398,43 @@ export default function Home() {
                 </Container>
                 <div className="features-container bento-grid">
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded no-select">bar_chart_4_bars</span>
+                        <AssessmentOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
                         <h4>{t('home.features.cards.annualReport.title')}</h4>
                         <p>{t('home.features.cards.annualReport.description')}</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">receipt_long</span>
+                        <ReceiptLongOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.transactions.title')}</h4>
                         <p>{t('home.features.cards.transactions.description')}</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">task_alt</span>
+                        <TaskAltOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.goals.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.goals.description')}</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">note_alt</span>
+                        <NoteAltOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.notes.title')}</h4>
                         <p>{t('home.features.cards.notes.description')}</p>
                     </article>
 
                     <article className="feature-card highlight">
-                        <span className="material-symbols-rounded no-select">account_balance_wallet</span>
+                        <AccountBalanceWalletOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
                         <h4>{t('home.features.cards.bankIntegration.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.bankIntegration.description')}</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">trending_up</span>
+                        <TrendingUpOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.investments.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.investments.description')}</p>
                     </article>
 
                     <article className="feature-card">
-                        <span className="material-symbols-rounded no-select">account_balance</span>
+                        <AccountBalanceOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.accounts.title')}</h4>
                         <p>{t('home.features.cards.accounts.description')}</p>
                     </article>

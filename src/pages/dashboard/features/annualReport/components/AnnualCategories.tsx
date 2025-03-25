@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { Box, Button, TextField, Typography, CircularProgress, Select, MenuItem, FormControl, InputLabel, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Slide, useTheme, Divider } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -250,7 +251,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     <Button
                         variant="contained"
                         onClick={() => setDrawerOpen(true)}
-                        startIcon={<span className="material-symbols-rounded">add</span>}
+                        startIcon={<AddIcon />}
                         size="small"
                     >
                         {t('dashboard.annualReport.categories.addCategory')}

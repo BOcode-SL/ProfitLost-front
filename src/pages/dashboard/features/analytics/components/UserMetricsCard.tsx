@@ -1,5 +1,10 @@
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 
 // Types
 import type { UserMetrics } from '../../../../../types/models/analytics';
@@ -76,27 +81,27 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         {
             label: t('dashboard.analytics.metrics.totalUsers'),
             value: data?.totalUsers || 0,
-            icon: 'groups_2'
+            icon: <Groups2OutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.activeUsersDaily'),
             value: data?.activeUsers.daily || 0,
-            icon: 'person'
+            icon: <PersonOutlineOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.activeUsersMonthly'),
             value: data?.activeUsers.monthly || 0,
-            icon: 'group'
+            icon: <GroupOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.newUsersDaily'),
             value: data?.newUsers.daily || 0,
-            icon: 'person_add'
+            icon: <PersonAddOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.newUsersMonthly'),
             value: data?.newUsers.monthly || 0,
-            icon: 'group_add'
+            icon: <GroupAddOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         }
     ];
 
@@ -116,9 +121,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                     gap: 1,
                     minHeight: 24
                 }}>
-                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                        {metric.icon}
-                    </span>
+                    {metric.icon}
                     <Typography 
                         variant="body2" 
                         color="text.secondary"

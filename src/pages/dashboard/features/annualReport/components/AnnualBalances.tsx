@@ -1,5 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, useTheme, Skeleton } from '@mui/material';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -42,9 +45,9 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
 
     // Prepare the balance items for display
     const balanceItems = [
-        { label: 'download', value: totals.income, color: theme.palette.chart.income },
-        { label: 'upload', value: totals.expenses, color: theme.palette.chart.expenses },
-        { label: 'savings', value: totals.balance, color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses }
+        { label: 'download', value: totals.income, color: theme.palette.chart.income, icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
+        { label: 'upload', value: totals.expenses, color: theme.palette.chart.expenses, icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
+        { label: 'savings', value: totals.balance, color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> }
     ];
 
     useEffect(() => {
@@ -105,7 +108,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
             gap: 2
         }}>
             {/* Iterate over balance items to display each one */}
-            {balanceItems.map(({ label, value, color }, index) => (
+            {balanceItems.map(({ value, color, icon }, index) => (
                 <Paper key={index} elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
@@ -115,14 +118,24 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
                     gap: 2
                 }}>
                     {/* Icon representing the type of balance */}
-                    <span className='material-symbols-rounded' style={{ color, fontSize: '2rem' }}>{label}</span>
+                    <Box sx={{ 
+                        color: color,
+                        display: 'flex',
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>{icon}</Box>
                     {/* Display formatted currency value */}
-                    <span style={{
+                    <Box sx={{
                         fontSize: '1.5rem',
                         filter: isHidden ? 'blur(8px)' : 'none',
                         transition: 'filter 0.3s ease',
-                        userSelect: isHidden ? 'none' : 'auto'
-                    }}>{formatCurrency(value, user)}</span>
+                        userSelect: isHidden ? 'none' : 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>
+                        {formatCurrency(value, user)}
+                    </Box>
                 </Paper>
             ))}
         </Box>

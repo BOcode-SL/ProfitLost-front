@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { useTranslation } from 'react-i18next';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 // Types
 import { NotificationType } from '../../../../../types/models/notification';
@@ -363,7 +364,7 @@ export default function NotificationsEditor() {
                                 color="primary"
                                 onClick={handlePreviewOpen}
                                 disabled={isSubmitting}
-                                startIcon={<span className="material-symbols-rounded">visibility</span>}
+                                startIcon={<VisibilityOutlinedIcon />}
                             >
                                 {t('dashboard.notifications.editor.preview')}
                             </Button>

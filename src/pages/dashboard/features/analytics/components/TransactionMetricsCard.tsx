@@ -3,6 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
+import AddchartOutlinedIcon from '@mui/icons-material/AddchartOutlined';
+import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 
 // Services
 import { analyticsService } from '../../../../../services/analytics.service';
@@ -155,26 +162,26 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         {
             label: t('dashboard.analytics.metrics.totalTransactions'),
             value: data?.total || 0,
-            icon: 'receipt_long',
+            icon: <ReceiptLongOutlinedIcon sx={{ fontSize: '1.2rem' }} />,
             hideComparison: true
         },
         {
             label: t('dashboard.analytics.metrics.transactionsToday'),
             value: data?.today || 0,
             comparison: data?.comparison.today || 0,
-            icon: 'post_add'
+            icon: <NoteAddOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.transactionsThisMonth'),
             value: data?.thisMonth || 0,
             comparison: data?.comparison.thisMonth || 0,
-            icon: 'calendar_month'
+            icon: <AddchartOutlinedIcon sx={{ fontSize: '1.2rem' }} />
         },
         {
             label: t('dashboard.analytics.metrics.averageTransactionsPerUser'),
             value: data?.averagePerUser || 0,
             comparison: data?.comparison.averagePerUser || 0,
-            icon: 'query_stats',
+            icon: <QueryStatsOutlinedIcon sx={{ fontSize: '1.2rem' }} />,
             isAverage: true,
             hideComparison: true
         }
@@ -260,9 +267,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                 mb: { xs: 1, sm: 0 }
                             }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 24 }}>
-                                    <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-                                        {metric.icon}
-                                    </span>
+                                    {metric.icon}
                                     <Typography 
                                         variant="body2" 
                                         color="text.secondary"
@@ -297,15 +302,22 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                             alignItems: 'center',
                                             gap: 0.5
                                         }}>
-                                            <span
-                                                className="material-symbols-rounded"
-                                                style={{
+                                            {percentageChange === 0 ? (
+                                                <TrendingFlatIcon sx={{
                                                     fontSize: '0.875rem',
-                                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336'
-                                                }}
-                                            >
-                                                {percentageChange === 0 ? 'trending_flat' : isPositive ? 'trending_up' : 'trending_down'}
-                                            </span>
+                                                    color: '#4caf50'
+                                                }} />
+                                            ) : isPositive ? (
+                                                <TrendingUpIcon sx={{
+                                                    fontSize: '0.875rem',
+                                                    color: '#4caf50'
+                                                }} />
+                                            ) : (
+                                                <TrendingDownIcon sx={{
+                                                    fontSize: '0.875rem',
+                                                    color: '#f44336'
+                                                }} />
+                                            )}
                                             <Typography
                                                 variant="body2"
                                                 sx={{

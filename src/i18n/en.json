@@ -1144,8 +1144,12 @@
                     "categoryName": "Category Name",
                     "categoryNameRequired": "The category name is required",
                     "color": "Color",
-                    "showTransactions": "Show transactions from {{year}}",
-                    "hideTransactions": "Hide transactions from {{year}}"
+                    "history": "History",
+                    "showTransactions": "Show",
+                    "hideTransactions": "Hide",
+                    "searchPlaceholder": "Search transactions...",
+                    "noSearchResults": "No transactions found",
+                    "tryDifferentSearch": "Try a different search term"
                 },
                 "delete": {
                     "title": "Delete Category",

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
@@ -80,9 +83,9 @@ export default function TransactionBalances({
     }
 
     const balanceItems = [
-        { label: 'download', value: totalIncome, color: theme.palette.chart.income },
-        { label: 'upload', value: totalExpenses, color: theme.palette.chart.expenses },
-        { label: 'savings', value: totalIncome - totalExpenses, color: totalIncome - totalExpenses > 0 ? theme.palette.chart.income : theme.palette.chart.expenses }
+        { label: 'download', value: totalIncome, color: theme.palette.chart.income, icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
+        { label: 'upload', value: totalExpenses, color: theme.palette.chart.expenses, icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
+        { label: 'savings', value: totalIncome - totalExpenses, color: totalIncome - totalExpenses > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> }
     ];
 
     return (
@@ -91,7 +94,7 @@ export default function TransactionBalances({
             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
             gap: 2
         }}>
-            {balanceItems.map(({ label, value, color }, index) => (
+            {balanceItems.map(({ value, color, icon }, index) => (
                 <Paper key={index} elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
@@ -100,13 +103,21 @@ export default function TransactionBalances({
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    <span className="material-symbols-rounded no-select" style={{ color, fontSize: '2rem' }}>{label}</span>
-                    <span style={{ 
+                    <Box sx={{ 
+                        color: color,
+                        display: 'flex',
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>{icon}</Box>
+                    <Box sx={{ 
                         fontSize: '1.5rem',
                         filter: isHidden ? 'blur(8px)' : 'none',
                         transition: 'filter 0.3s ease',
-                        userSelect: isHidden ? 'none' : 'auto'
-                    }}>{formatCurrency(value, user)}</span>
+                        userSelect: isHidden ? 'none' : 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        lineHeight: 1
+                    }}>{formatCurrency(value, user)}</Box>
                 </Paper>
             ))}
         </Box>

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination, useTheme, useMediaQuery } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
+
 import { CategoryType } from '../../types/models/blogPost';
+
 import { blogPosts } from './data/blogData';
 
 // Retrieve unique categories from the existing blog posts
@@ -177,7 +180,7 @@ export default function BlogPage() {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <span className="material-symbols-rounded">search</span>
+                    <SearchIcon />
                   </InputAdornment>
                 )
               }
