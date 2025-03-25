@@ -48,6 +48,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [showTransactions, setShowTransactions] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Effect to load years with available transaction data
     useEffect(() => {
@@ -114,6 +115,20 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
             // Use the translation for display
             const translatedMonth = t(`dashboard.common.monthNames.${monthKey}`);
             groupedTransactions[translatedMonth] = tempGroupedByMonthKey[monthKey];
+        }
+    });
+
+    // Filter transactions based on search query
+    const filteredGroupedTransactions: GroupedTransactions = {};
+    
+    Object.entries(groupedTransactions).forEach(([month, monthTransactions]) => {
+        const filteredTransactions = monthTransactions.filter(transaction =>
+            transaction.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (category?.name.toLowerCase() || '').includes(searchQuery.toLowerCase())
+        );
+        
+        if (filteredTransactions.length > 0) {
+            filteredGroupedTransactions[month] = filteredTransactions;
         }
     });
 
@@ -297,137 +312,191 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                             >
                                 {showTransactions ? t('dashboard.annualReport.categories.form.hideTransactions') : t('dashboard.annualReport.categories.form.showTransactions')}
                             </Button>
+                            {showTransactions && (
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    placeholder={t('dashboard.annualReport.categories.form.searchPlaceholder')}
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <span className="material-symbols-rounded" style={{ 
+                                                fontSize: 20, 
+                                                marginRight: 8,
+                                                color: theme.palette.text.secondary 
+                                            }}>
+                                                search
+                                            </span>
+                                        ),
+                                        sx: {
+                                            borderRadius: 2,
+                                            '& .MuiOutlinedInput-input': {
+                                                py: 1
+                                            }
+                                        }
+                                    }}
+                                />
+                            )}
                         </Box>
                     </Box>
 
-                    {showTransactions && Object.keys(groupedTransactions).length > 0 && (
-                        <Box >
-                            {Object.entries(groupedTransactions).map(([month, monthTransactions]) => (
-                                <Box 
-                                    key={month} 
-                                    sx={{ 
-                                        mb: 3,
-                                        '&:last-child': { mb: 0 }
-                                    }}
-                                >
-                                    <Typography 
-                                        variant="subtitle1" 
-                                        sx={{
-                                            mb: 2,
-                                            textTransform: 'capitalize',
-                                            fontWeight: 600,
-                                            color: 'text.secondary',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 1,
-                                            fontSize: { xs: '0.9rem', sm: '1rem' }
-                                        }}
-                                    >
-                                        <span className="material-symbols-rounded" style={{ fontSize: 20 }}>
-                                            calendar_month
-                                        </span>
-                                        {month}
-                                    </Typography>
-                                    <Box sx={{ 
-                                        display: 'grid', 
-                                        gap: 1.5,
-                                        gridTemplateColumns: {
-                                            xs: '1fr',
-                                            md: 'repeat(auto-fit, minmax(250px, 1fr))'
-                                        },
-                                        maxWidth: '100%',
-                                        overflow: 'hidden',
-                                        p: { xs: 0, sm: 0.5 }
-                                    }}>
-                                        {monthTransactions.map((transaction) => (
-                                            <Box
-                                                key={transaction._id}
+                    {showTransactions && (
+                        <>
+                            {Object.keys(filteredGroupedTransactions).length > 0 ? (
+                                <Box sx={{ mt: 2 }}>
+                                    {Object.entries(filteredGroupedTransactions).map(([month, monthTransactions]) => (
+                                        <Box 
+                                            key={month} 
+                                            sx={{ 
+                                                mb: 3,
+                                                '&:last-child': { mb: 0 }
+                                            }}
+                                        >
+                                            <Typography 
+                                                variant="subtitle1" 
                                                 sx={{
-                                                    width: '100%',
-                                                    position: 'relative',
-                                                    transform: 'translate3d(0, 0, 0)',
-                                                    '&:hover': {
-                                                        '& > .MuiPaper-root': {
-                                                            borderColor: 'primary.main',
-                                                            boxShadow: 1,
-                                                            transition: 'all 0.2s ease-in-out'
-                                                        }
-                                                    }
+                                                    mb: 2,
+                                                    textTransform: 'capitalize',
+                                                    fontWeight: 600,
+                                                    color: 'text.secondary',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                    fontSize: { xs: '0.9rem', sm: '1rem' }
                                                 }}
                                             >
-                                                <Paper
-                                                    elevation={0}
-                                                    sx={{
-                                                        p: { xs: 1.5, sm: 2 },
-                                                        borderRadius: 2,
-                                                        backgroundColor: 'background.default',
-                                                        border: '1px solid',
-                                                        borderColor: 'divider',
-                                                        display: 'flex',
-                                                        flexDirection: 'column',
-                                                        gap: 1,
-                                                        width: '100%',
-                                                        maxWidth: '100%',
-                                                        boxSizing: 'border-box',
-                                                    }}
-                                                >
-                                                    <Box sx={{ 
-                                                        display: 'flex', 
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'flex-start',
-                                                        gap: 2,
-                                                        width: '100%'
-                                                    }}>
-                                                        <Typography sx={{ 
-                                                            fontWeight: 500,
-                                                            fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                                                            flex: '1 1 auto',
-                                                            overflow: 'hidden',
-                                                            display: '-webkit-box',
-                                                            WebkitLineClamp: 2,
-                                                            WebkitBoxOrient: 'vertical',
-                                                            lineHeight: 1.4,
-                                                            minWidth: 0,
-                                                            wordBreak: 'break-word'
-                                                        }}>
-                                                            {transaction.description || category.name}
-                                                        </Typography>
-                                                        <Typography sx={{
-                                                            fontWeight: 600,
-                                                            fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                                                            color: transaction.amount >= 0
-                                                                ? theme.palette.chart.income
-                                                                : theme.palette.chart.expenses,
-                                                            whiteSpace: 'nowrap',
-                                                            flex: '0 0 auto',
-                                                            pt: 0.2
-                                                        }}>
-                                                            {formatCurrency(transaction.amount, user)}
-                                                        </Typography>
-                                                    </Box>
-                                                    <Typography 
-                                                        variant="caption" 
-                                                        color="text.secondary"
-                                                        sx={{ 
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: 0.5,
-                                                            fontSize: { xs: '0.75rem', sm: '0.8rem' },
-                                                            mt: 'auto'
+                                                <span className="material-symbols-rounded" style={{ fontSize: 20 }}>
+                                                    calendar_month
+                                                </span>
+                                                {month}
+                                            </Typography>
+                                            <Box sx={{ 
+                                                display: 'grid', 
+                                                gap: 1.5,
+                                                gridTemplateColumns: {
+                                                    xs: '1fr',
+                                                    md: 'repeat(auto-fit, minmax(250px, 1fr))'
+                                                },
+                                                maxWidth: '100%',
+                                                overflow: 'hidden',
+                                                p: { xs: 0, sm: 0.5 }
+                                            }}>
+                                                {monthTransactions.map((transaction) => (
+                                                    <Box
+                                                        key={transaction._id}
+                                                        sx={{
+                                                            width: '100%',
+                                                            position: 'relative',
+                                                            transform: 'translate3d(0, 0, 0)',
+                                                            '&:hover': {
+                                                                '& > .MuiPaper-root': {
+                                                                    borderColor: 'primary.main',
+                                                                    boxShadow: 1,
+                                                                    transition: 'all 0.2s ease-in-out'
+                                                                }
+                                                            }
                                                         }}
                                                     >
-                                                        <span className="material-symbols-rounded" style={{ fontSize: 16 }}>
-                                                            schedule
-                                                        </span>
-                                                        {fromUTCtoLocal(transaction.date).toLocaleDateString()}
-                                                    </Typography>
-                                                </Paper>
+                                                        <Paper
+                                                            elevation={0}
+                                                            sx={{
+                                                                p: { xs: 1.5, sm: 2 },
+                                                                borderRadius: 2,
+                                                                backgroundColor: 'background.default',
+                                                                border: '1px solid',
+                                                                borderColor: 'divider',
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                gap: 1,
+                                                                width: '100%',
+                                                                maxWidth: '100%',
+                                                                boxSizing: 'border-box',
+                                                            }}
+                                                        >
+                                                            <Box sx={{ 
+                                                                display: 'flex', 
+                                                                justifyContent: 'space-between',
+                                                                alignItems: 'flex-start',
+                                                                gap: 2,
+                                                                width: '100%'
+                                                            }}>
+                                                                <Typography sx={{ 
+                                                                    fontWeight: 500,
+                                                                    fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                                                                    flex: '1 1 auto',
+                                                                    overflow: 'hidden',
+                                                                    display: '-webkit-box',
+                                                                    WebkitLineClamp: 2,
+                                                                    WebkitBoxOrient: 'vertical',
+                                                                    lineHeight: 1.4,
+                                                                    minWidth: 0,
+                                                                    wordBreak: 'break-word'
+                                                                }}>
+                                                                    {transaction.description || category.name}
+                                                                </Typography>
+                                                                <Typography sx={{
+                                                                    fontWeight: 600,
+                                                                    fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                                                                    color: transaction.amount >= 0
+                                                                        ? theme.palette.chart.income
+                                                                        : theme.palette.chart.expenses,
+                                                                    whiteSpace: 'nowrap',
+                                                                    flex: '0 0 auto',
+                                                                    pt: 0.2
+                                                                }}>
+                                                                    {formatCurrency(transaction.amount, user)}
+                                                                </Typography>
+                                                            </Box>
+                                                            <Typography 
+                                                                variant="caption" 
+                                                                color="text.secondary"
+                                                                sx={{ 
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    gap: 0.5,
+                                                                    fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                                                    mt: 'auto'
+                                                                }}
+                                                            >
+                                                                <span className="material-symbols-rounded" style={{ fontSize: 16 }}>
+                                                                    schedule
+                                                                </span>
+                                                                {fromUTCtoLocal(transaction.date).toLocaleDateString()}
+                                                            </Typography>
+                                                        </Paper>
+                                                    </Box>
+                                                ))}
                                             </Box>
-                                        ))}
-                                    </Box>
+                                        </Box>
+                                    ))}
                                 </Box>
-                            ))}
-                        </Box>
+                            ) : searchQuery && (
+                                <Box sx={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    py: 4,
+                                    px: 2,
+                                    textAlign: 'center'
+                                }}>
+                                    <span className="material-symbols-rounded" style={{ 
+                                        fontSize: 48,
+                                        marginBottom: 16,
+                                        color: theme.palette.text.secondary
+                                    }}>
+                                        search_off
+                                    </span>
+                                    <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                                        {t('dashboard.annualReport.categories.form.noSearchResults')}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {t('dashboard.annualReport.categories.form.tryDifferentSearch')}
+                                    </Typography>
+                                </Box>
+                            )}
+                        </>
                     )}
                 </Paper>
             )}

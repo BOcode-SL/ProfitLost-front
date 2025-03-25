@@ -1146,7 +1146,10 @@
                     "color": "Color",
                     "history": "History",
                     "showTransactions": "Show",
-                    "hideTransactions": "Hide"
+                    "hideTransactions": "Hide",
+                    "searchPlaceholder": "Search transactions...",
+                    "noSearchResults": "No transactions found",
+                    "tryDifferentSearch": "Try a different search term"
                 },
                 "delete": {
                     "title": "Delete Category",
