@@ -44,8 +44,20 @@ export default function LoginForm({
                 <Button
                     fullWidth
                     variant="outlined"
-                    color="primary"
+                    sx={{
+                        color: 'black',
+                        borderColor: '#808080'
+                    }}
                     onClick={() => loginWithGoogle()}
+                    startIcon={
+                        <img
+                            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                            alt="Google"
+                            width="20"
+                            height="20"
+                            style={{ marginRight: 8 }} // Espaciado entre icono y texto
+                        />
+                    }
                 >
                     {t('home.auth.login.form.googleButton')}
                 </Button>
@@ -64,7 +76,6 @@ export default function LoginForm({
                 required
                 label={t('home.auth.login.form.identifier.label')}
                 variant="outlined"
-                margin="normal"
                 name="identifier"
                 placeholder={t('home.auth.login.form.identifier.placeholder')}
                 value={loginData.identifier}
