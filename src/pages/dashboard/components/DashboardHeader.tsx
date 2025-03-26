@@ -409,7 +409,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                                 m: 0
                             }}
                         >
-                            {user?.email}
+                            @{user?.username}
                         </Typography>
                     </Box>
                 </Paper>
