@@ -631,26 +631,29 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                                     required
                                 />
                             )}
-                            renderOption={(props, option) => (
-                                <li {...props}>
-                                    <Box sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        width: '100%'
-                                    }}>
-                                        <Box
-                                            sx={{
-                                                width: 8,
-                                                height: 8,
-                                                borderRadius: '50%',
-                                                bgcolor: option.color
-                                            }}
-                                        />
-                                        {option.name}
-                                    </Box>
-                                </li>
-                            )}
+                            renderOption={(props, option) => {
+                                const { key, ...restProps } = props;
+                                return (
+                                    <li key={key} {...restProps}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 1,
+                                            width: '100%'
+                                        }}>
+                                            <Box
+                                                sx={{
+                                                    width: 8,
+                                                    height: 8,
+                                                    borderRadius: '50%',
+                                                    bgcolor: option.color
+                                                }}
+                                            />
+                                            {option.name}
+                                        </Box>
+                                    </li>
+                                );
+                            }}
                         />
                     </Paper>
 
