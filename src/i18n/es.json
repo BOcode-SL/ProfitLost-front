@@ -1072,7 +1072,8 @@
             "balance": {
                 "earnings": "Ingresos",
                 "spendings": "Gastos",
-                "savings": "Ahorros"
+                "savings": "Ahorros",
+                "thanLastMonth": "que el mes anterior"
             },
             "chart": {
                 "income": "Ingresos",
@@ -1083,8 +1084,7 @@
             "history": {
                 "lastTransactions": "Últimos Movimientos",
                 "noDataLastTransactions": "No hay datos disponibles para los últimos movimientos"
-            },
-            "thanLastMonth": "que el mes anterior"
+            }
         },
         "annualReport": {
             "title": "Reporte anual",
