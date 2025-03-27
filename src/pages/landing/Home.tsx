@@ -16,6 +16,7 @@ import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlin
 import Footer from './components/Footer';
 import Header from './components/Header';
 import LanguageSelector from './components/LanguageSelector';
+import Team from './components/Team';
 
 // Styles
 import './Home.css';
@@ -440,6 +441,9 @@ export default function Home() {
                     </article>
                 </div>
             </Box>
+
+            {/* Team Section */}
+            <Team />
 
             <Footer />
         </Box>

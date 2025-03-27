@@ -484,6 +484,16 @@
                 "recoveryCodeSent": "Código de recuperación enviado a tu email",
                 "passwordReset": "Contraseña restablecida correctamente"
             }
+        },
+        "team": {
+            "title": "Nuestro Equipo",
+            "subtitle": "Conoce al equipo detrás de Profit&Lost",
+            "brian": {
+                "bio": "Desarrollador Full Stack con experiencia en desarrollo de aplicaciones web. Creador de Profit&Lost con la misión de simplificar la gestión financiera personal."
+            },
+            "oscar": {
+                "bio": "Desarrollador Full Stack con experiencia en tecnologías web modernas. Comprometido con la creación de soluciones robustas y escalables que mejoren la experiencia del usuario."
+            }
         }
     },
     "blog": {
@@ -1072,8 +1082,7 @@
             "balance": {
                 "earnings": "Ingresos",
                 "spendings": "Gastos",
-                "savings": "Ahorros",
-                "thanLastMonth": "que el mes anterior"
+                "savings": "Ahorros"
             },
             "chart": {
                 "income": "Ingresos",
@@ -1084,7 +1093,8 @@
             "history": {
                 "lastTransactions": "Últimos Movimientos",
                 "noDataLastTransactions": "No hay datos disponibles para los últimos movimientos"
-            }
+            },
+            "thanLastMonth": "que el mes anterior"
         },
         "annualReport": {
             "title": "Reporte anual",

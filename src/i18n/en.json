@@ -484,6 +484,16 @@
                 "recoveryCodeSent": "Recovery code sent to your email",
                 "passwordReset": "Password reset successfully"
             }
+        },
+        "team": {
+            "title": "Our Team",
+            "subtitle": "Meet the team behind Profit&Lost",
+            "brian": {
+                "bio": "Full Stack Developer with experience in web application development. Creator of Profit&Lost with the mission of simplifying personal financial management."
+            },
+            "oscar": {
+                "bio": "Full Stack Developer with experience in modern web technologies. Committed to creating robust and scalable solutions that enhance user experience."
+            }
         }
     },
     "blog": {
