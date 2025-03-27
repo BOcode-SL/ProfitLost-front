@@ -46,7 +46,11 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     // Determine if the trend is positive
     const isPositiveTrend = type === 'Spendings'
         ? percentage <= 0
-        : percentage >= 0;
+        : type === 'Savings'
+            ? (amount >= 0 && percentage <= 0)  // Recovery case (negative to positive)
+              || (amount < 0 && percentage <= 0)   // Case of decreasing losses
+              || (amount >= 0 && percentage >= 0)    // Savings case increasing
+            : percentage >= 0;
 
     // Get the appropriate trend icon based on the type and percentage
     const getTrendIcon = () => {
@@ -115,7 +119,7 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                         alignItems: 'center',
                         lineHeight: 1
                     }}>
-                        {percentage.toFixed(1)}%
+                        {Math.abs(percentage).toFixed(1)}%
                     </Box>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
