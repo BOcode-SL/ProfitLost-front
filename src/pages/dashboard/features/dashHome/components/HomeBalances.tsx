@@ -16,15 +16,25 @@ import type { Transaction } from '../../../../../types/models/transaction';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
-// Interface for the props of the HomeBalances component
+/**
+ * Interface for the props of the HomeBalances component
+ */
 interface HomeBalancesProps {
     type: 'income' | 'expenses' | 'savings'; // Type of balance (income, expenses, or savings)
     transactions: Transaction[]; // Array of transactions
     isLoading: boolean; // Loading state
 }
 
-// BalanceCard component
-const BalanceCard = ({ type, amount, percentage }: { type: string; amount: number; percentage: number }) => {
+/**
+ * BalanceCard component - Displays financial data with trend indicators
+ * 
+ * @param type - The type of financial data (Earnings, Spendings, Savings)
+ * @param amount - The current amount value
+ * @param percentage - The percentage change compared to previous period
+ * @param previousAmount - The amount from the previous period
+ */
+const BalanceCard = ({ type, amount, percentage, previousAmount }:
+    { type: string; amount: number; percentage: number; previousAmount: number }) => {
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
@@ -43,14 +53,12 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
         };
     }, []);
 
-    // Determine if the trend is positive
-    const isPositiveTrend = type === 'Spendings'
-        ? percentage <= 0
-        : type === 'Savings'
-            ? (amount >= 0 && percentage <= 0)  // Recovery case (negative to positive)
-              || (amount < 0 && percentage <= 0)   // Case of decreasing losses
-              || (amount >= 0 && percentage >= 0)    // Savings case increasing
-            : percentage >= 0;
+    // Determine if the trend is positive based on the balance type
+    const isPositiveTrend = type === 'Savings'
+        ? (amount > previousAmount)  // For savings, positive if current amount exceeds previous
+        : type === 'Spendings'
+            ? percentage <= 0  // For spending, positive if spending decreased
+            : percentage >= 0;  // For earnings, positive if earnings increased
 
     // Get the appropriate trend icon based on the type and percentage
     const getTrendIcon = () => {
@@ -58,12 +66,12 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
             return <TrendingFlatIcon sx={{ fontSize: '1.2rem' }} />;
         }
         if (type === 'Spendings') {
-            return isPositiveTrend ? 
-                <TrendingDownIcon sx={{ fontSize: '1.2rem' }} /> : 
+            return isPositiveTrend ?
+                <TrendingDownIcon sx={{ fontSize: '1.2rem' }} /> :
                 <TrendingUpIcon sx={{ fontSize: '1.2rem' }} />;
         }
-        return isPositiveTrend ? 
-            <TrendingUpIcon sx={{ fontSize: '1.2rem' }} /> : 
+        return isPositiveTrend ?
+            <TrendingUpIcon sx={{ fontSize: '1.2rem' }} /> :
             <TrendingDownIcon sx={{ fontSize: '1.2rem' }} />;
     };
 
@@ -107,15 +115,15 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
                     fontSize: '0.8rem',
                     lineHeight: 1
                 }}>
-                    <Box sx={{ 
-                        display: 'flex', 
+                    <Box sx={{
+                        display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1
                     }}>
                         {getTrendIcon()}
                     </Box>
-                    <Box sx={{ 
-                        display: 'flex', 
+                    <Box sx={{
+                        display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1
                     }}>
@@ -130,12 +138,17 @@ const BalanceCard = ({ type, amount, percentage }: { type: string; amount: numbe
     );
 };
 
-// HomeBalances component
+/**
+ * HomeBalances component - Displays financial balances with trend analysis
+ * 
+ * Calculates and displays current month's financial data compared to previous month,
+ * showing trends and percentage changes.
+ */
 export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
 
     // Calculate the balance data based on transactions and loading state
     const balanceData = useMemo(() => {
-        if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0 };
+        if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0, previousAmount: 0 };
 
         const now = new Date();
         const currentYear = now.getFullYear();
@@ -143,18 +156,16 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
         const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
 
-        // Get the first day of the current month
+        // Define date ranges for comparison
         const firstDayOfMonth = new Date(currentYear, now.getMonth(), 1);
-        // Get the first day of the previous month
         const firstDayOfPreviousMonth = new Date(previousYear, previousMonth - 1, 1);
-        // Get the last day of the previous month
         const lastDayOfPreviousMonth = new Date(currentYear, now.getMonth(), 0);
 
+        // Filter transactions by date ranges
         const currentMonthTransactions = transactions.filter(transaction => {
             const date = fromUTCtoLocal(transaction.date);
             return date >= firstDayOfMonth && date <= now;
         });
-
         const previousMonthTransactions = transactions.filter(transaction => {
             const date = fromUTCtoLocal(transaction.date);
             return date >= firstDayOfPreviousMonth && date <= lastDayOfPreviousMonth;
@@ -163,6 +174,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         let currentAmount = 0;
         let previousAmount = 0;
 
+        // Calculate amounts based on balance type
         if (type === 'income') {
             currentAmount = currentMonthTransactions
                 .filter(t => t.amount > 0)
@@ -178,6 +190,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                 .filter(t => t.amount < 0)
                 .reduce((sum, t) => sum + Math.abs(t.amount), 0);
         } else if (type === 'savings') {
+            // For savings, calculate income minus expenses for both periods
             const currentIncome = currentMonthTransactions
                 .filter(t => t.amount > 0)
                 .reduce((sum, t) => sum + t.amount, 0);
@@ -195,14 +208,15 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
             previousAmount = previousIncome - previousExpenses;
         }
 
+        // Calculate percentage change, handling edge cases
         const percentage = previousAmount === 0
             ? currentAmount === 0 ? 0 : 100
             : ((currentAmount - previousAmount) / previousAmount) * 100;
 
-        return { amount: currentAmount, percentage };
+        return { amount: currentAmount, percentage, previousAmount };
     }, [transactions, isLoading, type]);
 
-    // If the balance data is loading, display a skeleton loader
+    // Display skeleton loader while data is loading
     if (isLoading) {
         return (
             <Paper elevation={3} sx={{
@@ -253,12 +267,13 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         );
     }
 
-    // Return the balance card with calculated data
+    // Render the balance card with calculated data
     return (
         <BalanceCard
             type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}
             amount={balanceData.amount}
             percentage={balanceData.percentage}
+            previousAmount={balanceData.previousAmount}
         />
     );
 } 
