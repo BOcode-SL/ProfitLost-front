@@ -190,7 +190,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                            onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
+                                                    onClick={
+                                                        () => setShowPassword({ ...showPassword, current: !showPassword.current })
+                                                    }
                                                     edge="end"
                                                 >
                                                     {showPassword.current ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -238,7 +240,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                            onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
+                                                    onClick={
+                                                        () => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })
+                                                    }
                                                     edge="end"
                                                 >
                                                     {showPassword.confirm ? <VisibilityOffIcon /> : <VisibilityIcon />}

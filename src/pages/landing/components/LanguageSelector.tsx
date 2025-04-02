@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function LanguageSelector() {
     const { t, i18n } = useTranslation();
-    
+
     // Initialize language state from localStorage or default to English
     const [currentLanguage, setCurrentLanguage] = useState(() => {
         const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
@@ -67,7 +67,7 @@ export default function LanguageSelector() {
                 >
                     <Box
                         component="img"
-        src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
+                        src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
                         alt={t(`home.header.language.${currentLanguage}`)}
                         sx={{
                             width: 24,
