@@ -1,5 +1,13 @@
 /**
+ * API Error Types Module
+ * 
+ * Contains type definitions for all error types returned by the API.
+ * Organized by domain/entity for better error handling in the client.
+ */
+
+/**
  * Common error types shared across all entities
+ * Used for general error handling throughout the application
  */
 export type CommonErrorType =
     | 'SERVER_ERROR'
@@ -14,6 +22,7 @@ export type CommonErrorType =
 
 /**
  * Types for authentication errors
+ * Used for login, registration, and password management
  */
 export type AuthErrorType =
     | CommonErrorType
@@ -29,11 +38,17 @@ export type AuthErrorType =
     | 'EXPIRED_RESET_TOKEN'
     | 'GOOGLE_AUTH_ERROR';
 
+/**
+ * Subset of authentication errors specific to registration
+ */
 export type RegisterErrorType = Extract<
     AuthErrorType,
     CommonErrorType | 'EMAIL_EXISTS' | 'USERNAME_EXISTS' | 'PASSWORD_TOO_WEAK'
 >;
 
+/**
+ * Subset of authentication errors specific to login
+ */
 export type LoginErrorType = Extract<
     AuthErrorType,
     CommonErrorType | 'INVALID_CREDENTIALS' | 'ACCOUNT_INACTIVE' | 'ACCOUNT_LOCKED'
@@ -41,6 +56,7 @@ export type LoginErrorType = Extract<
 
 /**
  * Types for user errors
+ * Used for user profile management and preferences
  */
 export type UserErrorType =
     | CommonErrorType
@@ -54,6 +70,7 @@ export type UserErrorType =
 
 /**
  * Types for account errors
+ * Used for financial account management
  */
 export type AccountErrorType =
     | CommonErrorType
@@ -65,6 +82,7 @@ export type AccountErrorType =
 
 /**
  * Types for analytics errors
+ * Used for data analysis and reporting features
  */
 export type AnalyticsErrorType =
     | CommonErrorType
@@ -76,6 +94,7 @@ export type AnalyticsErrorType =
 
 /**
  * Types for transaction errors
+ * Used for financial transaction management
  */
 export type TransactionErrorType =
     | CommonErrorType
@@ -87,6 +106,7 @@ export type TransactionErrorType =
 
 /**
  * Types for category errors
+ * Used for transaction category management
  */
 export type CategoryErrorType =
     | CommonErrorType
@@ -96,6 +116,7 @@ export type CategoryErrorType =
 
 /**
  * Types for note errors
+ * Used for user notes management
  */
 export type NoteErrorType =
     | CommonErrorType

@@ -1,5 +1,20 @@
+/**
+ * API Response Types Module
+ * 
+ * Contains type definitions for all API response structures.
+ * Includes both request and response types for each entity.
+ */
+
 import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from '../api/common';
-import type { AuthErrorType, TransactionErrorType, UserErrorType, CategoryErrorType, AccountErrorType, NoteErrorType, AnalyticsErrorType } from '../api/errors';
+import type {
+    AuthErrorType,
+    TransactionErrorType,
+    UserErrorType,
+    CategoryErrorType,
+    AccountErrorType,
+    NoteErrorType,
+    AnalyticsErrorType
+} from '../api/errors';
 import type { User } from '../models/user';
 import type { RecurrenceType, Transaction } from '../models/transaction';
 import type { Category } from '../models/category';
@@ -10,18 +25,22 @@ import { HttpStatusCode } from './common';
 
 /**
  * Types for authentication API responses
+ * Includes extended error information for auth-specific scenarios
  */
 export interface AuthApiErrorResponse extends ApiErrorResponse<AuthErrorType> {
-    remainingTime?: number;
-    remainingAttempts?: number;
+    remainingTime?: number;      // Time until account is unlocked (in seconds)
+    remainingAttempts?: number;  // Number of login attempts remaining before lockout
     details?: {
-        field?: string;
-        message?: string;
+        field?: string;          // Which field has the error (e.g., 'email', 'password')
+        message?: string;        // Detailed message about the specific error
     };
 }
 
+/**
+ * Successful authentication response with user token and basic data
+ */
 export interface AuthApiSuccessResponse extends ApiSuccessResponse {
-    token: string;
+    token: string;               // JWT token for authenticated sessions
     data?: {
         _id: string;
         username: string;
@@ -29,6 +48,9 @@ export interface AuthApiSuccessResponse extends ApiSuccessResponse {
     };
 }
 
+/**
+ * Combined type for authentication API responses
+ */
 export interface AuthApiResponse {
     success: boolean;
     message: string;
@@ -40,7 +62,7 @@ export interface AuthApiResponse {
         username: string;
         email: string;
     };
-    isNewUser?: boolean;
+    isNewUser?: boolean;         // Flag indicating if this is a new user (for OAuth flows)
 }
 
 /**
@@ -66,18 +88,22 @@ export type CategoryApiResponse = CategoryApiSuccessResponse | CategoryApiErrorR
 
 /**
  * Types for account API responses
+ * Includes extended error details and metadata for account information
  */
 export interface AccountApiErrorResponse extends ApiErrorResponse<AccountErrorType> {
     details?: {
-        field?: string;
-        message?: string;
+        field?: string;          // Which field has the error
+        message?: string;        // Detailed message about the specific error
     };
 }
 
+/**
+ * Successful account response with optional metadata about the account collection
+ */
 export interface AccountApiSuccessResponse extends ApiSuccessResponse<Account | Account[]> {
     metadata?: {
-        total?: number;
-        active?: number;
+        total?: number;          // Total number of accounts
+        active?: number;         // Number of active accounts
     };
 }
 
@@ -85,17 +111,21 @@ export type AccountApiResponse = AccountApiSuccessResponse | AccountApiErrorResp
 
 /**
  * Types for note API responses
+ * Includes extended error details
  */
 export interface NoteApiErrorResponse extends ApiErrorResponse<NoteErrorType> {
     details?: {
-        field?: string;
-        message?: string;
+        field?: string;          // Which field has the error
+        message?: string;        // Detailed message about the specific error
     };
 }
 
+/**
+ * Successful note response with optional metadata
+ */
 export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]> {
     metadata?: {
-        total?: number;
+        total?: number;          // Total number of notes
     };
 }
 
@@ -103,6 +133,7 @@ export type NoteApiResponse = NoteApiSuccessResponse | NoteApiErrorResponse;
 
 /**
  * Types for analytics API responses
+ * Includes extended error details
  */
 export interface AnalyticsApiErrorResponse extends ApiErrorResponse<AnalyticsErrorType> {
     details?: {
