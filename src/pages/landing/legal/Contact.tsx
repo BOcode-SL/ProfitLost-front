@@ -1,7 +1,14 @@
+/**
+ * Contact Information Page Component
+ * 
+ * Displays the website's contact information, support details,
+ * and available hours of operation for user inquiries.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-// Components
+// Shared layout component
 import LegalLayout from './components/LegalLayout';
 
 // Contact page
@@ -10,18 +17,18 @@ export default function Contact() {
 
     return (
         <LegalLayout title={t('home.legal.contact.title')}>
-            {/* Last updated date */}
+            {/* Document last updated date information */}
             <Typography sx={{ mb: 4 }}>
                 {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             <Box sx={{ maxWidth: 800 }}>
-                {/* Section 1: General information */}
+                {/* General introduction and contact policy information */}
                 <Typography paragraph sx={{ mb: 4 }}>
                     {t('home.legal.contact.generalInfo')}
                 </Typography>
 
-                {/* Section 2: Technical Support */}
+                {/* Technical support contact information and response time */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
                         {t('home.legal.contact.sections.technicalSupport.title')}
@@ -37,7 +44,7 @@ export default function Contact() {
                     </Typography>
                 </Box>
 
-                {/* Section 3: Support Hours */}
+                {/* Support hours and availability information */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
                         {t('home.legal.contact.sections.supportHours.title')}

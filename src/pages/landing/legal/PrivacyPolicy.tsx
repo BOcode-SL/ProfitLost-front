@@ -1,3 +1,10 @@
+/**
+ * Privacy Policy Page Component
+ * 
+ * Displays detailed information about data collection practices,
+ * user rights, data protection measures, and retention policies.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +15,13 @@ import LegalLayout from './components/LegalLayout';
 export default function PrivacyPolicy() {
     const { t } = useTranslation();
 
-    // Helper function to safely convert translation to array
+    /**
+     * Safely converts translation objects to arrays
+     * Handles both array returns and non-array returns for flexibility
+     * 
+     * @param key - Translation key to retrieve
+     * @returns Array of translation strings or empty array if not found
+     */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];
@@ -16,7 +29,7 @@ export default function PrivacyPolicy() {
 
     return (
         <LegalLayout title={t('home.legal.privacyPolicy.title')}>
-            {/* Last updated date */}
+            {/* Document last updated date information */}
             <Typography sx={{ mb: 4 }}>
                 {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>

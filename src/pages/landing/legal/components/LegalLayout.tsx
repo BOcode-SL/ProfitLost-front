@@ -1,3 +1,14 @@
+/**
+ * Legal Layout Component
+ * 
+ * Provides a consistent layout structure for all legal pages including:
+ * - Header with language selector
+ * - Decorative gradient background
+ * - White content container with shadow
+ * - Breadcrumb navigation
+ * - Consistent heading styles
+ * - Footer
+ */
 import { useEffect } from 'react';
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -7,16 +18,19 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import LanguageSelector from '../../components/LanguageSelector';
 
-// Define the props for the LegalLayout component
+/**
+ * Props for the LegalLayout component
+ */
 interface LegalLayoutProps {
-    title: string; // Title of the layout
-    children: React.ReactNode; // Children elements to be rendered inside the layout
+    title: string; // Title displayed in the header and breadcrumbs
+    children: React.ReactNode; // Content to be rendered within the layout
 }
 
 // Export the LegalLayout component
 export default function LegalLayout({ title, children }: LegalLayoutProps) {
     const navigate = useNavigate();
 
+    // Scroll to top when component mounts for better user experience
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -25,6 +39,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
         <>
             <LanguageSelector />
             <Header />
+            {/* Main container with decorative gradient header */}
             <Box
                 sx={{
                     position: 'relative',
@@ -42,6 +57,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                     }
                 }}
             >
+                {/* Content container with shadow and padding */}
                 <Container
                     maxWidth="lg"
                     sx={{
@@ -52,6 +68,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                         px: { xs: 2, sm: 3, md: 6 }
                     }}
                 >
+                    {/* White content card with shadow */}
                     <Box
                         sx={{
                             bgcolor: 'white',
@@ -60,6 +77,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                             p: { xs: 2, sm: 3, md: 6 }
                         }}
                     >
+                        {/* Breadcrumb navigation */}
                         <Breadcrumbs sx={{ mb: 4 }}>
                             <Link
                                 component="button"
@@ -77,6 +95,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                             <Typography color="text.secondary">{title}</Typography>
                         </Breadcrumbs>
 
+                        {/* Page title with decorative underline */}
                         <Typography
                             variant="h1"
                             gutterBottom
@@ -93,6 +112,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                             {title}
                         </Typography>
 
+                        {/* Content container with consistent styling for headings and lists */}
                         <Box sx={{
                             '& h2': {
                                 color: '#2c3e50',

@@ -1,3 +1,10 @@
+/**
+ * Terms of Service Page Component
+ * 
+ * Displays the website's terms and conditions that govern usage of the service,
+ * including user rights, restrictions, data handling, and legal jurisdiction.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +15,13 @@ import LegalLayout from './components/LegalLayout';
 export default function TermsOfService() {
     const { t } = useTranslation();
 
-    // Helper function to safely convert translation to array
+    /**
+     * Safely converts translation objects to arrays
+     * Handles both array returns and non-array returns for flexibility
+     * 
+     * @param key - Translation key to retrieve
+     * @returns Array of translation strings or empty array if not found
+     */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];
@@ -16,7 +29,7 @@ export default function TermsOfService() {
 
     return (
         <LegalLayout title={t('home.legal.terms.title')}>
-            {/* Last updated date */}
+            {/* Document last updated date information */}
             <Typography sx={{ mb: 4 }}>
                 {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
