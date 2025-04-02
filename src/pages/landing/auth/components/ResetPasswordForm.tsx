@@ -4,6 +4,15 @@ import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
+/**
+ * Reset Password Form Component
+ * 
+ * Multi-step form that handles the password recovery process:
+ * 1. Email step - Collects user email to send recovery code
+ * 2. Token step - Validates the verification code sent to email
+ * 3. Password step - Allows setting a new password with confirmation
+ */
+
 // Types
 interface ResetPasswordFormProps {
     resetStep: 'email' | 'token' | 'password'; // Step of the reset process

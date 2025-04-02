@@ -1,3 +1,10 @@
+/**
+ * Footer Component
+ * 
+ * Site-wide footer displayed at the bottom of landing pages.
+ * Contains logo, company description, legal links, and copyright information.
+ * Responsive layout that adapts to different screen sizes.
+ */
 import { Box, Container, Stack, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 export default function Footer() {
     const { t } = useTranslation();
     
-    // Define footer links with their corresponding text and href attributes
+    // Define navigation links for the footer
     const footerLinks = [
         { text: t('home.footer.links.privacy'), href: '/privacy' },
         { text: t('home.footer.links.terms'), href: '/terms' },
@@ -33,7 +40,7 @@ export default function Footer() {
                     justifyContent="space-between"
                     alignItems={{ xs: 'center', md: 'flex-start' }}
                 >
-                    {/* Logo and Description Section */}
+                    {/* Logo and company description section */}
                     <Box sx={{ 
                         width: { xs: '100%', md: '60%' },
                         px: { xs: 2, sm: 0 },
@@ -67,7 +74,7 @@ export default function Footer() {
                         </Typography>
                     </Box>
 
-                    {/* Links Section */}
+                    {/* Legal and navigation links section */}
                     <Box sx={{
                         textAlign: { xs: 'center', md: 'right' },
                         minWidth: { sm: '180px', md: '220px' },
@@ -102,6 +109,7 @@ export default function Footer() {
                                         mx: { xs: 1, md: 0 }
                                     }}
                                 >
+                                    {/* External links (mailto) vs internal router links */}
                                     {href.startsWith('mailto:') ? (
                                         <a href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
                                             <ListItemText
@@ -135,7 +143,7 @@ export default function Footer() {
                     </Box>
                 </Stack>
 
-                {/* Copyright Section */}
+                {/* Copyright and attribution section */}
                 <Box
                     sx={{
                         mt: { xs: 4, sm: 5 },

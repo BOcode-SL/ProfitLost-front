@@ -4,6 +4,13 @@ import { useNavigate } from 'react-router-dom';
 // Components
 import LanguageSelector from '../../components/LanguageSelector';
 
+/**
+ * AuthLayout Component
+ * 
+ * Provides a consistent container layout for all authentication forms (login, registration, password reset).
+ * Features a centered card with responsive styling, branding elements, and language selector.
+ */
+
 // Define the props for the AuthLayout component
 interface AuthLayoutProps {
     children: React.ReactNode; // Children elements to be rendered inside the layout

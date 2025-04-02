@@ -8,7 +8,7 @@
 import { Typography, Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-// Shared layout component
+// Components
 import LegalLayout from './components/LegalLayout';
 
 // Contact page
@@ -17,18 +17,18 @@ export default function Contact() {
 
     return (
         <LegalLayout title={t('home.legal.contact.title')}>
-            {/* Document last updated date information */}
+            {/* Last updated date */}
             <Typography sx={{ mb: 4 }}>
                 {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
 
             <Box sx={{ maxWidth: 800 }}>
-                {/* General introduction and contact policy information */}
+                {/* Section 1: General information */}
                 <Typography paragraph sx={{ mb: 4 }}>
                     {t('home.legal.contact.generalInfo')}
                 </Typography>
 
-                {/* Technical support contact information and response time */}
+                {/* Section 2: Technical Support */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
                         {t('home.legal.contact.sections.technicalSupport.title')}
@@ -44,7 +44,7 @@ export default function Contact() {
                     </Typography>
                 </Box>
 
-                {/* Support hours and availability information */}
+                {/* Section 3: Support Hours */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem' }}>
                         {t('home.legal.contact.sections.supportHours.title')}
