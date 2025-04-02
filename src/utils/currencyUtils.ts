@@ -1,15 +1,31 @@
+/**
+ * Currency Utilities Module
+ * 
+ * Provides functionality for currency formatting and visibility management.
+ * Handles user preferences for currency display across the application.
+ */
 import { User } from '../types/models/user';
 
-// Event name for changes in currency visibility
+/**
+ * Custom event name for currency visibility changes
+ * Used to notify components when currency display should be hidden/shown
+ */
 export const CURRENCY_VISIBILITY_EVENT = 'currencyVisibilityChanged';
 
-// Function to check if currency amounts should be hidden
+/**
+ * Checks if currency amounts should be hidden based on user preference
+ * 
+ * @returns Boolean indicating if currency should be hidden
+ */
 export const isCurrencyHidden = (): boolean => {
     const value = localStorage.getItem('hideCurrency');
     return value === 'true';
 };
 
-// Function to toggle the visibility of currency and trigger an event
+/**
+ * Toggles the visibility of currency amounts throughout the application
+ * Stores the preference in localStorage and dispatches an event to notify components
+ */
 export const toggleCurrencyVisibility = (): void => {
     const currentValue = isCurrencyHidden();
     const newValue = !currentValue;
@@ -21,12 +37,19 @@ export const toggleCurrencyVisibility = (): void => {
     }));
 };
 
-// Function to format a monetary amount based on the user's preferences
+/**
+ * Formats a monetary amount based on the user's preferred currency
+ * Applies appropriate locale and currency symbol
+ * 
+ * @param amount - The numeric amount to format
+ * @param user - The user object containing preferences (or null for defaults)
+ * @returns Formatted currency string with appropriate symbol and decimal places
+ */
 export const formatCurrency = (amount: number, user: User | null): string => {
     // Get the user's preferred currency or default to 'USD'
     const currency = user?.preferences.currency || 'USD';
     
-    // Map currencies to their appropriate locales
+    // Map currencies to their appropriate locales for proper formatting
     const currencyLocaleMap: Record<string, string> = {
         'USD': 'en-US',
         'EUR': 'es-ES',
@@ -64,7 +87,13 @@ export const formatCurrency = (amount: number, user: User | null): string => {
     }
 }; 
 
-// Function to format large numbers into a more readable format
+/**
+ * Formats large numbers into a more readable format with abbreviations
+ * Converts numbers to k (thousands), M (millions), or B (billions) notation
+ * 
+ * @param value - The numeric value to format
+ * @returns Formatted string with appropriate abbreviation (e.g., 1.5k, 2.3M, 4B)
+ */
 export const formatLargeNumber = (value: number): string => {
     if (value >= 1000000000) {
         const billions = value / 1000000000;
