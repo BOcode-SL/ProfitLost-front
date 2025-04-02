@@ -1,12 +1,17 @@
 import { ReactNode } from 'react';
 import { Drawer, DrawerProps, useTheme, useMediaQuery, SlideProps, SxProps, Theme } from '@mui/material';
 
+/**
+ * Responsive drawer component that adapts to different screen sizes.
+ * On mobile devices, appears from the bottom with rounded corners.
+ * On larger screens, slides in from the right side.
+ */
 interface DrawerBaseProps extends Omit<DrawerProps, 'children'> {
-  children: ReactNode;
-  onClose: () => void;
+  children: ReactNode; // Content to be displayed inside the drawer
+  onClose: () => void; // Function to call when the drawer needs to be closed
   slotProps?: {
     paper?: {
-      sx?: SxProps<Theme>;
+      sx?: SxProps<Theme>; // Optional styling for the drawer paper component
     };
   };
 }
@@ -21,13 +26,13 @@ export default function DrawerBase({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
-  // Set anchor based on screen size
+  // Set anchor based on screen size: bottom for mobile, right for desktop
   const anchor = isMobile ? 'bottom' : 'right';
   
-  // Define SlideProps for mobile
+  // Define slide direction for mobile (coming up from bottom)
   const slideProps: Partial<SlideProps> | undefined = isMobile ? { direction: 'up' as const } : undefined;
   
-  // Define default paper props
+  // Define default paper styling with responsive dimensions and border radius
   const defaultPaperSx = {
     width: { xs: '100%', sm: 450 },
     height: isMobile ? 'calc(100% - 56px)' : '100dvh',
@@ -38,7 +43,7 @@ export default function DrawerBase({
     })
   };
 
-  // Merge default paper props with provided ones
+  // Merge default paper props with any custom props provided
   const mergedSlotProps = {
     backdrop: {
       timeout: 300,

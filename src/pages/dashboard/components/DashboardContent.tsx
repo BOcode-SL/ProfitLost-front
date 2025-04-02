@@ -10,7 +10,11 @@ import { userService } from '../../../services/user.service';
 // Components
 import SectionIntroDialog from './SectionIntroDialog';
 
-// Components
+/**
+ * Lazy-loaded feature components
+ * Using lazy loading to improve initial load performance
+ * and reduce bundle size for better user experience
+ */
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -21,19 +25,28 @@ const NotificationsEditor = lazy(() => import('../features/notifications/editor/
 
 // Interface for the props of the DashboardContent component
 interface DashboardContentProps {
-    activeSection: string; // The currently active section
+    activeSection: string; // The currently active section to display
 }
 
+/**
+ * Dashboard Content Component
+ * 
+ * Container that manages the content area of the dashboard:
+ * - Loads the appropriate feature component based on active section
+ * - Manages section introduction dialogs for first-time users
+ * - Handles smooth transitions between sections
+ * - Provides loading indicators during component loading
+ */
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
     const { user, setUser } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
-    // Scroll to top when section changes
+    // Scroll to top when section changes for better UX
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeSection]);
 
-    // Show introduction dialog for new sections
+    // Show introduction dialog for new sections user hasn't seen before
     useEffect(() => {
         if (user && activeSection && user.onboarding.completed) {
             const sectionIntro = user.onboarding.sections.find(
@@ -46,7 +59,7 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
         }
     }, [activeSection, user]);
 
-    // Handle introduction dialog close
+    // Handle introduction dialog close and update user preferences
     const handleIntroClose = async () => {
         try {
             await userService.updateOnboardingSection(activeSection);
@@ -92,7 +105,12 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
     );
 }
 
-// Loading indicator component
+/**
+ * Loading Indicator Component
+ * 
+ * Displays a centered circular progress indicator
+ * while the section content is being loaded
+ */
 function LoadingIndicator() {
     return (
         <Box sx={{
@@ -106,7 +124,12 @@ function LoadingIndicator() {
     );
 }
 
-// Section content component
+/**
+ * Section Content Component
+ * 
+ * Renders the appropriate feature component based on the active section
+ * Falls back to an "under construction" message for undefined sections
+ */
 interface SectionContentProps {
     activeSection: string;
 }
@@ -132,7 +155,12 @@ function SectionContent({ activeSection }: SectionContentProps) {
     }
 }
 
-// Under construction section component
+/**
+ * Under Construction Section Component
+ * 
+ * Displays a placeholder for sections that are not yet implemented
+ * or if an invalid section name is provided
+ */
 interface UnderConstructionSectionProps {
     name: string;
 }

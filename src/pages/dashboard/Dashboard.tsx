@@ -21,7 +21,16 @@ import { categoryService } from '../../services/category.service';
 // Types
 import type { Category } from '../../types/models/category';
 
-// Dashboard component
+/**
+ * Dashboard Component
+ * 
+ * Main application container that manages:
+ * - Navigation between different sections
+ * - User authentication verification
+ * - Onboarding process for new users
+ * - Transaction creation flow
+ * - Global layout structure (header, nav, content)
+ */
 export default function Dashboard() {
     const { t } = useTranslation();
     const { user, isLoading } = useUser();
@@ -56,7 +65,7 @@ export default function Dashboard() {
         fetchCategories();
     }, []);
 
-    // Manage the visibility of the onboarding dialog
+    // Manage the visibility of the onboarding dialog for new users
     useEffect(() => {
         const shouldShowOnboarding = user && 
             (!user.onboarding || !user.onboarding.completed) && 
@@ -80,7 +89,7 @@ export default function Dashboard() {
         setActiveSection(section || 'dashhome');
     }, [searchParams]);
 
-    // Define menu items with translations
+    // Define menu items with translations for the navigation
     const menuItems = useMemo(() => [
         { label: t('dashboard.dashhome.title'), icon: 'home', key: 'dashhome' },
         { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars', key: 'annualReport' },
@@ -118,7 +127,7 @@ export default function Dashboard() {
         }
     };
 
-    // Display loading screen while data is being fetched
+    // Display loading screen while authentication state is being verified
     if (isLoading) {
         return <LoadingScreen />;
     }
@@ -144,11 +153,13 @@ export default function Dashboard() {
                 <DashboardContent activeSection={activeSection} />
             </Box>
 
+            {/* Onboarding dialog for new users */}
             <GlobalOnboardingDialog
                 open={showOnboarding}
                 onClose={handleOnboardingClose}
             />
 
+            {/* Transaction creation drawer */}
             <DrawerBase
                 open={transactionDrawerOpen}
                 onClose={handleTransactionDrawerClose}

@@ -1,11 +1,29 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, List, ListItem, ListItemText, Box, useTheme, useMediaQuery, Divider } from '@mui/material';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography,
+    List,
+    ListItem,
+    ListItemText,
+    Box,
+    useTheme,
+    useMediaQuery,
+    Divider
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
 
 // Utils
 import { getIconComponent } from '../../../utils/sectionIconUtils';
 
-// Types
+/**
+ * Section Information Interface
+ * 
+ * Defines the structure for section introductions
+ */
 interface SectionInfo {
     title: string;
     content: string[];
@@ -18,7 +36,11 @@ interface SectionIntroDialogProps {
     section: string; // The section for which the introduction is displayed
 }
 
-// Component for the dialog title with an icon
+/**
+ * Dialog Title With Icon Component
+ * 
+ * Displays a section title with a themed icon in a circle
+ */
 const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) => {
     return (
         <DialogTitle
@@ -46,7 +68,11 @@ const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) =
     );
 };
 
-// Component for the circular icon
+/**
+ * Icon Circle Component
+ * 
+ * Creates a circular badge with the section icon
+ */
 const IconCircle = ({ icon }: { icon: string }) => {
     return (
         <Box
@@ -79,7 +105,11 @@ const IconCircle = ({ icon }: { icon: string }) => {
     );
 };
 
-// Component for animated content items
+/**
+ * Animated List Item Component
+ * 
+ * Renders a list item with a staggered fade-in animation
+ */
 const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: number; isVisible: boolean }) => {
     return (
         <ListItem
@@ -114,7 +144,12 @@ const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: num
     );
 };
 
-// Hook to retrieve section information
+/**
+ * useSectionInfo Hook
+ * 
+ * Retrieves introduction content for a specific section
+ * from translation files
+ */
 const useSectionInfo = (section: string): SectionInfo => {
     const { t } = useTranslation();
 
@@ -151,7 +186,14 @@ const useSectionInfo = (section: string): SectionInfo => {
     }, [section, t]);
 };
 
-// Main component
+/**
+ * Section Introduction Dialog Component
+ * 
+ * Displays a welcome dialog for each section with:
+ * - An animated list of feature descriptions
+ * - Section icon and title
+ * - Responsive design for different screen sizes
+ */
 export default function SectionIntroDialog({ open, onClose, section }: SectionIntroDialogProps) {
     const { t } = useTranslation();
     const theme = useTheme();
@@ -160,12 +202,13 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
 
     const sectionInfo = useSectionInfo(section);
 
+    // Handle content as either array or single string
     const contentArray = useMemo(() =>
         Array.isArray(sectionInfo.content) ? sectionInfo.content : [sectionInfo.content as string],
         [sectionInfo.content]
     );
 
-    // Manage the visibility of the animation
+    // Manage the visibility of the animation when dialog opens
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
 
