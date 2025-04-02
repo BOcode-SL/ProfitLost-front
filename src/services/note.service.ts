@@ -1,3 +1,10 @@
+/**
+ * Note Service Module
+ * 
+ * Provides functionality for managing notes including creating,
+ * retrieving, updating, and deleting user notes.
+ */
+
 // Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
@@ -9,7 +16,11 @@ import { getAuthHeaders } from '../utils/apiHeaders';
 // Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Function to handle note errors
+/**
+ * Handles errors that occur during note operations
+ * @param error - The error that occurred during an API request
+ * @returns A standardized NoteApiResponse with error details
+ */
 const handleNoteError = (error: unknown): NoteApiResponse => {
     // Check if the error has a statusCode
     if ((error as NoteApiResponse).statusCode) {
@@ -24,8 +35,14 @@ const handleNoteError = (error: unknown): NoteApiResponse => {
     };
 };
 
+/**
+ * Service object providing methods for note management
+ */
 export const noteService = {
-    // Method to get all notes
+    /**
+     * Retrieves all notes belonging to the current user
+     * @returns Promise with the notes data or error response
+     */
     async getAllNotes(): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes`, {
@@ -49,7 +66,11 @@ export const noteService = {
         }
     },
 
-    // Method to create a new note
+    /**
+     * Creates a new note with the provided data
+     * @param noteData - The data for the note to be created
+     * @returns Promise with the created note data or error response
+     */
     async createNote(noteData: CreateNoteRequest): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes`, {
@@ -74,7 +95,12 @@ export const noteService = {
         }
     },
 
-    // Method to update an existing note
+    /**
+     * Updates an existing note with the provided data
+     * @param id - The ID of the note to be updated
+     * @param updateData - The new data to update the note with
+     * @returns Promise with the updated note data or error response
+     */
     async updateNote(id: string, updateData: UpdateNoteRequest): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {
@@ -96,12 +122,16 @@ export const noteService = {
 
             return data;
         } catch (error) {
-            console.error('Error en updateNote:', error);
+            console.error('Error updating note:', error);
             return handleNoteError(error);
         }
     },
 
-    // Method to delete a note
+    /**
+     * Deletes a note with the specified ID
+     * @param id - The ID of the note to be deleted
+     * @returns Promise with the response data or error response
+     */
     async deleteNote(id: string): Promise<NoteApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/notes/${id}`, {

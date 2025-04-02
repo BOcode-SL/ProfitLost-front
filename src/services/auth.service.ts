@@ -1,3 +1,10 @@
+/**
+ * Authentication Service Module
+ * 
+ * Provides functionality for user authentication including registration, login, logout,
+ * password management, and third-party authentication via Google.
+ */
+
 // Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
@@ -9,7 +16,11 @@ import { isIOS } from '../utils/deviceDetection';
 // Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Function to handle authentication errors
+/**
+ * Handles errors that occur during authentication operations
+ * @param error - The error that occurred during an API request
+ * @returns A standardized AuthApiResponse with error details
+ */
 const handleAuthError = (error: unknown): AuthApiResponse => {
     // Check if the error has a statusCode
     if ((error as AuthApiResponse).statusCode) {
@@ -33,8 +44,15 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
     };
 };
 
+/**
+ * Service object providing methods for user authentication
+ */
 export const authService = {
-    // Method to register a new user
+    /**
+     * Registers a new user with the provided credentials
+     * @param credentials - The registration information including username, email, and password
+     * @returns Promise with the registration response or error
+     */
     async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
         try {
             // Modifying credentials to ensure username is lowercase
@@ -67,7 +85,11 @@ export const authService = {
         }
     },
 
-    // Method to log in a user
+    /**
+     * Authenticates a user with the provided login credentials
+     * @param credentials - The login information including username/email and password
+     * @returns Promise with the login response or error
+     */
     async login(credentials: LoginCredentials): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -99,7 +121,10 @@ export const authService = {
         }
     },
 
-    // Method to log out a user
+    /**
+     * Logs out the current user by clearing session data
+     * @returns Promise with the logout response or error
+     */
     async logout(): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/logout`, {
@@ -127,7 +152,11 @@ export const authService = {
         }
     },
 
-    // Method to initiate password recovery
+    /**
+     * Initiates the password recovery process for a user
+     * @param email - The email address of the account to recover
+     * @returns Promise with the password recovery response or error
+     */
     async forgotPassword(email: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
@@ -153,7 +182,11 @@ export const authService = {
         }
     },
 
-    // Method to verify the reset token
+    /**
+     * Verifies the validity of a password reset token
+     * @param token - The reset token to verify
+     * @returns Promise with the token verification response or error
+     */
     async verifyResetToken(token: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/verify-reset-token`, {
@@ -179,7 +212,12 @@ export const authService = {
         }
     },
 
-    // Method to reset the password
+    /**
+     * Resets a user's password using a valid reset token
+     * @param token - The valid reset token
+     * @param newPassword - The new password to set
+     * @returns Promise with the password reset response or error
+     */
     async resetPassword(token: string, newPassword: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/reset-password`, {
@@ -205,7 +243,11 @@ export const authService = {
         }
     },
 
-    // Method to log in using Google
+    /**
+     * Authenticates a user using a Google OAuth token
+     * @param token - The Google authentication token
+     * @returns Promise with the login response or error, including isNewUser flag
+     */
     async googleLogin(token: string): Promise<AuthApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/auth/google`, {

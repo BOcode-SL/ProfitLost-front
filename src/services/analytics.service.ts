@@ -1,3 +1,10 @@
+/**
+ * Analytics Service Module
+ * 
+ * Provides functionality for retrieving and analyzing user and transaction metrics.
+ * Handles data retrieval for user statistics, transaction metrics, and historical data.
+ */
+
 // Types
 import { HttpStatusCode } from '../types/api/common';
 import { AnalyticsErrorType } from '../types/api/errors';
@@ -10,7 +17,11 @@ import { getAuthHeaders } from '../utils/apiHeaders';
 // Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Function to handle analytics errors
+/**
+ * Handles errors that occur during analytics operations
+ * @param error - The error that occurred during an API request
+ * @returns A standardized API response with appropriate error details
+ */
 const handleAnalyticsError = (error: unknown): ApiResponse<never, AnalyticsErrorType> => {
     // Check if the error has a statusCode and is an API response
     if ((error as ApiResponse<never>).statusCode) {
@@ -27,7 +38,8 @@ const handleAnalyticsError = (error: unknown): ApiResponse<never, AnalyticsError
 
 export const analyticsService = {
     /**
-     * Get user metrics
+     * Retrieves user metrics and statistics
+     * @returns Promise with user metrics data or error response
      */
     async getUserMetrics(): Promise<ApiResponse<UserMetrics, AnalyticsErrorType>> {
         try {
@@ -59,7 +71,8 @@ export const analyticsService = {
     },
 
     /**
-     * Get transaction metrics
+     * Retrieves transaction metrics and aggregated statistics
+     * @returns Promise with transaction metrics data or error response
      */
     async getTransactionMetrics(): Promise<ApiResponse<TransactionMetrics, AnalyticsErrorType>> {
         try {
@@ -91,9 +104,12 @@ export const analyticsService = {
     },
 
     /**
-     * Get transaction history
+     * Retrieves transaction history data for trend analysis
+     * @param type - The granularity of data: 'daily' or 'monthly' (defaults to 'monthly')
+     * @returns Promise with transaction history data or error response
      */
-    async getTransactionHistory(type: 'daily' | 'monthly' = 'monthly'): Promise<ApiResponse<TransactionHistory[], AnalyticsErrorType>> {
+    async getTransactionHistory(type: 'daily' | 'monthly' = 'monthly')
+        : Promise<ApiResponse<TransactionHistory[], AnalyticsErrorType>> {
         try {
             const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/api/analytics/transactions/history?type=${type}`, {
@@ -109,7 +125,7 @@ export const analyticsService = {
 
             if (!response.ok) {
                 console.error('An error occurred while fetching transaction history:', data);
-                
+
                 // If the error is due to an invalid date range, specify it
                 if (response.status === 400 && data.message?.toLowerCase().includes('date')) {
                     throw {
@@ -118,7 +134,7 @@ export const analyticsService = {
                         statusCode: response.status as HttpStatusCode
                     };
                 }
-                
+
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode
