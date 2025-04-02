@@ -1,3 +1,14 @@
+/**
+ * TransactionBalances Component
+ * 
+ * Displays financial balance summaries with income, expenses, and savings indicators.
+ * Features include:
+ * - Visual representation of financial metrics with appropriate icons
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Loading state with animated skeletons
+ * - Responsive grid layout for different screen sizes
+ */
 import { useState, useEffect } from 'react';
 import { Box, Paper, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -43,7 +54,7 @@ export default function TransactionBalances({
         };
     }, []);
 
-    // If loading, show skeletons
+    // If loading, show skeleton placeholders for better UX
     if (loading) {
         return (
             <Box sx={{
@@ -82,10 +93,26 @@ export default function TransactionBalances({
         );
     }
 
+    // Prepare data for the three balance indicators: income, expenses, and net savings
     const balanceItems = [
-        { label: 'download', value: totalIncome, color: theme.palette.chart.income, icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
-        { label: 'upload', value: totalExpenses, color: theme.palette.chart.expenses, icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
-        { label: 'savings', value: totalIncome - totalExpenses, color: totalIncome - totalExpenses > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> }
+        { 
+            label: 'download', 
+            value: totalIncome, 
+            color: theme.palette.chart.income, 
+            icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        },
+        { 
+            label: 'upload', 
+            value: totalExpenses, 
+            color: theme.palette.chart.expenses, 
+            icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        },
+        { 
+            label: 'savings', 
+            value: totalIncome - totalExpenses, 
+            color: totalIncome - totalExpenses > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, 
+            icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        }
     ];
 
     return (

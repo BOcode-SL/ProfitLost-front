@@ -1,3 +1,15 @@
+/**
+ * TransactionBarChart Component
+ * 
+ * Visualizes income and expenses data for a specified month using a bar chart.
+ * Features include:
+ * - Side-by-side comparison of income and expenses
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Loading state with animated skeletons
+ * - Empty state handling with user-friendly messaging
+ * - Responsive layout with proper sizing
+ */
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Paper, Skeleton, useTheme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -7,9 +19,14 @@ import { useState, useEffect } from 'react';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT, formatLargeNumber } from '../../../../../utils/currencyUtils';
+import {
+    formatCurrency,
+    isCurrencyHidden,
+    CURRENCY_VISIBILITY_EVENT,
+    formatLargeNumber
+} from '../../../../../utils/currencyUtils';
 
-// Months
+// Array of month abbreviations for localization
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Interface for the props of the TransactionBarChart component
@@ -46,7 +63,7 @@ export default function TransactionBarChart({
         };
     }, []);
 
-    // Check if the data is empty
+    // Check if the data is empty to display appropriate UI
     const isDataEmpty = income === 0 && expenses === 0;
 
     // Function to get the translated month name

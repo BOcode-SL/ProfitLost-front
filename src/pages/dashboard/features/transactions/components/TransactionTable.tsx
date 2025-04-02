@@ -1,5 +1,32 @@
+/**
+ * TransactionTable Component
+ * 
+ * Provides an interactive list view of transactions with filtering, sorting, and CRUD operations.
+ * Features include:
+ * - Transaction filtering with text search
+ * - Multiple sorting options (date, amount)
+ * - Add/Edit/Delete transaction functionality
+ * - Category color coding for visual identification
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Loading states and empty state handling
+ * - Responsive design for different screen sizes
+ */
 import { useState, useCallback, useEffect } from 'react';
-import { Box, Paper, TextField, Select, MenuItem, Typography, CircularProgress, Button, FormControl, InputLabel, useTheme, Divider } from '@mui/material';
+import {
+    Box,
+    Paper,
+    TextField,
+    Select,
+    MenuItem,
+    Typography,
+    CircularProgress,
+    Button,
+    FormControl,
+    InputLabel,
+    useTheme,
+    Divider
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -57,7 +84,7 @@ export default function TransactionTable({
         };
     }, []);
 
-    // Handle the transaction click
+    // Open the edit drawer when a transaction is selected
     const handleTransactionClick = useCallback((transaction: Transaction) => {
         setCreateDrawerOpen(false);
         setEditDrawerOpen(false);
@@ -70,7 +97,7 @@ export default function TransactionTable({
         });
     }, []);
 
-    // Handle the close edit drawer
+    // Close the edit drawer and clear the selected transaction after animation
     const handleCloseEditDrawer = useCallback(() => {
         setEditDrawerOpen(false);
         setTimeout(() => {
@@ -78,19 +105,19 @@ export default function TransactionTable({
         }, 300);
     }, []);
 
-    // Handle the create click
+    // Open the create drawer for adding a new transaction
     const handleCreateClick = useCallback(() => {
         setSelectedTransaction(null);
         setCreateDrawerOpen(true);
     }, []);
 
-    // Get the category color
+    // Get category color for visual categorization of transactions
     const getCategoryColor = (categoryName: string) => {
         const category = categories.find(cat => cat.name === categoryName);
         return category?.color || theme.palette.grey[500];
     };
 
-    // Filter and sort the transactions
+    // Apply filters and sorting to the transaction data
     const filteredAndSortedTransactions = data
         .filter(transaction => {
             const searchLower = searchTerm.toLowerCase();
@@ -112,7 +139,7 @@ export default function TransactionTable({
             }
         });
 
-    // Return the main container for the transaction table
+    // Main component structure
     return (
         <Box sx={{ width: '100%' }}>
             <Paper
@@ -125,7 +152,7 @@ export default function TransactionTable({
                     gap: 2,
                     flexWrap: { xs: 'wrap', sm: 'nowrap' }
                 }}>
-                {/* Container for filters and search functionality */}
+                {/* Controls container for search, sort and add functionality */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -133,7 +160,7 @@ export default function TransactionTable({
                         gap: 2,
                         p: 2,
                     }}>
-                    {/* Box for search and sort options */}
+                    {/* Search, sort and add transaction row */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -142,7 +169,7 @@ export default function TransactionTable({
                             gap: 2,
                             mb: 2,
                         }}>
-                        {/* TextField for searching transactions */}
+                        {/* Search field for filtering transactions */}
                         <TextField
                             size="small"
                             placeholder={t('dashboard.transactions.filters.search')}
@@ -155,7 +182,7 @@ export default function TransactionTable({
                                 }
                             }}
                         />
-                        {/* FormControl for sorting transactions */}
+                        {/* Sort dropdown for changing transaction order */}
                         <FormControl
                             size="small"
                             sx={{
@@ -178,7 +205,7 @@ export default function TransactionTable({
                                 <MenuItem value="amount_asc">{t('dashboard.transactions.filters.sort.amountAsc')}</MenuItem>
                             </Select>
                         </FormControl>
-                        {/* Button to create a new transaction */}
+                        {/* Add transaction button */}
                         <Button
                             variant="contained"
                             onClick={handleCreateClick}
@@ -189,12 +216,14 @@ export default function TransactionTable({
                         </Button>
                     </Box>
 
-                    {/* Conditional rendering based on loading state */}
+                    {/* Conditional rendering based on data state */}
                     {loading ? (
+                        // Loading state with spinner
                         <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
                             <CircularProgress sx={{ animation: 'pulse 1.5s ease-in-out infinite' }} />
                         </Box>
                     ) : data.length === 0 ? (
+                        // Empty state when no transactions exist
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -207,6 +236,7 @@ export default function TransactionTable({
                             </Typography>
                         </Box>
                     ) : filteredAndSortedTransactions.length === 0 ? (
+                        // No results state when search returns empty
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -219,12 +249,13 @@ export default function TransactionTable({
                             </Typography>
                         </Box>
                     ) : (
+                        // Transaction list with data
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 1,
                         }}>
-                            {/* Map through filtered and sorted transactions */}
+                            {/* Transaction items */}
                             {filteredAndSortedTransactions.map((transaction) => (
                                 <>
                                     <Box
@@ -243,7 +274,7 @@ export default function TransactionTable({
                                             }
                                         }}
                                     >
-                                        {/* Circle indicator for category color on mobile */}
+                                        {/* Category color indicator for mobile */}
                                         <Box sx={{
                                             width: 12,
                                             height: 12,
@@ -262,7 +293,7 @@ export default function TransactionTable({
                                             </Typography>
                                         </Box>
 
-                                        {/* Category display for larger screens */}
+                                        {/* Category display (desktop only) */}
                                         <Box sx={{
                                             display: { xs: 'none', md: 'flex' },
                                             alignItems: 'center',
@@ -278,7 +309,7 @@ export default function TransactionTable({
                                             <Typography>{transaction.category}</Typography>
                                         </Box>
 
-                                        {/* Display transaction amount with conditional color */}
+                                        {/* Transaction amount with color coding */}
                                         <Typography
                                             sx={{
                                                 color: transaction.amount >= 0
@@ -302,7 +333,7 @@ export default function TransactionTable({
                 </Box>
             </Paper>
 
-            {/* Drawer for editing a selected transaction */}
+            {/* Edit transaction drawer */}
             <DrawerBase
                 open={editDrawerOpen}
                 onClose={handleCloseEditDrawer}
@@ -320,7 +351,7 @@ export default function TransactionTable({
                 )}
             </DrawerBase>
 
-            {/* Drawer for creating a new transaction */}
+            {/* Create transaction drawer */}
             <DrawerBase
                 open={createDrawerOpen}
                 onClose={() => setCreateDrawerOpen(false)}

@@ -1,3 +1,15 @@
+/**
+ * Transactions Component
+ * 
+ * Main dashboard view for managing and visualizing transaction data.
+ * Features include:
+ * - Year and month based filtering of transactions
+ * - Visual representations of income and expenses through charts
+ * - Financial summary statistics
+ * - Detailed transaction listing with sorting and filtering
+ * - Data fetching with loading states
+ * - Error handling with user feedback
+ */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, useTheme } from '@mui/material';
@@ -22,7 +34,7 @@ import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
 import TransactionTable from './components/TransactionTable';
 
-// Months array
+// Array of month abbreviations for localization and display
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Transactions component
@@ -31,7 +43,7 @@ export default function Transactions() {
     const theme = useTheme();
     const { user } = useUser();
 
-    // Get the current date
+    // Initialize state with current date information
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear().toString();
     const [year, setYear] = useState<string>(currentYear);
@@ -43,7 +55,7 @@ export default function Transactions() {
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Handle the error
+    // Handle API errors with appropriate user feedback
     const handleError = useCallback((error: TransactionApiErrorResponse) => {
         switch (error.error) {
             case 'UNAUTHORIZED':
@@ -63,7 +75,7 @@ export default function Transactions() {
         }
     }, [t]);
 
-    // Fetch the data
+    // Fetch transaction and category data from API
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
@@ -78,6 +90,7 @@ export default function Transactions() {
                 throw new Error('Error fetching data');
             }
 
+            // Extract unique years from all transactions for the year selector
             const years = new Set<string>(
                 (allTransactionsResponse.data as Transaction[]).map(t =>
                     new Date(t.date).getFullYear().toString()
@@ -96,18 +109,19 @@ export default function Transactions() {
         }
     }, [year, month, currentYear, handleError]);
 
-    // UseEffect to fetch the data
+    // Fetch data when component mounts or when year/month changes
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // UseMemo to calculate the data
+    // Process transaction data for charts and summaries
     const { incomeData, expensesData, totalIncome, totalExpenses } = useMemo(() => {
         const income: Record<string, number> = {};
         const expenses: Record<string, number> = {};
         let totalInc = 0;
         let totalExp = 0;
 
+        // Group transactions by category and calculate totals
         transactions.forEach((transaction) => {
             const category = categories.find(c => c.name === transaction.category);
             if (!category) {
@@ -125,6 +139,7 @@ export default function Transactions() {
             }
         });
 
+        // Format data for pie charts with appropriate colors
         return {
             incomeData: Object.entries(income).map(([name, value]) => ({
                 id: name,
@@ -145,12 +160,12 @@ export default function Transactions() {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Year and Month selection section */}
+            {/* Year and Month selection filters */}
             <Box sx={{
                 display: 'flex',
                 gap: 2
             }}>
-                {/* Year selection paper */}
+                {/* Year selection dropdown */}
                 <Paper elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
@@ -163,7 +178,7 @@ export default function Transactions() {
                             label={t('dashboard.common.year')}
                             onChange={(e) => setYear(e.target.value)}
                         >
-                            {/* Mapping through years with data to create menu items */}
+                            {/* Display years with transaction data */}
                             {yearsWithData.map(y => (
                                 <MenuItem key={y} value={y}>{y}</MenuItem>
                             ))}
@@ -171,7 +186,7 @@ export default function Transactions() {
                     </FormControl>
                 </Paper>
 
-                {/* Month selection paper */}
+                {/* Month selection dropdown */}
                 <Paper elevation={3} sx={{
                     p: 1,
                     borderRadius: 3,
@@ -184,7 +199,7 @@ export default function Transactions() {
                             label={t('dashboard.common.month')}
                             onChange={(e) => setMonth(e.target.value)}
                         >
-                            {/* Generating month options */}
+                            {/* Generate all 12 months as options */}
                             {Array.from({ length: 12 }, (_, i) => {
                                 const monthNum = (i + 1).toString().padStart(2, '0');
                                 return (
@@ -198,23 +213,23 @@ export default function Transactions() {
                 </Paper>
             </Box>
 
-            {/* Section for displaying charts */}
+            {/* Data visualization section with charts */}
             <Box sx={{
                 display: 'flex',
                 gap: 2,
                 flexWrap: 'wrap',
             }}>
-                {/* Income pie chart */}
+                {/* Income distribution pie chart */}
                 <TransactionPie
                     loading={loading}
                     data={incomeData}
                 />
-                {/* Expenses pie chart */}
+                {/* Expenses distribution pie chart */}
                 <TransactionPie
                     loading={loading}
                     data={expensesData}
                 />
-                {/* Bar chart for income and expenses */}
+                {/* Income vs expenses bar chart comparison */}
                 <TransactionBarChart
                     loading={loading}
                     month={month}
@@ -223,7 +238,7 @@ export default function Transactions() {
                 />
             </Box>
 
-            {/* Component to display total balances */}
+            {/* Financial summary with totals and balance */}
             <TransactionBalances
                 totalIncome={totalIncome}
                 totalExpenses={totalExpenses}
@@ -231,7 +246,7 @@ export default function Transactions() {
                 loading={loading}
             />
 
-            {/* Table to display transaction data */}
+            {/* Detailed transaction listing with CRUD capabilities */}
             <Box>
                 <TransactionTable
                     data={transactions}
