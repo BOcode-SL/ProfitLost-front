@@ -1,3 +1,12 @@
+/**
+ * Main Application Entry Point
+ * 
+ * Sets up the React application with all required providers:
+ * - Google OAuth for authentication
+ * - Global theme provider for consistent styling
+ * - Router for navigation
+ * - Toast notifications for user feedback
+ */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -5,30 +14,30 @@ import { Toaster } from 'react-hot-toast';
 import { CssBaseline } from '@mui/material';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// Contexts
+// Application context providers
 import { GlobalThemeProvider } from './contexts/ThemeContext';
 
-// Translation
+// Load internationalization configuration
 import './i18n';
 
-// Styles
+// Global styles
 import './index.css';
 
-// Importing the main application component
+// Main application component
 import App from './App.tsx';
 
-// Creating the root of the application and rendering it
+// Initialize and render the application to the DOM
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* Providing Google OAuth context with client ID */}
+    {/* Google OAuth provider for authentication services */}
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      {/* Wrapping the application in a global theme provider */}
+      {/* Global theme provider for application-wide styling */}
       <GlobalThemeProvider>
         <CssBaseline />
-        {/* Setting up routing for the application */}
+        {/* Router for handling navigation and URL management */}
         <BrowserRouter>
           <App />
-          {/* Toast notifications for user feedback */}
+          {/* Toast notification system for user feedback messages */}
           <Toaster />
         </BrowserRouter>
       </GlobalThemeProvider>

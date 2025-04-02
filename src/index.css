@@ -1,15 +1,18 @@
+/* Root styles and text selection highlight */
 :root {
     ::selection {
         background-color: #ffc69e61;
     }
 }
 
+/* Global scrollbar styling */
 * {
     scrollbar-width: thin;
     scrollbar-color: #fe6f14 #f7f7f7;
     font-family: "Rubik", sans-serif;
 }
 
+/* Webkit scrollbar styling (Chrome, Safari, Edge) */
 *::-webkit-scrollbar {
     width: 0.7rem;
     height: 1rem;
@@ -29,10 +32,12 @@
     background: #c84f03;
 }
 
+/* Body styles */
 body {
     overflow-x: hidden;
 }
 
+/* Link styling with animated underline effect */
 body a {
     color: #666;
     text-decoration: none;
@@ -62,6 +67,7 @@ body a:hover::after {
     transform-origin: bottom left;
 }
 
+/* Loading animation container */
 body .loading-container {
     display: flex;
     justify-content: center;
@@ -74,6 +80,7 @@ body .loading-container img {
     animation: scale 1s infinite;
 }
 
+/* Pulsing animation for loading indicator */
 @keyframes scale {
     0%, 100% {
         transform: scale(1);
@@ -83,6 +90,7 @@ body .loading-container img {
     }
 }
 
+/* "Coming Soon" badge styling */
 body .soon-badge {
     background-color: #ffc69e;
     color: #333;
@@ -91,14 +99,17 @@ body .soon-badge {
     font-size: 0.8rem;
 }
 
+/* Disable text selection */
 body .no-select {
     user-select: none;
 }
 
+/* Button styling */
 body button {
     cursor: pointer;
 }
 
+/* Color picker input styling */
 body input[type="color"] {
     -webkit-appearance: none;
     -moz-appearance: none;
