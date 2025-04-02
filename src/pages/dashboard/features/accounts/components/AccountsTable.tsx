@@ -1,3 +1,14 @@
+/**
+ * AccountsTable Component
+ * 
+ * Displays a list of accounts with their current balances in a clean, interactive UI.
+ * Features include:
+ * - Draggable account cards for custom ordering
+ * - Search filtering for quick account lookup
+ * - Toggle for showing/hiding inactive accounts
+ * - Currency visibility respecting user privacy preferences
+ * - Creation, editing, and deletion of accounts via drawer form
+ */
 import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Collapse, CircularProgress, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +42,7 @@ interface AccountsTableProps {
     onOrderChange: (newOrder: string[]) => void; // Function to change the order of accounts
 }
 
-// AccountsTable component
+// AccountsTable component for displaying and managing accounts
 export default function AccountsTable({
     accounts,
     inactiveAccounts,
@@ -45,6 +56,7 @@ export default function AccountsTable({
     const { user } = useUser();
     const { t } = useTranslation();
 
+    // Component state
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
@@ -52,7 +64,7 @@ export default function AccountsTable({
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Listen for changes in currency visibility
+    // Effect to listen for currency visibility changes app-wide
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -65,19 +77,18 @@ export default function AccountsTable({
         };
     }, []);
 
-    // Function to get the current balance of an account
+    // Function to get the current month's balance for an account
     const getCurrentBalance = (account: Account): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase();
         const yearRecord = account.records[selectedYear.toString()];
         return yearRecord ? yearRecord[currentMonth as keyof YearRecord] : 0;
     };
 
-    // Function to handle the start of dragging an account
+    // Drag and drop handlers for account reordering
     const handleDragStart = (accountId: string) => {
         setDraggedAccountId(accountId);
     };
 
-    // Function to handle dropping an account
     const handleDrop = (targetAccountId: string) => {
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
             const draggedIndex = accounts.findIndex(acc => acc._id === draggedAccountId);
@@ -91,7 +102,7 @@ export default function AccountsTable({
         setDraggedAccountId(null);
     };
 
-    // Filtered accounts based on search term
+    // Filter accounts based on search term
     const filteredAccounts = accounts.filter(account =>
         account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -100,9 +111,9 @@ export default function AccountsTable({
         account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Function to render an account
+    // Renderer function for account cards (active and inactive)
     const renderAccount = (account: Account, isInactive: boolean = false) => (
-        // Paper component for the account
+        // Card component for the account with appropriate styling
         <Paper
             key={account._id}
             onClick={() => {
@@ -126,9 +137,9 @@ export default function AccountsTable({
                 opacity: isInactive ? 0.7 : 1
             }}
         >
-            {/* Box for the account name and balance */}
+            {/* Account name with optional drag handle */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {/* Show drag indicator if the account is active */}
+                {/* Drag indicator only shown for active accounts */}
                 {!isInactive && (
                     <DragIndicatorIcon
                         sx={{
@@ -138,12 +149,12 @@ export default function AccountsTable({
                         }}
                     />
                 )}
-                {/* Account name */}
+                {/* Account name display */}
                 <Typography variant="h6" sx={{ color: account.configuration.color }}>
                     {account.accountName}
                 </Typography>
             </Box>
-            {/* Balance display */}
+            {/* Account balance display with currency hiding support */}
             <Typography
                 variant="body1"
                 sx={{
@@ -167,7 +178,7 @@ export default function AccountsTable({
             p: 3,
             borderRadius: 3
         }}>
-            {/* Box for search input and create account button */}
+            {/* Table header with search and create account button */}
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-end',
@@ -201,7 +212,7 @@ export default function AccountsTable({
                 </Button>
             </Box>
 
-            {/* Loading state indicator */}
+            {/* Loading indicator shown while fetching data */}
             {loading ? (
                 <Box sx={{
                     display: 'flex',
@@ -213,10 +224,10 @@ export default function AccountsTable({
                 </Box>
             ) : (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {/* Render filtered active accounts */}
+                    {/* List of active accounts, filtered by search term */}
                     {filteredAccounts.map(account => renderAccount(account))}
 
-                    {/* Banner for no accounts or no search results */}
+                    {/* Empty state messages for no accounts or no search results */}
                     {accounts.length === 0 ? (
                         <Box sx={{
                             display: 'flex',
@@ -243,7 +254,7 @@ export default function AccountsTable({
                         </Box>
                     ) : null}
 
-                    {/* Section for inactive accounts */}
+                    {/* Collapsible section for inactive accounts */}
                     {filteredInactiveAccounts.length > 0 && (
                         <Box sx={{ mt: 2 }}>
                             <Button
@@ -263,7 +274,7 @@ export default function AccountsTable({
                 </Box>
             )}
 
-            {/* Drawer for the account form */}
+            {/* Drawer with account form for creating/editing */}
             <DrawerBase
                 open={isDrawerOpen}
                 onClose={() => {
@@ -271,7 +282,6 @@ export default function AccountsTable({
                     setSelectedAccount(null);
                 }}
             >
-                {/* Component for the accounts form */}
                 <AccountsForm
                     onClose={() => {
                         setIsDrawerOpen(false);
