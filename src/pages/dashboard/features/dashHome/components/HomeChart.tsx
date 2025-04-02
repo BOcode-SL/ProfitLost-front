@@ -1,3 +1,16 @@
+/**
+ * HomeChart Component
+ * 
+ * Displays a line chart showing income and expenses trends over the last six months.
+ * Features include:
+ * - Dynamic data calculation from transaction history
+ * - Month-by-month comparison of income vs expenses
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Empty state handling when no transaction data exists
+ * - Responsive design for different screen sizes
+ * - Loading skeleton state while data is being processed
+ */
 import { useEffect, useState, useMemo } from 'react';
 import { Box, Paper, Typography, Skeleton, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
@@ -15,19 +28,23 @@ interface MonthlyData {
 }
 
 // Utils
-import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT, formatLargeNumber } from '../../../../../utils/currencyUtils';
+import {
+    formatCurrency,
+    isCurrencyHidden,
+    CURRENCY_VISIBILITY_EVENT,
+    formatLargeNumber
+} from '../../../../../utils/currencyUtils';
 import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the HomeChart component
 interface HomeChartProps {
-    transactions: Transaction[]; // Array of transactions
+    transactions: Transaction[]; // Array of transactions to visualize
     isLoading: boolean; // Indicates if the data is currently loading
 }
 
-// Define the keys for the months
+// Month abbreviations in English for consistent sorting and processing
 const MONTH_KEYS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// HomeChart component
 export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const { user } = useUser();
     const theme = useTheme();
@@ -35,7 +52,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
-    // Listen for changes in currency visibility
+    // Listen for currency visibility toggle events across the application
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -48,32 +65,33 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         };
     }, []);
 
-    // Calculate monthly data based on transactions
+    // Calculate monthly income and expense totals for the last six months
     const monthlyDataMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
         const today = new Date();
         const monthlyDataMap: { [key: string]: { income: number; expenses: number } } = {};
 
-        // Initialize monthly data for the last six months
+        // Initialize data structure for the last six months
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = MONTH_KEYS[date.getMonth()];
             monthlyDataMap[monthKey] = { income: 0, expenses: 0 };
         }
 
+        // Calculate the date six months ago for filtering
         const sixMonthsAgo = new Date(today);
         sixMonthsAgo.setMonth(today.getMonth() - 5);
         sixMonthsAgo.setDate(1);
         sixMonthsAgo.setHours(0, 0, 0, 0);
 
-        // Filter transactions within the last six months
+        // Filter transactions to include only those within the last six months
         const filteredTransactions = transactions.filter(transaction => {
             const transactionDate = fromUTCtoLocal(transaction.date);
             return transactionDate >= sixMonthsAgo && transactionDate <= today;
         });
 
-        // Aggregate income and expenses for each month
+        // Categorize and sum transactions by month and type (income/expense)
         filteredTransactions.forEach(transaction => {
             const transactionDate = fromUTCtoLocal(transaction.date);
             const monthKey = MONTH_KEYS[transactionDate.getMonth()];
@@ -87,11 +105,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
             }
         });
 
+        // Format data for chart consumption
         const chartData: MonthlyData[] = [];
-        // Prepare data for the chart
         for (let i = 5; i >= 0; i--) {
             const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthKey = MONTH_KEYS[date.getMonth()];
+            // Get localized month name
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             chartData.push({
                 month: translatedMonth,
@@ -103,12 +122,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         return chartData;
     }, [transactions, isLoading, t]);
 
-    // Update monthly data when memoized data changes
+    // Update state when memoized data changes
     useEffect(() => {
         setMonthlyData(monthlyDataMemo);
     }, [monthlyDataMemo]);
 
-    // Show skeleton while loading transactions
+    // Display skeleton loader while data is loading
     if (isLoading) {
         return (
             <Paper elevation={3} sx={{
@@ -138,12 +157,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         );
     }
 
-    // Check if the monthly data is empty
+    // Check if there is any financial data in the selected time period
     const isDataEmpty = monthlyData.length === 0 ||
         monthlyData.every(item => item.income === 0 && item.expenses === 0);
 
-    // Show message if there is no data
+    // Render empty state chart with "no data" message
     if (isDataEmpty) {
+        // Generate empty month labels for the last six months
         const today = new Date();
         const emptyMonths = [];
 
@@ -153,7 +173,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
             const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
             emptyMonths.push(translatedMonth);
         }
-        // Container for the empty chart
+
         return (
             <Paper
                 elevation={3}
@@ -162,17 +182,17 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                     p: 2,
                     borderRadius: 3
                 }}>
-                {/* Title of the chart */}
+                {/* Chart title */}
                 <Typography variant="subtitle1" color="primary.light" gutterBottom>
                     {t('dashboard.transactions.chart.monthlyBalance')}
                 </Typography>
-                {/* Box containing the LineChart and no data message */}
+                {/* Chart container with "no data" overlay */}
                 <Box sx={{
                     position: 'relative',
                     width: '100%',
                     height: '280px'
                 }}>
-                    {/* LineChart displaying zero data for income and expenses */}
+                    {/* Empty chart with zero values */}
                     <LineChart
                         series={[
                             {
@@ -217,12 +237,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                             }
                         }}
                         tooltip={isHidden ? {
-                            trigger: 'none'
+                            trigger: 'none' // Disable tooltips when privacy mode is active
                         } : {
-                            trigger: 'axis'
+                            trigger: 'axis' // Show tooltips on hover
                         }}
                     />
-                    {/* Message displayed when there is no data */}
+                    {/* Empty state message overlay */}
                     <Typography
                         variant="body1"
                         color="text.secondary"
@@ -244,7 +264,7 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
         );
     }
 
-    // Container for the chart
+    // Render chart with financial data
     return (
         <Paper
             elevation={3}
@@ -257,11 +277,12 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.chart.last6MonthsBalance')}
             </Typography>
-            {/* Box containing the LineChart */}
+            {/* Chart container */}
             <Box sx={{
                 width: '100%',
                 height: '280px'
             }}>
+                {/* Financial data line chart */}
                 <LineChart
                     series={[
                         {
@@ -304,9 +325,9 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
                         }
                     }}
                     tooltip={isHidden ? {
-                        trigger: 'none'
+                        trigger: 'none' // Disable tooltips when privacy mode is active
                     } : {
-                        trigger: 'axis'
+                        trigger: 'axis' // Show tooltips on hover
                     }}
                 />
             </Box>

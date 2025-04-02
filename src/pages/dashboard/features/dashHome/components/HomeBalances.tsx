@@ -1,3 +1,16 @@
+/**
+ * HomeBalances Component
+ * 
+ * Displays financial metric cards showing current month's data compared to previous month.
+ * Features include:
+ * - Dynamic trend indicators (up/down/flat) with appropriate colors
+ * - Percentage change calculation between current and previous month
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Three distinct balance types: income, expenses, and net savings
+ * - Responsive design for different screen sizes
+ * - Loading skeleton state during data fetching
+ */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -21,8 +34,8 @@ import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
  */
 interface HomeBalancesProps {
     type: 'income' | 'expenses' | 'savings'; // Type of balance (income, expenses, or savings)
-    transactions: Transaction[]; // Array of transactions
-    isLoading: boolean; // Loading state
+    transactions: Transaction[]; // Array of transactions to analyze
+    isLoading: boolean; // Loading state indicator
 }
 
 /**
@@ -40,7 +53,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
     const { t } = useTranslation();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    // Listen for currency visibility toggle events across the application
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -84,9 +97,11 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
             borderRadius: 3,
             minHeight: { xs: '120px', sm: 'auto' },
         }}>
+            {/* Balance type label */}
             <Typography variant="subtitle1" color="primary.light">
                 {t(`dashboard.dashhome.balance.${type.toLowerCase()}`)}
             </Typography>
+            {/* Balance amount with privacy blur support */}
             <Typography
                 sx={{
                     fontWeight: '450',
@@ -98,6 +113,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
             >
                 {formatCurrency(amount, user)}
             </Typography>
+            {/* Percentage change indicator */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box sx={{
                     display: 'flex',
@@ -115,6 +131,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
                     fontSize: '0.8rem',
                     lineHeight: 1
                 }}>
+                    {/* Trend direction icon */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -122,6 +139,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
                     }}>
                         {getTrendIcon()}
                     </Box>
+                    {/* Percentage value */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -130,6 +148,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
                         {Math.abs(percentage).toFixed(1)}%
                     </Box>
                 </Box>
+                {/* Comparison text */}
                 <Typography variant="body2" color="text.secondary">
                     {t('dashboard.dashhome.balance.thanLastMonth')}
                 </Typography>
@@ -146,10 +165,11 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
  */
 export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
 
-    // Calculate the balance data based on transactions and loading state
+    // Calculate the balance data for current and previous month
     const balanceData = useMemo(() => {
         if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0, previousAmount: 0 };
 
+        // Get current date and determine current/previous month boundaries
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth() + 1;
@@ -161,7 +181,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         const firstDayOfPreviousMonth = new Date(previousYear, previousMonth - 1, 1);
         const lastDayOfPreviousMonth = new Date(currentYear, now.getMonth(), 0);
 
-        // Filter transactions by date ranges
+        // Filter transactions for current and previous month
         const currentMonthTransactions = transactions.filter(transaction => {
             const date = fromUTCtoLocal(transaction.date);
             return date >= firstDayOfMonth && date <= now;
@@ -176,6 +196,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
 
         // Calculate amounts based on balance type
         if (type === 'income') {
+            // For income, sum all positive transactions
             currentAmount = currentMonthTransactions
                 .filter(t => t.amount > 0)
                 .reduce((sum, t) => sum + t.amount, 0);
@@ -183,6 +204,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                 .filter(t => t.amount > 0)
                 .reduce((sum, t) => sum + t.amount, 0);
         } else if (type === 'expenses') {
+            // For expenses, sum absolute values of all negative transactions
             currentAmount = currentMonthTransactions
                 .filter(t => t.amount < 0)
                 .reduce((sum, t) => sum + Math.abs(t.amount), 0);
@@ -208,7 +230,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
             previousAmount = previousIncome - previousExpenses;
         }
 
-        // Calculate percentage change, handling edge cases
+        // Calculate percentage change, handling division by zero
         const percentage = previousAmount === 0
             ? currentAmount === 0 ? 0 : 100
             : ((currentAmount - previousAmount) / previousAmount) * 100;
@@ -227,6 +249,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                 borderRadius: 3,
                 minHeight: { xs: '120px', sm: 'auto' },
             }}>
+                {/* Title skeleton */}
                 <Skeleton
                     variant="text"
                     width={80}
@@ -235,6 +258,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }}
                 />
+                {/* Amount skeleton */}
                 <Skeleton
                     variant="text"
                     width={120}
@@ -243,6 +267,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }}
                 />
+                {/* Trend indicator skeleton */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Skeleton
                         variant="rectangular"
