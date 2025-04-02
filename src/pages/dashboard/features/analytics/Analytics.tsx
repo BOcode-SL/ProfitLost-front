@@ -1,3 +1,14 @@
+/**
+ * Analytics Dashboard Component
+ * 
+ * Admin-only dashboard displaying key platform metrics and statistics.
+ * Features include:
+ * - Real-time date and time display
+ * - User metrics (total users, active users, new registrations)
+ * - Transaction metrics with historical trends
+ * - Role-based access control (admin only)
+ * - Error handling with specific error types
+ */
 import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +42,7 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
+    // Real-time clock effect - updates the displayed time every minute
     useEffect(() => {
         // Update the date and time every minute
         const timer = setInterval(() => {
@@ -40,26 +52,28 @@ export default function Analytics() {
         return () => clearInterval(timer);
     }, []);
 
+    // Fetch analytics data on component mount and when user or language changes
     useEffect(() => {
         const fetchAnalyticsData = async () => {
+            // Only fetch data if the user has admin privileges
             if (!user?.role || user.role !== 'admin') return;
 
             setLoading(true);
 
             try {
-                // Fetch user metrics
+                // Fetch user metrics (registrations, active users, etc.)
                 const userMetricsResponse = await analyticsService.getUserMetrics();
                 if (!userMetricsResponse.success) {
                     throw new Error(userMetricsResponse.message || t('dashboard.analytics.errors.fetchError'));
                 }
 
-                // Fetch transaction metrics
+                // Fetch transaction metrics (counts, trends, etc.)
                 const transactionMetricsResponse = await analyticsService.getTransactionMetrics();
                 if (!transactionMetricsResponse.success) {
                     throw new Error(transactionMetricsResponse.message || t('dashboard.analytics.errors.fetchError'));
                 }
 
-                // Combine the data
+                // Combine the data into a single analytics object
                 setData({
                     users: userMetricsResponse.data!,
                     transactions: transactionMetricsResponse.data!,
@@ -75,7 +89,7 @@ export default function Analytics() {
                 const error = err as Error;
                 console.error('Error fetching analytics data:', error);
 
-                // Determine the type of error to display a more specific message
+                // Map the error message to a specific error type for better user feedback
                 let errorType: AnalyticsErrorType = 'ANALYTICS_PROCESSING_ERROR';
                 if (error.message.toLowerCase().includes('connection')) {
                     errorType = 'CONNECTION_ERROR';
@@ -83,8 +97,15 @@ export default function Analytics() {
                     errorType = 'DATABASE_ERROR';
                 }
 
-                // Show error message with toast
-                const commonErrorTypes: string[] = ['CONNECTION_ERROR', 'DATABASE_ERROR', 'SERVER_ERROR', 'NETWORK_ERROR', 'FETCH_ERROR', 'UNAUTHORIZED'];
+                // Display appropriate error message based on error type
+                const commonErrorTypes: string[] = [
+                    'CONNECTION_ERROR', 
+                    'DATABASE_ERROR', 
+                    'SERVER_ERROR', 
+                    'NETWORK_ERROR', 
+                    'FETCH_ERROR', 
+                    'UNAUTHORIZED'
+                ];
                 if (commonErrorTypes.includes(errorType)) {
                     toast.error(t(`dashboard.common.error.${errorType}`));
                 } else {
@@ -98,7 +119,7 @@ export default function Analytics() {
         fetchAnalyticsData();
     }, [t, user]);
 
-    // Verify if the user has administrator privileges
+    // Access control - only allow admin users to view analytics
     if (!user?.role || user.role !== 'admin') {
         return (
             <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -111,7 +132,7 @@ export default function Analytics() {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-            {/* Current Date and Time */}
+            {/* Current Date and Time Display */}
             <Paper elevation={3} sx={{
                 p: { xs: 1.5, sm: 2 },
                 borderRadius: 3,
@@ -136,12 +157,12 @@ export default function Analytics() {
                 </Box>
             </Paper>
 
-            {/* Analytics Cards */}
+            {/* Analytics Metrics Cards Container */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-                {/* User Metrics Card */}
+                {/* User Metrics Section */}
                 <UserMetricsCard data={data?.users || null} loading={loading} />
 
-                {/* Transaction Metrics Card */}
+                {/* Transaction Metrics Section with Charts */}
                 <TransactionMetricsCard data={data?.transactions || null} loading={loading} />
             </Box>
         </Box>
