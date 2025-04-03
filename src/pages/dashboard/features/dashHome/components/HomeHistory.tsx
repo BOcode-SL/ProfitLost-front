@@ -1,3 +1,16 @@
+/**
+ * HomeHistory Component
+ * 
+ * Displays the most recent financial transactions in a list format.
+ * Features include:
+ * - Automatic sorting of transactions by date (newest first)
+ * - Color-coded transaction amounts (income vs expenses)
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Empty state handling when no transactions exist
+ * - Responsive design for different screen sizes
+ * - Loading skeleton state while data is being processed
+ */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +27,7 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 
 // Interface for the props of the HomeHistory component
 interface HomeHistoryProps {
-    transactions: Transaction[]; // Array of transactions
+    transactions: Transaction[]; // Array of transactions to display
     isLoading: boolean; // Indicates if the component is currently loading data
 }
 
@@ -25,7 +38,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
     const { t } = useTranslation();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    // Listen for currency visibility toggle events across the application
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -38,7 +51,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         };
     }, []);
 
-    // Retrieve recent transactions
+    // Get the 8 most recent transactions sorted by date
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
@@ -47,13 +60,13 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             .filter((transaction): transaction is Transaction => {
                 if (!transaction) return false;
                 const transactionDate = fromUTCtoLocal(transaction.date);
-                return transactionDate <= now; // Filter transactions that are not in the future
+                return transactionDate <= now; // Exclude future-dated transactions
             })
-            .sort((a, b) => fromUTCtoLocal(b.date).getTime() - fromUTCtoLocal(a.date).getTime()) // Sort transactions by date
-            .slice(0, 8); // Limit to the most recent 8 transactions
+            .sort((a, b) => fromUTCtoLocal(b.date).getTime() - fromUTCtoLocal(a.date).getTime()) // Sort newest first
+            .slice(0, 8); // Limit to most recent 8 transactions
     }, [transactions, isLoading]);
 
-    // Show a skeleton while transactions are loading
+    // Display skeleton loader while data is loading
     if (isLoading) {
         return (
             <Paper
@@ -64,6 +77,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                     borderRadius: 3,
                     overflow: 'auto'
                 }}>
+                {/* Title skeleton */}
                 <Skeleton
                     variant="text"
                     width={200}
@@ -73,6 +87,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }}
                 />
+                {/* Transaction list item skeletons */}
                 {[...Array(8)].map((_, index) => (
                     <Box key={index} sx={{ py: 1 }}>
                         <Box sx={{
@@ -80,6 +95,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                             justifyContent: 'space-between',
                             alignItems: 'center'
                         }}>
+                            {/* Left side - description and date */}
                             <Box>
                                 <Skeleton
                                     variant="text"
@@ -98,6 +114,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                                     }}
                                 />
                             </Box>
+                            {/* Right side - amount */}
                             <Skeleton
                                 variant="text"
                                 width={60}
@@ -114,7 +131,6 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         );
     }
 
-    // Paper container for the transaction history section
     return (
         <Paper
             elevation={3}
@@ -124,11 +140,11 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                 borderRadius: 3,
                 overflow: 'auto'
             }}>
-            {/* Title of the transaction history section */}
+            {/* Section title */}
             <Typography variant="subtitle1" color="primary.light" gutterBottom>
                 {t('dashboard.dashhome.history.lastTransactions')}
             </Typography>
-            {/* Show message when no transactions are available */}
+            {/* Empty state message when no transactions exist */}
             {recentTransactionsMemo.length === 0 ? (
                 <Box sx={{ py: 2, textAlign: 'center' }}>
                     <Typography variant="body1" color="text.secondary">
@@ -136,27 +152,28 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                     </Typography>
                 </Box>
             ) : (
-                /* Iterate through recent transactions */
+                /* List of recent transactions */
                 recentTransactionsMemo.map((transaction, index) => (
                     <Box key={transaction._id}>
-                        {/* Container for each transaction item */}
+                        {/* Transaction item */}
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             py: 1
                         }}>
+                            {/* Left section - transaction details */}
                             <Box>
-                                {/* Description of the transaction */}
+                                {/* Transaction description */}
                                 <Typography variant="body1" sx={{ fontWeight: '600' }}>
                                     {transaction.description}
                                 </Typography>
-                                {/* Date of the transaction */}
+                                {/* Transaction date and time */}
                                 <Typography variant="body2" color="text.secondary">
                                     {formatDateTime(transaction.date, user)}
                                 </Typography>
                             </Box>
-                            {/* Amount of the transaction */}
+                            {/* Transaction amount with color coding and privacy support */}
                             <Typography
                                 variant="body1"
                                 sx={{
@@ -170,6 +187,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                                 {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount, user)}
                             </Typography>
                         </Box>
+                        {/* Divider between transactions (except after the last one) */}
                         {index < recentTransactionsMemo.length - 1 && <Divider />}
                     </Box>
                 ))

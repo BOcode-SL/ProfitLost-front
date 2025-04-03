@@ -1,3 +1,9 @@
+/**
+ * 404 Page Not Found Component
+ * 
+ * Displays a visually appealing error page when users navigate to a route that doesn't exist.
+ * Features an animated 404 message, brand logo, and a button to return to the home page.
+ */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +15,7 @@ const NotFound: React.FC = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
+    // Handle navigation back to the home page
     const handleNavigateHome = () => {
         navigate('/');
     };
@@ -27,7 +34,7 @@ const NotFound: React.FC = () => {
                     position: 'relative'
                 }}
             >
-                {/* Background decorative elements */}
+                {/* Decorative background elements to enhance visual appeal */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -56,7 +63,7 @@ const NotFound: React.FC = () => {
                     }}
                 />
 
-                {/* Main content */}
+                {/* Main content container */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -69,7 +76,7 @@ const NotFound: React.FC = () => {
                         maxWidth: '800px'
                     }}
                 >
-                    {/* Glitch effect for the 404 number */}
+                    {/* 404 number with glitch effect and gradient */}
                     <Typography
                         variant="h1"
                         sx={{
@@ -77,7 +84,9 @@ const NotFound: React.FC = () => {
                             fontWeight: 900,
                             lineHeight: 0.8,
                             letterSpacing: '-0.05em',
-                            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                            background: `linear-gradient(135deg, 
+                                ${theme.palette.primary.main} 0%, 
+                                ${theme.palette.secondary.main} 100%)`,
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             position: 'relative',
@@ -107,7 +116,7 @@ const NotFound: React.FC = () => {
                         404
                     </Typography>
 
-                    {/* Logo */}
+                    {/* Company logo */}
                     <img
                         src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg"
                         alt="Profit Lost Logo"
@@ -117,7 +126,7 @@ const NotFound: React.FC = () => {
                         }}
                     />
 
-                    {/* Message */}
+                    {/* Error message title */}
                     <Typography
                         variant="h4"
                         sx={{
@@ -130,6 +139,7 @@ const NotFound: React.FC = () => {
                         {t('notFound.title')}
                     </Typography>
 
+                    {/* Detailed error message */}
                     <Typography
                         variant="body1"
                         sx={{
@@ -143,7 +153,7 @@ const NotFound: React.FC = () => {
                         {t('notFound.message')}
                     </Typography>
 
-                    {/* Button to return to home */}
+                    {/* Return to home page button */}
                     <Button
                         onClick={handleNavigateHome}
                         variant="contained"
@@ -168,7 +178,7 @@ const NotFound: React.FC = () => {
                         {t('notFound.backHome')}
                     </Button>
 
-                    {/* Additional message */}
+                    {/* Additional support information */}
                     <Typography
                         variant="body2"
                         sx={{

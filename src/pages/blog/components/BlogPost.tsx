@@ -1,3 +1,9 @@
+/**
+ * Blog Post Card Component
+ * 
+ * Displays a blog post preview card with image, title, excerpt, and metadata.
+ * Handles navigation to the full post when clicked and formats dates based on language.
+ */
 import { Box, Paper, Typography, alpha, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -11,12 +17,17 @@ export interface BlogPostProps {
     post: BlogPostType;
 }
 
-// Function to format the blog post date based on the user's language preference
+/**
+ * Formats a date string according to the user's selected language
+ * 
+ * @param dateString - ISO date string to format
+ * @returns Formatted date string in the user's locale format
+ */
 const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
     const language = localStorage.getItem('i18nextLng') || 'en';
 
-    // Return the date formatted according to the selected language
+    // Format date based on language preference
     return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -52,10 +63,11 @@ export default function BlogPost({ post }: BlogPostProps) {
                 }
             }}
         >
+            {/* Post image with hover effect and category tag */}
             <Box
                 sx={{
                     position: 'relative',
-                    paddingTop: '56.25%',
+                    paddingTop: '56.25%', // 16:9 aspect ratio
                     overflow: 'hidden',
                 }}
             >
@@ -108,12 +120,14 @@ export default function BlogPost({ post }: BlogPostProps) {
                 </Box>
             </Box>
 
+            {/* Post content section */}
             <Box sx={{ 
                 p: { xs: 2, sm: 2.5, md: 3 }, 
                 flexGrow: 1, 
                 display: 'flex', 
                 flexDirection: 'column' 
             }}>
+                {/* Post title with line clamping for consistency */}
                 <Typography
                     variant="h5"
                     sx={{
@@ -131,6 +145,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                     {t(post.title)}
                 </Typography>
 
+                {/* Post excerpt with line clamping */}
                 <Typography
                     variant="body2"
                     sx={{
@@ -147,6 +162,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                     {t(post.excerpt)}
                 </Typography>
 
+                {/* Post metadata (author and date) */}
                 <Box
                     sx={{
                         mt: 'auto',
@@ -157,6 +173,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         gap: isMobile ? 1 : 0
                     }}
                 >
+                    {/* Author information */}
                     <Typography
                         variant="body2"
                         sx={{
@@ -172,6 +189,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         <PersonOutlineOutlinedIcon sx={{ fontSize: isMobile ? 16 : 20 }} />
                         {t(post.author)}
                     </Typography>
+                    {/* Publication date */}
                     <Typography
                         variant="body2"
                         sx={{

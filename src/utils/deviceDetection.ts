@@ -1,4 +1,25 @@
-// Function that determines if the device is running iOS
+/**
+ * Device Detection Utility
+ * 
+ * Provides functionality for detecting device types and operating systems.
+ * Currently focuses on iOS detection for platform-specific behavior.
+ */
+
+/**
+ * Determines if the current device is running iOS or using an iOS-based browser
+ * 
+ * This function checks the user agent string for various iOS identifiers including:
+ * - Native iOS devices (iPhone, iPad, iPod)
+ * - Safari on Apple devices
+ * - Alternative browsers on iOS (Chrome, Firefox, Brave)
+ * 
+ * iOS detection is important for handling platform-specific features like:
+ * - Authentication token storage (localStorage vs cookies)
+ * - Touch-based interactions
+ * - WebKit-specific behaviors
+ * 
+ * @returns Boolean indicating whether the device is running iOS
+ */
 export const isIOS = (): boolean => {
     // Get the userAgent from the browser and convert it to lowercase
     const userAgent = window.navigator.userAgent.toLowerCase();

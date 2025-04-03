@@ -1,25 +1,45 @@
+/**
+ * Cookie Policy Page Component
+ * 
+ * Displays the website's cookie policy, explaining what cookies are used,
+ * how they're managed, and what rights users have regarding cookie data.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Components
 import LegalLayout from './components/LegalLayout';
 
-// Types
+/**
+ * Interface for cookie type items with title and description
+ */
 interface CookieType {
     title: string;
     description: string;
 }
 
-// Cookie Policy page
 export default function CookiePolicy() {
     const { t } = useTranslation();
 
-    // Helper functions to safely convert translations to arrays
+    /**
+     * Safely converts translation objects to arrays
+     * Handles both array returns and non-array returns for flexibility
+     * 
+     * @param key - Translation key to retrieve
+     * @returns Array of translation strings or empty array if not found
+     */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];
     };
 
+    /**
+     * Safely converts translation objects to arrays of CookieType objects
+     * 
+     * @param key - Translation key to retrieve
+     * @returns Array of CookieType objects or empty array if not found
+     */
     const getCookieTypesArray = (key: string): CookieType[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];

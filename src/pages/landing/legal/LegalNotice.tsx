@@ -1,3 +1,10 @@
+/**
+ * Legal Notice Page Component
+ * 
+ * Displays important legal information about the website ownership,
+ * intellectual property rights, usage conditions, and responsibilities.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +15,13 @@ import LegalLayout from './components/LegalLayout';
 export default function LegalNotice() {
     const { t } = useTranslation();
 
-    // Helper function to safely convert translation to array
+    /**
+     * Safely converts translation objects to arrays
+     * Handles both array returns and non-array returns for flexibility
+     * 
+     * @param key - Translation key to retrieve
+     * @returns Array of translation strings or empty array if not found
+     */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];
@@ -16,7 +29,7 @@ export default function LegalNotice() {
 
     return (
         <LegalLayout title={t('home.legal.legalNotice.title')}>
-            {/* Last updated date */}
+            {/* Document last updated date information */}
             <Typography sx={{ mb: 4 }}>
                 {t('home.legal.lastUpdated', { date: '09/02/2025' })}
             </Typography>
@@ -71,7 +84,8 @@ export default function LegalNotice() {
                 {t('home.legal.legalNotice.sections.responsibility.subtitle')}
             </Typography>
             <Box component="ul" sx={{ pl: 4, mb: 4 }}>
-                {getTranslationArray('home.legal.legalNotice.sections.responsibility.items').map((item: string, index: number) => (
+                {getTranslationArray('home.legal.legalNotice.sections.responsibility.items').map((item: string, index: number) => 
+                (
                     <li key={index}>{item}</li>
                 ))}
             </Box>

@@ -1,3 +1,14 @@
+/**
+ * UserMetricsCard Component
+ * 
+ * Displays key user-related metrics for the analytics dashboard.
+ * Features include:
+ * - Total user count display
+ * - Daily and monthly active user statistics
+ * - New user registration metrics (daily and monthly)
+ * - Responsive layout for different screen sizes
+ * - Loading skeleton state while data is being fetched
+ */
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
@@ -9,14 +20,16 @@ import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 // Types
 import type { UserMetrics } from '../../../../../types/models/analytics';
 
+// Props interface for component
 interface UserMetricsCardProps {
-    data: UserMetrics | null;
-    loading: boolean;
+    data: UserMetrics | null;  // User statistics data
+    loading: boolean;          // Loading state indicator
 }
 
 export default function UserMetricsCard({ data, loading }: UserMetricsCardProps) {
     const { t } = useTranslation();
 
+    // Render loading skeleton while data is being fetched
     if (loading) {
         return (
             <Paper elevation={3} sx={{
@@ -24,7 +37,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                 borderRadius: 3,
                 width: '100%'
             }}>
-                {/* Skeleton for Title */}
+                {/* Title skeleton */}
                 <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
                     <Skeleton variant="text" width={150} height={32} sx={{
                         animation: 'pulse 1.5s ease-in-out infinite'
@@ -36,7 +49,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                     flexDirection: 'column',
                     gap: { xs: 2, sm: 3, md: 4 }
                 }}>
-                    {/* Skeletons for All User Metrics in a single row */}
+                    {/* Metric item skeletons in a responsive grid */}
                     <Box sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -76,7 +89,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         );
     }
 
-    // Combine all metrics into a single array
+    // Define all user metrics to display
     const allMetrics = [
         {
             label: t('dashboard.analytics.metrics.totalUsers'),
@@ -105,6 +118,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
         }
     ];
 
+    // Reusable metric display component
     const MetricBox = ({ metric }: { metric: typeof allMetrics[0] }) => {
         return (
             <Box sx={{
@@ -115,6 +129,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                 gap: 1,
                 mb: { xs: 1, sm: 0 }
             }}>
+                {/* Metric label with icon */}
                 <Box sx={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -138,6 +153,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                         {metric.label}
                     </Typography>
                 </Box>
+                {/* Metric value */}
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                     <Typography 
                         variant="h4" 
@@ -183,7 +199,7 @@ export default function UserMetricsCard({ data, loading }: UserMetricsCardProps)
                 flexDirection: 'column',
                 gap: { xs: 2, sm: 3, md: 4 }
             }}>
-                {/* All metrics in a single row */}
+                {/* User metrics displayed in a responsive grid */}
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',

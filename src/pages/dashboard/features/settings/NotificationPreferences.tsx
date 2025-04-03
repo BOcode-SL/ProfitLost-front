@@ -1,13 +1,24 @@
+/**
+ * NotificationPreferences Component
+ * 
+ * Allows users to configure their notification preferences for both in-app and email channels.
+ * Features include:
+ * - Toggling entire notification channels (in-app/email)
+ * - Granular control of specific notification types
+ * - Real-time saving of preferences
+ * - Loading states during data fetching and saving
+ * - Error handling with user feedback
+ */
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { 
-    Box, 
-    Paper, 
-    Typography, 
-    FormControlLabel, 
-    Switch, 
-    Divider, 
-    Button, 
+import {
+    Box,
+    Paper,
+    Typography,
+    FormControlLabel,
+    Switch,
+    Divider,
+    Button,
     FormGroup,
     CircularProgress
 } from '@mui/material';
@@ -17,7 +28,10 @@ import { useTranslation } from 'react-i18next';
 import notificationService from '../../../../services/notification.service';
 
 // Types
-import type { NotificationPreferences as NotificationPreferencesType, NotificationType } from '../../../../types/models/notification';
+import type {
+    NotificationPreferences as NotificationPreferencesType,
+    NotificationType
+} from '../../../../types/models/notification';
 
 // Interface for the props of the NotificationPreferences component
 interface NotificationPreferencesProps {
@@ -25,18 +39,18 @@ interface NotificationPreferencesProps {
     source?: 'notifications' | 'settings'; // Identifies where the component was opened from
 }
 
-// NotificationPreferences component
 export default function NotificationPreferences({ onSuccess, source = 'settings' }: NotificationPreferencesProps) {
     const { t } = useTranslation();
-    
+
     // The source parameter ('notifications' or 'settings') determines 
     // how the back navigation behavior works in the parent component
-    
+
     // Log the source for debugging and to fix linter error
     useEffect(() => {
         console.log(`NotificationPreferences opened from: ${source}`);
     }, [source]);
-    
+
+    // State management
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
     const [preferences, setPreferences] = useState<NotificationPreferencesType>({
@@ -80,7 +94,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
         loadPreferences();
     }, [t]);
 
-    // Handle changes in the main switches
+    // Handle changes in the main channel toggles (in-app/email)
     const handleMainSwitchChange = (type: 'inApp' | 'email') => (event: React.ChangeEvent<HTMLInputElement>) => {
         const checked = event.target.checked;
         setPreferences(prev => ({
@@ -92,28 +106,29 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
         }));
     };
 
-    // Handle changes in the notification type switches
-    const handleTypeSwitchChange = (mainType: 'inApp' | 'email', notificationType: NotificationType) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const checked = event.target.checked;
-        setPreferences(prev => ({
-            ...prev,
-            [mainType]: {
-                ...prev[mainType],
-                types: {
-                    ...prev[mainType].types,
-                    [notificationType]: checked
+    // Handle changes in the individual notification type toggles
+    const handleTypeSwitchChange = (mainType: 'inApp' | 'email', notificationType: NotificationType) =>
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const checked = event.target.checked;
+            setPreferences(prev => ({
+                ...prev,
+                [mainType]: {
+                    ...prev[mainType],
+                    types: {
+                        ...prev[mainType].types,
+                        [notificationType]: checked
+                    }
                 }
-            }
-        }));
-    };
+            }));
+        };
 
-    // Save the preferences
+    // Save the updated preferences to the server
     const handleSave = async () => {
         try {
             setLoading(true);
             await notificationService.updateNotificationPreferences(preferences);
             toast.success(t('dashboard.settings.notifications.success.saved'));
-            // Only call onSuccess if provided
+            // Call onSuccess callback if provided
             if (onSuccess) {
                 onSuccess();
             }
@@ -125,7 +140,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
         }
     };
 
-    // Render switches for each notification type
+    // Render switches for each notification type within a channel
     const renderNotificationTypesSwitches = (mainType: 'inApp' | 'email') => {
         const notificationTypes: NotificationType[] = [
             'payment_reminder',
@@ -160,7 +175,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
         );
     };
 
-    // Display the loading state
+    // Display loading spinner while fetching initial data
     if (initialLoading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -172,7 +187,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
     return (
         <Box sx={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {/* In-app notifications section */}
+                {/* In-app notifications configuration section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -209,7 +224,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
                     {renderNotificationTypesSwitches('inApp')}
                 </Paper>
 
-                {/* Email notifications section */}
+                {/* Email notifications configuration section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -246,7 +261,7 @@ export default function NotificationPreferences({ onSuccess, source = 'settings'
                     {renderNotificationTypesSwitches('email')}
                 </Paper>
 
-                {/* Save button */}
+                {/* Save button with loading state */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                     <Button
                         variant="contained"

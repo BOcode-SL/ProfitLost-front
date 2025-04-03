@@ -12,7 +12,7 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 
-// Components
+// UI Components
 import Footer from './components/Footer';
 import Header from './components/Header';
 import LanguageSelector from './components/LanguageSelector';
@@ -20,15 +20,27 @@ import LanguageSelector from './components/LanguageSelector';
 // Styles
 import './Home.css';
 
-// Home component for the landing page
+/**
+ * Home component - Landing page of the application
+ * 
+ * Displays marketing content with sections for:
+ * - Hero section with app introduction
+ * - How it works step-by-step guide
+ * - Features showcase with bento grid layout
+ */
 export default function Home() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [activeStep, setActiveStep] = useState(0);
     const stepsContainerRef = useRef<HTMLDivElement>(null);
 
+    /**
+     * Handles step change for the mobile carousel view
+     * Updates the active step based on direction (prev/next)
+     * 
+     * @param direction - Direction to move: 'prev' or 'next'
+     */
     const handleStepChange = (direction: 'prev' | 'next') => {
-        // Update the active step based on the direction
         if (direction === 'prev') {
             setActiveStep(prev => (prev > 0 ? prev - 1 : 3));
         } else {
@@ -41,7 +53,7 @@ export default function Home() {
             <LanguageSelector />
             <Header />
 
-            {/* Hero Section */}
+            {/* Hero Section - Main promotional area */}
             <Box component="section" sx={{
                 pt: { xs: '140px', sm: 'clamp(140px, 10vw, 180px)' },
                 pb: { xs: '80px', sm: 'clamp(80px, 10vw, 120px)' }
@@ -54,6 +66,7 @@ export default function Home() {
                         alignItems: 'center',
                         px: { xs: 'clamp(1rem, 5vw, 2rem)' }
                     }}>
+                        {/* Left column - Text content */}
                         <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
                             <Typography
                                 variant="h1"
@@ -102,6 +115,7 @@ export default function Home() {
                                 {t('home.hero.startButton')}
                             </Button>
                         </Box>
+                        {/* Right column - Image */}
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -135,7 +149,7 @@ export default function Home() {
                 </Container>
             </Box>
 
-            {/* How It Works Section */}
+            {/* How It Works Section - Step-by-step guide */}
             <Box component="section" sx={{
                 p: { xs: '4rem 1rem', md: 'clamp(4rem, 8vw, 6rem) 1rem' },
                 bgcolor: '#fff',
@@ -198,6 +212,7 @@ export default function Home() {
                             width: '100%',
                             overflow: 'hidden'
                         }}>
+                            {/* Step cards container with responsive behavior */}
                             <Box
                                 ref={stepsContainerRef}
                                 sx={{
@@ -219,6 +234,7 @@ export default function Home() {
                                     }
                                 }}
                             >
+                                {/* Map through the steps data to render step cards */}
                                 {[
                                     {
                                         number: 1,
@@ -296,6 +312,7 @@ export default function Home() {
                                 ))}
                             </Box>
 
+                            {/* Mobile carousel navigation controls */}
                             <Box
                                 sx={{
                                     display: { xs: 'flex', md: 'none' },
@@ -317,7 +334,7 @@ export default function Home() {
                                     <ArrowBackIosIcon />
                                 </IconButton>
 
-                                {/* Step indicators */}
+                                {/* Step indicator dots for mobile */}
                                 <Box sx={{ display: 'flex', gap: 1 }}>
                                     {[0, 1, 2, 3].map((step) => (
                                         <Box
@@ -350,7 +367,7 @@ export default function Home() {
                 </Container>
             </Box>
 
-            {/* Features Bento Section */}
+            {/* Features Bento Section - Showcase app features in a grid */}
             <Box component="section" className="features-section">
                 <Container maxWidth={false} sx={{ maxWidth: '1200px', mb: 4 }}>
                     <Box sx={{ textAlign: 'center', mb: 6 }}>
@@ -396,45 +413,58 @@ export default function Home() {
                         </Typography>
                     </Box>
                 </Container>
+                {/* Bento grid features layout */}
                 <div className="features-container bento-grid">
+                    {/* Annual Report Feature Card */}
                     <article className="feature-card highlight">
                         <AssessmentOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
                         <h4>{t('home.features.cards.annualReport.title')}</h4>
                         <p>{t('home.features.cards.annualReport.description')}</p>
                     </article>
 
+                    {/* Transactions Feature Card */}
                     <article className="feature-card">
                         <ReceiptLongOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.transactions.title')}</h4>
                         <p>{t('home.features.cards.transactions.description')}</p>
                     </article>
 
+                    {/* Goals Feature Card */}
                     <article className="feature-card">
-                        <TaskAltOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <TaskAltOutlinedIcon className="no-select"
+                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.goals.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.goals.description')}</p>
                     </article>
 
+                    {/* Notes Feature Card */}
                     <article className="feature-card">
-                        <NoteAltOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <NoteAltOutlinedIcon className="no-select"
+                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.notes.title')}</h4>
                         <p>{t('home.features.cards.notes.description')}</p>
                     </article>
 
+                    {/* Bank Integration Feature Card */}
                     <article className="feature-card highlight">
-                        <AccountBalanceWalletOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
+                        <AccountBalanceWalletOutlinedIcon className="no-select"
+                            sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
                         <h4>{t('home.features.cards.bankIntegration.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.bankIntegration.description')}</p>
                     </article>
 
+                    {/* Investments Feature Card */}
                     <article className="feature-card">
-                        <TrendingUpOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <TrendingUpOutlinedIcon className="no-select"
+                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.investments.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.investments.description')}</p>
                     </article>
 
+                    {/* Accounts Feature Card */}
                     <article className="feature-card">
-                        <AccountBalanceOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <AccountBalanceOutlinedIcon className="no-select"
+                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
                         <h4>{t('home.features.cards.accounts.title')}</h4>
                         <p>{t('home.features.cards.accounts.description')}</p>
                     </article>

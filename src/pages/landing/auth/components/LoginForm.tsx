@@ -5,6 +5,13 @@ import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
+/**
+ * Login Form Component
+ * 
+ * Provides authentication interface with email/username login and Google OAuth.
+ * Includes password visibility toggle and forgot password functionality.
+ */
+
 // Types
 import type { LoginCredentials } from '../../../../types/api/responses';
 
@@ -57,7 +64,7 @@ export default function LoginForm({
                             alt="Google"
                             width="20"
                             height="20"
-                            style={{ marginRight: 8 }} // Espaciado entre icono y texto
+                            style={{ marginRight: 8 }} // Spacing between icon and text
                         />
                     }
                 >

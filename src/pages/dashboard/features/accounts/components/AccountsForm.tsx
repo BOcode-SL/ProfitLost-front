@@ -1,6 +1,31 @@
+/**
+ * AccountsForm Component
+ * 
+ * Provides a form interface for creating and editing accounts with the following features:
+ * - Account name, color, and active status management
+ * - Year-based monthly balance data entry
+ * - Adding new years to existing accounts
+ * - Account deletion with confirmation
+ * - Validation and error handling
+ */
 import { useState, useEffect, useMemo } from 'react';
 import {
-    Box, IconButton, Typography, TextField, Paper, Button, Switch, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, FormControl, InputLabel, Select, MenuItem
+    Box,
+    IconButton,
+    Typography,
+    TextField,
+    Paper,
+    Button,
+    Switch,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -15,29 +40,34 @@ interface AccountsFormProps {
     onClose: () => void; // Function to close the form
     onSuccess: (account: Account) => Promise<boolean>; // Function to handle successful account creation or update
     onDelete?: (accountId: string) => void; // Optional function to handle account deletion
-    account?: Account | null; // Optional account object
+    account?: Account | null; // Optional account object for editing mode (null for creation mode)
 }
 
-// Months array
+// Months array for data entry in chronological order
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// AccountsForm component
+// AccountsForm component for creating and editing accounts
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
 
+    // Form state management for account properties
     const [accountName, setAccountName] = useState(account?.accountName || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.configuration.backgroundColor || '#c84f03');
     const [textColor, setTextColor] = useState(account?.configuration.color || '#ffffff');
     const [isActive, setIsActive] = useState(account?.configuration.isActive ?? true);
+
+    // Monthly data entry state management
     const [monthlyInput, setMonthlyInput] = useState<Record<string, string>>({});
     const [monthlyValues, setMonthlyValues] = useState<Record<string, number>>({});
+
+    // UI state management
     const [savingChanges, setSavingChanges] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
     const [showYearInput, setShowYearInput] = useState(false);
     const [newYear, setNewYear] = useState<string>('');
 
-    // Memoized available years based on account records
+    // Calculate available years from account data and current year
     const availableYears = useMemo(() => {
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
@@ -47,10 +77,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             Object.keys(account.records).forEach(year => years.add(parseInt(year)));
         }
 
+        // Sort years in descending order (newest first)
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [account]);
 
-    // useEffect to retrieve monthly values for the selected year
+    // Load monthly values when account data or selected year changes
     useEffect(() => {
         if (account && selectedYear) {
             const yearRecord = account.records[selectedYear.toString()];
@@ -61,6 +92,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     const monthKey = month.toLowerCase();
                     const value = yearRecord[monthKey as keyof YearRecord];
                     values[month] = value;
+                    // Convert decimal point to comma for user input (locale handling)
                     inputs[month] = value.toString().replace('.', ',');
                 });
                 setMonthlyValues(values);
@@ -69,14 +101,15 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     }, [account, selectedYear]);
 
-    // Function to get the translated month name
+    // Helper function to get translated month names
     const getMonthName = (monthKey: string, short: boolean = false) => {
         const path = short ? 'dashboard.common.monthNamesShort.' : 'dashboard.common.monthNames.';
         return t(path + monthKey);
     };
 
-    // Function to handle form submission
+    // Handle form submission for both create and update operations
     const handleSubmit = async () => {
+        // Validate account name
         if (!accountName.trim()) {
             toast.error(t('dashboard.accounts.errors.nameRequired'));
             return;
@@ -84,6 +117,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
         setSavingChanges(true);
         try {
+            // Prepare year record from monthly values
             const yearRecord: YearRecord = {
                 jan: monthlyValues["Jan"] || 0,
                 feb: monthlyValues["Feb"] || 0,
@@ -104,6 +138,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             };
 
             if (account) {
+                // Update existing account
                 const updatedAccount: Account = {
                     ...account,
                     accountName,
@@ -119,6 +154,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 };
                 await onSuccess(updatedAccount);
             } else {
+                // Create new account
                 const newAccount: Account = {
                     _id: '',
                     user_id: '',
@@ -142,7 +178,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Function to handle account deletion
+    // Handle account deletion with confirmation
     const handleDelete = async () => {
         if (!account) return;
 
@@ -158,25 +194,29 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Function to add a new year
+    // Handle adding a new year to an existing account
     const handleAddYear = () => {
+        // Validate year input
         const yearNumber = parseInt(newYear);
         if (isNaN(yearNumber) || yearNumber < 1900 || yearNumber > 9999) {
             toast.error(t('dashboard.accounts.errors.invalidYear'));
             return;
         }
 
+        // Check if year already exists
         if (account?.records[yearNumber.toString()]) {
             toast.error(t('dashboard.accounts.errors.yearExists'));
             return;
         }
 
+        // Create empty year record with zeros for all months
         const initialYearRecord: YearRecord = {
             jan: 0, feb: 0, mar: 0, apr: 0,
             may: 0, jun: 0, jul: 0, aug: 0,
             sep: 0, oct: 0, nov: 0, dec: 0
         };
 
+        // Update account with new year record
         const updatedAccount: Account = {
             ...account!,
             records: {
@@ -185,6 +225,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             }
         };
 
+        // Save changes and switch to the new year
         onSuccess(updatedAccount).then(() => {
             setShowYearInput(false);
             setNewYear('');
@@ -194,7 +235,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
     return (
         <Box sx={{ p: 3 }}>
-            {/* Container for the close button and title */}
+            {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <CloseIcon />
@@ -204,9 +245,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Typography>
             </Box>
 
-            {/* Form for account details */}
+            {/* Account form */}
             <Box component="form">
-                {/* Input field for the account name */}
+                {/* Account name input field */}
                 <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
                         label={t('dashboard.accounts.form.fields.name.label')}
@@ -218,12 +259,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     />
                 </Paper>
 
-                {/* Dropdown for year selection */}
+                {/* Year selection and monthly data (only for edit mode) */}
                 {account && (
                     <>
-                        {/* Year selection dropdown */}
+                        {/* Year selection dropdown with option to add new year */}
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
-                            {/* Form control for year selection */}
                             <FormControl size="small" fullWidth>
                                 <InputLabel>{t('dashboard.common.year')}</InputLabel>
                                 <Select
@@ -250,7 +290,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                 </Select>
                             </FormControl>
 
-                            {/* Input for adding a new year */}
+                            {/* New year input field with add/cancel buttons */}
                             {showYearInput && (
                                 <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                                     <TextField
@@ -282,11 +322,12 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             )}
                         </Paper>
 
-                        {/* Input fields for monthly values */}
+                        {/* Monthly values input fields */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                 {months.map(month => (
-                                    <Box key={month} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Box key={month}
+                                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Typography>{getMonthName(month)}</Typography>
                                         <TextField
                                             size="small"
@@ -300,6 +341,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                             value={monthlyInput[month] || ''}
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(',', '.');
+                                                // Validate input to ensure it's a valid decimal number
                                                 if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
                                                     setMonthlyInput(prev => ({
                                                         ...prev,
@@ -308,6 +350,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                                 }
                                             }}
                                             onBlur={() => {
+                                                // Convert comma to decimal point and parse as float on blur
                                                 const value = monthlyInput[month]?.replace(',', '.') || '0';
                                                 setMonthlyValues(prev => ({
                                                     ...prev,
@@ -320,7 +363,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             </Box>
                         </Paper>
 
-                        {/* Switch for account active status */}
+                        {/* Account active status toggle */}
                         <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
@@ -333,7 +376,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </>
                 )}
 
-                {/* Color selection for background and text */}
+                {/* Account color settings */}
                 <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
@@ -353,7 +396,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Box>
                 </Paper>
 
-                {/* Container for delete and submit buttons */}
+                {/* Action buttons (delete/save) */}
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     {account && (
                         <Button
@@ -380,7 +423,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 </Box>
             </Box>
 
-            {/* Dialog for delete confirmation */}
+            {/* Confirmation dialog for account deletion */}
             <Dialog
                 open={deleteDialog}
                 onClose={() => setDeleteDialog(false)}
@@ -394,7 +437,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     }
                 }}
             >
-                {/* Dialog title */}
+                {/* Dialog title with warning */}
                 <DialogTitle sx={{
                     textAlign: 'center',
                     pt: 3,
@@ -403,7 +446,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     {t('dashboard.accounts.form.delete.title')}
                 </DialogTitle>
 
-                {/* Dialog content */}
+                {/* Dialog confirmation message */}
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
@@ -420,7 +463,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Typography>
                 </DialogContent>
 
-                {/* Container for cancel and delete buttons */}
+                {/* Dialog action buttons */}
                 <DialogActions sx={{
                     justifyContent: 'center',
                     gap: 2,

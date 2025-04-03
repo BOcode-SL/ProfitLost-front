@@ -1,20 +1,32 @@
+/**
+ * Registration Form Component
+ * 
+ * Provides the interface for new user account creation with fields for:
+ * - Name and surname (personal information)
+ * - Username (with alphanumeric validation)
+ * - Email address
+ * - Password (with visibility toggle)
+ * 
+ * Includes field validation, input formatting, and accessibility features.
+ * Username input is restricted to lowercase alphanumeric characters only.
+ */
 import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-// Types
+// Types for registration form data and handlers
 import type { RegisterCredentials } from '../../../../types/api/responses';
 
 interface RegisterFormProps {
-    registerData: RegisterCredentials; // Data for registration
-    loading: boolean; // Loading state for the button
-    showPassword: boolean; // State to show/hide password
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Function to handle input changes
-    setShowPassword: (show: boolean) => void; // Function to toggle password visibility
-    isFormValid: () => boolean; // Function to validate the form
-    handleSubmit: (e: React.FormEvent) => void; // Function to handle form submission
+    registerData: RegisterCredentials; // User registration data
+    loading: boolean; // Loading state during submission
+    showPassword: boolean; // Toggle for password visibility
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Input change handler
+    setShowPassword: (show: boolean) => void; // Password visibility toggle handler
+    isFormValid: () => boolean; // Validator function for form completion
+    handleSubmit: (e: React.FormEvent) => void; // Form submission handler
 }
 
 // RegisterForm component definition
@@ -31,7 +43,7 @@ export default function RegisterForm({
 
     return (
         <Box component="form" onSubmit={handleSubmit}>
-            {/* Input for Name */}
+            {/* Name field */}
             <TextField
                 fullWidth
                 required
@@ -43,7 +55,8 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.name.placeholder')}
             />
-            {/* Input for Surname */}
+            
+            {/* Surname field */}
             <TextField
                 fullWidth
                 required
@@ -55,7 +68,8 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.surname.placeholder')}
             />
-            {/* Input for Username */}
+            
+            {/* Username field with alphanumeric validation */}
             <TextField
                 fullWidth
                 required
@@ -67,6 +81,7 @@ export default function RegisterForm({
                 placeholder={t('home.auth.register.form.username.placeholder')}
                 value={registerData.username}
                 onChange={(e) => {
+                    // Restrict to lowercase alphanumeric characters only
                     const value = e.target.value.toLowerCase();
                     if (/^[a-z0-9]*$/.test(value)) {
                         handleChange({
@@ -78,7 +93,8 @@ export default function RegisterForm({
                     }
                 }}
             />
-            {/* Input for Email */}
+            
+            {/* Email field */}
             <TextField
                 fullWidth
                 required
@@ -91,7 +107,8 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.email.placeholder')}
             />
-            {/* Input for Password */}
+            
+            {/* Password field with visibility toggle */}
             <TextField
                 fullWidth
                 required
@@ -115,7 +132,8 @@ export default function RegisterForm({
                     }
                 }}
             />
-            {/* Submit Button */}
+            
+            {/* Register button */}
             <Button
                 fullWidth
                 variant="contained"

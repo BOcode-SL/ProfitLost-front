@@ -18,18 +18,18 @@ const TermsOfService = React.lazy(() => import('./pages/landing/legal/TermsOfSer
 const Contact = React.lazy(() => import('./pages/landing/legal/Contact'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
-// Defining the type for private route props
+// Interface for the private route component props
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
-// Main App component
+// Main App component that defines the application's routing structure
 export default function App() {
-  // PrivateRoute component to protect dashboard routes
+  // PrivateRoute component that protects routes requiring authentication
   const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-    const { user, isLoading } = useUser(); // Accessing user context
+    const { user, isLoading } = useUser(); // Get user authentication state and loading status
 
-    // Show loading state while user data is being fetched
+    // Display a loading indicator while checking authentication status
     if (isLoading) {
       return (
         <div className='loading-container'>
@@ -38,7 +38,7 @@ export default function App() {
       );
     }
 
-    // Render children if user is authenticated; otherwise, redirect to the authentication page
+    // Render the protected content if user is authenticated, otherwise redirect to login
     return user ? (
       <DashboardThemeProvider>
         {children}
@@ -46,11 +46,11 @@ export default function App() {
     ) : <Navigate to='/auth' replace />;
   };
 
-  // Main render of the application
+  // Render the complete application with routes
   return (
-    // Providing user context to the application
+    // Provide user context throughout the application
     <UserProvider>
-      {/* Setting up routing for the application */}
+      {/* Application routing configuration */}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/auth' element={<AuthPage />} />
@@ -64,13 +64,13 @@ export default function App() {
         <Route
           path='/dashboard/*'
           element={
-            // Protecting the dashboard routes with PrivateRoute
+            // Protect dashboard routes with authentication
             <PrivateRoute>
               <Dashboard />
             </PrivateRoute>
           }
         />
-        {/* Route for the 404 page - this must be the last one */}
+        {/* Catch-all route for handling 404 errors */}
         <Route path='*' element={<NotFound />} />
       </Routes>
     </UserProvider>

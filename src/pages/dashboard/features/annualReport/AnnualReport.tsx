@@ -1,3 +1,15 @@
+/**
+ * AnnualReport Component
+ * 
+ * Main component for the Annual Report feature, providing year-based financial insights.
+ * Features include:
+ * - Year selection with data-driven available years
+ * - View mode toggle (Year-to-date vs Full Year)
+ * - Monthly transaction breakdown via charts
+ * - Income, expense, and balance summaries
+ * - Category-based transaction analysis
+ * - User preference persistence across sessions
+ */
 import { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { toast } from 'react-hot-toast';
@@ -35,27 +47,30 @@ export default function AnnualReport() {
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
     const [isUpdatingViewMode, setIsUpdatingViewMode] = useState(false);
 
-    // Set the view mode from the user preferences
+    // Initialize view mode from user preferences
     useEffect(() => {
         if (user?.preferences.viewMode) {
             setViewMode(user.preferences.viewMode);
         }
     }, [user?.preferences.viewMode]);
 
-    // Fetch all transactions
+    // Fetch all transaction years to populate the year selector
     useEffect(() => {
         const fetchAllTransactions = async () => {
             try {
                 const response = await transactionService.getAllTransactions();
                 if (response.success && Array.isArray(response.data)) {
+                    // Extract unique years from all transactions
                     const transactionYears = new Set(
                         response.data.map((transaction: Transaction) =>
                             fromUTCtoLocal(transaction.date).getFullYear().toString()
                         )
                     );
 
+                    // Always include current year even if no transactions exist yet
                     transactionYears.add(currentYear);
 
+                    // Sort years in descending order (newest first)
                     const sortedYears = [...transactionYears].sort((a, b) => Number(b) - Number(a));
                     setYearsWithData(sortedYears);
                 }
@@ -83,7 +98,7 @@ export default function AnnualReport() {
         fetchAllTransactions();
     }, [currentYear, t]);
 
-    // Fetch transactions by year
+    // Fetch transactions for the selected year
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
             setIsLoading(true);
@@ -122,17 +137,19 @@ export default function AnnualReport() {
         fetchTransactionsByYear();
     }, [year, t]);
 
-    // Filter transactions by view mode
+    // Apply the selected view mode filter to transactions
     const filteredTransactions = transactions.filter(transaction => {
         if (viewMode === 'yearToday') {
+            // For year-to-date mode, only include transactions up to today
             const today = new Date();
             const transactionDate = fromUTCtoLocal(transaction.date);
             return transactionDate <= today;
         }
+        // For full year mode, include all transactions
         return true;
     });
 
-    // Handle view mode change
+    // Update user preference when view mode is changed
     const handleViewModeChange = async (newMode: 'yearToday' | 'fullYear') => {
         if (newMode === viewMode) return;
 
@@ -157,7 +174,7 @@ export default function AnnualReport() {
             flexDirection: 'column',
             gap: 2,
         }}>
-            {/* Year selection paper */}
+            {/* Year and view mode selection controls */}
             <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
                 <Box sx={{
                     display: 'flex',
@@ -165,7 +182,7 @@ export default function AnnualReport() {
                     flexDirection: { xs: 'column', sm: 'row' },
                     alignItems: { xs: 'stretch', sm: 'center' }
                 }}>
-                    {/* Year selection dropdown */}
+                    {/* Year dropdown selector */}
                     <FormControl size="small"
                         sx={{
                             flexGrow: 1,
@@ -185,7 +202,7 @@ export default function AnnualReport() {
                         </Select>
                     </FormControl>
 
-                    {/* View mode toggle buttons (only shown for the current year) */}
+                    {/* View mode toggle (only shown for current year) */}
                     {year === currentYear && (
                         <ToggleButtonGroup
                             value={viewMode}
@@ -208,7 +225,7 @@ export default function AnnualReport() {
                 </Box>
             </Paper>
 
-            {/* Chart paper displaying annual data */}
+            {/* Monthly income/expense comparison chart */}
             <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
                 <AnnualChart
                     transactions={filteredTransactions}
@@ -216,13 +233,13 @@ export default function AnnualReport() {
                 />
             </Paper>
 
-            {/* Component displaying annual balances */}
+            {/* Income, expense and balance summary */}
             <AnnualBalances 
                 transactions={filteredTransactions} 
                 isLoading={isLoading && !isUpdatingViewMode} 
             />
 
-            {/* Categories paper displaying annual categories */}
+            {/* Categories breakdown and management */}
             <Paper elevation={3} sx={{ p: 1, borderRadius: 3 }}>
                 <AnnualCategories
                     transactions={filteredTransactions}

@@ -1,3 +1,14 @@
+/**
+ * AccountsChart Component
+ * 
+ * Renders a bar chart visualization of account balances across months for a selected year.
+ * Features include:
+ * - Monthly balance comparison for all active accounts
+ * - Currency visibility respecting user privacy preferences
+ * - Responsive design for mobile and desktop layouts
+ * - Loading skeleton while data is being fetched
+ * - Empty state message when no data is available
+ */
 import { useState, useEffect } from 'react';
 import { Box, Skeleton, useTheme, Typography, useMediaQuery } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
@@ -7,25 +18,30 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
+import {
+    CURRENCY_VISIBILITY_EVENT,
+    formatCurrency,
+    isCurrencyHidden,
+    formatLargeNumber
+} from '../../../../../utils/currencyUtils';
 
 // Types
 import type { Account, YearRecord } from '../../../../../types/models/account';
 
 // Interface for the props of the AccountsChart component
 interface AccountsChartProps {
-    accounts: Account[];
-    loading: boolean;
-    selectedYear: number;
+    accounts: Account[];       // Array of account objects to display in the chart
+    loading: boolean;          // Flag indicating if data is still being loaded
+    selectedYear: number;      // The year for which to display account data
 }
-// Interface for the data point
+// Interface for the data point in chart dataset
 interface DataPoint {
-    month: string;
-    monthDisplay: string;
-    [key: string]: number | string;
+    month: string;             // Month identifier (e.g., "Jan", "Feb")
+    monthDisplay: string;      // Localized month display name
+    [key: string]: number | string; // Dynamic properties for each account's monthly balance
 }
 
-// Months in English for the backend
+// Months in English for backend data mapping
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export default function AccountsChart({ accounts, loading, selectedYear }: AccountsChartProps) {
@@ -36,7 +52,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Effect to listen for changes in currency visibility
+    // Effect to listen for currency visibility toggle events throughout the app
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -49,35 +65,35 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         };
     }, []);
 
-    // Function to get the short translated name of the month
+    // Helper function to get the localized short month name from translation keys
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
-    // Show skeleton loading while data is being fetched
+    // Show skeleton loading placeholder while data is being fetched
     if (loading) {
         return (
             <Box sx={{ width: '100%', height: '100%' }}>
-                <Skeleton 
-                    variant="rectangular" 
-                    width="100%" 
-                    height="100%" 
-                    sx={{ 
+                <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height="100%"
+                    sx={{
                         borderRadius: 3,
                         animation: 'pulse 1.5s ease-in-out infinite'
-                    }} 
+                    }}
                 />
             </Box>
         );
     }
 
-    // Filter to get only active accounts
+    // Filter to get only active accounts for chart display
     const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
 
-    // Check if there is no data available
+    // Check if there is no data available to display
     const isDataEmpty = activeAccounts.length === 0;
 
-    // Create the dataset for the chart
+    // Create the dataset structure for the chart with month data points
     const dataset: DataPoint[] = months.map(month => {
         const monthLower = month.toLowerCase();
         const dataPoint: DataPoint = {
@@ -85,6 +101,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
             monthDisplay: getMonthShortName(month)
         };
 
+        // Add each account's monthly value to the data point
         activeAccounts.forEach(account => {
             const yearRecord = account.records[selectedYear.toString()];
             dataPoint[account.accountName] = yearRecord ? yearRecord[monthLower as keyof YearRecord] : 0;
@@ -93,7 +110,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return dataPoint;
     });
 
-    // Create the series for the chart
+    // Configure the series definitions for each account with styling and formatting
     const series = activeAccounts.map(account => ({
         dataKey: account.accountName,
         label: account.accountName,
@@ -102,7 +119,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
-    // Function to calculate the total for a specific month
+    // Helper function to calculate the total balance for a specific month across all accounts
     const getMonthTotal = (month: string): number => {
         const monthData = dataset.find(d => d.month === month);
         if (!monthData) return 0;
@@ -114,24 +131,24 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return parseFloat(total.toFixed(2));
     };
 
-    // Container for the chart
+    // Return the chart container with conditional empty state message
     return (
         <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-            {/* Bar chart component with dataset and series */}
+            {/* Bar chart component with dynamic dataset and series configuration */}
             <BarChart
                 dataset={dataset}
                 series={series}
                 xAxis={[{
                     dataKey: 'month',
                     scaleType: 'band',
-                    // Formatter for the x-axis labels
+                    // Formatter for x-axis labels with localized month names and totals
                     valueFormatter: (month, context) => {
                         const dataPoint = dataset.find(d => d.month === month);
                         return context.location === 'tick'
                             ? dataPoint?.monthDisplay || month
                             : `${dataPoint?.monthDisplay}: ${formatCurrency(getMonthTotal(month), user)}`;
                     },
-                    // Style for the tick labels on the x-axis
+                    // Responsive styling for x-axis tick labels
                     tickLabelStyle: {
                         angle: isMobile ? 45 : 0,
                         textAnchor: 'start',
@@ -140,7 +157,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     }
                 }]}
                 yAxis={[{
-                    // Style for the tick labels on the y-axis
+                    // Styling for y-axis tick labels with currency protection
                     tickLabelStyle: {
                         fontSize: 12,
                         fill: theme.palette.text.primary
@@ -158,9 +175,9 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     legend: { hidden: true }
                 }}
                 tooltip={isHidden ? {
-                    trigger: 'none'
+                    trigger: 'none'  // Disable tooltips when currency is hidden
                 } : {
-                    trigger: 'axis'
+                    trigger: 'axis'  // Show tooltips on axis hover when currency is visible
                 }}
                 borderRadius={5}
                 height={400}
@@ -169,7 +186,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
                     bottom: 70
                 }}
             />
-            {/* Display message when there is no data available */}
+            {/* Empty state message overlay when no active accounts exist */}
             {isDataEmpty && (
                 <Typography
                     variant="body1"

@@ -1,3 +1,14 @@
+/**
+ * AnnualBalances Component
+ * 
+ * Displays financial summary cards showing income, expenses, and net balance.
+ * Features include:
+ * - Currency formatting based on user preferences
+ * - Visual indicators using appropriate icons and colors
+ * - Support for currency visibility toggling for privacy
+ * - Responsive grid layout adapting to different screen sizes
+ * - Loading skeleton state while data is being processed
+ */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, useTheme, Skeleton } from '@mui/material';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -15,17 +26,16 @@ import type { Transaction } from '../../../../../types/models/transaction';
 
 // Interface for the props of the AnnualBalances component
 interface AnnualBalancesProps {
-    transactions: Transaction[]; // Array of transactions
-    isLoading: boolean; // Loading state
+    transactions: Transaction[]; // Array of transactions to calculate balances from
+    isLoading: boolean; // Loading state indicator
 }
 
-// AnnualBalances component
 export default function AnnualBalances({ transactions, isLoading }: AnnualBalancesProps) {
     const { user } = useUser();
     const theme = useTheme();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Calculate the totals of the transactions
+    // Calculate income, expenses, and net balance from transactions
     const totals = useMemo(() => {
         const { income, expenses } = transactions.reduce((acc, transaction) => {
             if (transaction.amount > 0) {
@@ -43,13 +53,29 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         };
     }, [transactions]);
 
-    // Prepare the balance items for display
+    // Define the cards to be displayed with their respective icons and colors
     const balanceItems = [
-        { label: 'download', value: totals.income, color: theme.palette.chart.income, icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
-        { label: 'upload', value: totals.expenses, color: theme.palette.chart.expenses, icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> },
-        { label: 'savings', value: totals.balance, color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> }
+        { 
+            label: 'download', 
+            value: totals.income, 
+            color: theme.palette.chart.income, 
+            icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        },
+        { 
+            label: 'upload', 
+            value: totals.expenses, 
+            color: theme.palette.chart.expenses, 
+            icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        },
+        { 
+            label: 'savings', 
+            value: totals.balance, 
+            color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, 
+            icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        }
     ];
 
+    // Listen for currency visibility toggle events across the application
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -62,7 +88,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         };
     }, []);
 
-    // If loading, show skeleton
+    // Display skeleton loaders while data is being fetched
     if (isLoading) {
         return (
             <Box sx={{
@@ -107,7 +133,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
             gap: 2
         }}>
-            {/* Iterate over balance items to display each one */}
+            {/* Display each financial metric in its own card */}
             {balanceItems.map(({ value, color, icon }, index) => (
                 <Paper key={index} elevation={3} sx={{
                     p: 1,
@@ -117,14 +143,14 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    {/* Icon representing the type of balance */}
+                    {/* Icon representing the type of financial metric */}
                     <Box sx={{ 
                         color: color,
                         display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1
                     }}>{icon}</Box>
-                    {/* Display formatted currency value */}
+                    {/* Financial value with privacy blur support */}
                     <Box sx={{
                         fontSize: '1.5rem',
                         filter: isHidden ? 'blur(8px)' : 'none',

@@ -1,3 +1,14 @@
+/**
+ * TransactionMetricsCard Component
+ * 
+ * Displays comprehensive transaction metrics with interactive charts.
+ * Features include:
+ * - Key transaction statistics with trend indicators
+ * - Toggleable daily/monthly chart views
+ * - Dynamic comparison percentages
+ * - Responsive layout for different screen sizes
+ * - Localized date formatting based on user language
+ */
 import { Box, Paper, Typography, Skeleton, ToggleButton, ToggleButtonGroup, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LineChart } from '@mui/x-charts/LineChart';
@@ -17,11 +28,13 @@ import { analyticsService } from '../../../../../services/analytics.service';
 // Types
 import type { TransactionMetrics, TransactionHistory } from '../../../../../types/models/analytics';
 
+// Props interface for component
 interface TransactionMetricsCardProps {
-    data: TransactionMetrics | null;
-    loading: boolean;
+    data: TransactionMetrics | null;  // Transaction statistics data
+    loading: boolean;                 // Loading state indicator
 }
 
+// View type for chart display
 type ViewType = 'daily' | 'monthly';
 
 export default function TransactionMetricsCard({ data, loading }: TransactionMetricsCardProps) {
@@ -31,6 +44,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
     const [chartData, setChartData] = useState<TransactionHistory[]>([]);
     const [chartLoading, setChartLoading] = useState(false);
 
+    // Fetch chart data when view type changes
     useEffect(() => {
         const fetchChartData = async () => {
             try {
@@ -49,23 +63,23 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         fetchChartData();
     }, [viewType]);
 
-    // Ensure that monthly chart data has unique dates
+    // Process monthly data to ensure one entry per month
     const getUniqueMonthlyData = () => {
         if (viewType !== 'monthly' || chartData.length === 0) return chartData;
-        
+
         // Create a map to store a unique value per month
         const monthMap = new Map<string, TransactionHistory>();
-        
+
         chartData.forEach(item => {
             const date = new Date(item.date);
             const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
-            
+
             // Only save the first value for each month
             if (!monthMap.has(monthKey)) {
                 monthMap.set(monthKey, item);
             }
         });
-        
+
         // Convert the map back to an array and sort it by date
         return Array.from(monthMap.values())
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -74,6 +88,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
     // Get the processed data for the chart
     const processedChartData = viewType === 'monthly' ? getUniqueMonthlyData() : chartData;
 
+    // Render loading skeleton while data is being fetched
     if (loading) {
         return (
             <Paper elevation={3} sx={{
@@ -81,14 +96,14 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                 borderRadius: 3,
                 width: '100%'
             }}>
-                {/* Title */}
+                {/* Title skeleton */}
                 <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
                     <Skeleton variant="text" width={200} height={32} sx={{
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
                 </Box>
 
-                {/* Metrics in a single row */}
+                {/* Metrics skeletons in a row */}
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -124,13 +139,13 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     ))}
                 </Box>
 
-                {/* Divider */}
+                {/* Divider skeleton */}
                 <Divider sx={{
                     my: 2,
                     animation: 'pulse 1.5s ease-in-out infinite'
                 }} />
 
-                {/* Toggle Buttons */}
+                {/* Toggle buttons skeleton */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
                     <Skeleton
                         variant="rectangular"
@@ -143,7 +158,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     />
                 </Box>
 
-                {/* Chart */}
+                {/* Chart area skeleton */}
                 <Skeleton
                     variant="rectangular"
                     height={250}
@@ -158,6 +173,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         );
     }
 
+    // Define transaction metrics to display
     const metrics = [
         {
             label: t('dashboard.analytics.metrics.totalTransactions'),
@@ -187,47 +203,50 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
         }
     ];
 
+    // Calculate percentage change between current and previous values
     const calculatePercentageChange = (current: number, previous: number) => {
         if (previous === 0) return 0;
         return ((current - previous) / previous) * 100;
     };
 
+    // Handle toggle between daily and monthly chart views
     const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: ViewType) => {
         if (newView !== null) {
             setViewType(newView);
         }
     };
 
-    // Function to format the X-axis dates of the chart
+    // Format date labels for chart x-axis based on view type and user language
     const formatXAxisDate = (date: Date): string => {
         if (viewType === 'daily') {
             // For daily view, we need to translate the day of the week
             const day = date.getDate();
             const dayOfWeekIndex = date.getDay();
-            
+
             // Map the day index to the translation key
             const dayKeys = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const dayKey = dayKeys[dayOfWeekIndex];
-            
+
             // Get the translation of the day from the language files
             const translatedDay = t(`dashboard.common.dayNamesShort.${dayKey}`);
-            
+
             // Different format based on the language:
             const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
-            
+
             if (currentLanguage.startsWith('es')) {
                 return `${translatedDay} ${day}`;
             } else {
                 return `${day} ${translatedDay}`;
             }
         }
-        
+
+        // For monthly view, format as abbreviated month and year
         const monthIndex = date.getMonth();
         const monthKey = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][monthIndex];
-        
+
         const translatedMonth = t(`dashboard.common.monthNamesShort.${monthKey}`);
         const year = date.getFullYear().toString().slice(2);
-        
+
         return `${translatedMonth} ${year}`;
     };
 
@@ -246,7 +265,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                 flexDirection: 'column',
                 gap: { xs: 2, sm: 3, md: 4 }
             }}>
-                {/* All metrics in a single row */}
+                {/* Transaction metrics row */}
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -254,7 +273,9 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                     justifyContent: 'space-between'
                 }}>
                     {metrics.map((metric, index) => {
-                        const percentageChange = !metric.hideComparison ? calculatePercentageChange(metric.value, metric.comparison || 0) : null;
+                        const percentageChange = !metric.hideComparison 
+                            ? calculatePercentageChange(metric.value, metric.comparison || 0) 
+                            : null;
                         const isPositive = percentageChange !== null && percentageChange > 0;
 
                         return (
@@ -266,10 +287,11 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                 gap: 1,
                                 mb: { xs: 1, sm: 0 }
                             }}>
+                                {/* Metric label with icon */}
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 24 }}>
                                     {metric.icon}
-                                    <Typography 
-                                        variant="body2" 
+                                    <Typography
+                                        variant="body2"
                                         color="text.secondary"
                                         sx={{
                                             fontSize: {
@@ -284,6 +306,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                         {metric.label}
                                     </Typography>
                                 </Box>
+                                {/* Metric value with trend indicator */}
                                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                                     <Typography variant="h4" color="text.primary" sx={{
                                         fontSize: {
@@ -296,6 +319,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                             ? metric.value.toFixed(1)
                                             : metric.value.toLocaleString()}
                                     </Typography>
+                                    {/* Percentage change indicator */}
                                     {!metric.hideComparison && percentageChange !== null && (
                                         <Box sx={{
                                             display: 'flex',
@@ -321,7 +345,8 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                             <Typography
                                                 variant="body2"
                                                 sx={{
-                                                    color: percentageChange === 0 ? '#4caf50' : isPositive ? '#4caf50' : '#f44336',
+                                                    color: percentageChange === 0 ? '#4caf50' : 
+                                                           isPositive ? '#4caf50' : '#f44336',
                                                     fontSize: '0.75rem'
                                                 }}
                                             >
@@ -337,8 +362,9 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
 
                 <Divider />
 
-                {/* Chart Section */}
+                {/* Chart section with view toggles */}
                 <Box>
+                    {/* Toggle between daily and monthly views */}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
                         <ToggleButtonGroup
                             value={viewType}
@@ -355,6 +381,7 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                         </ToggleButtonGroup>
                     </Box>
 
+                    {/* Transaction history chart */}
                     <Box sx={{
                         height: { xs: 200, sm: 250 },
                         width: '100%',
@@ -382,8 +409,12 @@ export default function TransactionMetricsCard({ data, loading }: TransactionMet
                                     scaleType: 'time',
                                     valueFormatter: formatXAxisDate,
                                     min: processedChartData.length > 0 ? new Date(processedChartData[0].date) : undefined,
-                                    max: processedChartData.length > 0 ? new Date(processedChartData[processedChartData.length - 1].date) : undefined,
-                                    tickNumber: viewType === 'monthly' ? Math.min(12, processedChartData.length) : processedChartData.length
+                                    max: processedChartData.length > 0 
+                                        ? new Date(processedChartData[processedChartData.length - 1].date) 
+                                        : undefined,
+                                    tickNumber: viewType === 'monthly' 
+                                        ? Math.min(12, processedChartData.length) 
+                                        : processedChartData.length
                                 }]}
                                 series={[{
                                     data: processedChartData.map(item => item.count),

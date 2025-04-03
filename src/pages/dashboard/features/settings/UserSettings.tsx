@@ -1,5 +1,28 @@
+/**
+ * UserSettings Component
+ * 
+ * Allows users to update their profile information and preferences.
+ * Features include:
+ * - Profile image upload and management
+ * - Personal information editing
+ * - User preferences configuration (language, currency, date/time formats)
+ * - Real-time validation and error handling
+ * - Responsive layout
+ */
 import { useState, useRef } from 'react';
-import { Box, TextField, Button, Avatar, Paper, FormControl, InputLabel, Select, MenuItem, Typography, SelectChangeEvent } from '@mui/material';
+import {
+    Box,
+    TextField,
+    Button,
+    Avatar,
+    Paper,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Typography,
+    SelectChangeEvent
+} from '@mui/material';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +36,7 @@ import { userService } from '../../../../services/user.service';
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user';
 
-// Format options
+// Configuration options for selectable preferences
 const dateFormatOptions = [
     { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' as DateFormat },
     { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' as DateFormat }
@@ -52,7 +75,6 @@ interface UserSettingsProps {
     onSuccess?: () => void; // Optional callback function to be called on success
 }
 
-// UserSettings component
 export default function UserSettings({ onSuccess }: UserSettingsProps) {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
@@ -73,7 +95,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         deleteImage: false
     });
 
-    // Handle the input change
+    // Handle text input changes with validation
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'name' && !value.trim()) {
@@ -85,7 +107,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle the select change
+    // Handle dropdown select changes
     const handleSelectChange = (e: SelectChangeEvent) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -94,7 +116,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle the image upload
+    // Handle profile image upload with size validation
     const handleImageUpload = (file: File) => {
         if (file.size > 8 * 1024 * 1024) {
             toast.error(t('dashboard.settings.userSettings.profileImageError'));
@@ -109,7 +131,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle the delete image
+    // Handle profile image deletion
     const handleDeleteImage = () => {
         if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
             URL.revokeObjectURL(formData.previewUrl);
@@ -122,7 +144,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle the submit
+    // Submit form with validation and API communication
     const handleSubmit = async () => {
         if (!formData.name.trim()) {
             toast.error(t('dashboard.settings.userSettings.nameRequired'));
@@ -276,7 +298,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* Preferences Section */}
+                {/* User Preferences Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -361,6 +383,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
+                {/* Save Changes Button */}
                 <Button
                     variant="contained"
                     onClick={handleSubmit}

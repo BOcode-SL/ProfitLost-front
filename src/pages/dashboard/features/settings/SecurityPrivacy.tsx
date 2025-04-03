@@ -1,3 +1,12 @@
+/**
+ * SecurityPrivacy Component
+ * 
+ * Allows users to manage security and privacy settings including:
+ * - Password changes with validation
+ * - Account deletion functionality with confirmation
+ * - Error handling with user feedback
+ * - Comprehensive security measures for sensitive actions
+ */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -27,6 +36,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
     const { user, setUser } = useUser();
     const navigate = useNavigate();
 
+    // State for password visibility toggles and form data
     const [showPassword, setShowPassword] = useState({
         current: false,
         new: false,
@@ -40,15 +50,17 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
-    // Handle the password change
+    // Handle password change with validation and API communication
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Validate password match
         if (formData.newPassword !== formData.confirmPassword) {
             toast.error(t('dashboard.settings.securityPrivacy.passwordsDoNotMatch'));
             return;
         }
 
+        // Validate password strength using regex
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         if (!passwordRegex.test(formData.newPassword)) {
             toast.error(t('dashboard.common.error.PASSWORD_TOO_WEAK'));
@@ -69,6 +81,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
             onSuccess?.();
         } catch (error) {
             const apiError = error as UserApiErrorResponse;
+            // Handle different error cases with specific user feedback
             switch (apiError.error) {
                 case 'INVALID_PASSWORD':
                     toast.error(t('dashboard.common.error.INVALID_PASSWORD'));
@@ -93,8 +106,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         }
     };
 
-    // Handle the delete account
+    // Handle account deletion with confirmation check
     const handleDeleteAccount = async () => {
+        // Validate the confirmation text matches username
         if (!user || deleteConfirmation !== user.username) {
             toast.error(t('dashboard.settings.securityPrivacy.usernameDoesNotMatch'));
             return;
@@ -108,6 +122,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
             navigate('/');
         } catch (error) {
             const apiError = error as UserApiErrorResponse;
+            // Handle different error cases with specific user feedback
             switch (apiError.error) {
                 case 'CONNECTION_ERROR':
                     toast.error(t('dashboard.common.error.CONNECTION_ERROR'));
@@ -140,7 +155,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                 flexDirection: 'column',
                 gap: 3
             }}>
-                {/* Section for handling password changes */}
+                {/* Password Change Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -154,7 +169,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                         {t('dashboard.settings.securityPrivacy.changePassword')}
                     </Typography>
                     <Box component="form" onSubmit={handlePasswordChange} sx={{ width: '100%' }}>
-                        {/* Form fields for password change */}
+                        {/* Password change form fields */}
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -162,7 +177,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             width: '100%',
                             mt: 2
                         }}>
-                            {/* Current Password Input */}
+                            {/* Current Password Field with visibility toggle */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -175,7 +190,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
+                                                    onClick={
+                                                        () => setShowPassword({ ...showPassword, current: !showPassword.current })
+                                                    }
                                                     edge="end"
                                                 >
                                                     {showPassword.current ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -186,7 +203,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 }}
                             />
 
-                            {/* New Password Input */}
+                            {/* New Password Field with visibility toggle */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -210,7 +227,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 }}
                             />
 
-                            {/* Confirm New Password Input */}
+                            {/* Confirm New Password Field with visibility toggle */}
                             <TextField
                                 fullWidth
                                 size="small"
@@ -223,7 +240,9 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
+                                                    onClick={
+                                                        () => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })
+                                                    }
                                                     edge="end"
                                                 >
                                                     {showPassword.confirm ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -234,6 +253,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 }}
                             />
 
+                            {/* Update Password Button - disabled until all fields are filled */}
                             <Button
                                 type="submit"
                                 variant="contained"
@@ -245,8 +265,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                     </Box>
                 </Paper>
 
-                {/* Delete Account Section */}
-                {/* Section for handling account deletion */}
+                {/* Account Deletion Section with Warning */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -268,6 +287,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                     </Typography>
 
                     {!showDeleteConfirmation ? (
+                        // Initial Delete Account Button
                         <Button
                             variant="outlined"
                             color="error"
@@ -282,6 +302,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             {t('dashboard.settings.securityPrivacy.deleteAccount')}
                         </Button>
                     ) : (
+                        // Confirmation UI with username input validation
                         <Box sx={{ mt: 2 }}>
                             <Typography sx={{ mb: 2 }}>
                                 {t('dashboard.settings.securityPrivacy.deleteConfirmation')}: <strong>{user?.username}</strong>
@@ -291,7 +312,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 flexDirection: 'column',
                                 gap: 2
                             }}>
-                                {/* Input field to confirm username */}
+                                {/* Username confirmation input */}
                                 <TextField
                                     fullWidth
                                     size="small"
@@ -299,6 +320,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                     onChange={(e) => setDeleteConfirmation(e.target.value)}
                                     placeholder={t('dashboard.settings.securityPrivacy.username')}
                                 />
+                                {/* Final confirmation button - disabled until username matches */}
                                 <Button
                                     variant="outlined"
                                     onClick={handleDeleteAccount}

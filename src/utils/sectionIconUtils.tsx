@@ -1,3 +1,9 @@
+/**
+ * Section Icon Utilities
+ * 
+ * Provides mapping from icon names to Material UI icon components.
+ * Used throughout the application to maintain consistent icon usage.
+ */
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
@@ -6,6 +12,16 @@ import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 
+/**
+ * Returns the appropriate Material UI icon component based on the icon name
+ * 
+ * Maps string identifiers to their corresponding icon components, enabling
+ * dynamic icon selection throughout the application. This provides a
+ * centralized place to change icons and ensures visual consistency.
+ * 
+ * @param iconName - String identifier for the desired icon
+ * @returns React element containing the appropriate Material UI icon component
+ */
 export const getIconComponent = (iconName: string) => {
   switch (iconName) {
     case 'home':
@@ -23,6 +39,6 @@ export const getIconComponent = (iconName: string) => {
     case 'notifications':
       return <NotificationsOutlinedIcon />;
     default:
-      return <SpaceDashboardOutlinedIcon />;
+      return <SpaceDashboardOutlinedIcon />; // Fallback to dashboard icon
   }
 }; 

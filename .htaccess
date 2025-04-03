@@ -1,33 +1,44 @@
+# Apache Server Configuration File
+# Controls URL rewriting, security headers, and performance optimizations
+
+# Enable the rewrite engine for URL manipulation
 RewriteEngine On
-# Redirect HTTP traffic to HTTPS
+
+# Force HTTPS - Redirect all HTTP traffic to HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-# Redirect www to non-www
+
+# Remove www prefix - Redirect www.domain.com to domain.com
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-# Do not redirect if the request is for a real file or directory
+
+# SPA Routing - Allow the React app to handle client-side routing
+# Skip rewriting for existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-# Redirect all non-existing requests to index.html
+# Send all other requests to index.html for client-side routing
 RewriteRule ^ index.html [L]
 
-# Cache optimization
+# Cache Control - Set expiration times for different resource types
 <IfModule mod_expires.c>
     ExpiresActive On
+    # Images - Cache for 1 year
     ExpiresByType image/jpg "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    # CSS and JavaScript - Cache for 1 month
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType text/javascript "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/webp "access plus 1 year"
+    # Fonts - Cache for 1 year
     ExpiresByType application/font-woff "access plus 1 year"
     ExpiresByType application/font-woff2 "access plus 1 year"
 </IfModule>
 
-# GZIP compression
+# Content Compression - Enable GZIP compression for text-based resources
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/html
@@ -41,10 +52,14 @@ RewriteRule ^ index.html [L]
     AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
 
-# Add security headers
+# Security Headers - Add security-related HTTP headers
 <IfModule mod_headers.c>
+    # Prevent MIME type sniffing security vulnerabilities
     Header set X-Content-Type-Options "nosniff"
+    # Enable browser's XSS protection
     Header set X-XSS-Protection "1; mode=block"
+    # Prevent embedding the site in frames (clickjacking protection)
     Header set X-Frame-Options "SAMEORIGIN"
+    # Force HTTPS for this domain and subdomains
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>

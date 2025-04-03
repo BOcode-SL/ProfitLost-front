@@ -1,3 +1,14 @@
+/**
+ * DashHome Component
+ * 
+ * Main dashboard home page that displays an overview of financial data.
+ * Features include:
+ * - Monthly financial summaries (income, expenses, savings)
+ * - Six-month financial trend chart
+ * - Recent transaction history
+ * - Responsive layout adapting to different screen sizes
+ * - Loading states while data is being fetched
+ */
 import { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-hot-toast';
@@ -21,7 +32,7 @@ export default function DashHome() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch all transactions
+    // Fetch all transactions on component mount
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
@@ -47,7 +58,7 @@ export default function DashHome() {
             flexDirection: 'column',
             gap: 2,
         }}>
-            {/* Balances section */}
+            {/* Financial summary cards (income, expenses, savings) */}
             <Box sx={{
                 display: 'flex',
                 gap: 2,
@@ -57,9 +68,9 @@ export default function DashHome() {
                 <HomeBalances type="expenses" transactions={transactions} isLoading={isLoading} />
                 <HomeBalances type="savings" transactions={transactions} isLoading={isLoading} />
             </Box>
-            {/* Chart section */}
+            {/* Six-month financial trend visualization */}
             <HomeChart transactions={transactions} isLoading={isLoading} />
-            {/* History section */}
+            {/* Recent transactions list */}
             <HomeHistory transactions={transactions} isLoading={isLoading} />
         </Box>
     );

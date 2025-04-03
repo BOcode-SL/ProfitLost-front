@@ -1,3 +1,15 @@
+/**
+ * AnnualChart Component
+ * 
+ * Displays a monthly breakdown of income and expenses as a bar chart.
+ * Features include:
+ * - Side-by-side comparison of income vs expenses for each month
+ * - Currency formatting based on user preferences
+ * - Privacy mode with blurred monetary values
+ * - Responsive design for different screen sizes
+ * - Empty state handling when no transaction data exists
+ * - Loading skeleton while data is being processed
+ */
 import { useMemo, useState, useEffect } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Skeleton, useMediaQuery, useTheme, Typography } from '@mui/material';
@@ -10,16 +22,21 @@ import { useUser } from '../../../../../contexts/UserContext';
 import type { Transaction } from '../../../../../types/models/transaction';
 
 // Utils
-import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden, formatLargeNumber } from '../../../../../utils/currencyUtils';
+import {
+    CURRENCY_VISIBILITY_EVENT,
+    formatCurrency,
+    isCurrencyHidden,
+    formatLargeNumber
+} from '../../../../../utils/currencyUtils';
 import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
-    transactions: Transaction[]; // Array of transactions
+    transactions: Transaction[]; // Array of transactions to visualize
     isLoading: boolean; // Indicates if the data is currently loading
 }
 
-// Months in English for the backend
+// Month abbreviations in English for consistent sorting and processing
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // AnnualChart component
@@ -31,7 +48,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    // Listen for currency visibility toggle events across the application
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -44,19 +61,21 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         };
     }, []);
 
-    // Function to get the translated short name of the month
+    // Get localized abbreviated month names for chart labels
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
-    // Process transactions data for the chart
+    // Calculate monthly income and expense totals from transaction data
     const chartData = useMemo(() => {
+        // Initialize an array with 12 empty month buckets
         const monthsData = Array.from({ length: 12 }, (_, i) => ({
             month: i + 1,
             income: 0,
             expenses: 0
         }));
 
+        // Aggregate transactions by month
         transactions.forEach(transaction => {
             const month = fromUTCtoLocal(transaction.date).getMonth();
             if (transaction.amount > 0) {
@@ -69,7 +88,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         return monthsData;
     }, [transactions]);
 
-    // If the data is loading, show a skeleton
+    // Display loading skeleton while data is being fetched
     if (isLoading) {
         return (
             <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5, p: 1 }}>
@@ -83,7 +102,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         );
     }
 
-    // Check if the data is empty and show a message if it is
+    // Check if there is any data to display
     const isDataEmpty = Object.values(chartData).every(item => item.income === 0 && item.expenses === 0);
 
     // Main container for the chart
@@ -92,12 +111,12 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
             width: '100%',
             height: { xs: 300, sm: 350, pt: 1 },
             position: 'relative',
-            // Style for the tick labels on the x-axis
+            // Responsive font size for x-axis labels
             '& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': {
                 fontSize: isMobile ? '0.75rem' : '0.875rem',
             }
         }}>
-            {/* Bar chart component displaying income and expenses */}
+            {/* Bar chart showing income and expenses for each month */}
             <BarChart
                 series={[
                     {
@@ -131,9 +150,9 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
                     legend: { hidden: true }
                 }}
                 tooltip={isHidden ? {
-                    trigger: 'none'
+                    trigger: 'none' // Disable tooltips when privacy mode is active
                 } : {
-                    trigger: 'axis'
+                    trigger: 'axis' // Show tooltips on hover when privacy mode is inactive
                 }}
                 sx={{
                     '& .MuiXChart-tooltip': {
@@ -151,7 +170,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
                     valueFormatter: (value: number) => formatLargeNumber(value)
                 }]}
             />
-            {/* Display message when there is no data */}
+            {/* Empty state message when no transaction data exists */}
             {isDataEmpty && (
                 <Typography
                     variant="body1"

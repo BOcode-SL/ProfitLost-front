@@ -1,4 +1,28 @@
-import { Box, Typography, TextField, Button, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Slide, Skeleton } from '@mui/material';
+/**
+ * NoteEditor Component
+ * 
+ * Provides an interface for editing note content with title and body fields.
+ * Features include:
+ * - Real-time editing of note title and content
+ * - Save and delete actions with proper button states
+ * - Confirmation dialog for note deletion
+ * - Empty state handling when no note is selected
+ * - Loading skeleton state during save operations
+ * - Responsive design for different screen sizes
+ */
+import {
+    Box,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Slide,
+    Skeleton
+} from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,14 +34,14 @@ import type { Note } from '../../../../../types/models/note';
 
 // Interface for the props of the NoteEditor component
 interface NoteEditorProps {
-    note: Note | null; // The note object or null if no note is selected
-    onChange?: (key: keyof Note, value: string) => void; // Optional callback for when a note property changes
-    onSave?: () => void; // Optional callback for when the note is saved
-    onDelete?: () => void; // Optional callback for when the note is deleted
-    isSaving?: boolean; // Optional flag to indicate if the note is currently being saved
+    note: Note | null; // The note object to edit, or null if no note is selected
+    onChange?: (key: keyof Note, value: string) => void; // Callback when note content changes
+    onSave?: () => void; // Callback when save button is clicked
+    onDelete?: () => void; // Callback when delete is confirmed
+    isSaving?: boolean; // Indicates if a save/delete operation is in progress
 }
 
-// Transition component
+// Slide transition component for the delete confirmation dialog
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -28,25 +52,24 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// NoteEditor component
 export default function NoteEditor({
     note,
     onChange,
     onSave,
     onDelete,
     isSaving = false
-
 }: NoteEditorProps) {
     const { t } = useTranslation();
 
+    // State to control the delete confirmation dialog
     const [deleteDialog, setDeleteDialog] = useState(false);
 
-    // Handle the delete click
+    // Open delete confirmation dialog
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
-    // If saving, show skeleton
+    // Display skeleton loaders during save operations
     if (isSaving) {
         return (
             <Box sx={{
@@ -55,45 +78,48 @@ export default function NoteEditor({
                 flexDirection: 'column',
                 gap: 2
             }}>
+                {/* Title field skeleton */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Skeleton 
-                        variant="rectangular" 
-                        width="100%" 
-                        height={40} 
-                        sx={{ 
+                    <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={40}
+                        sx={{
                             borderRadius: 1,
                             animation: 'pulse 1.5s ease-in-out infinite'
                         }}
                     />
                 </Box>
-                <Skeleton 
-                    variant="rectangular" 
-                    width="100%" 
+                {/* Content field skeleton */}
+                <Skeleton
+                    variant="rectangular"
+                    width="100%"
                     height={200}
-                    sx={{ 
+                    sx={{
                         borderRadius: 1,
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }}
                 />
+                {/* Action buttons skeleton */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
                     justifyContent: 'flex-end'
                 }}>
-                    <Skeleton 
-                        variant="rectangular" 
-                        width={100} 
+                    <Skeleton
+                        variant="rectangular"
+                        width={100}
                         height={36}
-                        sx={{ 
+                        sx={{
                             borderRadius: 1,
                             animation: 'pulse 1.5s ease-in-out infinite'
                         }}
                     />
-                    <Skeleton 
-                        variant="rectangular" 
-                        width={100} 
+                    <Skeleton
+                        variant="rectangular"
+                        width={100}
                         height={36}
-                        sx={{ 
+                        sx={{
                             borderRadius: 1,
                             animation: 'pulse 1.5s ease-in-out infinite'
                         }}
@@ -103,7 +129,7 @@ export default function NoteEditor({
         );
     }
 
-    // If the note is not found, show a message
+    // Empty state when no note is selected
     if (!note) {
         return (
             <Box sx={{
@@ -119,17 +145,16 @@ export default function NoteEditor({
         );
     }
 
-    // Main return statement for the NoteEditor component
     return (
         <>
-            {/* Container for the note editor */}
+            {/* Note editor form */}
             <Box sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2
             }}>
-                {/* Title input field */}
+                {/* Note title input */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <TextField
                         fullWidth
@@ -142,7 +167,7 @@ export default function NoteEditor({
                     />
                 </Box>
 
-                {/* Content input field */}
+                {/* Note content textarea */}
                 <TextField
                     multiline
                     fullWidth
@@ -153,7 +178,7 @@ export default function NoteEditor({
                     disabled={isSaving}
                 />
 
-                {/* Button container for delete and save actions */}
+                {/* Action buttons container */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
@@ -173,7 +198,7 @@ export default function NoteEditor({
                     >
                         {t('dashboard.common.delete')}
                     </Button>
-                    {/* Save button */}
+                    {/* Save button with loading indicator */}
                     <Button
                         variant="contained"
                         color="primary"
@@ -194,7 +219,7 @@ export default function NoteEditor({
                 </Box>
             </Box>
 
-            {/* Dialog for confirming deletion of the note */}
+            {/* Delete confirmation dialog */}
             <Dialog
                 open={deleteDialog}
                 TransitionComponent={Transition}
@@ -210,7 +235,7 @@ export default function NoteEditor({
                     }
                 }}
             >
-                {/* Title of the delete confirmation dialog */}
+                {/* Dialog title */}
                 <DialogTitle sx={{
                     textAlign: 'center',
                     pt: 3,
@@ -218,7 +243,7 @@ export default function NoteEditor({
                 }}>
                     {t('dashboard.notes.delete.title')}
                 </DialogTitle>
-                {/* Content of the delete confirmation dialog */}
+                {/* Dialog message */}
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
@@ -230,7 +255,7 @@ export default function NoteEditor({
                         {t('dashboard.notes.delete.warning')}
                     </Typography>
                 </DialogContent>
-                {/* Actions for the delete confirmation dialog */}
+                {/* Dialog action buttons */}
                 <DialogActions sx={{
                     justifyContent: 'center',
                     gap: 2,
@@ -244,7 +269,7 @@ export default function NoteEditor({
                     >
                         {t('dashboard.common.cancel')}
                     </Button>
-                    {/* Confirm delete button */}
+                    {/* Confirm delete button with loading indicator */}
                     <Button
                         variant="contained"
                         color="error"

@@ -1,3 +1,15 @@
+/**
+ * TransactionPie Component
+ * 
+ * Renders a customizable pie chart to visualize financial data by categories.
+ * Features include:
+ * - Interactive pie segments with hover effects
+ * - Currency formatting based on user preferences
+ * - Support for currency visibility toggling for privacy
+ * - Loading state with animated skeletons
+ * - Empty state handling with user-friendly messaging
+ * - Responsive sizing for different screen sizes
+ */
 import { useState, useEffect } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Box, Paper, Skeleton, Typography } from '@mui/material';
@@ -11,15 +23,15 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 
 // Types
 interface PieChartData {
-    id: string;
-    value: number;
-    label: string;
-    color: string;
+    id: string;      // Unique identifier for the segment
+    value: number;   // Numerical value of the segment
+    label: string;   // Display label for the segment
+    color: string;   // Color code for the segment
 }
 
 // Interface for the TransactionPie component props
 interface TransactionPieProps {
-    loading: boolean; // Indicates whether the data is still loading
+    loading: boolean;     // Indicates whether the data is still loading
     data: PieChartData[]; // Array of data for the pie chart
 }
 
@@ -46,7 +58,7 @@ export default function TransactionPie({
         };
     }, []);
 
-    // Create a Box component to hold the pie chart
+    // Container for the pie chart with responsive layout
     return (
         <Box sx={{
             flex: 1,
@@ -64,13 +76,15 @@ export default function TransactionPie({
                 position: 'relative',
                 height: 285
             }}>
-                {/* Check if loading is true */}
+                {/* Conditional rendering based on loading state and data availability */}
                 {loading ? (
+                    // Loading state - animated skeleton
                     <Skeleton variant="rectangular" width="100%" height={250} sx={{
                         borderRadius: 3,
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
                 ) : data.length === 0 ? (
+                    // Empty data state - display "No data" message
                     <Typography
                         variant="body1"
                         color="text.secondary"
@@ -88,6 +102,7 @@ export default function TransactionPie({
                         {t('dashboard.common.noData')}
                     </Typography>
                 ) : (
+                    // Render pie chart with data
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <PieChart
                             series={[{

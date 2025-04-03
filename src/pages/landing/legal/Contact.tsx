@@ -1,3 +1,10 @@
+/**
+ * Contact Information Page Component
+ * 
+ * Displays the website's contact information, support details,
+ * and available hours of operation for user inquiries.
+ * Content is internationalized through translation keys.
+ */
 import { Typography, Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

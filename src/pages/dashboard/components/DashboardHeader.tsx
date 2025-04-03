@@ -1,7 +1,23 @@
 import React, { useState, Suspense, useContext, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { Box, Avatar, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Button, IconButton, Typography, CircularProgress, Tooltip, useTheme, alpha } from '@mui/material';
+import {
+    Box,
+    Avatar,
+    Paper,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Button,
+    IconButton,
+    Typography,
+    CircularProgress,
+    Tooltip,
+    useTheme,
+    alpha
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
@@ -30,7 +46,10 @@ import { User } from '../../../types/models/user';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { useUser } from '../../../contexts/UserContext';
 
-// Components
+/**
+ * Lazy-loaded components for better performance
+ * These components are only loaded when needed
+ */
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
@@ -44,13 +63,26 @@ interface DashboardHeaderProps {
     user: User | null; // User object or null
 }
 
-// Settings drawer component type
+/**
+ * Settings drawer state interface
+ * Tracks the current component to display and navigation source
+ */
 interface SettingsDrawerState {
     open: boolean;
     component: string;
     source?: 'notifications' | 'settings';
 }
 
+/**
+ * Dashboard Header Component
+ * 
+ * Main header component that provides:
+ * - User account access and settings
+ * - Theme toggling (dark/light mode)
+ * - Currency visibility control
+ * - Notifications access (for admin users)
+ * - Profile drawer with account options
+ */
 export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const { t } = useTranslation();
     const { setUser } = useUser();
@@ -106,7 +138,10 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         loadUnreadCount();
     }, []);
 
-    // Event handlers
+    /**
+     * Event Handlers
+     */
+    // Handles user logout process
     const handleLogout = async () => {
         try {
             await authService.logout();
@@ -119,6 +154,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         }
     };
 
+    // Opens the settings drawer with the selected component
     const handleSettingsClick = (component: string) => {
         setDrawerOpen(false);
         setSettingsDrawer({
@@ -128,28 +164,36 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         });
     };
 
+    // Closes the settings drawer
     const handleCloseSettingsDrawer = () => {
         setSettingsDrawer({ open: false, component: '' });
     };
 
+    // Toggles currency visibility throughout the app
     const handleToggleCurrency = () => {
         toggleCurrencyVisibility();
     };
 
+    // Opens the notifications drawer
     const handleOpenNotifications = () => {
         setNotificationsDrawerOpen(true);
     };
 
+    // Closes the notifications drawer
     const handleCloseNotifications = () => {
         setNotificationsDrawerOpen(false);
     };
 
+    // Marks all notifications as read
     const handleMarkAllAsRead = () => {
         setUnreadNotifications(0);
         toast.success(t('dashboard.notifications.success.markedAllAsRead'));
     };
 
-    // Component renderers
+    /**
+     * Renders the appropriate settings component based on selection
+     * Used inside the settings drawer
+     */
     const renderSettingsComponent = () => {
         switch (settingsDrawer.component) {
             case t('dashboard.settings.userSettings.title'):
@@ -168,7 +212,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     return (
         <>
             {/* Header Bar */}
-            <HeaderBar 
+            <HeaderBar
                 user={user}
                 isDarkMode={isDarkMode}
                 toggleTheme={toggleTheme}
@@ -211,7 +255,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 component={settingsDrawer.component}
                 onClose={handleCloseSettingsDrawer}
                 onBack={() => {
-                    if (settingsDrawer.component === t('dashboard.settings.notifications.title') && 
+                    if (settingsDrawer.component === t('dashboard.settings.notifications.title') &&
                         settingsDrawer.source === 'notifications') {
                         setSettingsDrawer({ open: false, component: '' });
                         setNotificationsDrawerOpen(true);
@@ -227,7 +271,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     );
 }
 
-// Header Bar Component
+/**
+ * Header Bar Component
+ * 
+ * Top navigation bar with user profile and action buttons
+ * Provides access to theme toggle, currency visibility, and notifications
+ */
 interface HeaderBarProps {
     user: User | null;
     isDarkMode: boolean;
@@ -250,7 +299,7 @@ function HeaderBar({
     onOpenUserDrawer
 }: HeaderBarProps) {
     const { t } = useTranslation();
-    
+
     return (
         <Box sx={{
             gridArea: 'Header',
@@ -275,54 +324,62 @@ function HeaderBar({
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {/* Currency visibility toggle */}
                     <IconButton onClick={onToggleCurrency}>
-                        <Tooltip title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 'enable_currency_amount' : 'disable_currency_amount'}`)}>
+                        <Tooltip 
+                            title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 
+                                'enable_currency_amount' : 
+                                'disable_currency_amount'}`)}>
                             {isDisabledCurrencyAmount ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                         </Tooltip>
                     </IconButton>
 
+                    {/* Theme toggle (dark/light mode) */}
                     <IconButton onClick={toggleTheme}>
                         <Tooltip title={t(`dashboard.tooltips.${isDarkMode ? 'light_mode' : 'dark_mode'}`)}>
                             {isDarkMode ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
                         </Tooltip>
                     </IconButton>
+
+                    {/* Notifications button (admins only) */}
                     {user?.role === 'admin' && (
-                        <IconButton 
+                        <IconButton
                             onClick={onOpenNotifications}
-                        sx={{ 
-                            position: 'relative',
-                            '&::after': unreadNotifications > 0 ? {
-                                content: '""',
-                                position: 'absolute',
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                bgcolor: 'primary.main',
-                                top: '10px',
-                                right: '10px',
-                                boxShadow: '0 0 0 2px #fff',
-                                animation: 'pulse 2s infinite',
-                                '@keyframes pulse': {
-                                    '0%': {
-                                        boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0.7)'
-                                    },
-                                    '70%': {
-                                        boxShadow: '0 0 0 6px rgba(var(--mui-palette-primary-mainChannel) / 0)'
-                                    },
-                                    '100%': {
-                                        boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0)'
+                            sx={{
+                                position: 'relative',
+                                '&::after': unreadNotifications > 0 ? {
+                                    content: '""',
+                                    position: 'absolute',
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    bgcolor: 'primary.main',
+                                    top: '10px',
+                                    right: '10px',
+                                    boxShadow: '0 0 0 2px #fff',
+                                    animation: 'pulse 2s infinite',
+                                    '@keyframes pulse': {
+                                        '0%': {
+                                            boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0.7)'
+                                        },
+                                        '70%': {
+                                            boxShadow: '0 0 0 6px rgba(var(--mui-palette-primary-mainChannel) / 0)'
+                                        },
+                                        '100%': {
+                                            boxShadow: '0 0 0 0 rgba(var(--mui-palette-primary-mainChannel) / 0)'
+                                        }
                                     }
-                                }
-                            } : {}
-                        }}
-                    >
-                        <Tooltip title={t('dashboard.tooltips.inbox')}>
-                            {unreadNotifications > 0 ? <NotificationsActiveOutlinedIcon /> : <NotificationsOutlinedIcon />}
-                        </Tooltip>
-                    </IconButton>
+                                } : {}
+                            }}
+                        >
+                            <Tooltip title={t('dashboard.tooltips.inbox')}>
+                                {unreadNotifications > 0 ? <NotificationsActiveOutlinedIcon /> : <NotificationsOutlinedIcon />}
+                            </Tooltip>
+                        </IconButton>
                     )}
                 </Box>
 
+                {/* User profile avatar */}
                 <Avatar
                     variant="square"
                     onClick={onOpenUserDrawer}
@@ -343,7 +400,12 @@ function HeaderBar({
     );
 }
 
-// User Drawer Component
+/**
+ * User Drawer Component
+ * 
+ * Slide-in panel with user profile information and settings options
+ * Provides navigation to settings pages and logout functionality
+ */
 interface UserDrawerProps {
     open: boolean;
     user: User | null;
@@ -358,19 +420,21 @@ interface UserDrawerProps {
 
 function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout }: UserDrawerProps) {
     const { t } = useTranslation();
-    
+
     return (
         <DrawerBase
             open={open}
             onClose={onClose}
         >
             <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                {/* Drawer header with close button */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
                     <IconButton onClick={onClose}>
                         <CloseOutlinedIcon />
                     </IconButton>
                 </Box>
 
+                {/* User profile card */}
                 <Paper elevation={3} sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -414,6 +478,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                     </Box>
                 </Paper>
 
+                {/* Primary menu items */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -436,6 +501,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                     </List>
                 </Paper>
 
+                {/* Secondary menu items */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -457,6 +523,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                     </List>
                 </Paper>
 
+                {/* Logout button */}
                 <Box sx={{ mt: 'auto', mb: 2 }}>
                     <Button
                         fullWidth
@@ -473,7 +540,12 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
     );
 }
 
-// Notifications Drawer Component
+/**
+ * Notifications Drawer Component
+ * 
+ * Slide-in panel displaying user notifications
+ * Provides options to mark all as read and access notification settings
+ */
 interface NotificationsDrawerProps {
     open: boolean;
     unreadCount: number;
@@ -485,23 +557,24 @@ interface NotificationsDrawerProps {
 function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOpenSettings }: NotificationsDrawerProps) {
     const { t } = useTranslation();
     const theme = useTheme();
-    
+
     return (
         <DrawerBase
             open={open}
             onClose={onClose}
         >
-            <Box 
-                sx={{ 
-                    display: 'flex', 
+            <Box
+                sx={{
+                    display: 'flex',
                     flexDirection: 'column',
                     height: '100%'
                 }}
             >
-                <Box 
-                    sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                {/* Drawer header with title and action buttons */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
                         borderBottom: 1,
                         borderColor: 'divider',
@@ -514,9 +587,9 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <IconButton 
-                            onClick={onClose} 
-                            sx={{ 
+                        <IconButton
+                            onClick={onClose}
+                            sx={{
                                 mr: 2,
                                 color: 'text.primary',
                                 '&:hover': {
@@ -534,6 +607,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                     </Box>
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {/* Mark all as read button (shows only when unread notifications exist) */}
                         {unreadCount > 0 && (
                             <Tooltip title={t('dashboard.notifications.markAllAsRead')}>
                                 <IconButton
@@ -552,6 +626,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                             </Tooltip>
                         )}
 
+                        {/* Notification settings button */}
                         <Tooltip title={t('dashboard.settings.notifications.title')}>
                             <IconButton
                                 size="small"
@@ -571,6 +646,7 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                     </Box>
                 </Box>
 
+                {/* Notifications content with lazy loading */}
                 <Box sx={{ flexGrow: 1, overflow: 'hidden', p: 3 }}>
                     <Suspense fallback={
                         <Box sx={{
@@ -583,10 +659,10 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
                             <CircularProgress size={40} thickness={4} />
                         </Box>
                     }>
-                        <NotificationsInbox 
-                            onClose={onClose} 
-                            onMarkAllAsRead={onMarkAllAsRead} 
-                            unreadCount={unreadCount} 
+                        <NotificationsInbox
+                            onClose={onClose}
+                            onMarkAllAsRead={onMarkAllAsRead}
+                            unreadCount={unreadCount}
                         />
                     </Suspense>
                 </Box>
@@ -595,7 +671,12 @@ function NotificationsDrawer({ open, unreadCount, onClose, onMarkAllAsRead, onOp
     );
 }
 
-// Settings Drawer Component
+/**
+ * Settings Drawer Component
+ * 
+ * Slide-in panel displaying various settings components
+ * Includes a back button for navigation between drawers
+ */
 interface SettingsDrawerProps {
     open: boolean;
     component: string;
@@ -611,13 +692,15 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
             onClose={onClose}
         >
             <Box sx={{ p: 3 }}>
+                {/* Drawer header with back button and title */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                     <IconButton onClick={onBack} sx={{ mr: 2 }}>
                         <ArrowBackOutlinedIcon />
                     </IconButton>
                     <Typography variant="h6">{component}</Typography>
                 </Box>
-                
+
+                {/* Lazily loaded settings component */}
                 <Suspense fallback={
                     <Box sx={{
                         display: 'flex',

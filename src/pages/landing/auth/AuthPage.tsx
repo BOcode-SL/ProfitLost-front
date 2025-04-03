@@ -1,3 +1,13 @@
+/**
+ * Authentication Page Component
+ * 
+ * Handles user authentication with three modes:
+ * 1. Login - For existing users via email or Google OAuth
+ * 2. Registration - For new users with form validation
+ * 3. Password Reset - Multi-step flow for password recovery
+ * 
+ * Includes form validation, error handling, and analytics tracking.
+ */
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -24,7 +34,7 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import ResetPasswordForm from './components/ResetPasswordForm';
 
-// Declare dataLayer for GTM
+// Google Tag Manager type definition
 declare global {
     interface Window {
         dataLayer: Array<{
@@ -36,14 +46,17 @@ declare global {
     }
 }
 
-// AuthPage component
 export default function AuthPage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { loadUserData } = useUser();
+    
+    // UI state management
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    
+    // Form data state
     const [loginData, setLoginData] = useState<LoginCredentials>({
         identifier: '',
         password: ''
@@ -55,6 +68,8 @@ export default function AuthPage() {
         name: '',
         surname: ''
     });
+    
+    // Password reset flow state
     const [resetEmail, setResetEmail] = useState('');
     const [resetToken, setResetToken] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -64,13 +79,23 @@ export default function AuthPage() {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    // Function to validate the password against defined criteria
+    /**
+     * Validates password strength using regex pattern
+     * Requires at least one lowercase, uppercase, digit, and special character
+     * 
+     * @param password - Password string to validate
+     * @returns Boolean indicating if password meets requirements
+     */
     const validatePassword = (password: string): boolean => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         return passwordRegex.test(password);
     };
 
-    // Handle input changes for both login and registration forms
+    /**
+     * Handles form input changes for login and registration
+     * 
+     * @param e - Input change event
+     */
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (isLogin) {
@@ -86,9 +111,12 @@ export default function AuthPage() {
         }
     };
 
-    // Function to push login_success event to dataLayer
+    /**
+     * Tracks successful login events in Google Tag Manager
+     * 
+     * @param method - Authentication method used ('email' or 'google')
+     */
     const pushLoginSuccessEvent = (method: 'email' | 'google') => {
-        // Push to dataLayer for GTM
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             event: 'login_success',
@@ -96,9 +124,12 @@ export default function AuthPage() {
         });
     };
 
-    // Function to push register_success event to dataLayer
+    /**
+     * Tracks successful registration events in Google Tag Manager
+     * 
+     * @param method - Registration method used ('email' or 'google')
+     */
     const pushRegisterSuccessEvent = (method: 'email' | 'google') => {
-        // Push to dataLayer for GTM
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             event: 'register_success',
@@ -106,29 +137,36 @@ export default function AuthPage() {
         });
     };
 
-    // Handle form submission for login and registration processes
+    /**
+     * Handles form submission for login and registration
+     * Performs validation, API calls, and error handling
+     * 
+     * @param e - Form submission event
+     */
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
             if (isLogin) {
+                // Process login
                 const response = await authService.login(loginData);
                 if (response.success) {
                     await loadUserData();
-                    // Push login_success event to dataLayer
                     pushLoginSuccessEvent('email');
                     toast.success(t('home.auth.login.title'));
                     navigate('/dashboard', { replace: true });
                 }
             } else {
+                // Process registration with validation
                 if (!validatePassword(registerData.password)) {
                     setLoading(false);
                     toast.error(t('home.auth.errors.passwordRequirements'));
                     return;
                 }
 
-                if (!registerData.username || !registerData.email || !registerData.password || !registerData.name || !registerData.surname) {
+                if (!registerData.username || !registerData.email || !registerData.password || 
+                    !registerData.name || !registerData.surname) {
                     setLoading(false);
                     toast.error(t('home.auth.errors.missingFields'));
                     return;
@@ -137,7 +175,6 @@ export default function AuthPage() {
                 const response = await authService.register(registerData);
                 if (response.success) {
                     await loadUserData();
-                    // Push register_success event to dataLayer
                     pushRegisterSuccessEvent('email');
                     toast.success(t('home.auth.success.registration'));
                     navigate('/dashboard');
@@ -146,7 +183,7 @@ export default function AuthPage() {
         } catch (err: unknown) {
             const error = err as AuthApiErrorResponse;
 
-            // Handle various error types and display appropriate messages
+            // Handle various authentication error types
             switch (error.error as AuthErrorType) {
                 case 'MISSING_FIELDS':
                     toast.error(t('home.auth.errors.missingFields'));
@@ -191,7 +228,11 @@ export default function AuthPage() {
         }
     };
 
-    // Handle the functionality for forgotten passwords
+    /**
+     * Initiates password reset process by sending recovery email
+     * 
+     * @param e - Form submission event
+     */
     const handleForgotPassword = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -214,7 +255,11 @@ export default function AuthPage() {
         }
     };
 
-    // Handle the verification of the token for password reset
+    /**
+     * Verifies the reset token provided by the user
+     * 
+     * @param e - Form submission event
+     */
     const handleVerifyToken = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -229,7 +274,11 @@ export default function AuthPage() {
         }
     };
 
-    // Handle the functionality for resetting the password
+    /**
+     * Completes the password reset process with new password
+     * 
+     * @param e - Form submission event
+     */
     const handleResetPassword = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -262,7 +311,11 @@ export default function AuthPage() {
         }
     };
 
-    // Check if the form is valid for submission
+    /**
+     * Validates if the current form has all required fields completed
+     * 
+     * @returns Boolean indicating if form is ready for submission
+     */
     const isFormValid = () => {
         if (isLogin) {
             return loginData.identifier.trim() !== '' && loginData.password.trim() !== '';
@@ -277,7 +330,12 @@ export default function AuthPage() {
         }
     };
 
-    // Handle the successful login via Google
+    /**
+     * Handles successful Google OAuth login
+     * Processes the token and navigates to dashboard on success
+     * 
+     * @param tokenResponse - OAuth token response from Google
+     */
     const handleGoogleSuccess = async (tokenResponse: TokenResponse) => {
         setLoading(true);
         try {
@@ -289,7 +347,8 @@ export default function AuthPage() {
             const response = await authService.googleLogin(tokenResponse.access_token);
             if (response.success) {
                 await loadUserData();
-                // Push register_success event to dataLayer if it's a new user
+                
+                // Track appropriate analytics event
                 if (response.isNewUser) {
                     pushRegisterSuccessEvent('google');
                 } else {
@@ -297,7 +356,7 @@ export default function AuthPage() {
                 }
                 toast.success(t('home.auth.success.welcome'));
                 
-                // On iOS PWA, add a slight delay to ensure the token is saved
+                // iOS PWA workaround for token persistence
                 if (isIOS() && window.matchMedia('(display-mode: standalone)').matches) {
                     setTimeout(() => {
                         navigate('/dashboard', { replace: true });
@@ -319,20 +378,23 @@ export default function AuthPage() {
         }
     };
 
-    // Render the authentication layout with the appropriate title and subtitle based on the current state
     return (
         <>
             <AuthLayout
-                title={showResetPassword ? t('home.auth.resetPassword.title') : (isLogin ? t('home.auth.login.title') : t('home.auth.register.title'))}
+                title={showResetPassword 
+                    ? t('home.auth.resetPassword.title') 
+                    : (isLogin ? t('home.auth.login.title') : t('home.auth.register.title'))}
                 subtitle={showResetPassword
                     ? t('home.auth.resetPassword.subtitle')
                     : (isLogin ? t('home.auth.login.subtitle') : t('home.auth.register.subtitle'))}
                 showDivider={!showResetPassword}
                 showAlternativeAction={!showResetPassword}
-                alternativeActionText={isLogin ? t('home.auth.login.form.alternativeAction') : t('home.auth.register.form.alternativeAction')}
+                alternativeActionText={isLogin 
+                    ? t('home.auth.login.form.alternativeAction') 
+                    : t('home.auth.register.form.alternativeAction')}
                 onAlternativeActionClick={() => setIsLogin(!isLogin)}
             >
-                {/* Conditional rendering for the form based on the reset password state */}
+                {/* Conditional rendering based on authentication mode */}
                 {showResetPassword ? (
                     <ResetPasswordForm
                         resetStep={resetStep}
@@ -354,7 +416,6 @@ export default function AuthPage() {
                         handleResetPassword={handleResetPassword}
                     />
                 ) : isLogin ? (
-                    // Render the login form if in login mode
                     <LoginForm
                         loginData={loginData}
                         loading={loading}
@@ -367,7 +428,6 @@ export default function AuthPage() {
                         handleGoogleSuccess={handleGoogleSuccess}
                     />
                 ) : (
-                    // Render the registration form if in registration mode
                     <RegisterForm
                         registerData={registerData}
                         loading={loading}
@@ -379,7 +439,6 @@ export default function AuthPage() {
                     />
                 )}
             </AuthLayout>
-            {/* Render the footer component */}
             <Footer />
         </>
     );

@@ -29,6 +29,10 @@ import { categoryService } from '../../../services/category.service';
 // Types
 import { Language, Currency, DateFormat, TimeFormat, OnboardingProgress, UserPreferences } from '../../../types/models/user';
 
+/**
+ * Configuration options for preference selections
+ * Each option has a label for display and a value for API
+ */
 // Format options
 const dateFormatOptions = [
     { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' as DateFormat },
@@ -57,7 +61,10 @@ const languageOptions = [
     { value: 'esES' as Language, label: 'Español (ES)' }
 ];
 
-// Default categories for onboarding
+/**
+ * Predefined category templates by language
+ * These serve as default categories users can select during onboarding
+ */
 const defaultCategories = {
     enUS: [
         { id: 0, name: 'Supermarket', color: '#FF6F61' },
@@ -81,6 +88,10 @@ const defaultCategories = {
     ]
 } as const;
 
+/**
+ * Local storage management functions for onboarding progress
+ * These allow for persisting user selections between sessions
+ */
 // Function to save onboarding progress to local storage
 const saveProgress = (progress: OnboardingProgress) => {
     localStorage.setItem('onboarding_progress', JSON.stringify(progress));
@@ -97,7 +108,10 @@ const clearProgress = () => {
     localStorage.removeItem('onboarding_progress');
 };
 
-// Transition component for the dialog
+/**
+ * Dialog transition component for smooth animation
+ * Uses a slide-up effect for better user experience
+ */
 const Transition = forwardRef(function Transition(
     props: TransitionProps & { children: React.ReactElement },
     ref: React.Ref<unknown>,
@@ -110,7 +124,19 @@ interface GlobalOnboardingDialogProps {
     onClose: () => void; // Callback function to execute when the dialog is closed
 }
 
-// Global onboarding dialog component
+/**
+ * Global Onboarding Dialog Component
+ * 
+ * Multi-step wizard that guides new users through initial setup:
+ * 1. User preferences (language, currency, date format)
+ * 2. Category selection for financial tracking
+ * 
+ * Features:
+ * - Progress persistence between sessions
+ * - Responsive design
+ * - Language-specific content
+ * - API integration for saving preferences
+ */
 export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardingDialogProps) {
     const { t, i18n } = useTranslation();
     const { user, loadUserData } = useUser();
@@ -158,7 +184,7 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         }
     }, [activeStep, preferences, selectedCategories, open]);
 
-    // Handler for preference changes
+    // Handler for preference changes with language switching
     const handlePreferenceChange = (key: string, value: string) => {
         setPreferences(prev => {
             const newPreferences = {
@@ -176,20 +202,23 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         });
     };
 
-    // Handler for the next button
+    // Handler for the next button with API interactions
     const handleNext = async () => {
         try {
             if (activeStep === 0) {
+                // Step 1: Save user preferences to API
                 await userService.onboardingPreferences(preferences);
                 await loadUserData();
                 setActiveStep((prevStep) => prevStep + 1);
             } else if (activeStep === steps.length - 1) {
+                // Step 2: Validate and save categories
                 // Validate that at least one category is selected
                 if (selectedCategories.length === 0) {
                     toast.error(t('dashboard.onboarding.errors.selectCategory'));
                     return;
                 }
 
+                // Map selected categories and create them via API
                 const selectedCats = selectedCategories.map(index => {
                     const category = defaultCategories[preferences.language as keyof typeof defaultCategories][parseInt(index)];
                     return {

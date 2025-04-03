@@ -1,4 +1,10 @@
 /**
+ * Common API Types Module
+ * 
+ * Contains shared type definitions used across the API layer.
+ */
+
+/**
  * Represents an ISO 8601 date string format
  * Example: "2024-03-18T15:30:00.000Z"
  */
@@ -6,6 +12,7 @@ export type ISODateString = string;
 
 /**
  * HTTP Status Codes used in the application
+ * Each code represents a specific response status from the server
  */
 export type HttpStatusCode =
     | 0    // Connection Error
@@ -21,6 +28,7 @@ export type HttpStatusCode =
 
 /**
  * Base interface for successful API responses
+ * @template T - The type of data returned in the response
  */
 export interface ApiSuccessResponse<T = unknown> {
     success: true;
@@ -31,6 +39,7 @@ export interface ApiSuccessResponse<T = unknown> {
 
 /**
  * Base interface for error API responses
+ * @template E - The type of error returned in the response
  */
 export interface ApiErrorResponse<E = string> {
     success: false;
@@ -41,5 +50,9 @@ export interface ApiErrorResponse<E = string> {
 
 /**
  * Generic API response type
+ * Represents either a successful or error response
+ * 
+ * @template T - The type of data returned in a successful response
+ * @template E - The type of error returned in an error response
  */
 export type ApiResponse<T = unknown, E = string> = ApiSuccessResponse<T> | ApiErrorResponse<E>;

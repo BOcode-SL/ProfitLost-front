@@ -1,6 +1,12 @@
 import Box from '@mui/material/Box';
 
-// LoadingScreen component displays a centered loading screen with a logo
+/**
+ * Loading Screen Component
+ * 
+ * Displays a centered loading animation with the application logo
+ * while content is being fetched or processed.
+ * Used during authentication verification and initial data loading.
+ */
 const LoadingScreen = () => {
     return (
         <Box sx={{

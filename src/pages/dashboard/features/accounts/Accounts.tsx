@@ -1,3 +1,13 @@
+/**
+ * Accounts Feature Component
+ * 
+ * Main component for the Accounts section of the dashboard, providing features for:
+ * - Viewing account balances by month and year
+ * - Creating, editing, and managing multiple accounts
+ * - Visualizing account data through charts
+ * - Preserving user preferences for account display order
+ * - Toggling active/inactive accounts
+ */
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { toast } from 'react-hot-toast';
@@ -15,16 +25,17 @@ import type { User } from '../../../../types/models/user';
 import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 
-// Accounts component
+// Main Accounts component for the dashboard
 export default function Accounts() {
     const { t } = useTranslation();
 
+    // State management
     const [loading, setLoading] = useState(true);
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [user, setUser] = useState<User | null>(null);
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
 
-    // Memoized available years based on accounts records
+    // Calculate available years from all accounts' data
     const availableYears = useMemo(() => {
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
@@ -36,10 +47,11 @@ export default function Accounts() {
             });
         });
 
+        // Return years in descending order (newest first)
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [accounts]);
 
-    // Fetch user data from the user service
+    // Fetch user data including preferences and account ordering
     const fetchUserData = useCallback(async () => {
         const response = await userService.getUserData();
         if (response.success && response.data) {
@@ -47,7 +59,7 @@ export default function Accounts() {
         }
     }, []);
 
-    // Fetch all accounts from the account service
+    // Fetch all accounts from the backend
     const fetchAccounts = useCallback(async () => {
         const response = await accountService.getAllAccounts();
         if (response.success && response.data) {
@@ -58,18 +70,19 @@ export default function Accounts() {
         setLoading(false);
     }, [t]);
 
-    // useEffect to fetch user data and accounts on component mount
+    // Load user data and accounts on initial component mount
     useEffect(() => {
         Promise.all([fetchUserData(), fetchAccounts()]);
     }, [fetchUserData, fetchAccounts]);
 
-    // Memoized ordered accounts based on user accounts order
+    // Apply user's preferred account ordering
     const orderedAccounts = useMemo(() => {
         if (!user?.accountsOrder || !accounts.length) return accounts;
 
         const accountMap = new Map(accounts.map(acc => [acc._id, acc]));
         const orderedAccounts: Account[] = [];
 
+        // First add accounts in the user's preferred order
         user.accountsOrder.forEach(id => {
             const account = accountMap.get(id);
             if (account) {
@@ -78,6 +91,7 @@ export default function Accounts() {
             }
         });
 
+        // Then add any remaining accounts (e.g., newly created ones)
         accountMap.forEach(account => {
             orderedAccounts.push(account);
         });
@@ -85,7 +99,7 @@ export default function Accounts() {
         return orderedAccounts;
     }, [accounts, user?.accountsOrder]);
 
-    // Handle account update
+    // Handler for updating an existing account
     const handleAccountUpdate = async (updatedAccount: Account) => {
         try {
             const response = await accountService.updateAccount(updatedAccount._id, {
@@ -113,7 +127,7 @@ export default function Accounts() {
         }
     };
 
-    // Handle account creation
+    // Handler for creating a new account
     const handleAccountCreate = async (newAccount: Account): Promise<boolean> => {
         const response = await accountService.createAccount({
             accountName: newAccount.accountName,
@@ -131,7 +145,7 @@ export default function Accounts() {
         }
     };
 
-    // Handle account deletion
+    // Handler for deleting an account
     const handleAccountDelete = async (accountId: string): Promise<boolean> => {
         const response = await accountService.deleteAccount(accountId);
 
@@ -145,7 +159,7 @@ export default function Accounts() {
         }
     };
 
-    // Handle order change of accounts
+    // Handler for changing the order of accounts (drag and drop)
     const handleOrderChange = async (newOrder: string[]) => {
         try {
             const response = await userService.updateAccountsOrder(newOrder);
@@ -164,7 +178,7 @@ export default function Accounts() {
         }
     };
 
-    // Memoized active and inactive accounts
+    // Separate active and inactive accounts for display
     const { activeAccounts, inactiveAccounts } = useMemo(() => {
         return {
             activeAccounts: orderedAccounts.filter(account => account.configuration.isActive !== false),
@@ -172,7 +186,6 @@ export default function Accounts() {
         };
     }, [orderedAccounts]);
 
-    // Return the component without the Fade wrapper for consistency with DashHome
     return (
         <Box sx={{
             display: 'flex',
@@ -180,13 +193,12 @@ export default function Accounts() {
             gap: 2,
             width: '100%'
         }}>
-            {/* Paper component for the year selection dropdown */}
+            {/* Year selection dropdown */}
             <Paper elevation={2} sx={{
                 p: 1,
                 borderRadius: 3,
                 width: '100%'
             }}>
-                {/* Form control for selecting the year */}
                 <FormControl size="small" fullWidth sx={{ minWidth: 120 }}>
                     <InputLabel>{t('dashboard.common.year')}</InputLabel>
                     <Select
@@ -194,7 +206,6 @@ export default function Accounts() {
                         label={t('dashboard.common.year')}
                         onChange={(e) => setSelectedYear(e.target.value)}
                     >
-                        {/* Mapping through available years to create menu items */}
                         {availableYears.map(year => (
                             <MenuItem key={year} value={year.toString()}>
                                 {year}
@@ -204,14 +215,13 @@ export default function Accounts() {
                 </FormControl>
             </Paper>
 
-            {/* Paper component for displaying the accounts chart */}
+            {/* Monthly balances chart */}
             <Paper elevation={2} sx={{
                 p: 2,
                 borderRadius: 3,
                 width: '100%',
                 height: '400px'
             }}>
-                {/* Accounts chart component with active accounts and selected year */}
                 <AccountsChart
                     accounts={activeAccounts}
                     loading={loading}
@@ -219,7 +229,7 @@ export default function Accounts() {
                 />
             </Paper>
 
-            {/* Accounts table component for displaying active and inactive accounts */}
+            {/* Accounts management table/list */}
             <AccountsTable
                 accounts={activeAccounts}
                 inactiveAccounts={inactiveAccounts}

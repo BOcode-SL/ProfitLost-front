@@ -1,3 +1,10 @@
+/**
+ * Transaction Service Module
+ * 
+ * Provides functionality for managing financial transactions including creating,
+ * retrieving, updating, and deleting transactions. Supports filtering by year and month.
+ */
+
 // Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
@@ -9,7 +16,11 @@ import { getAuthHeaders } from '../utils/apiHeaders';
 // Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Function to handle transaction errors
+/**
+ * Handles errors that occur during transaction operations
+ * @param error - The error that occurred during an API request
+ * @returns A standardized TransactionApiResponse with error details
+ */
 const handleTransactionError = (error: unknown): TransactionApiResponse => {
     // Check if the error has a statusCode
     if ((error as TransactionApiResponse).statusCode) {
@@ -24,8 +35,14 @@ const handleTransactionError = (error: unknown): TransactionApiResponse => {
     };
 };
 
+/**
+ * Service object providing methods for transaction management
+ */
 export const transactionService = {
-    // Method to get all transactions
+    /**
+     * Retrieves all transactions belonging to the current user
+     * @returns Promise with the transaction data or error response
+     */
     async getAllTransactions(): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/all`, {
@@ -49,7 +66,11 @@ export const transactionService = {
         }
     },
 
-    // Method to get transactions by year
+    /**
+     * Retrieves transactions for a specific year
+     * @param year - The year to filter transactions by
+     * @returns Promise with the filtered transaction data or error response
+     */
     async getTransactionsByYear(year: number): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${year}`, {
@@ -73,7 +94,12 @@ export const transactionService = {
         }
     },
 
-    // Method to get transactions by year and month
+    /**
+     * Retrieves transactions for a specific year and month
+     * @param year - The year to filter transactions by
+     * @param month - The month to filter transactions by
+     * @returns Promise with the filtered transaction data or error response
+     */
     async getTransactionsByYearAndMonth(year: string, month: string): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${year}/${month}`, {
@@ -97,7 +123,11 @@ export const transactionService = {
         }
     },
 
-    // Method to create a new transaction
+    /**
+     * Creates a new transaction with the provided data
+     * @param transactionData - The data for the transaction to be created
+     * @returns Promise with the created transaction data or error response
+     */
     async createTransaction(transactionData: CreateTransactionRequest): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/create`, {
@@ -122,7 +152,12 @@ export const transactionService = {
         }
     },
 
-    // Method to update an existing transaction
+    /**
+     * Updates an existing transaction with the provided data
+     * @param id - The ID of the transaction to be updated
+     * @param updateData - The new data to update the transaction with
+     * @returns Promise with the updated transaction data or error response
+     */
     async updateTransaction(id: string, updateData: UpdateTransactionRequest): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {
@@ -147,7 +182,12 @@ export const transactionService = {
         }
     },
 
-    // Method to delete a transaction
+    /**
+     * Deletes a transaction with the specified ID
+     * @param id - The ID of the transaction to be deleted
+     * @param deleteAll - Optional flag to delete all recurring instances of the transaction
+     * @returns Promise with the response data or error response
+     */
     async deleteTransaction(id: string, deleteAll?: boolean): Promise<TransactionApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/transactions/${id}`, {

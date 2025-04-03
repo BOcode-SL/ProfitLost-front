@@ -1,3 +1,16 @@
+/**
+ * Notes Component
+ * 
+ * Main notes management interface with features for creating, viewing, editing, and deleting notes.
+ * Features include:
+ * - Two-panel responsive layout (list and editor)
+ * - Note creation with default title
+ * - Real-time note editing
+ * - Note deletion with confirmation
+ * - Automatic selection of notes
+ * - Loading states during data operations
+ * - Error handling with user notifications
+ */
 import { Box, Button, Paper, CircularProgress } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
@@ -18,13 +31,14 @@ import NoteEditor from './components/NoteEditor';
 export default function Notes() {
     const { t } = useTranslation();
 
+    // State management
     const [notes, setNotes] = useState<Note[]>([]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const isFirstRender = useRef(true);
 
-    // Fetch the notes
+    // Fetch notes on component mount
     useEffect(() => {
         const fetchNotes = async () => {
             if (!isFirstRender.current) return;
@@ -33,8 +47,10 @@ export default function Notes() {
             try {
                 const response = await noteService.getAllNotes();
                 if (response.success && response.data) {
+                    // Handle both array and single object responses
                     const notesData = Array.isArray(response.data) ? response.data : [response.data];
                     setNotes(notesData);
+                    // Automatically select the first note if available
                     if (notesData.length > 0) {
                         setSelectedNote(notesData[0]);
                     }
@@ -49,12 +65,12 @@ export default function Notes() {
         fetchNotes();
     }, [t]);
 
-    // Handle the note selection
+    // Set selected note when a note is clicked in the list
     const handleSelectNote = (note: Note) => {
         setSelectedNote(note);
     };
 
-    // Handle the note change
+    // Update note in state when edited in the editor
     const handleNoteChange = (key: keyof Note, value: string) => {
         if (selectedNote) {
             const updatedNote = { ...selectedNote, [key]: value };
@@ -62,7 +78,7 @@ export default function Notes() {
         }
     };
 
-    // Handle the note creation
+    // Create a new note with default title
     const handleCreateNote = async () => {
         try {
             setIsSaving(true);
@@ -73,7 +89,9 @@ export default function Notes() {
 
             if (response.success && response.data) {
                 const newNote = response.data as Note;
+                // Add new note to the beginning of the list
                 setNotes(prevNotes => [newNote, ...prevNotes]);
+                // Select the newly created note
                 setSelectedNote(newNote);
             }
         } catch {
@@ -83,7 +101,7 @@ export default function Notes() {
         }
     };
 
-    // Handle the note saving
+    // Save changes to the currently selected note
     const handleSaveNote = async () => {
         if (!selectedNote) return;
 
@@ -97,11 +115,13 @@ export default function Notes() {
 
             if (response.success && response.data) {
                 const updatedNote = response.data as Note;
+                // Update the note in the notes list
                 setNotes(prevNotes =>
                     prevNotes.map(note =>
                         note._id === updatedNote._id ? updatedNote : note
                     )
                 );
+                // Update the selected note reference
                 setSelectedNote(updatedNote);
                 toast.success(t('dashboard.notes.success.updated'));
             } else {
@@ -120,7 +140,7 @@ export default function Notes() {
         }
     };
 
-    // Handle the note deletion
+    // Delete the currently selected note
     const handleDeleteNote = async () => {
         if (!selectedNote) return;
 
@@ -129,7 +149,9 @@ export default function Notes() {
             const response = await noteService.deleteNote(selectedNote._id);
 
             if (response.success) {
+                // Remove the deleted note from the list
                 setNotes(prevNotes => prevNotes.filter(note => note._id !== selectedNote._id));
+                // Select the next available note or null if none left
                 const remainingNotes = notes.filter(note => note._id !== selectedNote._id);
                 setSelectedNote(remainingNotes.length > 0 ? remainingNotes[0] : null);
                 toast.success(t('dashboard.notes.success.deleted'));
@@ -142,13 +164,13 @@ export default function Notes() {
     };
 
     return (
-        // Main container
+        // Main container with overflow handling
         <Box sx={{
             height: '100%',
             maxWidth: '100%',
             overflow: 'hidden'
         }}>
-            {/* Layout container with responsive direction */}
+            {/* Responsive layout container */}
             <Box sx={{
                 display: 'flex',
                 flexDirection: {
@@ -159,7 +181,7 @@ export default function Notes() {
                 height: '100%',
                 width: '100%',
             }}>
-                {/* Sidebar containing the create button and note list */}
+                {/* Left sidebar with note list and create button */}
                 <Paper elevation={3} sx={{
                     p: 2,
                     borderRadius: 3,
@@ -183,6 +205,7 @@ export default function Notes() {
                         md: '100%'
                     }
                 }}>
+                    {/* Create note button with loading indicator */}
                     <Button
                         variant="contained"
                         color="primary"
@@ -193,6 +216,7 @@ export default function Notes() {
                     >
                         {isSaving ? <CircularProgress size={24} /> : t('dashboard.notes.list.createNote')}
                     </Button>
+                    {/* Note list component */}
                     <NoteList
                         notes={notes}
                         selectedNote={selectedNote}
@@ -201,7 +225,7 @@ export default function Notes() {
                     />
                 </Paper>
 
-                {/* Main editor area for the selected note */}
+                {/* Right panel with note editor */}
                 <Paper elevation={3} sx={{
                     p: 2,
                     flex: 1,
@@ -210,6 +234,7 @@ export default function Notes() {
                     Width: '100%',
                     overflow: 'hidden'
                 }}>
+                    {/* Note editor component */}
                     <NoteEditor
                         note={selectedNote}
                         onChange={handleNoteChange}

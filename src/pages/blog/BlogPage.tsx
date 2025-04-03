@@ -1,3 +1,9 @@
+/**
+ * Blog Page Component
+ * 
+ * Renders a list of blog posts with filtering by category and search capabilities.
+ * Includes pagination for improved user experience with large numbers of posts.
+ */
 import { useEffect, useState } from 'react';
 import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination, useTheme, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -7,7 +13,7 @@ import { CategoryType } from '../../types/models/blogPost';
 
 import { blogPosts } from './data/blogData';
 
-// Retrieve unique categories from the existing blog posts
+// Extract unique categories from blog posts for the category filter
 const availableCategories = ['all', ...new Set(blogPosts.map(post => post.category))] as ('all' | CategoryType)[];
 
 // Components
@@ -15,17 +21,31 @@ import BlogPost from './components/BlogPost';
 import Header from '../landing/components/Header';
 import Footer from '../landing/components/Footer';
 import LanguageSelector from '../landing/components/LanguageSelector';
-// Helper function to normalize text by removing accents, punctuation, and converting to lowercase
+
+/**
+ * Normalizes text by removing accents, punctuation, and converting to lowercase
+ * Helps make search functionality more robust by standardizing text comparisons
+ * 
+ * @param text - The text to normalize
+ * @returns Normalized text string
+ */
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks (accents)
     .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Remove punctuation
     .trim();
 };
 
-// Function to search for matches in the post content
+/**
+ * Searches for matches in the post content based on search terms
+ * Splits search input into words and requires all words to be present
+ * 
+ * @param content - The content to search within
+ * @param searchTerm - The search term to look for
+ * @returns Boolean indicating if all search words are found in the content
+ */
 const searchInContent = (content: string, searchTerm: string): boolean => {
   if (!content || !searchTerm) return false;
   const normalizedContent = normalizeText(content);
@@ -34,7 +54,6 @@ const searchInContent = (content: string, searchTerm: string): boolean => {
   return searchWords.every(word => normalizedContent.includes(word));
 };
 
-// Blog page component
 export default function BlogPage() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -42,28 +61,32 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | CategoryType>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = isMobile ? 3 : 4; // Fewer posts per page on mobile
+  const postsPerPage = isMobile ? 3 : 4; // Display fewer posts on mobile screens
 
-  // Scroll to the top of the page when the component mounts
+  // Scroll to the top when the component mounts for better user experience
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Handler for category filter selection
   const handleCategoryFilter = (category: 'all' | CategoryType) => {
     setSelectedCategory(category);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when changing filters
   };
 
+  // Handler for search input changes
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
+  // Handler for pagination changes
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new page
   };
 
+  // Filter posts based on selected category and search term
   const filteredPosts = blogPosts
     .filter(post =>
       selectedCategory === 'all' || post.category === selectedCategory
@@ -71,7 +94,7 @@ export default function BlogPage() {
     .filter(post => {
       if (!searchTerm.trim()) return true;
 
-      // Search across multiple fields in the post
+      // Search across multiple fields for more comprehensive results
       return (
         searchInContent(post.title, searchTerm) ||
         searchInContent(post.excerpt, searchTerm) ||
@@ -81,7 +104,7 @@ export default function BlogPage() {
       );
     });
 
-  // Calculate the starting and ending index for pagination
+  // Calculate pagination and sort posts by date (newest first)
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts
@@ -97,6 +120,7 @@ export default function BlogPage() {
         pt: { xs: 14, sm: 16, md: 20 },
         px: { xs: 2, sm: 3, md: 4 }
       }}>
+        {/* Blog page header section */}
         <Box sx={{ mb: { xs: 5, sm: 6, md: 8 }, textAlign: 'center' }}>
           <Typography
             variant="h2"
@@ -143,7 +167,7 @@ export default function BlogPage() {
           </Typography>
         </Box>
 
-        {/* Display blog categories */}
+        {/* Category filter chips */}
         <Box sx={{ 
           mb: { xs: 3, sm: 4 }, 
           display: 'flex', 
@@ -170,7 +194,7 @@ export default function BlogPage() {
           ))}
         </Box>
 
-        {/* Search bar for filtering posts */}
+        {/* Search input field */}
         <Box sx={{ mb: { xs: 4, sm: 5, md: 6 } }}>
           <TextField
             fullWidth
@@ -207,7 +231,7 @@ export default function BlogPage() {
           />
         </Box>
 
-        {/* Grid layout for displaying existing posts */}
+        {/* Blog posts grid layout */}
         <Box sx={{ 
           display: 'grid',
           gridTemplateColumns: { 

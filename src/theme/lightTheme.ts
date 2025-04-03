@@ -1,5 +1,15 @@
+/**
+ * Light Theme Configuration
+ * 
+ * Defines the light mode theme settings for the application using Material-UI's theming system.
+ * Includes custom palette colors, typography, and component style overrides.
+ */
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
+/**
+ * Type declaration extensions for Material-UI's theme
+ * Adds custom palette options for chart colors and status indicators
+ */
 declare module '@mui/material/styles' {
     interface Palette {
         chart: {
@@ -35,6 +45,10 @@ declare module '@mui/material/styles' {
     }
 }
 
+/**
+ * Light theme configuration options
+ * Defines colors, typography, and component style overrides
+ */
 const themeOptions: ThemeOptions = {
     palette: {
         mode: 'light',
@@ -46,33 +60,34 @@ const themeOptions: ThemeOptions = {
             main: '#c84f03',
         },
         background: {
-            default: '#f0f2f5',
-            paper: '#f8f9fa',
+            default: '#f0f2f5', // Main app background
+            paper: '#f8f9fa',   // Component background
         },
         chart: {
-            income: '#ff8e38',
-            expenses: '#9d300f'
+            income: '#ff8e38',  // Income chart color
+            expenses: '#9d300f' // Expenses chart color
         },
         status: {
             success: {
-                bg: '#e8f5e9',
-                text: '#2e7d32'
+                bg: '#e8f5e9',  // Success background
+                text: '#2e7d32'  // Success text
             },
             error: {
-                bg: '#ffebee',
-                text: '#d32f2f'
+                bg: '#ffebee',   // Error background
+                text: '#d32f2f'  // Error text
             }
         },
         divider: 'rgba(0 0 0 / 0.05)',
         text: {
-            primary: '#2c3e50',
-            secondary: 'rgba(44, 62, 80, 0.7)',
+            primary: '#2c3e50',   // Main text color
+            secondary: 'rgba(44, 62, 80, 0.7)', // Secondary text color
         },
     },
     typography: {
         fontFamily: '"Rubik", sans-serif',
     },
     components: {
+        // Global CSS overrides
         MuiCssBaseline: {
             styleOverrides: {
                 body: {
@@ -80,6 +95,7 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        // Switch component overrides
         MuiSwitch: {
             styleOverrides: {
                 root: {
@@ -108,10 +124,11 @@ const themeOptions: ThemeOptions = {
                     border: '1px solid #bdbdbd',
                     backgroundColor: '#f7f7f7',
                     opacity: 1,
-                    transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                    transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),border 300ms cubic-bezier(0.4, 0, 0.2, 1)',
                 },
             },
         },
+        // Button component overrides
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -162,6 +179,7 @@ const themeOptions: ThemeOptions = {
                 disableElevation: true,
             },
         },
+        // Paper component overrides
         MuiPaper: {
             styleOverrides: {
                 root: {
@@ -181,6 +199,7 @@ const themeOptions: ThemeOptions = {
                 },
             },
         },
+        // Drawer component overrides
         MuiDrawer: {
             styleOverrides: {
                 paper: {
@@ -194,6 +213,7 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        // Input base component overrides
         MuiInputBase: {
             styleOverrides: {
                 root: {
@@ -204,6 +224,7 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        // Outlined input component overrides
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
@@ -211,6 +232,7 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        // Input label component overrides
         MuiInputLabel: {
             styleOverrides: {
                 root: {
@@ -218,6 +240,7 @@ const themeOptions: ThemeOptions = {
                 }
             }
         },
+        // Toggle button component overrides
         MuiToggleButton: {
             styleOverrides: {
                 root: {
@@ -246,6 +269,7 @@ const themeOptions: ThemeOptions = {
                 },
             },
         },
+        // Toggle button group component overrides
         MuiToggleButtonGroup: {
             styleOverrides: {
                 root: {
@@ -264,4 +288,5 @@ const themeOptions: ThemeOptions = {
     },
 };
 
+// Create and export the light theme
 export const lightTheme = createTheme(themeOptions);

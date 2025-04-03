@@ -21,11 +21,16 @@ interface MenuItem {
 interface DashboardNavProps {
   activeSection: string; // The currently active section of the dashboard
   handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
-  menuItems: { label: string; icon: string; key: string; adminOnly?: boolean; }[]; // Array of menu items available in the navigation
+  menuItems: MenuItem[]; // Array of menu items available in the navigation
   onAddTransaction?: () => void; // Optional function to handle the click event for adding a transaction
 }
 
-// Logo component
+/**
+ * Logo Component
+ * 
+ * Displays the application logo, adapting to dark/light mode
+ * @param isDarkMode - Boolean indicating if dark mode is active
+ */
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <Box sx={{
     display: 'flex',
@@ -46,7 +51,12 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
   </Box>
 );
 
-// Desktop navigation item
+/**
+ * Desktop Navigation Item Component
+ * 
+ * Renders an individual navigation item for desktop view
+ * Highlights the active section and applies hover effects
+ */
 const DesktopNavItem = ({
   item,
   activeSection,
@@ -83,7 +93,12 @@ const DesktopNavItem = ({
   </ListItem>
 );
 
-// Mobile navigation item
+/**
+ * Mobile Navigation Item Component
+ * 
+ * Renders an individual navigation item for mobile view
+ * Adapts label display based on screen width
+ */
 const MobileNavItem = ({
   item,
   activeSection,
@@ -135,7 +150,12 @@ const MobileNavItem = ({
   );
 };
 
-// Desktop navigation
+/**
+ * Desktop Navigation Component
+ * 
+ * Renders the full sidebar navigation for desktop view
+ * Fixed position with scrollable content if needed
+ */
 const DesktopNav = ({
   allMenuItems,
   activeSection,
@@ -179,7 +199,13 @@ const DesktopNav = ({
   </Box>
 );
 
-// Mobile navigation
+/**
+ * Mobile Navigation Component
+ * 
+ * Renders the bottom navigation bar for mobile view
+ * Includes a floating action button for adding transactions
+ * and a "more" button for additional menu items
+ */
 const MobileNav = ({
   mainMenuItems,
   moreMenuItems,
@@ -233,7 +259,9 @@ const MobileNav = ({
             fontWeight: 500,
             transition: 'all 0.2s ease-in-out',
             '&:hover': {
-              backgroundColor: (theme) => theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.main,
+              backgroundColor: (theme) => theme.palette.mode === 'dark'
+                ? theme.palette.primary.light
+                : theme.palette.secondary.main,
             },
           }}
         >
@@ -313,6 +341,14 @@ const MobileNav = ({
   );
 };
 
+/**
+ * Dashboard Navigation Component
+ * 
+ * Main navigation component that renders different layouts
+ * based on screen size (desktop or mobile).
+ * Handles user role-based menu item filtering and
+ * provides navigation functionality.
+ */
 export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems, onAddTransaction }: DashboardNavProps) {
   const { isDarkMode } = useContext(ThemeContext);
   const { user } = useUser();
@@ -323,9 +359,11 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
     !item.adminOnly || (item.adminOnly && user?.role === 'admin')
   );
 
+  // Split items between main navigation and "more" menu for mobile
   const mainMenuItems = allMenuItems.slice(0, 3);
   const moreMenuItems = allMenuItems.slice(3);
 
+  // Event handlers for the "more" menu
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
     setMoreAnchorEl(event.currentTarget);
   };

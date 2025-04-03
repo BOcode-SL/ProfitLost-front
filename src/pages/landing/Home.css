@@ -1,12 +1,15 @@
+/* Main container for the home page */
 .home-container {
     min-height: 100vh;
 }
 
+/* Features section styling with padding and rounded corners */
 .home-container .features-section {
     padding: 5rem 1rem;
     border-radius: 2rem;
 }
 
+/* Features grid container layout */
 .home-container .features-section .features-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -16,12 +19,14 @@
     padding: 1rem;
 }
 
+/* Responsive layout adjustment for mobile devices */
 @media (max-width: 768px) {
     .home-container .features-section .features-container {
         grid-template-columns: 1fr;
     }
 }
 
+/* Individual feature card styling */
 .home-container .features-section .features-container .feature-card {
     background: white;
     border-radius: 16px;
@@ -34,22 +39,26 @@
     overflow: hidden;
 }
 
+/* Highlight styling for featured cards that span two rows */
 .home-container .features-section .features-container .feature-card.highlight {
     grid-row: span 2;
     background: linear-gradient(135deg, #fe6f14 0%, #ff8f4c 100%);
     color: white;
 }
 
+/* Text color adjustment for highlighted cards */
 .home-container .features-section .features-container .feature-card.highlight h4,
 .home-container .features-section .features-container .feature-card.highlight p {
     color: white;
 }
 
+/* Hover effect for feature cards */
 .home-container .features-section .features-container .feature-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* Feature card heading styling */
 .home-container .features-section .features-container .feature-card h4 {
     display: flex;
     align-items: center;
@@ -60,11 +69,13 @@
     margin-bottom: 0.5rem;
 }
 
+/* Feature card paragraph styling */
 .home-container .features-section .features-container .feature-card p {
     color: #666;
     line-height: 1.6;
 }
 
+/* Floating animation keyframes for hero image */
 @keyframes float {
     0% {
         transform: translateY(0px);

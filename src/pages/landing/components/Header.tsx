@@ -1,4 +1,10 @@
-// Import necessary hooks and components from React and Material-UI
+/**
+ * Header Component
+ * 
+ * Fixed navigation header that appears across the landing pages.
+ * Includes brand logo, navigation links, and login button.
+ * Features a scroll-based styling that changes opacity and blur when scrolling.
+ */
 import { useState, useEffect } from 'react';
 import { Box, Button, Container, Toolbar } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,8 +15,8 @@ export default function Header() {
     const { t } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
 
+    // Add scroll event listener to apply visual effects when scrolling
     useEffect(() => {
-        // Add scroll event listener to change header style based on scroll position
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
@@ -53,6 +59,7 @@ export default function Header() {
                         minHeight: 'unset !important'
                     }}
                 >
+                    {/* Brand logo with navigation to home page */}
                     <Box
                         component="img"
                         src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
@@ -65,6 +72,7 @@ export default function Header() {
                         onClick={() => navigate('/')}
                     />
 
+                    {/* Navigation links and login button */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Link to="/blog">
                             Blog

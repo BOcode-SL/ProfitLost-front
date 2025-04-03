@@ -1,3 +1,11 @@
+/**
+ * User Service Module
+ * 
+ * Provides functionality for managing user profile, preferences, and account settings.
+ * Handles operations such as retrieving user data, updating profiles, managing themes,
+ * changing passwords, and controlling onboarding flow.
+ */
+
 // Types
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
@@ -11,7 +19,11 @@ import { isIOS } from '../utils/deviceDetection';
 // Defining the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Function to handle user errors
+/**
+ * Handles errors that occur during user operations
+ * @param error - The error that occurred during an API request
+ * @returns A standardized UserApiResponse with error details
+ */
 const handleUserError = (error: unknown): UserApiResponse => {
     // Check if the error has a statusCode
     if ((error as UserApiResponse).statusCode) {
@@ -26,9 +38,14 @@ const handleUserError = (error: unknown): UserApiResponse => {
     };
 };
 
-// User service object
+/**
+ * Service object providing methods for user management
+ */
 export const userService = {
-    // Method to get user data
+    /**
+     * Retrieves the current user's profile data
+     * @returns Promise with the user data or error response
+     */
     async getUserData(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/me`, {
@@ -53,7 +70,11 @@ export const userService = {
         }
     },
 
-    // Method to update user profile
+    /**
+     * Updates the user's profile information including profile picture
+     * @param formData - Form data containing user profile information and optional image
+     * @returns Promise with the updated user data or error response
+     */
     async updateProfile(formData: FormData): Promise<UserApiResponse> {
         try {
             const token = localStorage.getItem('auth_token');
@@ -87,7 +108,11 @@ export const userService = {
         }
     },
 
-    // Method to update user theme
+    /**
+     * Updates the user's theme preference
+     * @param theme - The theme preference ('light' or 'dark')
+     * @returns Promise with the updated user data or error response
+     */
     async updateTheme(theme: 'light' | 'dark'): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/theme`, {
@@ -112,7 +137,11 @@ export const userService = {
         }
     },
 
-    // Method to update user view mode
+    /**
+     * Updates the user's view mode preference
+     * @param viewMode - The view mode preference ('yearToday' or 'fullYear')
+     * @returns Promise with the updated user data or error response
+     */
     async updateViewMode(viewMode: 'yearToday' | 'fullYear'): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/view-mode`, {
@@ -140,7 +169,12 @@ export const userService = {
         }
     },
 
-    // Method to change user password
+    /**
+     * Changes the user's password
+     * @param currentPassword - The user's current password
+     * @param newPassword - The new password to set
+     * @returns Promise with the response data or error response
+     */
     async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/password`, {
@@ -165,7 +199,10 @@ export const userService = {
         }
     },
 
-    // Method to delete user profile image
+    /**
+     * Deletes the user's profile image and resets to default
+     * @returns Promise with the updated user data or error response
+     */
     async deleteProfileImage(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/profile-image`, {
@@ -189,7 +226,10 @@ export const userService = {
         }
     },
 
-    // Method to delete user account
+    /**
+     * Permanently deletes the user's account
+     * @returns Promise with the response data or error response
+     */
     async deleteAccount(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/account`, {
@@ -213,7 +253,11 @@ export const userService = {
         }
     },
 
-    // Method to update the order of user accounts
+    /**
+     * Updates the display order of the user's accounts
+     * @param accountsOrder - Array of account IDs in the desired display order
+     * @returns Promise with the updated user data or error response
+     */
     async updateAccountsOrder(accountsOrder: string[]): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/accounts-order`, {
@@ -237,7 +281,12 @@ export const userService = {
             throw handleUserError(error);
         }
     },
-    // Method to update user preferences
+
+    /**
+     * Sets the user's preferences during the onboarding process
+     * @param preferences - The user preferences to save
+     * @returns Promise with the updated user data or error response
+     */
     async onboardingPreferences(preferences: UserPreferences): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/preferences`, {
@@ -265,7 +314,10 @@ export const userService = {
         }
     },
 
-    // Method to complete the onboarding process
+    /**
+     * Marks the onboarding process as complete for the user
+     * @returns Promise with the updated user data or error response
+     */
     async completeOnboarding(): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/complete-onboarding`, {
@@ -289,7 +341,11 @@ export const userService = {
         }
     },
 
-    // Method to update an onboarding section
+    /**
+     * Updates the completion status of a specific onboarding section
+     * @param section - The name of the onboarding section to mark as completed
+     * @returns Promise with the updated user data or error response
+     */
     async updateOnboardingSection(section: string): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/onboarding-section`, {

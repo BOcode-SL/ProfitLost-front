@@ -1,3 +1,9 @@
+/**
+ * Blog Post Detail Component
+ * 
+ * Displays a full blog post with its content, author information, and publication date.
+ * Handles routing, translations, and proper content formatting.
+ */
 import { useEffect } from 'react';
 import { Container, Typography, Box, Divider, Paper, Breadcrumbs, Link, Chip, useTheme, useMediaQuery } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -5,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 
-// Data
+// Data and utilities
 import { blogPosts } from '../data/blogData';
 import { useProcessBlogContent } from '../../../utils/blogUtils';
 
@@ -13,12 +19,17 @@ import { useProcessBlogContent } from '../../../utils/blogUtils';
 import Footer from '../../landing/components/Footer';
 import LanguageSelector from '../../landing/components/LanguageSelector';
 
-// Function to format the blog post date
+/**
+ * Formats a date string based on the user's language preference
+ * 
+ * @param dateString - ISO date string to format
+ * @returns Formatted date string according to the user's locale
+ */
 const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
     const language = localStorage.getItem('i18nextLng') || 'en';
 
-    // Returns the date in the appropriate format based on the selected language
+    // Format date according to language preference (ES or EN)
     return date.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -26,7 +37,6 @@ const formatBlogDate = (dateString: string) => {
     });
 };
 
-// Blog post detail component
 export default function BlogPostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -36,12 +46,12 @@ export default function BlogPostDetail() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
-    // Effect to scroll to the top of the page
+    // Scroll to top when post loads for better user experience
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    // Debug effect - always present, not conditional
+    // Debugging helper to detect untranslated content
     useEffect(() => {
         if (!post) return;
 
@@ -53,6 +63,7 @@ export default function BlogPostDetail() {
         }
     }, [post, t, processContent]);
 
+    // Display message if post isn't found
     if (!post) {
         return (
             <Container>
@@ -74,6 +85,7 @@ export default function BlogPostDetail() {
                     px: { xs: 2, sm: 3, md: 4 }
                 }}
             >
+                {/* Breadcrumb navigation */}
                 <Breadcrumbs 
                     sx={{ 
                         mb: { xs: 3, sm: 4 }, 
@@ -100,6 +112,7 @@ export default function BlogPostDetail() {
                     </Typography>
                 </Breadcrumbs>
 
+                {/* Featured image with category badge */}
                 {post.image && (
                     <Box sx={{
                         position: 'relative',
@@ -149,6 +162,7 @@ export default function BlogPostDetail() {
                     </Box>
                 )}
 
+                {/* Main content paper */}
                 <Paper 
                     elevation={0} 
                     sx={{ 
@@ -156,6 +170,7 @@ export default function BlogPostDetail() {
                         borderRadius: { xs: 2, sm: 3, md: 4 } 
                     }}
                 >
+                    {/* Post title */}
                     <Typography 
                         variant="h3" 
                         component="h1" 
@@ -169,6 +184,7 @@ export default function BlogPostDetail() {
                         {t(post.title)}
                     </Typography>
 
+                    {/* Author and publication date */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -208,6 +224,7 @@ export default function BlogPostDetail() {
 
                     <Divider sx={{ mb: { xs: 3, sm: 4 } }} />
 
+                    {/* Post content with processed HTML */}
                     <Box
                         sx={{
                             typography: 'body1',
