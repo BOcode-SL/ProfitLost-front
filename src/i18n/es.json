@@ -291,9 +291,7 @@
                     "thirdParty": {
                         "title": "5. Cookies de terceros",
                         "content": "Utilizamos servicios de terceros que pueden establecer cookies en tu dispositivo:",
-                        "items": [
-                            "Google Analytics: análisis del uso del sitio web"
-                        ]
+                        "items": ["Google Analytics: análisis del uso del sitio web"]
                     },
                     "retention": {
                         "title": "6. Periodo de retención de cookies",
@@ -1220,7 +1218,7 @@
                 "enterYear": "Ingrese el año",
                 "delete": {
                     "title": "Eliminar cuenta",
-                    "message": "¿Estás seguro de que quieres eliminar la cuenta?",
+                    "message": "¿Estás seguro de que quieres eliminar la cuenta",
                     "warning": "Esta acción no se puede deshacer"
                 },
                 "validation": {
