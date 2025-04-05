@@ -9,7 +9,7 @@
  * - Responsive layout adapting to different screen sizes
  * - Loading states while data is being fetched
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,9 @@ import { transactionService } from '../../../../services/transaction.service';
 
 // Types
 import type { Transaction } from '../../../../types/models/transaction';
+
+// Utils
+import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';
 
 // Components
 import HomeBalances from './components/HomeBalances';
@@ -32,25 +35,36 @@ export default function DashHome() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Function to fetch all transactions, wrapped in useCallback to prevent unnecessary recreation
+    const fetchTransactions = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const response = await transactionService.getAllTransactions();
+            if (!response.success) {
+                throw new Error('Failed to fetch transactions');
+            }
+            setTransactions(response.data as Transaction[]);
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            toast.error(t('dashboard.common.error.loading'));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [t]);
+
     // Fetch all transactions on component mount
     useEffect(() => {
-        const fetchTransactions = async () => {
-            try {
-                const response = await transactionService.getAllTransactions();
-                if (!response.success) {
-                    throw new Error('Failed to fetch transactions');
-                }
-                setTransactions(response.data as Transaction[]);
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-                toast.error(t('dashboard.common.error.loading'));
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchTransactions();
-    }, [t]);
+    }, [fetchTransactions]);
+
+    // Listen for transaction update events and refresh data
+    useEffect(() => {
+        window.addEventListener(TRANSACTION_UPDATED_EVENT, fetchTransactions);
+        
+        return () => {
+            window.removeEventListener(TRANSACTION_UPDATED_EVENT, fetchTransactions);
+        };
+    }, [fetchTransactions]);
 
     return (
         <Box sx={{

@@ -36,9 +36,14 @@ import {
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useUser } from '../../../../../contexts/UserContext';
-import { formatDate, prepareForBackend, utcToLocalString } from '../../../../../utils/dateUtils';
 import CloseIcon from '@mui/icons-material/Close';
+
+// Contexts
+import { useUser } from '../../../../../contexts/UserContext';
+
+// Utils
+import { formatDate, prepareForBackend, utcToLocalString } from '../../../../../utils/dateUtils';
+import { dispatchTransactionUpdated } from '../../../../../utils/events';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
@@ -249,6 +254,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             if (transaction) {
                 await transactionService.updateTransaction(transaction._id, transactionData);
                 toast.success(t('dashboard.transactions.success.updated'));
+                dispatchTransactionUpdated();
             } else {
                 // Add recurrence properties for new recurring transactions
                 if (isRecurrent) {
@@ -261,6 +267,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
+                dispatchTransactionUpdated();
             }
 
             // Call callbacks for success
@@ -287,6 +294,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 transaction?.isRecurrent ? updateAllRecurrent : undefined
             );
             toast.success(t('dashboard.transactions.success.deleted'));
+            dispatchTransactionUpdated();
             onSubmit();
         } catch (error) {
             console.error('An error occurred while deleting the transaction:', error);
@@ -323,6 +331,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             );
 
             toast.success(t('dashboard.transactions.success.updated'));
+            dispatchTransactionUpdated();
             onSubmit();
             onClose();
         } catch (error) {

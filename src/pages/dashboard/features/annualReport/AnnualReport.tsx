@@ -28,6 +28,7 @@ import type { TransactionApiErrorResponse } from '../../../../types/api/response
 
 // Utils
 import { fromUTCtoLocal } from '../../../../utils/dateUtils';
+import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';
 
 // Components
 import AnnualChart from './components/AnnualChart';
@@ -136,6 +137,29 @@ export default function AnnualReport() {
 
         fetchTransactionsByYear();
     }, [year, t]);
+
+    // Listen for transaction update events and refresh data
+    useEffect(() => {
+        const handleTransactionUpdated = async () => {
+            setIsLoading(true);
+            try {
+                const response = await transactionService.getTransactionsByYear(Number(year));
+                if (response.success && Array.isArray(response.data)) {
+                    setTransactions(response.data);
+                }
+            } catch (error) {
+                console.error('Error refreshing transactions:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        window.addEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
+        
+        return () => {
+            window.removeEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
+        };
+    }, [year]);
 
     // Apply the selected view mode filter to transactions
     const filteredTransactions = transactions.filter(transaction => {

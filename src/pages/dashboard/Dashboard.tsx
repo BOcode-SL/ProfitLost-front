@@ -18,6 +18,9 @@ import DrawerBase from './components/ui/DrawerBase';
 // Services
 import { categoryService } from '../../services/category.service';
 
+// Utils
+import { dispatchTransactionUpdated } from '../../utils/events';
+
 // Types
 import type { Category } from '../../types/models/category';
 
@@ -121,9 +124,13 @@ export default function Dashboard() {
 
     const handleTransactionSubmit = () => {
         setTransactionDrawerOpen(false);
-        // If we're on the transactions page, navigate to it to refresh the data
-        if (activeSection === 'transactions') {
-            handleMenuItemClick('transactions');
+        
+        // Dispatch global event to notify all components to refresh their data
+        dispatchTransactionUpdated();
+        
+        // Also refresh the current section if it's relevant
+        if (['transactions', 'annualReport', 'dashhome'].includes(activeSection)) {
+            handleMenuItemClick(activeSection);
         }
     };
 

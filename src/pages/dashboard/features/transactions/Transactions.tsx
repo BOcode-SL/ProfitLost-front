@@ -28,6 +28,9 @@ import type { Category } from '../../../../types/models/category';
 import { transactionService } from '../../../../services/transaction.service';
 import { categoryService } from '../../../../services/category.service';
 
+// Utils
+import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';
+
 // Components
 import TransactionPie from './components/TransactionPie';
 import TransactionBarChart from './components/TransactionBarChart';
@@ -112,6 +115,19 @@ export default function Transactions() {
     // Fetch data when component mounts or when year/month changes
     useEffect(() => {
         fetchData();
+    }, [fetchData]);
+
+    // Listen for transaction update events and refresh data
+    useEffect(() => {
+        const handleTransactionUpdated = () => {
+            fetchData();
+        };
+
+        window.addEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
+        
+        return () => {
+            window.removeEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
+        };
     }, [fetchData]);
 
     // Process transaction data for charts and summaries
