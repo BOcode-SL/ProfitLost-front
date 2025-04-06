@@ -23,7 +23,6 @@ export interface Transaction {
     recurrenceType?: RecurrenceType; // Type of recurrence if recurring
     recurrenceEndDate?: ISODateString; // When recurrence ends
     recurrenceId?: string;       // ID linking recurring transactions
-    isOriginalRecurrence?: boolean; // Whether this is the first transaction in a series
 }
 
 /**
