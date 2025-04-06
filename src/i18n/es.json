@@ -1426,7 +1426,6 @@
                 "transactionsToday": "Movimientos de Hoy",
                 "transactionsThisMonth": "Movimientos de Este Mes",
                 "averageTransactionsPerUser": "Movimientos/Usuario",
-                "userRetention": "Retención de Usuarios",
                 "averageSessionDuration": "Duración Media de Sesión"
             },
             "errors": {

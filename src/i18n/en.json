@@ -1451,7 +1451,6 @@
                 "transactionsToday": "Today's Transactions",
                 "transactionsThisMonth": "This Month's Transactions",
                 "averageTransactionsPerUser": "Transactions/User",
-                "userRetention": "User Retention",
                 "averageSessionDuration": "Average Session Duration"
             },
             "errors": {

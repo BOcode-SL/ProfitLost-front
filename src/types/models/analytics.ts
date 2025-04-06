@@ -6,7 +6,7 @@
 
 /**
  * User-related metrics for analytics
- * Tracks user acquisition, engagement, and retention
+ * Tracks user acquisition and engagement
  */
 export interface UserMetrics {
     totalUsers: number;          // Total registered users
@@ -19,11 +19,6 @@ export interface UserMetrics {
         daily: number;           // New user registrations in the last day
         weekly: number;          // New user registrations in the last week
         monthly: number;         // New user registrations in the last month
-    };
-    retention: {
-        sevenDays: number;       // 7-day retention rate (percentage)
-        thirtyDays: number;      // 30-day retention rate (percentage)
-        ninetyDays: number;      // 90-day retention rate (percentage)
     };
 }
 
