@@ -34,7 +34,12 @@ import { userService } from '../../../../services/user.service';
 
 // Types
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
-import { DateFormat, TimeFormat, Currency, Language } from '../../../../types/models/user';
+import { 
+    Language, 
+    Currency, 
+    DateFormat, 
+    TimeFormat 
+} from '../../../../types/supabase/preference';
 
 // Configuration options for selectable preferences
 const dateFormatOptions = [
@@ -91,7 +96,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         theme: user?.preferences?.theme || 'light',
         viewMode: user?.preferences?.viewMode || 'fullYear',
         profileImage: null as File | null,
-        previewUrl: user?.profileImage || '',
+        previewUrl: '',
         deleteImage: false
     });
 
@@ -133,7 +138,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
 
     // Handle profile image deletion
     const handleDeleteImage = () => {
-        if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
+        if (formData.previewUrl) {
             URL.revokeObjectURL(formData.previewUrl);
         }
         setFormData(prev => ({
@@ -169,9 +174,17 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }
 
         try {
-            const response = await userService.updateProfile(updateFormData);
+            const response = await userService.updateProfile({
+                name: formData.name.trim(),
+                surname: formData.surname,
+                language: formData.language,
+                currency: formData.currency,
+                dateFormat: formData.dateFormat,
+                timeFormat: formData.timeFormat
+            });
+            
             if (response.success) {
-                if (formData.previewUrl && formData.previewUrl !== user?.profileImage) {
+                if (formData.previewUrl) {
                     URL.revokeObjectURL(formData.previewUrl);
                 }
                 await loadUserData();
@@ -217,7 +230,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                         gap: 2
                     }}>
                         <Avatar
-                            src={formData.deleteImage ? undefined : (formData.previewUrl || user?.profileImage)}
+                            src={formData.deleteImage ? undefined : formData.previewUrl}
                             alt={user?.name}
                             sx={{ width: 150, height: 150, bgcolor: 'primary.main' }}
                         />
@@ -237,7 +250,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                             display: 'flex',
                             gap: 1
                         }}>
-                            {(user?.profileImage || formData.profileImage) && !formData.deleteImage ? (
+                            {(formData.profileImage) && !formData.deleteImage ? (
                                 <Button
                                     variant="text"
                                     onClick={handleDeleteImage}
