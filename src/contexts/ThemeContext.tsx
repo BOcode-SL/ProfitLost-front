@@ -63,7 +63,7 @@ export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
  * @param children - Child components to be wrapped
  */
 export const DashboardThemeProvider = ({ children }: { children: ReactNode }) => {
-    const { userPreferences, loadUserData } = useUser(); // Access user context for theme preferences
+    const { userPreferences } = useUser(); // Access user context for theme preferences
     
     // Initialize dark mode state based on user preferences
     const [isDarkMode, setIsDarkMode] = useState(() => 
@@ -85,13 +85,16 @@ export const DashboardThemeProvider = ({ children }: { children: ReactNode }) =>
                 // Toggle local state immediately for UI responsiveness
                 setIsDarkMode(!isDarkMode);
                 
-                // Reload user data to ensure context is updated with server changes
-                await loadUserData();
+                // Update user preferences locally without full reload
+                if (userPreferences) {
+                    // Avoid full reload by just updating the theme in context
+                    userPreferences.theme = newTheme;
+                }
             }
         } catch (error) {
             console.error('Error updating theme:', error);
         }
-    }, [isDarkMode, loadUserData]);
+    }, [isDarkMode, userPreferences]);
 
     // Sync dark mode state with user preferences when they change
     useEffect(() => {
