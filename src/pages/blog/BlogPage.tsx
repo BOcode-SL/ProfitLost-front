@@ -9,7 +9,7 @@ import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
 
-import { CategoryType } from '../../types/models/blogPost';
+import { CategoryType } from '../../types/blogPost';
 
 import { blogPosts } from './data/blogData';
 

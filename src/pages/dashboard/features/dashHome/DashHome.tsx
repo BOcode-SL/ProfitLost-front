@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { transactionService } from '../../../../services/transaction.service';
 
 // Types
-import type { Transaction } from '../../../../types/models/transaction';
+import type { Transaction } from '../../../../types/supabase/transaction';
 
 // Utils
 import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';
@@ -43,7 +43,10 @@ export default function DashHome() {
             if (!response.success) {
                 throw new Error('Failed to fetch transactions');
             }
-            setTransactions(response.data as Transaction[]);
+            // Explicitly cast to Transaction[] since we're migrating from models to supabase types
+            if (Array.isArray(response.data)) {
+                setTransactions(response.data as Transaction[]);
+            }
         } catch (error) {
             console.error('Error fetching transactions:', error);
             toast.error(t('dashboard.common.error.loading'));

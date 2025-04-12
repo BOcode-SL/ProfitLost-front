@@ -4,13 +4,21 @@
  * Provides theme management functionality for the application.
  * Supports light and dark mode themes with user preference persistence.
  */
-import { createContext, useState, useMemo, ReactNode, useEffect } from 'react';
+import { createContext, useState, useMemo, ReactNode, useEffect, useCallback } from 'react';
 import { ThemeProvider } from '@mui/material';
+
+// Types
+import { Theme } from '../types/supabase/preference';
+
+// Services
+import { userService } from '../services/user.service';
+
+// Theme
 import { lightTheme } from '../theme/lightTheme';
 import { darkTheme } from '../theme/darkTheme';
+
+// Contexts
 import { useUser } from './UserContext';
-import { userService } from '../services/user.service';
-import { User } from '../types/models/user';
 
 /**
  * Interface defining the Theme Context API.
@@ -55,37 +63,40 @@ export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
  * @param children - Child components to be wrapped
  */
 export const DashboardThemeProvider = ({ children }: { children: ReactNode }) => {
-    const { user, setUser } = useUser(); // Access user context for theme preferences
+    const { userPreferences, loadUserData } = useUser(); // Access user context for theme preferences
     
     // Initialize dark mode state based on user preferences
     const [isDarkMode, setIsDarkMode] = useState(() => 
-        user?.preferences?.theme === 'dark'
+        userPreferences?.theme === 'dark'
     );
 
     /**
      * Toggles between light and dark themes.
      * Updates user preferences through API and updates local state.
      */
-    const toggleTheme = async () => {
+    const toggleTheme = useCallback(async () => {
         try {
-            const newTheme = isDarkMode ? 'light' : 'dark'; // Determine the new theme value
+            const newTheme = isDarkMode ? 'light' : 'dark' as Theme; // Determine the new theme value
             
             // Update theme preference through API
             const response = await userService.updateTheme(newTheme);
             
-            if (response.success && response.data) {
-                setUser(response.data as User); // Update user context with new data
-                setIsDarkMode(!isDarkMode);     // Toggle dark mode state locally
+            if (response.success) {
+                // Toggle local state immediately for UI responsiveness
+                setIsDarkMode(!isDarkMode);
+                
+                // Reload user data to ensure context is updated with server changes
+                await loadUserData();
             }
         } catch (error) {
             console.error('Error updating theme:', error);
         }
-    };
+    }, [isDarkMode, loadUserData]);
 
     // Sync dark mode state with user preferences when they change
     useEffect(() => {
-        setIsDarkMode(user?.preferences.theme === 'dark');
-    }, [user?.preferences.theme]);
+        setIsDarkMode(userPreferences?.theme === 'dark');
+    }, [userPreferences?.theme]);
 
     // Memoize the theme object to prevent unnecessary re-renders
     const theme = useMemo(() => (isDarkMode ? darkTheme : lightTheme), [isDarkMode]);

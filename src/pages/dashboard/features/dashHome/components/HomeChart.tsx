@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 interface MonthlyData {
     month: string;
     income: number;
@@ -87,13 +87,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
         // Filter transactions to include only those within the last six months
         const filteredTransactions = transactions.filter(transaction => {
-            const transactionDate = fromUTCtoLocal(transaction.date);
+            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
             return transactionDate >= sixMonthsAgo && transactionDate <= today;
         });
 
         // Categorize and sum transactions by month and type (income/expense)
         filteredTransactions.forEach(transaction => {
-            const transactionDate = fromUTCtoLocal(transaction.date);
+            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
             const monthKey = MONTH_KEYS[transactionDate.getMonth()];
 
             if (monthlyDataMap[monthKey]) {

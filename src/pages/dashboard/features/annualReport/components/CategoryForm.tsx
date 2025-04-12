@@ -43,8 +43,8 @@ import { categoryService } from '../../../../../services/category.service';
 import { transactionService } from '../../../../../services/transaction.service';
 
 // Types
-import type { Category } from '../../../../../types/models/category';
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Category } from '../../../../../types/supabase/category';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 interface GroupedTransactions {
     [key: string]: Transaction[];
 }
@@ -95,8 +95,8 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     // Find years that have transactions with this category
                     const years = new Set(
                         response.data
-                            .filter(tx => tx.category === category.name)
-                            .map(tx => fromUTCtoLocal(tx.date).getFullYear().toString())
+                            .filter(tx => tx.category_id === category.id)
+                            .map(tx => fromUTCtoLocal(tx.transaction_date).getFullYear().toString())
                     );
                     // Sort years in descending order (newest first)
                     setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
@@ -118,7 +118,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 const response = await transactionService.getTransactionsByYear(Number(selectedYear));
                 if (response.success && Array.isArray(response.data)) {
                     // Filter transactions to only show those for this category
-                    const filteredTransactions = response.data.filter(tx => tx.category === category.name);
+                    const filteredTransactions = response.data.filter(tx => tx.category_id === category.id);
                     setTransactions(filteredTransactions);
                 }
             } catch (error) {
@@ -136,7 +136,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const tempGroupedByMonthKey: Record<string, Transaction[]> = {};
 
     transactions.forEach(tx => {
-        const date = fromUTCtoLocal(tx.date);
+        const date = fromUTCtoLocal(tx.transaction_date);
         // Get the short name of the month (Jan, Feb, etc.) for sorting
         const monthKey = date.toLocaleString('en-US', { month: 'short' });
 
@@ -181,7 +181,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         try {
             if (category) {
                 // Update existing category
-                const response = await categoryService.updateCategory(category._id, {
+                const response = await categoryService.updateCategory(category.id, {
                     name: name.trim(),
                     color
                 });
@@ -433,7 +433,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                 {/* Individual transaction cards */}
                                                 {monthTransactions.map((transaction) => (
                                                     <Box
-                                                        key={transaction._id}
+                                                        key={transaction.id}
                                                         sx={{
                                                             width: '100%',
                                                             position: 'relative',
@@ -512,7 +512,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                                 }}
                                                             >
                                                                 <ScheduleIcon sx={{ fontSize: 16 }} />
-                                                                {fromUTCtoLocal(transaction.date).toLocaleDateString()}
+                                                                {fromUTCtoLocal(transaction.transaction_date).toLocaleDateString()}
                                                             </Typography>
                                                         </Paper>
                                                     </Box>

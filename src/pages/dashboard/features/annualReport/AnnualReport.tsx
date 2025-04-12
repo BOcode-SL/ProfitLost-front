@@ -23,7 +23,7 @@ import { transactionService } from '../../../../services/transaction.service';
 import { userService } from '../../../../services/user.service';
 
 // Types
-import type { Transaction } from '../../../../types/models/transaction';
+import type { Transaction } from '../../../../types/supabase/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
 // Utils
@@ -57,23 +57,16 @@ export default function AnnualReport() {
 
     // Fetch all transaction years to populate the year selector
     useEffect(() => {
-        const fetchAllTransactions = async () => {
+        const fetchTransactionYears = async () => {
             try {
-                const response = await transactionService.getAllTransactions();
+                const response = await transactionService.getTransactionYears();
                 if (response.success && Array.isArray(response.data)) {
-                    // Extract unique years from all transactions
-                    const transactionYears = new Set(
-                        response.data.map((transaction: Transaction) =>
-                            fromUTCtoLocal(transaction.date).getFullYear().toString()
-                        )
-                    );
-
-                    // Always include current year even if no transactions exist yet
-                    transactionYears.add(currentYear);
-
-                    // Sort years in descending order (newest first)
-                    const sortedYears = [...transactionYears].sort((a, b) => Number(b) - Number(a));
-                    setYearsWithData(sortedYears);
+                    // If no years with data, add current year to prevent Select validation error
+                    if (response.data.length === 0) {
+                        setYearsWithData([currentYear]);
+                    } else {
+                        setYearsWithData(response.data);
+                    }
                 }
             } catch (error: unknown) {
                 const transactionError = error as TransactionApiErrorResponse;
@@ -93,11 +86,13 @@ export default function AnnualReport() {
                     default:
                         toast.error(t('dashboard.common.error.loading'));
                 }
+                // Set current year as fallback when error occurs
+                setYearsWithData([currentYear]);
             }
         };
 
-        fetchAllTransactions();
-    }, [currentYear, t]);
+        fetchTransactionYears();
+    }, [t, currentYear]);
 
     // Fetch transactions for the selected year
     useEffect(() => {
@@ -166,7 +161,7 @@ export default function AnnualReport() {
         if (viewMode === 'yearToday') {
             // For year-to-date mode, only include transactions up to today
             const today = new Date();
-            const transactionDate = fromUTCtoLocal(transaction.date);
+            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
             return transactionDate <= today;
         }
         // For full year mode, include all transactions
@@ -214,7 +209,7 @@ export default function AnnualReport() {
                         }}>
                         <InputLabel>{t('dashboard.common.year')}</InputLabel>
                         <Select
-                            value={year}
+                            value={yearsWithData.includes(year) ? year : yearsWithData[0] || ''}
                             label={t('dashboard.common.year')}
                             onChange={(e) => setYear(e.target.value)}
                         >

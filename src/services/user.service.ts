@@ -10,7 +10,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
-import type { UserPreferences } from '../types/models/user';
+import type { PreferenceContent } from '../types/supabase/preference';
 
 // Utils
 import { getAuthHeaders } from '../utils/apiHeaders';
@@ -71,24 +71,34 @@ export const userService = {
     },
 
     /**
-     * Updates the user's profile information including profile picture
-     * @param formData - Form data containing user profile information and optional image
+     * Updates the user's profile information
+     * @param userData - Object containing user profile information to update
      * @returns Promise with the updated user data or error response
      */
-    async updateProfile(formData: FormData): Promise<UserApiResponse> {
+    async updateProfile(userData: {
+        name?: string;
+        surname?: string;
+        language?: string;
+        currency?: string;
+        dateFormat?: string;
+        timeFormat?: string;
+    }): Promise<UserApiResponse> {
         try {
             const token = localStorage.getItem('auth_token');
-            const headers: HeadersInit = {};
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders()
+            };
             
             // If the device is iOS and token exists, set authorization header
             if (isIOS() && token) {
-                headers['Authorization'] = `Bearer ${token}`;
+                (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
             }
 
             const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'POST',
                 credentials: 'include',
-                body: formData,
+                body: JSON.stringify(userData),
                 headers
             });
 
@@ -119,7 +129,10 @@ export const userService = {
                 method: 'POST',
                 credentials: 'include',
                 body: JSON.stringify({ theme }),
-                headers: getAuthHeaders()
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                }
             });
 
             const data = await response.json();
@@ -200,33 +213,6 @@ export const userService = {
     },
 
     /**
-     * Deletes the user's profile image and resets to default
-     * @returns Promise with the updated user data or error response
-     */
-    async deleteProfileImage(): Promise<UserApiResponse> {
-        try {
-            const response = await fetch(`${API_URL}/api/users/profile-image`, {
-                method: 'DELETE',
-                credentials: 'include',
-                headers: getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw {
-                    ...data,
-                    statusCode: response.status as HttpStatusCode
-                } as UserApiResponse;
-            }
-
-            return data as UserApiResponse;
-        } catch (error) {
-            throw handleUserError(error);
-        }
-    },
-
-    /**
      * Permanently deletes the user's account
      * @returns Promise with the response data or error response
      */
@@ -254,40 +240,12 @@ export const userService = {
     },
 
     /**
-     * Updates the display order of the user's accounts
-     * @param accountsOrder - Array of account IDs in the desired display order
-     * @returns Promise with the updated user data or error response
-     */
-    async updateAccountsOrder(accountsOrder: string[]): Promise<UserApiResponse> {
-        try {
-            const response = await fetch(`${API_URL}/api/users/accounts-order`, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify({ accountsOrder }),
-                headers: getAuthHeaders()
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw {
-                    ...data,
-                    statusCode: response.status as HttpStatusCode
-                } as UserApiResponse;
-            }
-
-            return data as UserApiResponse;
-        } catch (error) {
-            throw handleUserError(error);
-        }
-    },
-
-    /**
      * Sets the user's preferences during the onboarding process
-     * @param preferences - The user preferences to save
+     * @param preferences - Partial preferences object with only the properties to update.
+     *                      This will be merged with existing preferences on the server.
      * @returns Promise with the updated user data or error response
      */
-    async onboardingPreferences(preferences: UserPreferences): Promise<UserApiResponse> {
+    async onboardingPreferences(preferences: PreferenceContent): Promise<UserApiResponse> {
         try {
             const response = await fetch(`${API_URL}/api/users/preferences`, {
                 method: 'POST',
@@ -323,7 +281,10 @@ export const userService = {
             const response = await fetch(`${API_URL}/api/users/complete-onboarding`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: getAuthHeaders()
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                }
             });
 
             const data = await response.json();
@@ -355,7 +316,10 @@ export const userService = {
                     ...getAuthHeaders(),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ section })
+                body: JSON.stringify({ 
+                    section,
+                    shown: true 
+                })
             });
 
             const data = await response.json();

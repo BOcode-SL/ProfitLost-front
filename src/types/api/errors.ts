@@ -81,18 +81,6 @@ export type AccountErrorType =
     | 'INVALID_RECORDS';
 
 /**
- * Types for analytics errors
- * Used for data analysis and reporting features
- */
-export type AnalyticsErrorType =
-    | CommonErrorType
-    | 'DATA_UNAVAILABLE'
-    | 'METRICS_SAVE_ERROR'
-    | 'INVALID_DATE_RANGE'
-    | 'INSUFFICIENT_DATA'
-    | 'ANALYTICS_PROCESSING_ERROR';
-
-/**
  * Types for transaction errors
  * Used for financial transaction management
  */

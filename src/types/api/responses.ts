@@ -5,23 +5,25 @@
  * Includes both request and response types for each entity.
  */
 
-import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from '../api/common';
+import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from './common';
 import type {
     AuthErrorType,
     TransactionErrorType,
     UserErrorType,
     CategoryErrorType,
     AccountErrorType,
-    NoteErrorType,
-    AnalyticsErrorType
-} from '../api/errors';
-import type { User } from '../models/user';
-import type { RecurrenceType, Transaction } from '../models/transaction';
-import type { Category } from '../models/category';
-import type { Note } from '../models/note';
-import type { Account, YearRecord, AccountConfiguration } from '../models/account';
-import type { UserMetrics, TransactionMetrics, TransactionHistory } from '../models/analytics';
-import { HttpStatusCode } from './common';
+    NoteErrorType
+} from './errors';
+import type { HttpStatusCode } from './common';
+
+// Supabase models
+import type { UUID } from '../supabase/common';
+import type { User } from '../supabase/user';
+import type { RecurrenceType, Transaction } from '../supabase/transaction';
+import type { Category } from '../supabase/category';
+import type { Note } from '../supabase/note';
+import type { Account } from '../supabase/account';
+import type { PreferenceContent } from '../supabase/preference';
 
 /**
  * Types for authentication API responses
@@ -42,7 +44,7 @@ export interface AuthApiErrorResponse extends ApiErrorResponse<AuthErrorType> {
 export interface AuthApiSuccessResponse extends ApiSuccessResponse {
     token: string;               // JWT token for authenticated sessions
     data?: {
-        _id: string;
+        id: UUID;
         username: string;
         email: string;
     };
@@ -58,7 +60,7 @@ export interface AuthApiResponse {
     statusCode: HttpStatusCode;
     token?: string;
     data?: {
-        _id: string;
+        id: UUID;
         username: string;
         email: string;
     };
@@ -78,6 +80,18 @@ export type UserApiResponse = UserApiSuccessResponse | UserApiErrorResponse;
 export type TransactionApiErrorResponse = ApiErrorResponse<TransactionErrorType>;
 export type TransactionApiSuccessResponse = ApiSuccessResponse<Transaction | Transaction[]>;
 export type TransactionApiResponse = TransactionApiSuccessResponse | TransactionApiErrorResponse;
+
+/**
+ * Specialized type for transaction years response
+ * Used specifically for the getTransactionYears endpoint which returns an array of year strings
+ */
+export interface TransactionYearsApiResponse {
+    success: boolean;
+    data: string[];
+    message?: string;
+    error?: TransactionErrorType;
+    statusCode: HttpStatusCode;
+}
 
 /**
  * Types for category API responses
@@ -132,25 +146,6 @@ export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]
 export type NoteApiResponse = NoteApiSuccessResponse | NoteApiErrorResponse;
 
 /**
- * Types for analytics API responses
- * Includes extended error details
- */
-export interface AnalyticsApiErrorResponse extends ApiErrorResponse<AnalyticsErrorType> {
-    details?: {
-        field?: string;
-        message?: string;
-    };
-}
-
-export interface AnalyticsApiSuccessResponse extends ApiSuccessResponse<UserMetrics | TransactionMetrics | TransactionHistory[]> {
-    metadata?: {
-        lastUpdated?: ISODateString;
-    };
-}
-
-export type AnalyticsApiResponse = AnalyticsApiSuccessResponse | AnalyticsApiErrorResponse;
-
-/**
  * Request Types for authentication
  */
 export interface LoginCredentials {
@@ -183,41 +178,84 @@ export interface UpdateCategoryRequest {
  * Request Types for transaction
  */
 export interface CreateTransactionRequest {
-    date: ISODateString;
-    description: string;
-    amount: number;
-    category: string;
-    isIncome?: boolean;
-    isRecurrent?: boolean;
-    recurrenceType?: RecurrenceType;
-    recurrenceEndDate?: ISODateString;
+    transaction_date: ISODateString;
+    description: string | null;
+    amount: string | number;
+    category_id: UUID;
+    recurrence_type: RecurrenceType | null;
+    recurrence_end_date: ISODateString | null;
+    recurrence_id?: UUID | null;
 }
 
 export interface UpdateTransactionRequest {
-    date?: ISODateString;
-    description?: string;
-    amount?: number;
-    category?: string;
-    isIncome?: boolean;
+    transaction_date?: ISODateString;
+    description?: string | null;
+    amount?: string | number;
+    category_id?: UUID;
+    recurrence_type?: RecurrenceType | null;
+    recurrence_end_date?: ISODateString | null;
     updateAll?: boolean;
-    isRecurrent?: boolean;
-    recurrenceType?: RecurrenceType;
-    recurrenceEndDate?: ISODateString;
 }
 
 /**
  * Request Types for account
  */
 export interface CreateAccountRequest {
-    accountName: string;
-    configuration: AccountConfiguration;
-    records: Record<string, YearRecord>;
+    name: string;
+    background_color: string;
+    text_color: string;
+    is_active: boolean;
+    account_order?: number;
 }
 
 export interface UpdateAccountRequest {
-    accountName?: string;
-    configuration?: AccountConfiguration;
-    records?: Record<string, YearRecord>;
+    name?: string;
+    background_color?: string;
+    text_color?: string;
+    is_active?: boolean;
+    account_order?: number;
+}
+
+/**
+ * Request Types for year record
+ */
+export interface CreateYearRecordRequest {
+    account_id: UUID;
+    year: number;
+    jan?: string;
+    feb?: string;
+    mar?: string;
+    apr?: string;
+    may?: string;
+    jun?: string;
+    jul?: string;
+    aug?: string;
+    sep?: string;
+    oct?: string;
+    nov?: string;
+    dec?: string;
+}
+
+export interface UpdateYearRecordRequest {
+    jan?: string;
+    feb?: string;
+    mar?: string;
+    apr?: string;
+    may?: string;
+    jun?: string;
+    jul?: string;
+    aug?: string;
+    sep?: string;
+    oct?: string;
+    nov?: string;
+    dec?: string;
+}
+
+/**
+ * Request Types for user preferences
+ */
+export interface UpdatePreferencesRequest {
+    preferences: Partial<PreferenceContent>;
 }
 
 /**

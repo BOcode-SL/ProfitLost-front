@@ -21,7 +21,9 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Account, YearRecord } from '../../../../../types/models/account';
+import type { Account } from '../../../../../types/supabase/account';
+import type { YearRecord } from '../../../../../types/supabase/year_record';
+import type { UUID } from '../../../../../types/supabase/common';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
@@ -30,16 +32,24 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 import AccountsForm from './AccountsForm';
 import DrawerBase from '../../../components/ui/DrawerBase';
 
+// Services
+import { accountService } from '../../../../../services/account.service';
+
+// Extended Account interface that includes year_records relationship
+interface AccountWithYearRecords extends Account {
+    year_records?: YearRecord[];
+}
+
 // Interface for the props of the AccountsTable component
 interface AccountsTableProps {
-    accounts: Account[]; // List of active accounts
-    inactiveAccounts: Account[]; // List of inactive accounts
+    accounts: AccountWithYearRecords[]; // List of active accounts
+    inactiveAccounts: AccountWithYearRecords[]; // List of inactive accounts
     loading: boolean; // Indicator for loading state
     selectedYear: number; // The year currently selected
-    onUpdate: (account: Account) => Promise<boolean>; // Function to update an account
-    onCreate: (account: Account) => Promise<boolean>; // Function to create a new account
-    onDelete: (accountId: string) => void; // Function to delete an account by its ID
-    onOrderChange: (newOrder: string[]) => void; // Function to change the order of accounts
+    onUpdate: (account: AccountWithYearRecords) => Promise<boolean>; // Function to update an account
+    onCreate: (account: AccountWithYearRecords) => Promise<boolean>; // Function to create a new account
+    onDelete: (accountId: UUID) => void; // Function to delete an account by its ID
+    onOrderChange: (newOrder: UUID[]) => void; // Function to change the order of accounts
 }
 
 // AccountsTable component for displaying and managing accounts
@@ -58,11 +68,12 @@ export default function AccountsTable({
 
     // Component state
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-    const [draggedAccountId, setDraggedAccountId] = useState<string | null>(null);
+    const [selectedAccount, setSelectedAccount] = useState<AccountWithYearRecords | null>(null);
+    const [draggedAccountId, setDraggedAccountId] = useState<UUID | null>(null);
     const [showInactiveAccounts, setShowInactiveAccounts] = useState(false);
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoadingAccount, setIsLoadingAccount] = useState(false);
 
     // Effect to listen for currency visibility changes app-wide
     useEffect(() => {
@@ -78,51 +89,95 @@ export default function AccountsTable({
     }, []);
 
     // Function to get the current month's balance for an account
-    const getCurrentBalance = (account: Account): number => {
+    const getCurrentBalance = (account: AccountWithYearRecords): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase();
-        const yearRecord = account.records[selectedYear.toString()];
-        return yearRecord ? yearRecord[currentMonth as keyof YearRecord] : 0;
+        
+        // Find year record for the selected year
+        const yearRecord = account.year_records?.find(record => record.year === selectedYear);
+        if (!yearRecord) return 0;
+        
+        // Get the value for the current month
+        const monthKey = currentMonth as keyof YearRecord;
+        const value = yearRecord[monthKey] as string | null;
+        
+        // Convert to number
+        return value ? parseFloat(value) : 0;
     };
 
     // Drag and drop handlers for account reordering
-    const handleDragStart = (accountId: string) => {
+    const handleDragStart = (accountId: UUID) => {
         setDraggedAccountId(accountId);
     };
 
-    const handleDrop = (targetAccountId: string) => {
+    const handleDrop = (targetAccountId: UUID) => {
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
-            const draggedIndex = accounts.findIndex(acc => acc._id === draggedAccountId);
-            const targetIndex = accounts.findIndex(acc => acc._id === targetAccountId);
+            const draggedIndex = accounts.findIndex(acc => acc.id === draggedAccountId);
+            const targetIndex = accounts.findIndex(acc => acc.id === targetAccountId);
             const updatedAccounts = [...accounts];
             const [draggedAccount] = updatedAccounts.splice(draggedIndex, 1);
             updatedAccounts.splice(targetIndex, 0, draggedAccount);
 
-            onOrderChange(updatedAccounts.map(acc => acc._id));
+            onOrderChange(updatedAccounts.map(acc => acc.id));
         }
         setDraggedAccountId(null);
     };
 
     // Filter accounts based on search term
     const filteredAccounts = accounts.filter(account =>
-        account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+        account.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const filteredInactiveAccounts = inactiveAccounts.filter(account =>
-        account.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+        account.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Function to fetch complete account details
+    const fetchAccountDetails = async (accountId: UUID) => {
+        setIsLoadingAccount(true);
+        try {
+            // First check if we already have full account data in our existing accounts
+            const existingAccount = [...accounts, ...inactiveAccounts].find(acc => acc.id === accountId);
+            
+            // If we have year_records data for this account, use it directly without API call
+            if (existingAccount && existingAccount.year_records && existingAccount.year_records.length > 0) {
+                setSelectedAccount(existingAccount);
+                setIsDrawerOpen(true);
+                setIsLoadingAccount(false);
+                return;
+            }
+            
+            // Only make API call if necessary
+            const response = await accountService.getAccountDetailById(accountId);
+            if (response.success && response.data) {
+                setSelectedAccount(response.data as AccountWithYearRecords);
+                setIsDrawerOpen(true);
+            } else {
+                // If API fails, fall back to the basic account data
+                setSelectedAccount(existingAccount || null);
+                setIsDrawerOpen(true);
+            }
+        } catch (error) {
+            console.error('Error fetching account details:', error);
+            // Fall back to the basic account data on error
+            const basicAccount = [...accounts, ...inactiveAccounts].find(acc => acc.id === accountId) || null;
+            setSelectedAccount(basicAccount);
+            setIsDrawerOpen(true);
+        } finally {
+            setIsLoadingAccount(false);
+        }
+    };
+
     // Renderer function for account cards (active and inactive)
-    const renderAccount = (account: Account, isInactive: boolean = false) => (
+    const renderAccount = (account: AccountWithYearRecords, isInactive: boolean = false) => (
         // Card component for the account with appropriate styling
         <Paper
-            key={account._id}
+            key={account.id}
             onClick={() => {
-                setSelectedAccount(account);
-                setIsDrawerOpen(true);
+                fetchAccountDetails(account.id);
             }}
-            onDragStart={() => !isInactive && handleDragStart(account._id)}
+            onDragStart={() => !isInactive && handleDragStart(account.id)}
             onDragOver={(e) => !isInactive && e.preventDefault()}
-            onDrop={() => !isInactive && handleDrop(account._id)}
+            onDrop={() => !isInactive && handleDrop(account.id)}
             draggable={!isInactive}
             elevation={0}
             sx={{
@@ -132,8 +187,8 @@ export default function AccountsTable({
                 p: 2,
                 borderRadius: 3,
                 cursor: 'pointer',
-                backgroundColor: account.configuration.backgroundColor,
-                color: account.configuration.color,
+                backgroundColor: account.background_color,
+                color: account.text_color,
                 opacity: isInactive ? 0.7 : 1
             }}
         >
@@ -150,15 +205,15 @@ export default function AccountsTable({
                     />
                 )}
                 {/* Account name display */}
-                <Typography variant="h6" sx={{ color: account.configuration.color }}>
-                    {account.accountName}
+                <Typography variant="h6" sx={{ color: account.text_color }}>
+                    {account.name}
                 </Typography>
             </Box>
             {/* Account balance display with currency hiding support */}
             <Typography
                 variant="body1"
                 sx={{
-                    color: account.configuration.color,
+                    color: account.text_color,
                     filter: isHidden ? 'blur(8px)' : 'none',
                     transition: 'filter 0.3s ease',
                     userSelect: isHidden ? 'none' : 'auto',
@@ -201,7 +256,10 @@ export default function AccountsTable({
                 />
                 <Button
                     variant="contained"
-                    onClick={() => setIsDrawerOpen(true)}
+                    onClick={() => {
+                        setSelectedAccount(null);
+                        setIsDrawerOpen(true);
+                    }}
                     startIcon={<AddIcon />}
                     size="small"
                     sx={{
@@ -282,24 +340,30 @@ export default function AccountsTable({
                     setSelectedAccount(null);
                 }}
             >
-                <AccountsForm
-                    onClose={() => {
-                        setIsDrawerOpen(false);
-                        setSelectedAccount(null);
-                    }}
-                    onSuccess={async (account) => {
-                        if (selectedAccount) {
-                            await onUpdate(account);
-                        } else {
-                            await onCreate(account);
-                        }
-                        setIsDrawerOpen(false);
-                        setSelectedAccount(null);
-                        return true;
-                    }}
-                    onDelete={onDelete}
-                    account={selectedAccount}
-                />
+                {isLoadingAccount ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 4 }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <AccountsForm
+                        onClose={() => {
+                            setIsDrawerOpen(false);
+                            setSelectedAccount(null);
+                        }}
+                        onSuccess={async (account) => {
+                            if (selectedAccount) {
+                                await onUpdate(account);
+                            } else {
+                                await onCreate(account);
+                            }
+                            setIsDrawerOpen(false);
+                            setSelectedAccount(null);
+                            return true;
+                        }}
+                        onDelete={onDelete}
+                        account={selectedAccount}
+                    />
+                )}
             </DrawerBase>
         </Paper>
     );

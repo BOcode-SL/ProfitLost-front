@@ -23,7 +23,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
@@ -183,11 +183,11 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
 
         // Filter transactions for current and previous month
         const currentMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCtoLocal(transaction.date);
+            const date = fromUTCtoLocal(transaction.transaction_date);
             return date >= firstDayOfMonth && date <= now;
         });
         const previousMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCtoLocal(transaction.date);
+            const date = fromUTCtoLocal(transaction.transaction_date);
             return date >= firstDayOfPreviousMonth && date <= lastDayOfPreviousMonth;
         });
 

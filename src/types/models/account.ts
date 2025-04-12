@@ -1,50 +1,47 @@
 /**
- * Account Models Module
+ * Account Model Module
  * 
- * Contains type definitions for financial accounts and their related structures.
+ * Contains adapted type definitions for account data that map to Supabase models.
  */
 
-import type { ISODateString } from '../api/common';
-
-/**
- * Represents a financial account in the system
- * Used to track financial information across multiple time periods
- */
-export interface Account {
-    _id: string;                 // Unique identifier
-    user_id: string;             // Owner of the account
-    accountName: string;         // Display name for the account
-    records: Record<string, YearRecord>; // Financial data organized by year
-    configuration: AccountConfiguration; // Visual and state settings
-    createdAt: ISODateString;    // When the account was created
-    updatedAt: ISODateString;    // When the account was last updated
-}
-
-/**
- * Represents monthly financial data for a specific year
- * Each property stores a numeric value (typically monetary amount)
- */
-export interface YearRecord {
-    jan: number;
-    feb: number;
-    mar: number;
-    apr: number;
-    may: number;
-    jun: number;
-    jul: number;
-    aug: number;
-    sep: number;
-    oct: number;
-    nov: number;
-    dec: number;
-}
+import type { UUID } from '../supabase/common';
 
 /**
  * Configuration options for an account
- * Controls visual appearance and activation state
  */
 export interface AccountConfiguration {
-    backgroundColor: string;     // Background color (hex)
-    color: string;               // Text color (hex)
-    isActive: boolean;           // Whether the account is currently active
+    isActive: boolean;           // Whether the account is active
+    backgroundColor: string;     // Background color for UI
+    textColor: string;           // Text color for UI
+}
+
+/**
+ * Monthly record data structure for a specific year
+ * Maps to the YearRecord in Supabase
+ */
+export interface YearRecord {
+    [key: string]: number | null;  // Monthly values (jan, feb, etc.)
+}
+
+/**
+ * Frontend Account interface that maps to Supabase Account and YearRecord models
+ */
+export interface Account {
+    _id: UUID;                   // Maps to id from Supabase
+    accountName: string;         // Maps to name from Supabase
+    configuration: AccountConfiguration;  // Maps to is_active, background_color, text_color
+    records: {                   // Maps to related YearRecord entries
+        [year: string]: YearRecord;
+    };
+}
+
+/**
+ * Type for creating or updating an account
+ */
+export interface AccountInput {
+    accountName: string;
+    configuration: AccountConfiguration;
+    records: {
+        [year: string]: YearRecord;
+    };
 } 

@@ -3,6 +3,17 @@ import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Dashboard Component
+ * 
+ * Main application container that manages:
+ * - Navigation between different sections
+ * - User authentication verification
+ * - Onboarding process for new users
+ * - Transaction creation flow
+ * - Global layout structure (header, nav, content)
+ */
+
 // Contexts
 import { useUser } from '../../contexts/UserContext';
 
@@ -22,21 +33,11 @@ import { categoryService } from '../../services/category.service';
 import { dispatchTransactionUpdated } from '../../utils/events';
 
 // Types
-import type { Category } from '../../types/models/category';
+import type { Category } from '../../types/supabase/category';
 
-/**
- * Dashboard Component
- * 
- * Main application container that manages:
- * - Navigation between different sections
- * - User authentication verification
- * - Onboarding process for new users
- * - Transaction creation flow
- * - Global layout structure (header, nav, content)
- */
 export default function Dashboard() {
     const { t } = useTranslation();
-    const { user, isLoading } = useUser();
+    const { user, isLoading, userPreferences, userRole } = useUser();
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -70,9 +71,10 @@ export default function Dashboard() {
 
     // Manage the visibility of the onboarding dialog for new users
     useEffect(() => {
-        const shouldShowOnboarding = user && 
-            (!user.onboarding || !user.onboarding.completed) && 
-            activeSection !== 'analytics';
+        // Check if onboarding data exists in user's preferences from context
+        const onboardingCompleted = userPreferences?.onboarding?.completed || false;
+        
+        const shouldShowOnboarding = user && !onboardingCompleted;
             
         if (shouldShowOnboarding) {
             setShowOnboarding(true);
@@ -84,7 +86,7 @@ export default function Dashboard() {
             }
             setActiveSection('dashhome');
         }
-    }, [user, searchParams, setSearchParams, activeSection]);
+    }, [user, userPreferences, searchParams, setSearchParams]);
 
     // Synchronize the active section with URL parameters
     useEffect(() => {
@@ -99,7 +101,6 @@ export default function Dashboard() {
         { label: t('dashboard.transactions.title'), icon: 'receipt_long', key: 'transactions' },
         { label: t('dashboard.accounts.title'), icon: 'account_balance', key: 'accounts' },
         { label: t('dashboard.notes.title'), icon: 'note_alt', key: 'notes' },
-        { label: t('dashboard.analytics.title'), icon: 'analytics', key: 'analytics', adminOnly: true },
         { label: t('dashboard.notifications.title'), icon: 'notifications', key: 'notifications', adminOnly: true }
     ], [t]);
 
@@ -156,6 +157,7 @@ export default function Dashboard() {
                     handleMenuItemClick={handleMenuItemClick}
                     menuItems={menuItems}
                     onAddTransaction={handleAddTransaction}
+                    userRole={userRole}
                 />
                 <DashboardContent activeSection={activeSection} />
             </Box>

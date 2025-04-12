@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 
 // Utils
 import {
@@ -44,7 +44,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
     const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
-
+    
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
@@ -77,7 +77,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
 
         // Aggregate transactions by month
         transactions.forEach(transaction => {
-            const month = fromUTCtoLocal(transaction.date).getMonth();
+            const month = fromUTCtoLocal(transaction.transaction_date).getMonth();
             if (transaction.amount > 0) {
                 monthsData[month].income += transaction.amount;
             } else {

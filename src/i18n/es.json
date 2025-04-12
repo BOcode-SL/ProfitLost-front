@@ -1400,53 +1400,6 @@
                 "updateError": "Error al guardar la nota",
                 "deleteError": "Error al eliminar la nota"
             }
-        },
-        "analytics": {
-            "title": "Analíticas",
-            "saveMetrics": "Guardar métricas",
-            "sections": {
-                "users": "Métricas de Usuarios",
-                "devices": "Distribución de Dispositivos",
-                "transactions": "Métricas de Movimientos",
-                "engagement": "Métricas de Engagement"
-            },
-            "metrics": {
-                "noData": "No hay datos disponibles",
-                "totalUsers": "Total de Usuarios",
-                "activeUsersDaily": "Usuarios Activos Diarios",
-                "activeUsersWeekly": "Usuarios Activos Semanales",
-                "activeUsersMonthly": "Usuarios Activos Mensuales",
-                "newUsersDaily": "Nuevos Usuarios Hoy",
-                "newUsersWeekly": "Nuevos Usuarios Esta Semana",
-                "newUsersMonthly": "Nuevos Usuarios Este Mes",
-                "deviceStatsDesktop": "Escritorio",
-                "deviceStatsMobile": "Móvil",
-                "deviceStatsTablet": "Tablet",
-                "totalTransactions": "Total de Movimientos",
-                "transactionsToday": "Movimientos de Hoy",
-                "transactionsThisMonth": "Movimientos de Este Mes",
-                "averageTransactionsPerUser": "Movimientos/Usuario",
-                "averageSessionDuration": "Duración Media de Sesión"
-            },
-            "errors": {
-                "fetchError": "Error al obtener los datos de analíticas",
-                "saveError": "Error al guardar las métricas",
-                "data_unavailable": "Datos no disponibles. Por favor, inténtalo más tarde.",
-                "metrics_save_error": "Error al guardar las métricas. Por favor, inténtalo de nuevo.",
-                "invalid_date_range": "Rango de fechas inválido. Por favor, selecciona fechas válidas.",
-                "insufficient_data": "Datos insuficientes para generar analíticas.",
-                "analytics_processing_error": "Error al procesar los datos de analíticas. Por favor, inténtalo de nuevo.",
-                "connection_error": "Error de conexión. Por favor, verifica tu conexión a internet.",
-                "database_error": "Error de base de datos. Por favor, inténtalo de nuevo más tarde.",
-                "server_error": "Error del servidor. Por favor, inténtalo de nuevo más tarde.",
-                "network_error": "Error de red. Por favor, verifica tu conexión.",
-                "fetch_error": "Error al obtener los datos. Por favor, inténtalo de nuevo.",
-                "unauthorized": "No tienes permisos para acceder a estas analíticas.",
-                "title": "Error en analíticas"
-            },
-            "success": {
-                "saveSuccess": "Métricas guardadas correctamente"
-            }
         }
     },
     "notFound": {

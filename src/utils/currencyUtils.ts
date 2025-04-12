@@ -4,7 +4,8 @@
  * Provides functionality for currency formatting and visibility management.
  * Handles user preferences for currency display across the application.
  */
-import { User } from '../types/models/user';
+import { User } from '../types/supabase/user';
+import { Currency } from '../types/supabase/preference';
 
 /**
  * Custom event name for currency visibility changes
@@ -30,7 +31,7 @@ export const toggleCurrencyVisibility = (): void => {
     const currentValue = isCurrencyHidden();
     const newValue = !currentValue;
     localStorage.setItem('hideCurrency', newValue.toString());
-    
+
     // Dispatch a custom event to notify components of the visibility change
     window.dispatchEvent(new CustomEvent(CURRENCY_VISIBILITY_EVENT, {
         detail: { isHidden: newValue }
@@ -45,12 +46,12 @@ export const toggleCurrencyVisibility = (): void => {
  * @param user - The user object containing preferences (or null for defaults)
  * @returns Formatted currency string with appropriate symbol and decimal places
  */
-export const formatCurrency = (amount: number, user: User | null): string => {
-    // Get the user's preferred currency or default to 'USD'
-    const currency = user?.preferences.currency || 'USD';
-    
+export const formatCurrency = (amount: number, user: User & { preferences?: { currency?: string } } | null): string => {
+    // Get the user's preferred currency from userPreferences or default to 'USD'
+    const currency = user?.preferences?.currency || 'USD';
+
     // Map currencies to their appropriate locales for proper formatting
-    const currencyLocaleMap: Record<string, string> = {
+    const currencyLocaleMap: Record<Currency, string> = {
         'USD': 'en-US',
         'EUR': 'es-ES',
         'GBP': 'en-GB',
@@ -64,9 +65,9 @@ export const formatCurrency = (amount: number, user: User | null): string => {
         'BOB': 'es-BO',
         'VES': 'es-VE'
     };
-    
+
     // Get the appropriate locale for the currency or default to 'en-US'
-    const locale = currencyLocaleMap[currency] || 'en-US';
+    const locale = currencyLocaleMap[currency as Currency] || 'en-US';
 
     try {
         // Format the amount using Intl.NumberFormat with currency style options
@@ -85,7 +86,7 @@ export const formatCurrency = (amount: number, user: User | null): string => {
             maximumFractionDigits: 2
         }).format(amount);
     }
-}; 
+};
 
 /**
  * Formats large numbers into a more readable format with abbreviations

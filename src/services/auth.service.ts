@@ -3,6 +3,7 @@
  * 
  * Provides functionality for user authentication including registration, login, logout,
  * password management, and third-party authentication via Google.
+ * Uses Supabase for authentication handling.
  */
 
 // Types
@@ -45,7 +46,7 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
 };
 
 /**
- * Service object providing methods for user authentication
+ * Service object providing methods for user authentication with Supabase
  */
 export const authService = {
     /**
@@ -79,6 +80,11 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
+            // Store the token in local storage if on iOS and token is provided
+            if (isIOS() && data.token) {
+                localStorage.setItem('auth_token', data.token);
+            }
+
             return data as AuthApiResponse;
         } catch (error) {
             throw handleAuthError(error);
@@ -86,7 +92,7 @@ export const authService = {
     },
 
     /**
-     * Authenticates a user with the provided login credentials
+     * Authenticates a user with the provided login credentials using Supabase
      * @param credentials - The login information including username/email and password
      * @returns Promise with the login response or error
      */
@@ -110,26 +116,44 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
-            // Store the token in local storage if on iOS
-            if (isIOS() && data.token) {
-                localStorage.setItem('auth_token', data.token);
+            // Store the session data in local storage if on iOS
+            if (isIOS() && data.data?.session) {
+                localStorage.setItem('supabase_session', JSON.stringify(data.data.session));
             }
 
-            return data as AuthApiResponse;
+            return {
+                success: true,
+                message: data.message,
+                data: data.data,
+                statusCode: response.status as HttpStatusCode
+            };
         } catch (error) {
             throw handleAuthError(error);
         }
     },
 
     /**
-     * Logs out the current user by clearing session data
+     * Logs out the current user by clearing session data in Supabase
      * @returns Promise with the logout response or error
      */
     async logout(): Promise<AuthApiResponse> {
         try {
+            // For iOS, include the token in the Authorization header
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json'
+            };
+            
+            if (isIOS()) {
+                const token = localStorage.getItem('auth_token');
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+            }
+
             const response = await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
+                headers
             });
 
             const data = await response.json();
@@ -244,7 +268,7 @@ export const authService = {
     },
 
     /**
-     * Authenticates a user using a Google OAuth token
+     * Authenticates a user using a Google OAuth token via Supabase
      * @param token - The Google authentication token
      * @returns Promise with the login response or error, including isNewUser flag
      */

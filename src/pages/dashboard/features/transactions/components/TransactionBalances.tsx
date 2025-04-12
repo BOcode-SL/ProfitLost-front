@@ -20,13 +20,13 @@ import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { User } from '../../../../../types/models/user';
+import type { UserWithPreferences } from '../../../../../contexts/UserContext';
 
 // Interface for the props of the TransactionBalances component
 interface TransactionBalancesProps {
     totalIncome: number; // Total income amount
     totalExpenses: number; // Total expenses amount
-    user: User; // User information
+    user: UserWithPreferences | null; // User information with preferences
     loading?: boolean; // Indicates if the data is currently loading
 }
 

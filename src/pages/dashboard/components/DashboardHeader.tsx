@@ -40,7 +40,7 @@ import { authService } from '../../../services/auth.service';
 import notificationService from '../../../services/notification.service';
 
 // Types
-import { User } from '../../../types/models/user';
+import { User } from '../../../types/supabase/user';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -85,7 +85,7 @@ interface SettingsDrawerState {
  */
 export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const { t } = useTranslation();
-    const { setUser } = useUser();
+    const { setUser, userRole } = useUser();
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
     const navigate = useNavigate();
 
@@ -99,6 +99,9 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const [isDisabledCurrencyAmount, setIsDisabledCurrencyAmount] = useState(isCurrencyHidden());
     const [unreadNotifications, setUnreadNotifications] = useState(0);
 
+    // Check if user is admin using role from UserContext
+    const isAdmin = userRole === 'admin' || false;
+    
     // Menu items for settings
     const menuItems = {
         primary: [
@@ -221,6 +224,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 onToggleCurrency={handleToggleCurrency}
                 onOpenNotifications={handleOpenNotifications}
                 onOpenUserDrawer={() => setDrawerOpen(true)}
+                isAdmin={isAdmin}
+                // profileImage={user?.profile_image}
             />
 
             {/* User Settings Drawer */}
@@ -231,6 +236,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 onClose={() => setDrawerOpen(false)}
                 onSettingsClick={handleSettingsClick}
                 onLogout={handleLogout}
+                // profileImage={user?.profile_image}
             />
 
             {/* Notifications Drawer */}
@@ -286,6 +292,8 @@ interface HeaderBarProps {
     onToggleCurrency: () => void;
     onOpenNotifications: () => void;
     onOpenUserDrawer: () => void;
+    isAdmin: boolean;
+    profileImage?: string;
 }
 
 function HeaderBar({
@@ -296,7 +304,9 @@ function HeaderBar({
     toggleTheme,
     onToggleCurrency,
     onOpenNotifications,
-    onOpenUserDrawer
+    onOpenUserDrawer,
+    isAdmin,
+    profileImage
 }: HeaderBarProps) {
     const { t } = useTranslation();
 
@@ -342,7 +352,7 @@ function HeaderBar({
                     </IconButton>
 
                     {/* Notifications button (admins only) */}
-                    {user?.role === 'admin' && (
+                    {isAdmin && (
                         <IconButton
                             onClick={onOpenNotifications}
                             sx={{
@@ -383,7 +393,7 @@ function HeaderBar({
                 <Avatar
                     variant="square"
                     onClick={onOpenUserDrawer}
-                    src={user?.profileImage}
+                    src={profileImage}
                     alt={user?.name}
                     sx={{
                         width: 40,
@@ -416,9 +426,10 @@ interface UserDrawerProps {
     onClose: () => void;
     onSettingsClick: (component: string) => void;
     onLogout: () => void;
+    profileImage?: string;
 }
 
-function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout }: UserDrawerProps) {
+function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout, profileImage }: UserDrawerProps) {
     const { t } = useTranslation();
 
     return (
@@ -446,7 +457,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout 
                 }}>
                     <Avatar
                         variant="square"
-                        src={user?.profileImage}
+                        src={profileImage}
                         alt={user?.name}
                         sx={{
                             width: 48,

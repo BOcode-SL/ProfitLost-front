@@ -1425,47 +1425,6 @@
                 "updateError": "Error saving note",
                 "deleteError": "Error deleting note"
             }
-        },
-        "analytics": {
-            "title": "Analytics",
-            "saveMetrics": "Save Metrics",
-            "sections": {
-                "users": "User Metrics",
-                "devices": "Device Distribution",
-                "transactions": "Transaction Metrics",
-                "engagement": "Engagement Metrics"
-            },
-            "metrics": {
-                "noData": "No data available",
-                "totalUsers": "Total Users",
-                "activeUsersDaily": "Daily Active Users",
-                "activeUsersWeekly": "Weekly Active Users",
-                "activeUsersMonthly": "Monthly Active Users",
-                "newUsersDaily": "New Users Today",
-                "newUsersWeekly": "New Users This Week",
-                "newUsersMonthly": "New Users This Month",
-                "deviceStatsDesktop": "Desktop",
-                "deviceStatsMobile": "Mobile",
-                "deviceStatsTablet": "Tablet",
-                "totalTransactions": "Total Transactions",
-                "transactionsToday": "Today's Transactions",
-                "transactionsThisMonth": "This Month's Transactions",
-                "averageTransactionsPerUser": "Transactions/User",
-                "averageSessionDuration": "Average Session Duration"
-            },
-            "errors": {
-                "fetchError": "Error fetching analytics data",
-                "saveError": "Error saving metrics",
-                "data_unavailable": "Data unavailable. Please try again later.",
-                "metrics_save_error": "Error saving metrics. Please try again.",
-                "invalid_date_range": "Invalid date range. Please select valid dates.",
-                "insufficient_data": "Insufficient data to generate analytics.",
-                "analytics_processing_error": "Error processing analytics data. Please try again.",
-                "title": "Analytics error"
-            },
-            "success": {
-                "saveSuccess": "Metrics saved successfully"
-            }
         }
     },
     "notFound": {

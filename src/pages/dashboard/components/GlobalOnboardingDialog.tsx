@@ -27,7 +27,21 @@ import { userService } from '../../../services/user.service';
 import { categoryService } from '../../../services/category.service';
 
 // Types
-import { Language, Currency, DateFormat, TimeFormat, OnboardingProgress, UserPreferences } from '../../../types/models/user';
+import { Language, Currency, DateFormat, TimeFormat, PreferenceContent } from '../../../types/supabase/preference';
+
+/**
+ * Interface for tracking onboarding progress in localStorage
+ */
+interface OnboardingProgress {
+    activeStep: number;
+    preferences: {
+        language?: Language;
+        currency?: Currency;
+        dateFormat?: DateFormat;
+        timeFormat?: TimeFormat;
+    };
+    selectedCategories: string[];
+}
 
 /**
  * Configuration options for preference selections
@@ -139,14 +153,14 @@ interface GlobalOnboardingDialogProps {
  */
 export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardingDialogProps) {
     const { t, i18n } = useTranslation();
-    const { user, loadUserData } = useUser();
+    const { userPreferences, loadUserData } = useUser();
 
     const [activeStep, setActiveStep] = useState(0);
-    const [preferences, setPreferences] = useState<UserPreferences>({
-        language: user?.preferences?.language || 'enUS',
-        currency: user?.preferences?.currency || 'USD',
-        dateFormat: user?.preferences?.dateFormat || 'MM/DD/YYYY',
-        timeFormat: user?.preferences?.timeFormat || '12h'
+    const [preferences, setPreferences] = useState<OnboardingProgress["preferences"]>({
+        language: userPreferences?.language || 'enUS',
+        currency: userPreferences?.currency || 'USD',
+        dateFormat: userPreferences?.dateFormat || 'MM/DD/YYYY',
+        timeFormat: userPreferences?.timeFormat || '12h'
     });
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -207,7 +221,21 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         try {
             if (activeStep === 0) {
                 // Step 1: Save user preferences to API
-                await userService.onboardingPreferences(preferences);
+                // Create a complete PreferenceContent object to match Supabase structure
+                const completePreferences: PreferenceContent = {
+                    language: preferences.language || 'enUS',
+                    currency: preferences.currency || 'USD',
+                    dateFormat: preferences.dateFormat || 'MM/DD/YYYY',
+                    timeFormat: preferences.timeFormat || '12h',
+                    theme: 'light', // Default theme
+                    viewMode: 'yearToday', // Default view mode
+                    onboarding: {
+                        completed: false,
+                        sections: []
+                    }
+                };
+                
+                await userService.onboardingPreferences(completePreferences);
                 await loadUserData();
                 setActiveStep((prevStep) => prevStep + 1);
             } else if (activeStep === steps.length - 1) {

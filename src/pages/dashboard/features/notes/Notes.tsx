@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
 // Types
-import type { Note } from '../../../../types/models/note';
+import type { Note } from '../../../../types/supabase/note';
 
 // Services
 import { noteService } from '../../../../services/note.service';
@@ -88,7 +88,7 @@ export default function Notes() {
             });
 
             if (response.success && response.data) {
-                const newNote = response.data as Note;
+                const newNote = Array.isArray(response.data) ? response.data[0] : response.data;
                 // Add new note to the beginning of the list
                 setNotes(prevNotes => [newNote, ...prevNotes]);
                 // Select the newly created note
@@ -108,17 +108,17 @@ export default function Notes() {
         try {
             setIsSaving(true);
 
-            const response = await noteService.updateNote(selectedNote._id, {
+            const response = await noteService.updateNote(selectedNote.id, {
                 title: selectedNote.title,
                 content: selectedNote.content
             });
 
             if (response.success && response.data) {
-                const updatedNote = response.data as Note;
+                const updatedNote = Array.isArray(response.data) ? response.data[0] : response.data;
                 // Update the note in the notes list
                 setNotes(prevNotes =>
                     prevNotes.map(note =>
-                        note._id === updatedNote._id ? updatedNote : note
+                        note.id === updatedNote.id ? updatedNote : note
                     )
                 );
                 // Update the selected note reference
@@ -146,13 +146,13 @@ export default function Notes() {
 
         try {
             setIsSaving(true);
-            const response = await noteService.deleteNote(selectedNote._id);
+            const response = await noteService.deleteNote(selectedNote.id);
 
             if (response.success) {
                 // Remove the deleted note from the list
-                setNotes(prevNotes => prevNotes.filter(note => note._id !== selectedNote._id));
+                setNotes(prevNotes => prevNotes.filter(note => note.id !== selectedNote.id));
                 // Select the next available note or null if none left
-                const remainingNotes = notes.filter(note => note._id !== selectedNote._id);
+                const remainingNotes = notes.filter(note => note.id !== selectedNote.id);
                 setSelectedNote(remainingNotes.length > 0 ? remainingNotes[0] : null);
                 toast.success(t('dashboard.notes.success.deleted'));
             }

@@ -22,7 +22,7 @@ import { useUser } from '../../../../../contexts/UserContext';
 import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 
 // Interface for the props of the AnnualBalances component
 interface AnnualBalancesProps {

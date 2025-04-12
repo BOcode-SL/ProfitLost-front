@@ -11,7 +11,7 @@
  * - Color-coded indicators for income vs expense categories
  * - Responsive layout for different screen sizes
  */
-import { useState, useEffect, useMemo, forwardRef } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 import {
     Box,
@@ -47,9 +47,10 @@ import { categoryService } from '../../../../../services/category.service';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { Category } from '../../../../../types/models/category';
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Category } from '../../../../../types/supabase/category';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 import type { CategoryApiErrorResponse } from '../../../../../types/api/responses';
+
 type SortOption = 'name_asc' | 'name_desc' | 'balance_asc' | 'balance_desc';
 interface EditCategoryState {
     isOpen: boolean;
@@ -64,7 +65,7 @@ import DrawerBase from '../../../components/ui/DrawerBase';
 
 // Interface for the props of the AnnualCategories component
 interface AnnualCategoriesProps {
-    transactions: Transaction[]; // Array of transactions to analyze by category
+    transactions: Transaction[];
     isLoading: boolean; // Loading state indicator
 }
 
@@ -100,17 +101,21 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         categoryName: ''
     });
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+    const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
     // Fetch all categories on component mount
     useEffect(() => {
         const fetchCategories = async () => {
+            setIsCategoriesLoading(true);
             try {
                 const response = await categoryService.getAllCategories();
                 if (response.success && Array.isArray(response.data)) {
-                    setCategories(response.data);
+                    setCategories(response.data as Category[]);
                 }
             } catch {
                 toast.error(t('dashboard.annualReport.categories.errors.loadingError'));
+            } finally {
+                setIsCategoriesLoading(false);
             }
         };
 
@@ -125,13 +130,15 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
 
         // Calculate balance for each category
         const balances = categories.map(category => {
-            const categoryTransactions = transactions.filter(
-                transaction => transaction.category === category.name
+            // Filter transactions for this category
+            const categoryTransactions = transactions.filter(transaction => 
+                transaction.category_id === category.id
             );
 
-            const balance = categoryTransactions.reduce((acc, transaction) => {
-                return acc + transaction.amount;
-            }, 0);
+            // Calculate balance by summing transaction amounts
+            const balance = categoryTransactions.reduce((acc, transaction) => 
+                acc + transaction.amount, 0
+            );
 
             return {
                 category,
@@ -164,7 +171,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
     const handleCreateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
-            setCategories(categoriesResponse.data);
+            setCategories(categoriesResponse.data as Category[]);
         }
     };
 
@@ -182,7 +189,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
     const handleUpdateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
-            setCategories(categoriesResponse.data);
+            setCategories(categoriesResponse.data as Category[]);
         }
     };
 
@@ -192,13 +199,14 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
 
         setSavingChanges(true);
         try {
-            const response = await categoryService.deleteCategory(editCategory.category._id);
+            const categoryId = editCategory.category.id;
+            const response = await categoryService.deleteCategory(categoryId);
 
             if (response.success) {
                 toast.success(t('dashboard.annualReport.categories.success.deleted'));
                 const categoriesResponse = await categoryService.getAllCategories();
                 if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
-                    setCategories(categoriesResponse.data);
+                    setCategories(categoriesResponse.data as Category[]);
                 }
                 setEditCategory({ isOpen: false, category: null, name: '', color: '' });
             }
@@ -297,7 +305,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                 </Box>
 
                 {/* Loading, empty state, or category list display */}
-                {isLoading ? (
+                {isLoading || isCategoriesLoading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
                         <CircularProgress />
                     </Box>
@@ -335,9 +343,8 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                         gap: 1,
                     }}>
                         {categoriesBalance.map(({ category, balance }) => (
-                            <>
+                            <React.Fragment key={category.id}>
                                 <ListItem
-                                    key={category._id}
                                     onClick={() => handleCategoryClick(category)}
                                     sx={{
                                         display: 'flex',
@@ -391,7 +398,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                                     </Box>
                                 </ListItem>
                                 <Divider />
-                            </>
+                            </React.Fragment>
                         ))}
                     </Box>
                 )}

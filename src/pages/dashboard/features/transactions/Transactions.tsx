@@ -20,9 +20,8 @@ import { useUser } from '../../../../contexts/UserContext';
 
 // Types
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
-import type { Transaction } from '../../../../types/models/transaction';
-import type { User } from '../../../../types/models/user';
-import type { Category } from '../../../../types/models/category';
+import type { Transaction } from '../../../../types/supabase/transaction';
+import type { Category } from '../../../../types/supabase/category';
 
 // Services
 import { transactionService } from '../../../../services/transaction.service';
@@ -82,35 +81,33 @@ export default function Transactions() {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            const [transactionsResponse, categoriesResponse, allTransactionsResponse] =
+            const [transactionsResponse, categoriesResponse, yearsResponse] =
                 await Promise.all([
                     transactionService.getTransactionsByYearAndMonth(year, month),
                     categoryService.getAllCategories(),
-                    transactionService.getAllTransactions()
+                    transactionService.getTransactionYears()
                 ]);
 
-            if (!transactionsResponse.success || !categoriesResponse.success || !allTransactionsResponse.success) {
+            if (!transactionsResponse.success || !categoriesResponse.success || !yearsResponse.success) {
                 throw new Error('Error fetching data');
             }
 
-            // Extract unique years from all transactions for the year selector
-            const years = new Set<string>(
-                (allTransactionsResponse.data as Transaction[]).map(t =>
-                    new Date(t.date).getFullYear().toString()
-                )
-            );
-            years.add(currentYear);
-
-            setYearsWithData(Array.from(years).sort((a, b) => Number(b) - Number(a)));
+            // Use the years from the dedicated endpoint
+            setYearsWithData(yearsResponse.data as string[]);
             setTransactions(transactionsResponse.data as Transaction[]);
             setCategories(categoriesResponse.data as Category[]);
+            
+            // Ensure yearsWithData contains at least the current year
+            if ((yearsResponse.data as string[]).length === 0) {
+                setYearsWithData([currentYear]);
+            }
         } catch (error: unknown) {
             const transactionError = error as TransactionApiErrorResponse;
             handleError(transactionError);
         } finally {
             setLoading(false);
         }
-    }, [year, month, currentYear, handleError]);
+    }, [year, month, handleError, currentYear]);
 
     // Fetch data when component mounts or when year/month changes
     useEffect(() => {
@@ -139,17 +136,21 @@ export default function Transactions() {
 
         // Group transactions by category and calculate totals
         transactions.forEach((transaction) => {
-            const category = categories.find(c => c.name === transaction.category);
+            const amount = typeof transaction.amount === 'string' 
+                ? parseFloat(transaction.amount) 
+                : transaction.amount;
+                
+            const category = categories.find(c => c.id === transaction.category_id);
             if (!category) {
                 console.warn('⚠️ No category found for the transaction:', transaction);
                 return;
             }
 
-            if (transaction.amount > 0) {
-                income[category.name] = (income[category.name] || 0) + transaction.amount;
-                totalInc += transaction.amount;
+            if (amount > 0) {
+                income[category.name] = (income[category.name] || 0) + amount;
+                totalInc += amount;
             } else {
-                const absAmount = Math.abs(transaction.amount);
+                const absAmount = Math.abs(amount);
                 expenses[category.name] = (expenses[category.name] || 0) + absAmount;
                 totalExp += absAmount;
             }
@@ -194,10 +195,13 @@ export default function Transactions() {
                             label={t('dashboard.common.year')}
                             onChange={(e) => setYear(e.target.value)}
                         >
-                            {/* Display years with transaction data */}
-                            {yearsWithData.map(y => (
-                                <MenuItem key={y} value={y}>{y}</MenuItem>
-                            ))}
+                            {/* Display years with transaction data or current year if empty */}
+                            {yearsWithData.length > 0 
+                                ? yearsWithData.map(y => (
+                                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                                ))
+                                : <MenuItem value={currentYear}>{currentYear}</MenuItem>
+                            }
                         </Select>
                     </FormControl>
                 </Paper>
@@ -258,7 +262,7 @@ export default function Transactions() {
             <TransactionBalances
                 totalIncome={totalIncome}
                 totalExpenses={totalExpenses}
-                user={user as User}
+                user={user}
                 loading={loading}
             />
 

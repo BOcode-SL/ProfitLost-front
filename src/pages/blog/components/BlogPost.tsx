@@ -11,7 +11,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 
 // Types
-import { BlogPost as BlogPostType } from '../../../types/models/blogPost';
+import { BlogPost as BlogPostType } from '../../../types/blogPost';
 
 export interface BlogPostProps {
     post: BlogPostType;

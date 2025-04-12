@@ -38,7 +38,7 @@ interface DashboardContentProps {
  * - Provides loading indicators during component loading
  */
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
-    const { user, setUser } = useUser();
+    const { user, userPreferences, loadUserData } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
     // Scroll to top when section changes for better UX
@@ -48,33 +48,24 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
 
     // Show introduction dialog for new sections user hasn't seen before
     useEffect(() => {
-        if (user && activeSection && user.onboarding.completed) {
-            const sectionIntro = user.onboarding.sections.find(
-                section => section.section === activeSection
+        if (user && activeSection && userPreferences && userPreferences.onboarding.completed) {
+            const sectionIntro = userPreferences.onboarding.sections.find(
+                (section) => section.section === activeSection
             );
 
             if (!sectionIntro || !sectionIntro.shown) {
                 setShowIntro(true);
             }
         }
-    }, [activeSection, user]);
+    }, [activeSection, user, userPreferences]);
 
     // Handle introduction dialog close and update user preferences
     const handleIntroClose = async () => {
         try {
             await userService.updateOnboardingSection(activeSection);
-            if (user) {
-                setUser({
-                    ...user,
-                    onboarding: {
-                        ...user.onboarding,
-                        sections: [
-                            ...user.onboarding.sections.filter(s => s.section !== activeSection),
-                            { section: activeSection, shown: true }
-                        ]
-                    }
-                });
-            }
+            
+            // Refresh the user data to get updated preferences
+            await loadUserData();
         } catch (error) {
             console.error('Error updating onboarding section:', error);
         }

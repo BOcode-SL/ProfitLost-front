@@ -26,14 +26,21 @@ import {
 } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { Account, YearRecord } from '../../../../../types/models/account';
+import type { Account } from '../../../../../types/supabase/account';
+import type { YearRecord } from '../../../../../types/supabase/year_record';
+
+// Extended Account interface that includes year_records relationship
+interface AccountWithYearRecords extends Account {
+    year_records?: YearRecord[];
+}
 
 // Interface for the props of the AccountsChart component
 interface AccountsChartProps {
-    accounts: Account[];       // Array of account objects to display in the chart
-    loading: boolean;          // Flag indicating if data is still being loaded
-    selectedYear: number;      // The year for which to display account data
+    accounts: AccountWithYearRecords[];  // Array of account objects with year records
+    loading: boolean;                    // Flag indicating if data is still being loaded
+    selectedYear: number;                // The year for which to display account data
 }
+
 // Interface for the data point in chart dataset
 interface DataPoint {
     month: string;             // Month identifier (e.g., "Jan", "Feb")
@@ -88,10 +95,19 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     }
 
     // Filter to get only active accounts for chart display
-    const activeAccounts = accounts.filter(account => account.configuration.isActive !== false);
+    const activeAccounts = accounts.filter(account => account.is_active !== false);
 
     // Check if there is no data available to display
     const isDataEmpty = activeAccounts.length === 0;
+
+    // Helper function to get month value safely
+    const getMonthValue = (yearRecord: YearRecord | undefined, month: string): number => {
+        if (!yearRecord) return 0;
+        const monthKey = month.toLowerCase() as keyof YearRecord;
+        const value = yearRecord[monthKey];
+        // Handle null values and convert string values to numbers
+        return value ? parseFloat(value as string) : 0;
+    };
 
     // Create the dataset structure for the chart with month data points
     const dataset: DataPoint[] = months.map(month => {
@@ -103,8 +119,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
 
         // Add each account's monthly value to the data point
         activeAccounts.forEach(account => {
-            const yearRecord = account.records[selectedYear.toString()];
-            dataPoint[account.accountName] = yearRecord ? yearRecord[monthLower as keyof YearRecord] : 0;
+            // Find the year record for this account
+            const yearRecords = account.year_records || [];
+            const yearRecord = yearRecords.find(record => record.year === selectedYear);
+            dataPoint[account.name] = getMonthValue(yearRecord, monthLower);
         });
 
         return dataPoint;
@@ -112,10 +130,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
 
     // Configure the series definitions for each account with styling and formatting
     const series = activeAccounts.map(account => ({
-        dataKey: account.accountName,
-        label: account.accountName,
+        dataKey: account.name,
+        label: account.name,
         stack: 'total',
-        color: account.configuration.backgroundColor,
+        color: account.background_color,
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
@@ -125,7 +143,7 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         if (!monthData) return 0;
 
         const total = activeAccounts.reduce((total, account) => {
-            return total + (monthData[account.accountName] as number || 0);
+            return total + (monthData[account.name] as number || 0);
         }, 0);
 
         return parseFloat(total.toFixed(2));

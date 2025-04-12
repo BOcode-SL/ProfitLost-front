@@ -41,6 +41,7 @@ const handleNoteError = (error: unknown): NoteApiResponse => {
 export const noteService = {
     /**
      * Retrieves all notes belonging to the current user
+     * Notes are automatically decrypted by the backend
      * @returns Promise with the notes data or error response
      */
     async getAllNotes(): Promise<NoteApiResponse> {
@@ -68,6 +69,7 @@ export const noteService = {
 
     /**
      * Creates a new note with the provided data
+     * Note content will be encrypted by the backend
      * @param noteData - The data for the note to be created
      * @returns Promise with the created note data or error response
      */
@@ -97,6 +99,7 @@ export const noteService = {
 
     /**
      * Updates an existing note with the provided data
+     * Note content will be encrypted by the backend
      * @param id - The ID of the note to be updated
      * @param updateData - The new data to update the note with
      * @returns Promise with the updated note data or error response
@@ -129,6 +132,7 @@ export const noteService = {
 
     /**
      * Deletes a note with the specified ID
+     * Implements soft delete by setting deleted_at timestamp in the backend
      * @param id - The ID of the note to be deleted
      * @returns Promise with the response data or error response
      */

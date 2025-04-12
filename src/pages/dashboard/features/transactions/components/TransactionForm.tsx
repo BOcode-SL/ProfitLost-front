@@ -49,27 +49,26 @@ import { dispatchTransactionUpdated } from '../../../../../utils/events';
 import { transactionService } from '../../../../../services/transaction.service';
 
 // Types
-import type { Category } from '../../../../../types/models/category';
-import type { Transaction } from '../../../../../types/models/transaction';
-import type { RecurrenceType } from '../../../../../types/models/transaction';
+import type { Category } from '../../../../../types/supabase/category';
+import type { Transaction, RecurrenceType } from '../../../../../types/supabase/transaction';
 
 // Interface for transaction data to be updated
 interface TransactionUpdateData {
-    date: string;
-    description: string;
+    transaction_date: string;
+    description: string | null;
     amount: number;
-    category: string;
-    isRecurrent?: boolean;
-    recurrenceType?: RecurrenceType;
-    recurrenceEndDate?: string;
+    category_id: string;
+    recurrence_type: RecurrenceType;
+    recurrence_end_date: string | null;
+    recurrence_id?: string | null;
 }
 
 // Interface for updates to recurrent transactions
 interface UpdateData {
-    description: string;
+    description: string | null;
     amount: number;
-    category: string;
-    date?: string;
+    category_id: string;
+    transaction_date?: string;
     updateAll?: boolean;
 }
 
@@ -138,7 +137,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [date, setDate] = useState(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
-            return utcToLocalString(transaction.date);
+            return utcToLocalString(transaction.transaction_date);
         }
         // For a new transaction, use the current local date and time
         const now = new Date();
@@ -155,23 +154,22 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     });
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
-    const [category, setCategory] = useState(transaction
-        ? categories.find(cat => cat.name === transaction.category) || null
-        : null
-    );
+    const [category, setCategory] = useState(() => {
+        if (transaction) {
+            return categories.find(cat => cat.id === transaction.category_id) || null;
+        }
+        return null;
+    });
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
-    const [isRecurrent, setIsRecurrent] = useState(() => {
-        return transaction?.isRecurrent || false;
-    });
     const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(() => {
-        return transaction?.recurrenceType || null;
+        return transaction?.recurrence_type || null;
     });
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
-        if (transaction?.recurrenceEndDate) {
-            return utcToLocalString(transaction.recurrenceEndDate).substring(0, 10);
+        if (transaction?.recurrence_end_date) {
+            return utcToLocalString(transaction.recurrence_end_date).substring(0, 10);
         }
         return '';
     });
@@ -183,24 +181,26 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     useEffect(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
-            setDate(utcToLocalString(transaction.date));
+            setDate(utcToLocalString(transaction.transaction_date));
 
-            setDescription(transaction.description);
+            setDescription(transaction.description || '');
             setAmount(Math.abs(transaction.amount).toString());
 
-            const foundCategory = categories.find(cat => cat.name === transaction.category);
+            const foundCategory = categories.find(cat => cat.id === transaction.category_id);
             setCategory(foundCategory || null);
 
             setIsIncome(transaction.amount >= 0);
-            setIsRecurrent(transaction.isRecurrent);
-            setRecurrenceType(transaction.recurrenceType || null);
+            setRecurrenceType(transaction.recurrence_type);
 
-            if (transaction.recurrenceEndDate) {
+            if (transaction.recurrence_end_date) {
                 // Convert recurrence end date to local format
-                setRecurrenceEndDate(utcToLocalString(transaction.recurrenceEndDate).substring(0, 10));
+                setRecurrenceEndDate(utcToLocalString(transaction.recurrence_end_date).substring(0, 10));
             }
         }
     }, [transaction, categories]);
+
+    // Check if transaction is recurrent (has a non-null recurrence_id)
+    const isRecurrent = transaction?.recurrence_id !== null;
 
     // Handle form submission with validation
     const handleSubmit = async (e: React.FormEvent) => {
@@ -213,7 +213,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
 
         // Validate recurrence fields for new recurring transactions
-        if (!transaction && isRecurrent && (!recurrenceType || !recurrenceEndDate)) {
+        if (!transaction && recurrenceType && !recurrenceEndDate) {
             toast.error(t('dashboard.transactions.form.errors.recurrenceRequired'));
             return;
         }
@@ -236,14 +236,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             const utcDate = prepareForBackend(localDate);
 
             const transactionData: TransactionUpdateData = {
-                date: utcDate,
+                transaction_date: utcDate,
                 description: finalDescription,
                 amount: numAmount * (isIncome ? 1 : -1),
-                category: category._id
+                category_id: category.id,
+                recurrence_type: recurrenceType || null,
+                recurrence_end_date: recurrenceEndDate ? prepareForBackend(new Date(`${recurrenceEndDate}T23:59:59`)) : null,
+                recurrence_id: transaction?.recurrence_id
             };
 
             // Special handling for recurrent transaction edits
-            if (transaction?.isRecurrent) {
+            if (transaction?.recurrence_id !== null) {
                 setTransactionDataToUpdate(transactionData);
                 setEditRecurrentDialog(true);
                 setIsSubmitting(false);
@@ -252,18 +255,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             // Handle transaction update or creation
             if (transaction) {
-                await transactionService.updateTransaction(transaction._id, transactionData);
+                await transactionService.updateTransaction(transaction.id, transactionData);
                 toast.success(t('dashboard.transactions.success.updated'));
                 dispatchTransactionUpdated();
             } else {
-                // Add recurrence properties for new recurring transactions
-                if (isRecurrent) {
-                    transactionData.isRecurrent = true;
-                    transactionData.recurrenceType = recurrenceType;
-                    // Ensure the recurrence end date is in ISO UTC format
-                    // Create a Date object with the full date (adding the time)
-                    const endDateWithTime = new Date(`${recurrenceEndDate}T23:59:59`);
-                    transactionData.recurrenceEndDate = prepareForBackend(endDateWithTime);
+                // Additional validation for recurring transactions
+                if (recurrenceType) {
+                    if (!recurrenceEndDate) {
+                        toast.error(t('dashboard.transactions.form.errors.recurrenceEndDateRequired'));
+                        setIsSubmitting(false);
+                        return;
+                    }
                 }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
@@ -290,8 +292,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         try {
             setIsDeleting(true);
             await transactionService.deleteTransaction(
-                transaction!._id,
-                transaction?.isRecurrent ? updateAllRecurrent : undefined
+                transaction!.id,
+                transaction?.recurrence_id !== null ? updateAllRecurrent : undefined
             );
             toast.success(t('dashboard.transactions.success.deleted'));
             dispatchTransactionUpdated();
@@ -316,17 +318,17 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             const dataToUpdate: UpdateData = {
                 description: transactionDataToUpdate.description,
                 amount: transactionDataToUpdate.amount,
-                category: transactionDataToUpdate.category
+                category_id: transactionDataToUpdate.category_id
             };
 
             // Only include date if not updating all recurrences
             if (!updateAllRecurrent) {
-                dataToUpdate.date = transactionDataToUpdate.date;
+                dataToUpdate.transaction_date = transactionDataToUpdate.transaction_date;
             }
 
             // Update transaction with appropriate flags
             await transactionService.updateTransaction(
-                transaction._id,
+                transaction.id,
                 { ...dataToUpdate, updateAll: updateAllRecurrent }
             );
 
@@ -390,7 +392,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     ?
                 </Typography>
                 {/* Recurrent transaction additional options */}
-                {transaction?.isRecurrent && (
+                {transaction?.recurrence_id !== null && (
                     <>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
                             {t('dashboard.transactions.form.delete.recurrentWarning')}
@@ -441,9 +443,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     // Recurrence configuration fields component
     const RecurrenceFields = () => {
-        const shouldShow = isRecurrent;
-
-        if (!shouldShow) return null;
+        if (!isRecurrent) return null;
 
         return (
             <Box sx={{ width: '100%', mt: 2 }}>
@@ -524,9 +524,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         disabled={isEditing}
                         onChange={(e) => {
                             // Update the recurrence state based on switch value
-                            setIsRecurrent(e.target.checked);
-                            // If unchecked, reset recurrence type and end date
-                            if (!e.target.checked) {
+                            if (e.target.checked) {
+                                setRecurrenceType('monthly'); // Default recurrence type
+                            } else {
                                 setRecurrenceType(null);
                                 setRecurrenceEndDate('');
                             }

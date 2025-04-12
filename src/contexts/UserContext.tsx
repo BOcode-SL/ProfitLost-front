@@ -7,9 +7,57 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Import types for User and User Preferences
-import type { User, UserContextType, UserPreferences } from '../types/models/user';
+// Types
+import type { User } from '../types/supabase/user';
+import type { PreferenceContent } from '../types/supabase/preference';
+
+// Services
 import { userService } from '../services/user.service';
+
+/**
+ * API response structure from the backend
+ */
+interface UserApiResponse {
+    id: string;
+    username: string;
+    email: string;
+    name: string;
+    surname: string;
+    profile_image?: string;
+    preferences: {
+        language?: string;
+        currency?: string;
+        dateFormat?: string;
+        timeFormat?: string;
+        theme?: string;
+        viewMode?: string;
+        onboarding?: {
+            completed: boolean;
+            sections: Array<{ section: string; shown: boolean }>;
+        };
+    };
+    role: string;
+}
+
+/**
+ * Extended User interface that includes preferences directly on the user object
+ * for easier access in utility functions
+ */
+export interface UserWithPreferences extends User {
+    preferences: PreferenceContent;
+}
+
+/**
+ * Interface for UserContext
+ */
+interface UserContextType {
+    user: UserWithPreferences | null;   // Current user data with preferences or null if not logged in
+    setUser: (user: UserWithPreferences | null) => void; // Function to update user
+    isLoading: boolean;          // Whether user data is loading
+    loadUserData: () => Promise<void>; // Function to refresh user data
+    userPreferences: PreferenceContent | null; // User preferences
+    userRole: string | null;     // User role ('admin', 'user', etc.)
+}
 
 /**
  * Create the User Context with undefined default value.
@@ -21,13 +69,17 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
  * Default user preferences.
  * Applied when user has no stored preferences or as fallback values.
  */
-const defaultPreferences: UserPreferences = {
+const defaultPreferences: PreferenceContent = {
     language: 'enUS',
     currency: 'USD',
     dateFormat: 'DD/MM/YYYY',
     timeFormat: '24h',
     theme: 'light',
-    viewMode: 'fullYear'
+    viewMode: 'fullYear',
+    onboarding: {
+        completed: false,
+        sections: []
+    }
 };
 
 /**
@@ -38,7 +90,9 @@ const defaultPreferences: UserPreferences = {
  * @param children - Child components to be wrapped
  */
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null); // State for user data
+    const [user, setUser] = useState<UserWithPreferences | null>(null); // State for user data
+    const [userPreferences, setUserPreferences] = useState<PreferenceContent | null>(null); // State for preferences
+    const [userRole, setUserRole] = useState<string | null>(null); // State for user role
     const [isLoading, setIsLoading] = useState(true);    // Loading state tracker
     const { i18n } = useTranslation();                   // i18n instance for language management
 
@@ -62,7 +116,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     /**
      * Loads user data from the API.
-     * Merges returned user data with default preferences.
      * Updates application language based on user preferences.
      */
     const loadUserData = useCallback(async () => {
@@ -70,29 +123,57 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             const response = await userService.getUserData(); // Fetch user profile data
 
             if (response.success && response.data) {
-                const userData = response.data as User; // Cast response data to User type
+                // Cast response data to our API response interface
+                const apiData = response.data as unknown as UserApiResponse;
                 
-                // Create user object with merged preferences
-                const userWithPreferences: User = {
-                    ...userData,
-                    preferences: {
-                        ...defaultPreferences,
-                        ...userData.preferences // Override defaults with user preferences
-                    }
+                // Create a user preferences object with defaults merged with API data
+                const preferences = {
+                    ...defaultPreferences,
+                    ...(apiData.preferences || {})
+                } as PreferenceContent;
+                
+                // Create a User object that matches the Supabase schema and includes preferences
+                const userData: UserWithPreferences = {
+                    id: apiData.id,
+                    username: apiData.username,
+                    email: apiData.email,
+                    name: apiData.name,
+                    surname: apiData.surname,
+                    // Add other required fields with defaults
+                    password: null,
+                    google_id: null,
+                    last_login: new Date().toISOString(),
+                    reset_token: null,
+                    reset_token_expired: null,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    deleted_at: null,
+                    created_by: null,
+                    updated_by: null,
+                    deleted_by: null,
+                    // Add the preferences directly to the user object
+                    preferences: preferences
                 };
-                setUser(userWithPreferences); // Update user state
+
+                setUser(userData);
+                setUserPreferences(preferences);
+                setUserRole(apiData.role || null);
 
                 // Update application language based on user preference
-                const userLanguage = convertLanguageFormat(userWithPreferences.preferences.language);
+                const userLanguage = convertLanguageFormat(preferences.language);
                 await i18n.changeLanguage(userLanguage);
             } else {
-                setUser(null); // Clear user state if request unsuccessful
+                setUser(null);
+                setUserPreferences(null);
+                setUserRole(null);
             }
         } catch (error) {
             console.error('Error loading user data:', error);
-            setUser(null); // Clear user state on error
+            setUser(null);
+            setUserPreferences(null);
+            setUserRole(null);
         } finally {
-            setIsLoading(false); // Mark loading as complete
+            setIsLoading(false);
         }
     }, [i18n]);
 
@@ -103,7 +184,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     // Provide user context to children components
     return (
-        <UserContext.Provider value={{ user, setUser, isLoading, loadUserData }}>
+        <UserContext.Provider value={{ user, setUser, isLoading, loadUserData, userPreferences, userRole }}>
             {children}
         </UserContext.Provider>
     );

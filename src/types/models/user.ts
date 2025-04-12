@@ -1,38 +1,44 @@
 /**
- * User Models Module
+ * User Model Module
  * 
- * Contains type definitions for user data, preferences, and authentication.
+ * Contains adapted type definitions for user data that map to Supabase models.
  */
 
+import type { UUID, ISODateString } from '../supabase/common';
+import type { PreferenceContent } from '../supabase/preference';
+
 /**
- * Represents a user in the system
- * Core entity for authentication and personalization
+ * Interface for user onboarding state
  */
-export interface User {
-    _id: string;                 // Unique identifier
-    username: string;            // Unique username
-    email: string;               // Email address
-    name: string;                // First name
-    surname: string;             // Last name
-    profileImage?: string;       // Profile image URL
-    profileImagePublicId?: string; // Cloudinary public ID for image
-    accountsOrder?: string[];    // Custom ordering of accounts
-    preferences: UserPreferences; // User preferences
-    onboarding: UserOnboarding;  // Onboarding progress
-    role: UserRole;              // User role
+export interface UserOnboarding {
+    completed: boolean;
+    sections: {
+        section: string;
+        shown: boolean;
+    }[];
 }
 
 /**
- * User preferences for application settings
- * Controls display and localization options
+ * Type for user preferences
  */
-export interface UserPreferences {
-    language?: Language;         // Display language
-    currency?: Currency;         // Preferred currency
-    dateFormat?: DateFormat;     // Date display format
-    timeFormat?: TimeFormat;     // Time display format
-    theme?: Theme;               // UI theme
-    viewMode?: ViewMode;         // View mode for reports
+export type UserPreferences = PreferenceContent;
+
+/**
+ * Frontend User interface that maps to Supabase User model
+ * Combines data from User, UserRole, and Preference tables
+ */
+export interface User {
+    _id: UUID;                     // Maps to id from Supabase
+    username: string;              // Username from Supabase
+    email: string;                 // Email address
+    name: string;                  // First name
+    surname: string;               // Last name
+    lastLogin: ISODateString;      // Maps to last_login
+    preferences: UserPreferences;  // Mapped from preference table
+    accountsOrder: UUID[];         // Order of accounts for display
+    onboarding: UserOnboarding;    // Onboarding state
+    role: string;                  // User role
+    profileImageUrl?: string;      // Profile image URL if exists
 }
 
 /**
@@ -64,22 +70,6 @@ export type Theme = 'light' | 'dark';
  * Report view mode options
  */
 export type ViewMode = 'yearToday' | 'fullYear';
-
-/**
- * Tracks the user's progress through onboarding
- */
-export interface UserOnboarding {
-    completed: boolean;          // Whether onboarding is complete
-    sections: OnboardingSection[]; // Onboarding sections progress
-}
-
-/**
- * Tracks the status of an individual onboarding section
- */
-export interface OnboardingSection {
-    section: string;             // Section identifier
-    shown: boolean;              // Whether section has been shown
-}
 
 /**
  * Tracks temporary onboarding progress in the UI

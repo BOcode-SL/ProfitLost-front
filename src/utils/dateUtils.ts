@@ -15,14 +15,24 @@
  * - Returns UTC ISO dates to the frontend
  */
 
-// Importing types for ISO date strings and user preferences
+// Importing types for ISO date strings
 import type { ISODateString } from '../types/api/common';
-import type { User } from '../types/models/user';
+// Import user type from Supabase
+import type { User } from '../types/supabase/user';
+import type { DateFormat, TimeFormat } from '../types/supabase/preference';
 
 // Constants
 export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
-const DEFAULT_TIME_FORMAT = '12h';
+const DEFAULT_DATE_FORMAT: DateFormat = 'MM/DD/YYYY';
+const DEFAULT_TIME_FORMAT: TimeFormat = '12h';
+
+// Extended User type with preferences
+type UserWithPreferences = User & { 
+    preferences?: { 
+        dateFormat?: DateFormat; 
+        timeFormat?: TimeFormat 
+    } 
+};
 
 // Helper functions
 const padZero = (num: number): string => num.toString().padStart(2, '0');
@@ -116,7 +126,7 @@ const getDateObject = (date: string | Date): Date => {
 /**
  * Format date part based on user preference
  */
-const formatDatePart = (dateObj: Date, format: string): string => {
+const formatDatePart = (dateObj: Date, format: DateFormat): string => {
     const day = padZero(dateObj.getDate());
     const month = padZero(dateObj.getMonth() + 1);
     const year = dateObj.getFullYear();
@@ -129,7 +139,7 @@ const formatDatePart = (dateObj: Date, format: string): string => {
 /**
  * Format time part based on user preference
  */
-const formatTimePart = (dateObj: Date, format: string): string => {
+const formatTimePart = (dateObj: Date, format: TimeFormat): string => {
     let hours = dateObj.getHours();
     const minutes = padZero(dateObj.getMinutes());
     const seconds = padZero(dateObj.getSeconds());
@@ -146,10 +156,10 @@ const formatTimePart = (dateObj: Date, format: string): string => {
 /**
  * Get user preferences with defaults
  */
-const getUserPreferences = (user: User | null) => {
+const getUserPreferences = (user: UserWithPreferences | null) => {
     return {
-        dateFormat: user?.preferences.dateFormat || DEFAULT_DATE_FORMAT,
-        timeFormat: user?.preferences.timeFormat || DEFAULT_TIME_FORMAT
+        dateFormat: user?.preferences?.dateFormat || DEFAULT_DATE_FORMAT,
+        timeFormat: user?.preferences?.timeFormat || DEFAULT_TIME_FORMAT
     };
 };
 
@@ -160,7 +170,7 @@ const getUserPreferences = (user: User | null) => {
  * @param user - User object containing format preferences (or null for defaults)
  * @returns Formatted date and time string according to user preferences
  */
-export const formatDateTime = (date: string | Date, user: User | null) => {
+export const formatDateTime = (date: string | Date, user: UserWithPreferences | null) => {
     const dateObj = getDateObject(date);
     const { dateFormat, timeFormat } = getUserPreferences(user);
     
@@ -177,7 +187,7 @@ export const formatDateTime = (date: string | Date, user: User | null) => {
  * @param user - User object containing format preferences (or null for defaults)
  * @returns Formatted date string according to user preference
  */
-export const formatDate = (date: string | Date, user: User | null) => {
+export const formatDate = (date: string | Date, user: UserWithPreferences | null) => {
     const dateObj = getDateObject(date);
     const { dateFormat } = getUserPreferences(user);
     

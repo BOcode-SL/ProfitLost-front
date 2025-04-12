@@ -18,8 +18,27 @@ import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
 
 // Types
-import type { Account } from '../../../../types/models/account';
-import type { User } from '../../../../types/models/user';
+import type { Account } from '../../../../types/supabase/account';
+import type { YearRecord } from '../../../../types/supabase/year_record';
+import type { User } from '../../../../types/supabase/user';
+import type { UUID } from '../../../../types/supabase/common';
+
+// Extended types for relationships
+interface AccountWithYearRecords extends Account {
+    year_records?: YearRecord[];
+    yearRecords?: Record<string, YearRecord>;
+    yearRecord?: YearRecord;
+    configuration?: {
+        backgroundColor: string;
+        color: string;
+        isActive: boolean;
+    };
+    accountOrder?: number;
+}
+
+interface UserWithPreferences extends User {
+    accounts_order?: UUID[];
+}
 
 // Components
 import AccountsChart from './components/AccountsChart';
@@ -31,59 +50,281 @@ export default function Accounts() {
 
     // State management
     const [loading, setLoading] = useState(true);
-    const [accounts, setAccounts] = useState<Account[]>([]);
-    const [user, setUser] = useState<User | null>(null);
-    const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
-
-    // Calculate available years from all accounts' data
-    const availableYears = useMemo(() => {
-        const years = new Set<number>();
-        const currentYear = new Date().getFullYear();
-        years.add(currentYear);
-
-        accounts.forEach(account => {
-            Object.keys(account.records).forEach(year => {
-                years.add(parseInt(year));
-            });
-        });
-
-        // Return years in descending order (newest first)
-        return Array.from(years).sort((a: number, b: number) => b - a);
-    }, [accounts]);
+    const [accounts, setAccounts] = useState<AccountWithYearRecords[]>([]);
+    const [userData, setUserData] = useState<UserWithPreferences | null>(null);
+    const [selectedYear, setSelectedYear] = useState<string>('');
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
 
     // Fetch user data including preferences and account ordering
     const fetchUserData = useCallback(async () => {
-        const response = await userService.getUserData();
-        if (response.success && response.data) {
-            setUser(response.data as User);
+        try {
+            const response = await userService.getUserData();
+            if (response.success && response.data) {
+                setUserData(response.data as UserWithPreferences);
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            toast.error(t('dashboard.common.errors.dataLoadingError'));
+        }
+    }, [t]);
+
+    // Fetch available years from the backend
+    const fetchAvailableYears = useCallback(async () => {
+        try {
+            const response = await accountService.getAvailableYears();
+            if (response.success && response.data) {
+                setAvailableYears(response.data as unknown as number[]);
+            }
+        } catch (error) {
+            console.error('Error fetching available years:', error);
+            // Fallback to current year if there's an error
+            setAvailableYears([new Date().getFullYear()]);
         }
     }, []);
 
-    // Fetch all accounts from the backend
-    const fetchAccounts = useCallback(async () => {
-        const response = await accountService.getAllAccounts();
-        if (response.success && response.data) {
-            setAccounts(response.data as Account[]);
-        } else {
+    // Fetch accounts for the selected year
+    const fetchAccountsByYear = useCallback(async (year: number) => {
+        try {
+            setLoading(true);
+            // Create a cache key for this year's data
+            const cacheKey = `accounts_${year}`;
+            
+            // Check if we have cached data in sessionStorage
+            const cachedData = sessionStorage.getItem(cacheKey);
+            if (cachedData) {
+                try {
+                    const parsedData = JSON.parse(cachedData) as AccountWithYearRecords[];
+                    setAccounts(parsedData);
+                    setLoading(false);
+                    
+                    // Refresh in the background without blocking UI
+                    refreshAccountsInBackground(year, cacheKey);
+                    return;
+                } catch {
+                    console.warn('Error parsing cached account data, fetching fresh data instead');
+                    // Continue with fresh data fetch if cache parsing fails
+                }
+            }
+            
+            // No cache or cache error, fetch fresh data
+            const response = await accountService.getAccountsByYear(year);
+            if (response.success && response.data) {
+                const rawAccountsData = response.data as AccountWithYearRecords[];
+
+                // Transform API response format to component's expected format
+                const transformedAccounts = rawAccountsData.map(account => {
+                    const transformedAccount: AccountWithYearRecords = {
+                        id: account.id,
+                        user_id: account.user_id,
+                        name: account.name,
+                        background_color: account.background_color || account.configuration?.backgroundColor || '#cccccc',
+                        text_color: account.text_color || account.configuration?.color || '#ffffff',
+                        is_active: account.is_active !== undefined ? account.is_active : account.configuration?.isActive !== false,
+                        account_order: account.account_order !== undefined ? account.account_order : account.accountOrder || 0,
+                        created_at: account.created_at,
+                        updated_at: account.updated_at,
+                        deleted_at: account.deleted_at,
+                        created_by: account.created_by,
+                        updated_by: account.updated_by,
+                        deleted_by: account.deleted_by
+                    };
+
+                    // Transform yearRecord to year_records array for compatibility
+                    if (account.yearRecord) {
+                        transformedAccount.year_records = [{
+                            id: account.yearRecord.id || '',
+                            account_id: account.yearRecord.account_id,
+                            year: parseInt(year.toString()),
+                            jan: account.yearRecord.jan,
+                            feb: account.yearRecord.feb,
+                            mar: account.yearRecord.mar,
+                            apr: account.yearRecord.apr,
+                            may: account.yearRecord.may,
+                            jun: account.yearRecord.jun,
+                            jul: account.yearRecord.jul,
+                            aug: account.yearRecord.aug,
+                            sep: account.yearRecord.sep,
+                            oct: account.yearRecord.oct,
+                            nov: account.yearRecord.nov,
+                            dec: account.yearRecord.dec,
+                            created_at: account.created_at,
+                            updated_at: account.updated_at,
+                            deleted_at: null,
+                            created_by: account.created_by,
+                            updated_by: account.updated_by,
+                            deleted_by: null
+                        }];
+                    } else if (account.yearRecords) {
+                        transformedAccount.year_records = Object.entries(account.yearRecords).map(([year, record]) => ({
+                            id: record.id,
+                            account_id: record.account_id,
+                            year: parseInt(year),
+                            jan: record.jan,
+                            feb: record.feb,
+                            mar: record.mar,
+                            apr: record.apr,
+                            may: record.may,
+                            jun: record.jun,
+                            jul: record.jul,
+                            aug: record.aug,
+                            sep: record.sep,
+                            oct: record.oct,
+                            nov: record.nov,
+                            dec: record.dec,
+                            created_at: record.created_at || account.created_at,
+                            updated_at: record.updated_at || account.updated_at,
+                            deleted_at: record.deleted_at || null,
+                            created_by: record.created_by || account.created_by,
+                            updated_by: record.updated_by || account.updated_by,
+                            deleted_by: record.deleted_by || null
+                        }));
+                    } else if (account.year_records) {
+                        transformedAccount.year_records = account.year_records;
+                    }
+
+                    return transformedAccount;
+                });
+
+                // Cache the transformed accounts for faster future loading
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(transformedAccounts));
+                } catch {
+                    console.warn('Error caching account data');
+                }
+
+                setAccounts(transformedAccounts);
+            } else {
+                toast.error(t('dashboard.accounts.errors.loadingError'));
+            }
+        } catch (error) {
+            console.error('Error fetching accounts:', error);
             toast.error(t('dashboard.accounts.errors.loadingError'));
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }, [t]);
 
-    // Load user data and accounts on initial component mount
+    // Function to refresh accounts data in the background without blocking UI
+    const refreshAccountsInBackground = async (year: number, cacheKey: string) => {
+        try {
+            const response = await accountService.getAccountsByYear(year);
+            if (response.success && response.data) {
+                const rawAccountsData = response.data as AccountWithYearRecords[];
+
+                // Transform API response format as in main function
+                const transformedAccounts = rawAccountsData.map(account => {
+                    const transformedAccount: AccountWithYearRecords = {
+                        id: account.id,
+                        user_id: account.user_id,
+                        name: account.name,
+                        background_color: account.background_color || account.configuration?.backgroundColor || '#cccccc',
+                        text_color: account.text_color || account.configuration?.color || '#ffffff',
+                        is_active: account.is_active !== undefined ? account.is_active : account.configuration?.isActive !== false,
+                        account_order: account.account_order !== undefined ? account.account_order : account.accountOrder || 0,
+                        created_at: account.created_at,
+                        updated_at: account.updated_at,
+                        deleted_at: account.deleted_at,
+                        created_by: account.created_by,
+                        updated_by: account.updated_by,
+                        deleted_by: account.deleted_by
+                    };
+
+                    // Transform yearRecord to year_records array for compatibility
+                    if (account.yearRecord) {
+                        transformedAccount.year_records = [{
+                            id: account.yearRecord.id || '',
+                            account_id: account.yearRecord.account_id,
+                            year: parseInt(year.toString()),
+                            jan: account.yearRecord.jan,
+                            feb: account.yearRecord.feb,
+                            mar: account.yearRecord.mar,
+                            apr: account.yearRecord.apr,
+                            may: account.yearRecord.may,
+                            jun: account.yearRecord.jun,
+                            jul: account.yearRecord.jul,
+                            aug: account.yearRecord.aug,
+                            sep: account.yearRecord.sep,
+                            oct: account.yearRecord.oct,
+                            nov: account.yearRecord.nov,
+                            dec: account.yearRecord.dec,
+                            created_at: account.created_at,
+                            updated_at: account.updated_at,
+                            deleted_at: null,
+                            created_by: account.created_by,
+                            updated_by: account.updated_by,
+                            deleted_by: null
+                        }];
+                    } else if (account.yearRecords) {
+                        transformedAccount.year_records = Object.entries(account.yearRecords).map(([year, record]) => ({
+                            id: record.id,
+                            account_id: record.account_id,
+                            year: parseInt(year),
+                            jan: record.jan,
+                            feb: record.feb,
+                            mar: record.mar,
+                            apr: record.apr,
+                            may: record.may,
+                            jun: record.jun,
+                            jul: record.jul,
+                            aug: record.aug,
+                            sep: record.sep,
+                            oct: record.oct,
+                            nov: record.nov,
+                            dec: record.dec,
+                            created_at: record.created_at || account.created_at,
+                            updated_at: record.updated_at || account.updated_at,
+                            deleted_at: record.deleted_at || null,
+                            created_by: record.created_by || account.created_by,
+                            updated_by: record.updated_by || account.updated_by,
+                            deleted_by: record.deleted_by || null
+                        }));
+                    } else if (account.year_records) {
+                        transformedAccount.year_records = account.year_records;
+                    }
+
+                    return transformedAccount;
+                });
+
+                // Update cache with fresh data
+                sessionStorage.setItem(cacheKey, JSON.stringify(transformedAccounts));
+                
+                // Update state without showing loading indicator
+                setAccounts(transformedAccounts);
+            }
+        } catch (error) {
+            console.error('Error refreshing accounts in background:', error);
+            // Silent error - don't show toast for background refresh
+        }
+    };
+
+    // Load initial data on component mount
     useEffect(() => {
-        Promise.all([fetchUserData(), fetchAccounts()]);
-    }, [fetchUserData, fetchAccounts]);
+        Promise.all([fetchUserData(), fetchAvailableYears()]);
+    }, [fetchUserData, fetchAvailableYears]);
+
+    // Set the selectedYear after availableYears are loaded
+    useEffect(() => {
+        if (availableYears.length > 0 && !selectedYear) {
+            setSelectedYear(availableYears[0].toString());
+        }
+    }, [availableYears, selectedYear]);
+
+    // Fetch accounts when selected year changes
+    useEffect(() => {
+        if (selectedYear) {
+            fetchAccountsByYear(parseInt(selectedYear));
+        }
+    }, [selectedYear, fetchAccountsByYear]);
 
     // Apply user's preferred account ordering
     const orderedAccounts = useMemo(() => {
-        if (!user?.accountsOrder || !accounts.length) return accounts;
+        if (!userData?.accounts_order || !accounts.length) return accounts;
 
-        const accountMap = new Map(accounts.map(acc => [acc._id, acc]));
-        const orderedAccounts: Account[] = [];
+        const accountMap = new Map(accounts.map(acc => [acc.id, acc]));
+        const orderedAccounts: AccountWithYearRecords[] = [];
 
         // First add accounts in the user's preferred order
-        user.accountsOrder.forEach(id => {
+        userData.accounts_order.forEach(id => {
             const account = accountMap.get(id);
             if (account) {
                 orderedAccounts.push(account);
@@ -97,76 +338,91 @@ export default function Accounts() {
         });
 
         return orderedAccounts;
-    }, [accounts, user?.accountsOrder]);
+    }, [accounts, userData?.accounts_order]);
 
     // Handler for updating an existing account
-    const handleAccountUpdate = async (updatedAccount: Account) => {
+    const handleAccountUpdate = async (updatedAccount: AccountWithYearRecords) => {
         try {
-            const response = await accountService.updateAccount(updatedAccount._id, {
-                accountName: updatedAccount.accountName,
-                configuration: updatedAccount.configuration,
-                records: updatedAccount.records
+            const response = await accountService.updateAccount(updatedAccount.id, {
+                name: updatedAccount.name,
+                background_color: updatedAccount.background_color,
+                text_color: updatedAccount.text_color,
+                is_active: updatedAccount.is_active,
+                account_order: updatedAccount.account_order
             });
 
             if (response.success && response.data) {
-                setAccounts(prev => prev.map(acc =>
-                    acc._id === updatedAccount._id ? response.data as Account : acc
-                ));
+                // Refresh the accounts data
+                await fetchAccountsByYear(parseInt(selectedYear));
                 toast.success(t('dashboard.accounts.success.accountUpdated'));
                 return true;
             } else {
                 toast.error(t('dashboard.accounts.errors.updateError'));
-                await fetchAccounts();
                 return false;
             }
         } catch (error) {
             console.error('❌ Error updating account:', error);
             toast.error(t('dashboard.accounts.errors.updateError'));
-            await fetchAccounts();
             return false;
         }
     };
 
     // Handler for creating a new account
-    const handleAccountCreate = async (newAccount: Account): Promise<boolean> => {
-        const response = await accountService.createAccount({
-            accountName: newAccount.accountName,
-            configuration: newAccount.configuration,
-            records: newAccount.records
-        });
+    const handleAccountCreate = async (newAccount: AccountWithYearRecords): Promise<boolean> => {
+        try {
+            const response = await accountService.createAccount({
+                name: newAccount.name,
+                background_color: newAccount.background_color,
+                text_color: newAccount.text_color,
+                is_active: newAccount.is_active,
+                account_order: newAccount.account_order
+            });
 
-        if (response.success && response.data) {
-            setAccounts(prev => [...prev, response.data as Account]);
-            toast.success(t('dashboard.accounts.success.accountCreated'));
-            return true;
-        } else {
+            if (response.success && response.data) {
+                // Refresh the accounts data
+                await fetchAccountsByYear(parseInt(selectedYear));
+                toast.success(t('dashboard.accounts.success.accountCreated'));
+                return true;
+            } else {
+                toast.error(t('dashboard.accounts.errors.createError'));
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Error creating account:', error);
             toast.error(t('dashboard.accounts.errors.createError'));
             return false;
         }
     };
 
     // Handler for deleting an account
-    const handleAccountDelete = async (accountId: string): Promise<boolean> => {
-        const response = await accountService.deleteAccount(accountId);
+    const handleAccountDelete = async (accountId: UUID): Promise<boolean> => {
+        try {
+            const response = await accountService.deleteAccount(accountId);
 
-        if (response.success) {
-            setAccounts(prev => prev.filter(acc => acc._id !== accountId));
-            toast.success(t('dashboard.accounts.success.accountDeleted'));
-            return true;
-        } else {
+            if (response.success) {
+                // Refresh the accounts data
+                await fetchAccountsByYear(parseInt(selectedYear));
+                toast.success(t('dashboard.accounts.success.accountDeleted'));
+                return true;
+            } else {
+                toast.error(t('dashboard.accounts.errors.deleteError'));
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Error deleting account:', error);
             toast.error(t('dashboard.accounts.errors.deleteError'));
             return false;
         }
     };
 
     // Handler for changing the order of accounts (drag and drop)
-    const handleOrderChange = async (newOrder: string[]) => {
+    const handleOrderChange = async (newOrder: UUID[]) => {
         try {
-            const response = await userService.updateAccountsOrder(newOrder);
+            const response = await accountService.updateAccountsOrder(newOrder);
             if (response.success) {
-                setUser(prev => prev ? {
+                setUserData(prev => prev ? {
                     ...prev,
-                    accountsOrder: newOrder
+                    accounts_order: newOrder
                 } : null);
                 toast.success(t('dashboard.accounts.success.accountsOrderUpdated'));
             } else {
@@ -181,8 +437,8 @@ export default function Accounts() {
     // Separate active and inactive accounts for display
     const { activeAccounts, inactiveAccounts } = useMemo(() => {
         return {
-            activeAccounts: orderedAccounts.filter(account => account.configuration.isActive !== false),
-            inactiveAccounts: orderedAccounts.filter(account => account.configuration.isActive === false)
+            activeAccounts: orderedAccounts.filter(account => account.is_active !== false),
+            inactiveAccounts: orderedAccounts.filter(account => account.is_active === false)
         };
     }, [orderedAccounts]);
 
@@ -205,6 +461,7 @@ export default function Accounts() {
                         value={selectedYear}
                         label={t('dashboard.common.year')}
                         onChange={(e) => setSelectedYear(e.target.value)}
+                        disabled={availableYears.length === 0}
                     >
                         {availableYears.map(year => (
                             <MenuItem key={year} value={year.toString()}>

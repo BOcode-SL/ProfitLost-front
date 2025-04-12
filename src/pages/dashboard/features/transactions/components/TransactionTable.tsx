@@ -34,8 +34,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
-import type { Category } from '../../../../../types/models/category';
+import type { Transaction } from '../../../../../types/supabase/transaction';
+import type { Category } from '../../../../../types/supabase/category';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
@@ -111,9 +111,20 @@ export default function TransactionTable({
         setCreateDrawerOpen(true);
     }, []);
 
+    // Get category by ID
+    const getCategoryById = (categoryId: string) => {
+        return categories.find(cat => cat.id === categoryId) || null;
+    };
+
+    // Get category name by ID
+    const getCategoryNameById = (categoryId: string) => {
+        const category = getCategoryById(categoryId);
+        return category ? category.name : 'Uncategorized';
+    };
+
     // Get category color for visual categorization of transactions
-    const getCategoryColor = (categoryName: string) => {
-        const category = categories.find(cat => cat.name === categoryName);
+    const getCategoryColor = (categoryId: string) => {
+        const category = getCategoryById(categoryId);
         return category?.color || theme.palette.grey[500];
     };
 
@@ -121,15 +132,15 @@ export default function TransactionTable({
     const filteredAndSortedTransactions = data
         .filter(transaction => {
             const searchLower = searchTerm.toLowerCase();
-            return transaction.description.toLowerCase().includes(searchLower) ||
+            return (transaction.description ? transaction.description.toLowerCase().includes(searchLower) : false) ||
                 transaction.amount.toString().includes(searchTerm);
         })
         .sort((a, b) => {
             switch (sortOption) {
                 case 'date_desc':
-                    return new Date(b.date).getTime() - new Date(a.date).getTime();
+                    return new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime();
                 case 'date_asc':
-                    return new Date(a.date).getTime() - new Date(b.date).getTime();
+                    return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
                 case 'amount_desc':
                     return b.amount - a.amount;
                 case 'amount_asc':
@@ -257,9 +268,8 @@ export default function TransactionTable({
                         }}>
                             {/* Transaction items */}
                             {filteredAndSortedTransactions.map((transaction) => (
-                                <>
+                                <Box key={transaction.id}>
                                     <Box
-                                        key={transaction._id}
                                         onClick={() => handleTransactionClick(transaction)}
                                         sx={{
                                             p: 1,
@@ -270,7 +280,7 @@ export default function TransactionTable({
                                             gap: 1,
                                             transition: 'background-color 0.3s ease',
                                             '&:hover': {
-                                                bgcolor: `${getCategoryColor(transaction.category)}20`
+                                                bgcolor: `${getCategoryColor(transaction.category_id)}20`
                                             }
                                         }}
                                     >
@@ -279,17 +289,17 @@ export default function TransactionTable({
                                             width: 12,
                                             height: 12,
                                             borderRadius: '50%',
-                                            bgcolor: getCategoryColor(transaction.category),
+                                            bgcolor: getCategoryColor(transaction.category_id),
                                             display: { xs: 'block', md: 'none' }
                                         }} />
 
                                         {/* Transaction description and date */}
                                         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
                                             <Typography variant="body1" fontWeight={500}>
-                                                {transaction.description}
+                                                {transaction.description || t('dashboard.transactions.table.noDescription')}
                                             </Typography>
                                             <Typography variant="caption" color="text.secondary">
-                                                {formatDateTime(transaction.date, user)}
+                                                {formatDateTime(transaction.transaction_date, user)}
                                             </Typography>
                                         </Box>
 
@@ -304,9 +314,9 @@ export default function TransactionTable({
                                                 width: 15,
                                                 height: 15,
                                                 borderRadius: '50%',
-                                                bgcolor: getCategoryColor(transaction.category)
+                                                bgcolor: getCategoryColor(transaction.category_id)
                                             }} />
-                                            <Typography>{transaction.category}</Typography>
+                                            <Typography>{getCategoryNameById(transaction.category_id)}</Typography>
                                         </Box>
 
                                         {/* Transaction amount with color coding */}
@@ -326,7 +336,7 @@ export default function TransactionTable({
                                         </Typography>
                                     </Box>
                                     <Divider />
-                                </>
+                                </Box>
                             ))}
                         </Box>
                     )}

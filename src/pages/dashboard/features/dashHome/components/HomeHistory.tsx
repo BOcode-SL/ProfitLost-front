@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/models/transaction';
+import type { Transaction } from '../../../../../types/supabase/transaction';
 
 // Utils
 import { formatDateTime, fromUTCtoLocal } from '../../../../../utils/dateUtils';
@@ -30,6 +30,16 @@ interface HomeHistoryProps {
     transactions: Transaction[]; // Array of transactions to display
     isLoading: boolean; // Indicates if the component is currently loading data
 }
+
+// Function to generate unique keys for transactions
+const generateTransactionKey = (transaction: Transaction) => {
+    if (!transaction || !transaction.id) {
+        // Generate a random ID for cases where there is no ID
+        return `transaction-${Math.random().toString(36).substring(2, 9)}`;
+    }
+    // Combine ID with timestamp to avoid duplicates
+    return `transaction-${transaction.id}-${new Date(transaction.transaction_date).getTime()}`;
+};
 
 // HomeHistory component
 export default function HomeHistory({ transactions, isLoading }: HomeHistoryProps) {
@@ -59,10 +69,10 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         return transactions
             .filter((transaction): transaction is Transaction => {
                 if (!transaction) return false;
-                const transactionDate = fromUTCtoLocal(transaction.date);
+                const transactionDate = fromUTCtoLocal(transaction.transaction_date);
                 return transactionDate <= now; // Exclude future-dated transactions
             })
-            .sort((a, b) => fromUTCtoLocal(b.date).getTime() - fromUTCtoLocal(a.date).getTime()) // Sort newest first
+            .sort((a, b) => fromUTCtoLocal(b.transaction_date).getTime() - fromUTCtoLocal(a.transaction_date).getTime()) // Sort newest first
             .slice(0, 8); // Limit to most recent 8 transactions
     }, [transactions, isLoading]);
 
@@ -89,7 +99,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                 />
                 {/* Transaction list item skeletons */}
                 {[...Array(8)].map((_, index) => (
-                    <Box key={index} sx={{ py: 1 }}>
+                    <Box key={`skeleton-${index}`} sx={{ py: 1 }}>
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -154,7 +164,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             ) : (
                 /* List of recent transactions */
                 recentTransactionsMemo.map((transaction, index) => (
-                    <Box key={transaction._id}>
+                    <Box key={generateTransactionKey(transaction)}>
                         {/* Transaction item */}
                         <Box sx={{
                             display: 'flex',
@@ -170,7 +180,7 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
                                 </Typography>
                                 {/* Transaction date and time */}
                                 <Typography variant="body2" color="text.secondary">
-                                    {formatDateTime(transaction.date, user)}
+                                    {formatDateTime(transaction.transaction_date, user)}
                                 </Typography>
                             </Box>
                             {/* Transaction amount with color coding and privacy support */}

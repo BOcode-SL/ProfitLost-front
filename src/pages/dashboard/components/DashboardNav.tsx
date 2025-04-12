@@ -8,7 +8,6 @@ import { getIconComponent } from '../../../utils/sectionIconUtils';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
-import { useUser } from '../../../contexts/UserContext';
 
 // Types
 interface MenuItem {
@@ -23,6 +22,7 @@ interface DashboardNavProps {
   handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
   menuItems: MenuItem[]; // Array of menu items available in the navigation
   onAddTransaction?: () => void; // Optional function to handle the click event for adding a transaction
+  userRole: string | null; // User role from context for admin item filtering
 }
 
 /**
@@ -349,14 +349,13 @@ const MobileNav = ({
  * Handles user role-based menu item filtering and
  * provides navigation functionality.
  */
-export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems, onAddTransaction }: DashboardNavProps) {
+export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems, onAddTransaction, userRole }: DashboardNavProps) {
   const { isDarkMode } = useContext(ThemeContext);
-  const { user } = useUser();
   const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
   // Filter menu items based on user role
   const allMenuItems = menuItems.filter(item =>
-    !item.adminOnly || (item.adminOnly && user?.role === 'admin')
+    !item.adminOnly || (item.adminOnly && userRole === 'admin')
   );
 
   // Split items between main navigation and "more" menu for mobile

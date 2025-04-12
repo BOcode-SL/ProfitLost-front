@@ -14,7 +14,7 @@ import { List, Box, Typography, useTheme, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Types
-import type { Note } from '../../../../../types/models/note';
+import type { Note } from '../../../../../types/supabase/note';
 
 // Interface for the props of the NoteList component
 interface NoteListProps {
@@ -116,7 +116,7 @@ export default function NoteList({
             {notes.map((note) => (
                 // Individual note item with selection indicator
                 <Box
-                    key={note._id}
+                    key={note.id}
                     onClick={() => onSelectNote(note)}
                     sx={{
                         display: 'flex',
@@ -133,7 +133,7 @@ export default function NoteList({
                             'rgba(0, 0, 0, 0.03)',
                         borderRadius: 3,
                         // Highlight selected note with colored left border
-                        borderLeft: selectedNote?._id === note._id ?
+                        borderLeft: selectedNote?.id === note.id ?
                             `4px solid ${theme.palette.primary.main}` :
                             '4px solid transparent',
                         '&:hover': {
@@ -149,7 +149,7 @@ export default function NoteList({
                             variant="subtitle1"
                             noWrap
                             sx={{
-                                fontWeight: selectedNote?._id === note._id ? 600 : 400,
+                                fontWeight: selectedNote?.id === note.id ? 600 : 400,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 color: theme.palette.text.primary
