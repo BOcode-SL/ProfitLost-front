@@ -26,14 +26,8 @@ import LoadingScreen from './components/LoadingScreen';
 import TransactionForm from './features/transactions/components/TransactionForm';
 import DrawerBase from './components/ui/DrawerBase';
 
-// Services
-import { categoryService } from '../../services/category.service';
-
 // Utils
 import { dispatchTransactionUpdated } from '../../utils/events';
-
-// Types
-import type { Category } from '../../types/supabase/category';
 
 export default function Dashboard() {
     const { t } = useTranslation();
@@ -44,7 +38,6 @@ export default function Dashboard() {
     const [activeSection, setActiveSection] = useState('dashhome');
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [transactionDrawerOpen, setTransactionDrawerOpen] = useState(false);
-    const [categories, setCategories] = useState<Category[]>([]);
 
     // Redirect to the authentication page if the user is not logged in
     useEffect(() => {
@@ -52,22 +45,6 @@ export default function Dashboard() {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
-
-    // Fetch categories for transaction form
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await categoryService.getAllCategories();
-                if (response.success) {
-                    setCategories(response.data as Category[]);
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-
-        fetchCategories();
-    }, []);
 
     // Manage the visibility of the onboarding dialog for new users
     useEffect(() => {
@@ -176,7 +153,6 @@ export default function Dashboard() {
                 <TransactionForm
                     onClose={handleTransactionDrawerClose}
                     onSubmit={handleTransactionSubmit}
-                    categories={categories}
                 />
             </DrawerBase>
         </>

@@ -47,6 +47,7 @@ import { dispatchTransactionUpdated } from '../../../../../utils/events';
 
 // Services
 import { transactionService } from '../../../../../services/transaction.service';
+import { categoryService } from '../../../../../services/category.service';
 
 // Types
 import type { Category } from '../../../../../types/supabase/category';
@@ -77,7 +78,7 @@ interface TransactionFormProps {
     transaction?: Transaction; // Optional existing transaction for editing mode
     onSubmit: () => void;     // Callback when form is successfully submitted
     onClose: () => void;      // Callback to close the form
-    categories: Category[];   // Available categories for selection
+    categories?: Category[];   // Optional categories array (can be passed from parent for performance)
 }
 
 // Transition component for dialog animations
@@ -129,9 +130,11 @@ const calculateRecurringDates = (startDate: string, endDate: string, recurrenceT
 };
 
 // TransactionForm component
-export default function TransactionForm({ transaction, onSubmit, onClose, categories }: TransactionFormProps) {
+export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories }: TransactionFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
+    const [categories, setCategories] = useState<Category[]>(propCategories || []);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(!propCategories);
 
     // Initialize form state, handling both new and edit modes
     const [date, setDate] = useState(() => {
@@ -154,12 +157,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     });
     const [description, setDescription] = useState(transaction?.description || '');
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
-    const [category, setCategory] = useState(() => {
-        if (transaction) {
-            return categories.find(cat => cat.id === transaction.category_id) || null;
-        }
-        return null;
-    });
+    const [category, setCategory] = useState<Category | null>(null);
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -177,6 +175,40 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [transactionDataToUpdate, setTransactionDataToUpdate] = useState<TransactionUpdateData | null>(null);
     const [updateAllRecurrent, setUpdateAllRecurrent] = useState(false);
 
+    // Fetch categories if not provided via props
+    useEffect(() => {
+        const fetchCategories = async () => {
+            if (propCategories) {
+                setCategories(propCategories);
+                setIsLoadingCategories(false);
+                return;
+            }
+            
+            try {
+                setIsLoadingCategories(true);
+                const response = await categoryService.getAllCategories();
+                if (response.success) {
+                    setCategories(response.data as Category[]);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                toast.error(t('dashboard.transactions.errors.categoryLoadError'));
+            } finally {
+                setIsLoadingCategories(false);
+            }
+        };
+
+        fetchCategories();
+    }, [propCategories, t]);
+
+    // Set category after categories are loaded
+    useEffect(() => {
+        if (categories.length > 0 && transaction) {
+            const foundCategory = categories.find(cat => cat.id === transaction.category_id);
+            setCategory(foundCategory || null);
+        }
+    }, [categories, transaction]);
+
     // Update form data when transaction prop changes
     useEffect(() => {
         if (transaction) {
@@ -186,9 +218,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             setDescription(transaction.description || '');
             setAmount(Math.abs(transaction.amount).toString());
 
-            const foundCategory = categories.find(cat => cat.id === transaction.category_id);
-            setCategory(foundCategory || null);
-
             setIsIncome(transaction.amount >= 0);
             setRecurrenceType(transaction.recurrence_type);
 
@@ -197,7 +226,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 setRecurrenceEndDate(supabaseToLocalString(transaction.recurrence_end_date).substring(0, 10));
             }
         }
-    }, [transaction, categories]);
+    }, [transaction]);
 
     // Check if transaction is recurrent (has a non-null recurrence_id)
     const isRecurrent = transaction?.recurrence_id !== null;
@@ -604,6 +633,23 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             </DialogActions>
         </Dialog>
     );
+
+    // Show a loading state if categories are being loaded
+    if (isLoadingCategories) {
+        return (
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                height: '100%',
+                p: 3 
+            }}>
+                <CircularProgress size={40} sx={{ mb: 2 }} />
+                <Typography>{t('dashboard.common.loading')}</Typography>
+            </Box>
+        );
+    }
 
     // Main form component structure
     return (
