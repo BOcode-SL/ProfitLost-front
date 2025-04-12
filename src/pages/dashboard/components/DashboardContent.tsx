@@ -1,3 +1,13 @@
+/**
+ * Dashboard Content Component
+ * 
+ * Container that manages the content area of the dashboard:
+ * - Loads the appropriate feature component based on active section
+ * - Manages section introduction dialogs for first-time users
+ * - Handles smooth transitions between sections
+ * - Provides loading indicators during component loading
+ */
+
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Box, Paper, CircularProgress } from '@mui/material';
 
@@ -10,11 +20,7 @@ import { userService } from '../../../services/user.service';
 // Components
 import SectionIntroDialog from './SectionIntroDialog';
 
-/**
- * Lazy-loaded feature components
- * Using lazy loading to improve initial load performance
- * and reduce bundle size for better user experience
- */
+// Lazy-loaded feature components
 const DashHome = lazy(() => import('../features/dashHome/DashHome'));
 const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'));
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
@@ -27,15 +33,6 @@ interface DashboardContentProps {
     activeSection: string; // The currently active section to display
 }
 
-/**
- * Dashboard Content Component
- * 
- * Container that manages the content area of the dashboard:
- * - Loads the appropriate feature component based on active section
- * - Manages section introduction dialogs for first-time users
- * - Handles smooth transitions between sections
- * - Provides loading indicators during component loading
- */
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
     const { user, userPreferences, loadUserData } = useUser();
     const [showIntro, setShowIntro] = useState(false);

@@ -195,6 +195,40 @@ export const transactionService = {
     },
 
     /**
+     * Retrieves transactions for a specific category
+     * @param categoryId - The category ID to filter transactions by
+     * @returns Promise with the filtered transaction data or error response
+     */
+    async getTransactionsByCategory(categoryId: string): Promise<TransactionApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/transactions/category/${categoryId}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: getAuthHeaders()
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    success: false,
+                    message: data.error || 'Failed to retrieve transactions by category',
+                    error: data.error || 'DATABASE_ERROR',
+                    statusCode: response.status as HttpStatusCode
+                } as TransactionApiResponse;
+            }
+
+            return {
+                success: true,
+                data: data.data,
+                statusCode: response.status as HttpStatusCode
+            } as TransactionApiResponse;
+        } catch (error) {
+            throw handleTransactionError(error);
+        }
+    },
+
+    /**
      * Creates a new transaction with the provided data
      * @param transactionData - The data for the transaction to be created
      * @returns Promise with the created transaction data or error response

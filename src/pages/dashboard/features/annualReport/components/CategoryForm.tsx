@@ -80,54 +80,73 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Transaction history state
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [allCategoryTransactions, setAllCategoryTransactions] = useState<Transaction[]>([]);
+    const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]);
     const [showTransactions, setShowTransactions] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Fetch years with transaction data for the category
+    // Fetch all transactions for the category once
     useEffect(() => {
-        const fetchAllTransactions = async () => {
+        const fetchCategoryTransactions = async () => {
             if (!category) return;
-
+            
+            setIsLoading(true);
             try {
-                const response = await transactionService.getAllTransactions();
+                const response = await transactionService.getTransactionsByCategory(category.id);
                 if (response.success && Array.isArray(response.data)) {
-                    // Find years that have transactions with this category
+                    // Store all transactions
+                    setAllCategoryTransactions(response.data);
+                    
+                    // Find years that have transactions
                     const years = new Set(
-                        response.data
-                            .filter(tx => tx.category_id === category.id)
-                            .map(tx => fromSupabaseTimestamp(tx.transaction_date).getFullYear().toString())
+                        response.data.map(tx => 
+                            fromSupabaseTimestamp(tx.transaction_date).getFullYear().toString()
+                        )
                     );
+                    
                     // Sort years in descending order (newest first)
-                    setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
+                    const sortedYears = [...years].sort((a, b) => Number(b) - Number(a));
+                    setYearsWithData(sortedYears);
+                    
+                    // If we have years, set the selected year to the newest one
+                    if (sortedYears.length > 0) {
+                        setSelectedYear(sortedYears[0]);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching transactions:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        fetchAllTransactions();
+        fetchCategoryTransactions();
     }, [category]);
 
-    // Fetch transactions for the selected year and category
+    // Filter transactions based on selected year and search query
     useEffect(() => {
-        const fetchTransactions = async () => {
-            if (!category || !showTransactions) return;
-
-            try {
-                const response = await transactionService.getTransactionsByYear(Number(selectedYear));
-                if (response.success && Array.isArray(response.data)) {
-                    // Filter transactions to only show those for this category
-                    const filteredTransactions = response.data.filter(tx => tx.category_id === category.id);
-                    setTransactions(filteredTransactions);
-                }
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        };
-
-        fetchTransactions();
-    }, [category, selectedYear, showTransactions]);
+        if (!showTransactions || !allCategoryTransactions.length) {
+            setDisplayTransactions([]);
+            return;
+        }
+        
+        // First filter by year
+        let filtered = allCategoryTransactions.filter(tx => {
+            const date = fromSupabaseTimestamp(tx.transaction_date);
+            return date.getFullYear().toString() === selectedYear;
+        });
+        
+        // Then filter by search query if it exists
+        if (searchQuery) {
+            filtered = filtered.filter(tx => 
+                tx.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (category?.name.toLowerCase() || '').includes(searchQuery.toLowerCase())
+            );
+        }
+        
+        setDisplayTransactions(filtered);
+    }, [selectedYear, searchQuery, showTransactions, allCategoryTransactions, category]);
 
     // Group transactions by month for organized display
     const groupedTransactions: GroupedTransactions = {};
@@ -135,7 +154,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Create an object to store transactions grouped by month key
     const tempGroupedByMonthKey: Record<string, Transaction[]> = {};
 
-    transactions.forEach(tx => {
+    displayTransactions.forEach(tx => {
         const date = fromSupabaseTimestamp(tx.transaction_date);
         // Get the short name of the month (Jan, Feb, etc.) for sorting
         const monthKey = date.toLocaleString('en-US', { month: 'short' });
@@ -391,7 +410,16 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     {/* Transactions list grouped by month */}
                     {showTransactions && (
                         <>
-                            {Object.keys(filteredGroupedTransactions).length > 0 ? (
+                            {isLoading ? (
+                                <Box sx={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'center', 
+                                    alignItems: 'center', 
+                                    py: 4 
+                                }}>
+                                    <CircularProgress size={40} />
+                                </Box>
+                            ) : Object.keys(filteredGroupedTransactions).length > 0 ? (
                                 <Box sx={{ mt: 2 }}>
                                     {Object.entries(filteredGroupedTransactions).map(([month, monthTransactions]) => (
                                         <Box
