@@ -20,7 +20,6 @@ const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'))
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
 const Notes = lazy(() => import('../features/notes/Notes'));
-const Analytics = lazy(() => import('../features/analytics/Analytics'));
 const NotificationsEditor = lazy(() => import('../features/notifications/editor/NotificationsEditor'));
 
 // Interface for the props of the DashboardContent component
@@ -137,8 +136,6 @@ function SectionContent({ activeSection }: SectionContentProps) {
             return <Accounts />;
         case 'notes':
             return <Notes />;
-        case 'analytics':
-            return <Analytics />;
         case 'notifications':
             return <NotificationsEditor />;
         default:
