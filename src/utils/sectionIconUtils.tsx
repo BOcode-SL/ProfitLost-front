@@ -9,7 +9,6 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 
 /**
  * Returns the appropriate Material UI icon component based on the icon name
@@ -33,8 +32,6 @@ export const getIconComponent = (iconName: string) => {
       return <AccountBalanceWalletOutlinedIcon />;
     case 'note_alt':
       return <NoteAltOutlinedIcon />;
-    case 'notifications':
-      return <NotificationsOutlinedIcon />;
     default:
       return <SpaceDashboardOutlinedIcon />; // Fallback to dashboard icon
   }

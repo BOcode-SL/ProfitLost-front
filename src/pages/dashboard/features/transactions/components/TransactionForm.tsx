@@ -191,7 +191,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     setCategories(response.data as Category[]);
                 }
             } catch (error) {
-                console.error('Error fetching categories:', error);
+                console.error('❌ Error fetching categories:', error);
                 toast.error(t('dashboard.transactions.errors.categoryLoadError'));
             } finally {
                 setIsLoadingCategories(false);
@@ -228,9 +228,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     }, [transaction]);
 
-    // Check if transaction is recurrent (has a non-null recurrence_id)
-    const isRecurrent = transaction?.recurrence_id !== null;
-
     // Handle form submission with validation
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -241,10 +238,16 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             return;
         }
 
-        // Validate recurrence fields for new recurring transactions
-        if (!transaction && recurrenceType && !recurrenceEndDate) {
-            toast.error(t('dashboard.transactions.form.errors.recurrenceRequired'));
-            return;
+        // Validate recurrence fields if enabled
+        if (recurrenceType !== null) {
+            if (!recurrenceType) {
+                toast.error(t('dashboard.transactions.form.errors.recurrenceTypeRequired'));
+                return;
+            }
+            if (!recurrenceEndDate) {
+                toast.error(t('dashboard.transactions.form.errors.recurrenceEndDateRequired'));
+                return;
+            }
         }
 
         try {
@@ -275,7 +278,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             };
 
             // Special handling for recurrent transaction edits
-            if (transaction?.recurrence_id !== null) {
+            if (transaction?.recurrence_id !== null && transaction?.recurrence_id) {
                 setTransactionDataToUpdate(transactionData);
                 setEditRecurrentDialog(true);
                 setIsSubmitting(false);
@@ -288,14 +291,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 toast.success(t('dashboard.transactions.success.updated'));
                 dispatchTransactionUpdated();
             } else {
-                // Additional validation for recurring transactions
-                if (recurrenceType) {
-                    if (!recurrenceEndDate) {
-                        toast.error(t('dashboard.transactions.form.errors.recurrenceEndDateRequired'));
-                        setIsSubmitting(false);
-                        return;
-                    }
-                }
                 await transactionService.createTransaction(transactionData);
                 toast.success(t('dashboard.transactions.success.created'));
                 dispatchTransactionUpdated();
@@ -305,7 +300,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('An error occurred while submitting the transaction:', error);
+            console.error('❌ Error in handleSubmit:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         }
@@ -319,16 +314,18 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     // Delete transaction with recurrence awareness
     const confirmDelete = async () => {
         try {
-            setIsDeleting(true);
+            if (!transaction) return;
+            
             await transactionService.deleteTransaction(
-                transaction!.id,
-                transaction?.recurrence_id !== null ? updateAllRecurrent : undefined
+                transaction.id,
+                transaction.recurrence_id ? updateAllRecurrent : undefined
             );
             toast.success(t('dashboard.transactions.success.deleted'));
             dispatchTransactionUpdated();
             onSubmit();
+            onClose();
         } catch (error) {
-            console.error('An error occurred while deleting the transaction:', error);
+            console.error('❌ Error in confirmDelete:', error);
             toast.error(t('dashboard.transactions.errors.deleteError'));
         } finally {
             setIsDeleting(false);
@@ -366,7 +363,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             onSubmit();
             onClose();
         } catch (error) {
-            console.error('An error occurred while updating the recurrent transaction:', error);
+            console.error('❌ Error in handleEditRecurrent:', error);
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         } finally {
@@ -471,8 +468,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     );
 
     // Recurrence configuration fields component
-    const RecurrenceFields = () => {
-        if (!isRecurrent) return null;
+    const RecurrenceFields = ({ isEditing }: { isEditing: boolean }) => {
+        // Determine if fields should be disabled
+        // For existing recurring transactions, always disable
+        const fieldsDisabled = isEditing && transaction?.recurrence_id !== null;
 
         return (
             <Box sx={{ width: '100%', mt: 2 }}>
@@ -484,6 +483,9 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         value={recurrenceType || ''}
                         onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}
                         label={t('dashboard.transactions.form.fields.recurrenceType')}
+                        disabled={fieldsDisabled}
+                        error={!recurrenceType}
+                        required
                     >
                         <MenuItem value="weekly">{t('dashboard.transactions.form.fields.weekly')}</MenuItem>
                         <MenuItem value="monthly">{t('dashboard.transactions.form.fields.monthly')}</MenuItem>
@@ -500,24 +502,38 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     fullWidth
                     size="small"
                     InputLabelProps={{ shrink: true }}
+                    disabled={fieldsDisabled}
+                    error={!recurrenceEndDate && recurrenceType !== null}
+                    required
                 />
 
                 {/* Preview of calculated recurring dates */}
-                {recurringDates.length > 0 && (
+                {date && recurrenceType && recurrenceEndDate && (
                     <Box sx={{ mt: 2 }}>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             {t('dashboard.transactions.form.fields.recurrenceDates')}:
                         </Typography>
-                        {recurringDates.map((date, index) => (
-                            <Typography
-                                key={index}
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ mb: 0.5 }}
-                            >
-                                {formatDate(date, user)}
+                        {recurringDates.length > 0 ? (
+                            recurringDates.slice(0, 5).map((date, index) => (
+                                <Typography
+                                    key={index}
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ mb: 0.5 }}
+                                >
+                                    {formatDate(date, user)}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography variant="body2" color="text.secondary">
+                                {t('dashboard.transactions.form.fields.noRecurrenceDates')}
                             </Typography>
-                        ))}
+                        )}
+                        {recurringDates.length > 5 && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                {t('dashboard.transactions.form.fields.andMoreDates', { count: recurringDates.length - 5 })}
+                            </Typography>
+                        )}
                     </Box>
                 )}
             </Box>
@@ -526,8 +542,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     // Recurrence toggle switch component
     const RecurrenceSwitch = ({ isEditing }: { isEditing: boolean }) => {
-        // If editing and not recurrent, do not render anything
-        if (isEditing && !isRecurrent) return null;
+        // If editing a non-recurring transaction, don't show recurrence options at all
+        if (isEditing && transaction?.recurrence_id === null) {
+            return null;
+        }
 
         return (
             // Container for recurrence toggle and fields
@@ -540,7 +558,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     width: '100%',
                     pt: 1,
                     px: 2,
-                    pb: isRecurrent ? 2 : 1,
+                    pb: recurrenceType ? 2 : 1,
                     borderRadius: 3,
                 }}>
                 {/* Toggle switch row */}
@@ -549,12 +567,16 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     <Typography>{t('dashboard.transactions.form.fields.isRecurrent')}</Typography>
                     {/* Recurrence toggle switch */}
                     <Switch
-                        checked={isRecurrent}
-                        disabled={isEditing}
+                        checked={recurrenceType !== null}
+                        disabled={isEditing && transaction?.recurrence_id !== null}
                         onChange={(e) => {
                             // Update the recurrence state based on switch value
                             if (e.target.checked) {
-                                setRecurrenceType('monthly'); // Default recurrence type
+                                // Enable recurrence without setting specific type
+                                // User will need to select type themselves
+                                setRecurrenceType(null); // Temporarily set to null to avoid validation errors
+                                // Use setTimeout to allow the component to render before selecting the type
+                                setTimeout(() => setRecurrenceType('monthly'), 0);
                             } else {
                                 setRecurrenceType(null);
                                 setRecurrenceEndDate('');
@@ -563,8 +585,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     />
                 </Box>
 
-                {/* Show recurrence fields for new transactions only */}
-                {!isEditing && isRecurrent && <RecurrenceFields />}
+                {/* Show recurrence fields when recurrence is enabled */}
+                {recurrenceType !== null && <RecurrenceFields isEditing={isEditing} />}
             </Paper>
         );
     };

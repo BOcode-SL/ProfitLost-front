@@ -61,19 +61,14 @@ export const transactionService = {
             if (!response.ok) {
                 throw {
                     success: false,
-                    message: data.error || 'Failed to retrieve transactions',
+                    message: data.message || 'Failed to retrieve transactions',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
             throw handleTransactionError(error);
         }
@@ -96,17 +91,14 @@ export const transactionService = {
             if (!response.ok) {
                 throw {
                     success: false,
-                    message: data.error || 'Failed to retrieve transaction years',
+                    message: data.message || 'Failed to retrieve transaction years',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionYearsApiResponse;
             }
 
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionYearsApiResponse;
+            // Return standardized API response
+            return data as TransactionYearsApiResponse;
         } catch (error) {
             if ((error as TransactionYearsApiResponse).statusCode) {
                 return error as TransactionYearsApiResponse;
@@ -139,19 +131,14 @@ export const transactionService = {
             if (!response.ok) {
                 throw {
                     success: false,
-                    message: data.error || 'Failed to retrieve transactions by year',
+                    message: data.message || 'Failed to retrieve transactions by year',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
             throw handleTransactionError(error);
         }
@@ -176,19 +163,14 @@ export const transactionService = {
             if (!response.ok) {
                 throw {
                     success: false,
-                    message: data.error || 'Failed to retrieve transactions by year and month',
+                    message: data.message || 'Failed to retrieve transactions by year and month',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
             throw handleTransactionError(error);
         }
@@ -212,17 +194,14 @@ export const transactionService = {
             if (!response.ok) {
                 throw {
                     success: false,
-                    message: data.error || 'Failed to retrieve transactions by category',
+                    message: data.message || 'Failed to retrieve transactions by category',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            return {
-                success: true,
-                data: data.data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
             throw handleTransactionError(error);
         }
@@ -253,22 +232,19 @@ export const transactionService = {
             const data = await response.json();
 
             if (!response.ok) {
+                console.error('❌ API Error in createTransaction:', data);
                 throw {
                     success: false,
-                    message: data.error || 'Failed to create transaction',
+                    message: data.message || 'Failed to create transaction',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
+            console.error('❌ Exception in createTransaction:', error);
             throw handleTransactionError(error);
         }
     },
@@ -300,22 +276,19 @@ export const transactionService = {
             const data = await response.json();
 
             if (!response.ok) {
+                console.error('❌ API Error in updateTransaction:', data);
                 throw {
                     success: false,
-                    message: data.error || 'Failed to update transaction',
+                    message: data.message || 'Failed to update transaction',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
+            console.error('❌ Exception in updateTransaction:', error);
             throw handleTransactionError(error);
         }
     },
@@ -338,22 +311,19 @@ export const transactionService = {
             const data = await response.json();
 
             if (!response.ok) {
+                console.error('❌ API Error in deleteTransaction:', data);
                 throw {
                     success: false,
-                    message: data.error || 'Failed to delete transaction',
+                    message: data.message || 'Failed to delete transaction',
                     error: data.error || 'DATABASE_ERROR',
                     statusCode: response.status as HttpStatusCode
                 } as TransactionApiResponse;
             }
 
-            // The response structure from the DAO might not be standardized
-            // Let's ensure it matches our expected API response format
-            return {
-                success: true,
-                data: data,
-                statusCode: response.status as HttpStatusCode
-            } as TransactionApiResponse;
+            // Return standardized API response
+            return data as TransactionApiResponse;
         } catch (error) {
+            console.error('❌ Exception in deleteTransaction:', error);
             throw handleTransactionError(error);
         }
     }

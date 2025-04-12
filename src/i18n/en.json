@@ -935,146 +935,6 @@
                 "deleteAccountSuccess": "Account deleted successfully",
                 "deleteAccountError": "Error deleting account",
                 "username": "Username"
-            },
-            "notifications": {
-                "title": "Notifications preferences",
-                "inApp": {
-                    "title": "In-App Notifications",
-                    "description": "Configure how you want to receive notifications within the application.",
-                    "enable": "Enable in-app notifications"
-                },
-                "email": {
-                    "title": "Email Notifications",
-                    "description": "Configure which notifications you want to receive by email.",
-                    "enable": "Enable email notifications"
-                },
-                "success": {
-                    "saved": "Notification preferences saved successfully"
-                },
-                "errors": {
-                    "loadingError": "Error loading notification preferences",
-                    "savingError": "Error saving notification preferences"
-                }
-            }
-        },
-        "notifications": {
-            "title": "Notifications",
-            "settings": "Notification Settings",
-            "markAllAsRead": "Mark all as read",
-            "unread": "Unread",
-            "empty": {
-                "title": "No notifications",
-                "description": "When you receive notifications, they will appear here."
-            },
-            "filters": {
-                "all": "All",
-                "payment_reminder": "Reminders",
-                "achievement": "Achievements",
-                "goal_progress": "Goals",
-                "tip": "Tips",
-                "system": "System",
-                "announcement": "Announcements"
-            },
-            "types": {
-                "payment_reminder": "Reminder",
-                "achievement": "Achievement",
-                "goal_progress": "Goal",
-                "tip": "Tip",
-                "system": "System",
-                "announcement": "Announcement"
-            },
-            "actions": {
-                "markAsRead": "Mark as read",
-                "archive": "Archive",
-                "delete": "Delete"
-            },
-            "success": {
-                "markedAsRead": "Notification marked as read",
-                "markedAllAsRead": "All notifications marked as read",
-                "archived": "Notification archived",
-                "deleted": "Notification deleted"
-            },
-            "errors": {
-                "loadingError": "Error loading notifications",
-                "markAsReadError": "Error marking as read",
-                "markAllAsReadError": "Error marking all as read",
-                "archiveError": "Error archiving notification",
-                "deleteError": "Error deleting notification"
-            },
-            "editor": {
-                "title": "Notifications Editor",
-                "submit": "Send Notification",
-                "success": "Notification sent successfully",
-                "error": "Error sending notification",
-                "sending": "Sending...",
-                "preview": "Preview",
-                "previewTitle": "Notification Preview",
-                "previewInfo": "This is how your notification will appear to recipients",
-                "previewNoTitle": "No title provided",
-                "previewNoMessage": "No message provided",
-                "previewSentNow": "Just now",
-                "previewTargetAudience": "Target audience",
-                "previewScheduledFor": "Scheduled for",
-                "fields": {
-                    "type": {
-                        "label": "Notification Type"
-                    },
-                    "targetAudience": {
-                        "label": "Recipients",
-                        "options": {
-                            "all": "All Users",
-                            "free": "Free Users",
-                            "paid": "Paid Users",
-                            "specific": "Specific Users"
-                        }
-                    },
-                    "specificUsers": {
-                        "label": "User IDs",
-                        "helper": "Enter user IDs separated by commas"
-                    },
-                    "title": {
-                        "label": "Title"
-                    },
-                    "message": {
-                        "label": "Message",
-                        "helper": "Brief description that will appear in the notification"
-                    },
-                    "content": {
-                        "label": "HTML Content",
-                        "helper": "Detailed content in HTML format (optional)"
-                    },
-                    "scheduledAt": {
-                        "label": "Schedule Delivery",
-                        "helper": "Date and time to send the notification (optional)"
-                    }
-                },
-                "errors": {
-                    "typeRequired": "Notification type is required",
-                    "targetRequired": "You must select recipients",
-                    "specificUsersRequired": "You must specify at least one user ID",
-                    "titleRequired": "Title is required",
-                    "messageRequired": "Message is required"
-                }
-            },
-            "preferences": {
-                "title": "Notification Preferences",
-                "inApp": {
-                    "title": "In-App Notifications",
-                    "description": "Configure how you want to receive notifications within the application.",
-                    "enable": "Enable in-app notifications"
-                },
-                "email": {
-                    "title": "Email Notifications",
-                    "description": "Configure which notifications you want to receive by email.",
-                    "enable": "Enable email notifications"
-                },
-                "success": {
-                    "saved": "Notification preferences saved successfully"
-                },
-                "errors": {
-                    "loadingError": "Error loading notification preferences",
-                    "savingError": "Error saving notification preferences"
-                }
             }
         },
         "dashhome": {
@@ -1290,7 +1150,8 @@
                     "weekly": "Weekly",
                     "monthly": "Monthly",
                     "yearly": "Yearly",
-                    "recurrenceDates": "Recurrence dates"
+                    "recurrenceDates": "Recurrence dates",
+                    "andMoreDates": "and more"
                 },
                 "placeholders": {
                     "description": "Enter description",

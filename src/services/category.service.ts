@@ -54,6 +54,7 @@ export const categoryService = {
             const data = await response.json(); // Parse the JSON response
 
             if (!response.ok) {
+                console.error('❌ API Error in getAllCategories:', data);
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode // Throw an error if the response is not OK
@@ -62,6 +63,7 @@ export const categoryService = {
 
             return data as CategoryApiResponse; // Return the category data
         } catch (error) {
+            console.error('❌ Exception in getAllCategories:', error);
             throw handleCategoryError(error); // Handle any errors that occur
         }
     },
@@ -83,6 +85,7 @@ export const categoryService = {
             const data = await response.json(); // Parse the JSON response
 
             if (!response.ok) {
+                console.error('❌ API Error in createCategory:', data);
                 throw {
                     ...data,
                     statusCode: response.status as HttpStatusCode // Throw an error if the response is not OK
@@ -91,6 +94,7 @@ export const categoryService = {
 
             return data as CategoryApiResponse; // Return the created category data
         } catch (error) {
+            console.error('❌ Exception in createCategory:', error);
             throw handleCategoryError(error); // Handle any errors that occur
         }
     },

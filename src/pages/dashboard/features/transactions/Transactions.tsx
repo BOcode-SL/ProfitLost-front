@@ -81,6 +81,7 @@ export default function Transactions() {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
+
             const [transactionsResponse, categoriesResponse, yearsResponse] =
                 await Promise.all([
                     transactionService.getTransactionsByYearAndMonth(year, month),
@@ -92,11 +93,11 @@ export default function Transactions() {
                 throw new Error('Error fetching data');
             }
 
-            // Use the years from the dedicated endpoint
+            // Use data from standardized responses
             setYearsWithData(yearsResponse.data as string[]);
             setTransactions(transactionsResponse.data as Transaction[]);
             setCategories(categoriesResponse.data as Category[]);
-            
+
             // Ensure yearsWithData contains at least the current year
             if ((yearsResponse.data as string[]).length === 0) {
                 setYearsWithData([currentYear]);
@@ -121,7 +122,7 @@ export default function Transactions() {
         };
 
         window.addEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
-        
+
         return () => {
             window.removeEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
         };
@@ -136,10 +137,10 @@ export default function Transactions() {
 
         // Group transactions by category and calculate totals
         transactions.forEach((transaction) => {
-            const amount = typeof transaction.amount === 'string' 
-                ? parseFloat(transaction.amount) 
+            const amount = typeof transaction.amount === 'string'
+                ? parseFloat(transaction.amount)
                 : transaction.amount;
-                
+
             const category = categories.find(c => c.id === transaction.category_id);
             if (!category) {
                 console.warn('⚠️ No category found for the transaction:', transaction);
@@ -196,7 +197,7 @@ export default function Transactions() {
                             onChange={(e) => setYear(e.target.value)}
                         >
                             {/* Display years with transaction data or current year if empty */}
-                            {yearsWithData.length > 0 
+                            {yearsWithData.length > 0
                                 ? yearsWithData.map(y => (
                                     <MenuItem key={y} value={y}>{y}</MenuItem>
                                 ))
