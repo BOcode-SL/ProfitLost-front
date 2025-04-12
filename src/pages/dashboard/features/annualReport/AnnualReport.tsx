@@ -27,7 +27,7 @@ import type { Transaction } from '../../../../types/supabase/transaction';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
 // Utils
-import { fromUTCtoLocal } from '../../../../utils/dateUtils';
+import { fromSupabaseTimestamp } from '../../../../utils/dateUtils';
 import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';
 
 // Components
@@ -161,7 +161,7 @@ export default function AnnualReport() {
         if (viewMode === 'yearToday') {
             // For year-to-date mode, only include transactions up to today
             const today = new Date();
-            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
+            const transactionDate = fromSupabaseTimestamp(transaction.transaction_date);
             return transactionDate <= today;
         }
         // For full year mode, include all transactions

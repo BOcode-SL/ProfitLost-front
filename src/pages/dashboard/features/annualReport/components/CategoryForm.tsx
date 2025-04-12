@@ -51,7 +51,7 @@ interface GroupedTransactions {
 
 // Utils
 import { formatCurrency } from '../../../../../utils/currencyUtils';
-import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
+import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 // Month abbreviations in English for consistent sorting
 const MONTH_ORDER = [
@@ -96,7 +96,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     const years = new Set(
                         response.data
                             .filter(tx => tx.category_id === category.id)
-                            .map(tx => fromUTCtoLocal(tx.transaction_date).getFullYear().toString())
+                            .map(tx => fromSupabaseTimestamp(tx.transaction_date).getFullYear().toString())
                     );
                     // Sort years in descending order (newest first)
                     setYearsWithData([...years].sort((a, b) => Number(b) - Number(a)));
@@ -136,7 +136,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const tempGroupedByMonthKey: Record<string, Transaction[]> = {};
 
     transactions.forEach(tx => {
-        const date = fromUTCtoLocal(tx.transaction_date);
+        const date = fromSupabaseTimestamp(tx.transaction_date);
         // Get the short name of the month (Jan, Feb, etc.) for sorting
         const monthKey = date.toLocaleString('en-US', { month: 'short' });
 
@@ -512,7 +512,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                                 }}
                                                             >
                                                                 <ScheduleIcon sx={{ fontSize: 16 }} />
-                                                                {fromUTCtoLocal(transaction.transaction_date).toLocaleDateString()}
+                                                                {fromSupabaseTimestamp(transaction.transaction_date).toLocaleDateString()}
                                                             </Typography>
                                                         </Paper>
                                                     </Box>

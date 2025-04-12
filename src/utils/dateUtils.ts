@@ -1,28 +1,29 @@
 /**
  * Date Utilities
  * 
- * Handles date conversions between local time and UTC formats.
+ * Handles date conversions between local time and Supabase UTC formats.
  * The application follows these date handling principles:
  * 
  * Frontend:
  * - Works with dates in local time
- * - Sends dates to the backend in local time ISO format
- * - Converts UTC ISO dates received from backend to local time for display
+ * - Sends dates to the backend in Supabase timestamp format
+ * - Converts Supabase UTC timestamp received from backend to local time for display
  * 
  * Backend:
- * - Works exclusively with UTC
- * - Converts received local time to UTC ISO for storage
- * - Returns UTC ISO dates to the frontend
+ * - Works exclusively with UTC in Supabase format
+ * - Converts received local time to Supabase timestamp format for storage
+ * - Returns Supabase UTC timestamp to the frontend
+ * 
+ * Note: Supabase stores dates in the format '2025-05-19 12:00:00+00' or '2025-04-10 14:24:25.809426+00'
  */
 
-// Importing types for ISO date strings
-import type { ISODateString } from '../types/api/common';
 // Import user type from Supabase
 import type { User } from '../types/supabase/user';
 import type { DateFormat, TimeFormat } from '../types/supabase/preference';
 
 // Constants
-export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+// Regex to validate Supabase timestamp format
+export const SUPABASE_DATE_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?\+00$/;
 const DEFAULT_DATE_FORMAT: DateFormat = 'MM/DD/YYYY';
 const DEFAULT_TIME_FORMAT: TimeFormat = '12h';
 
@@ -39,50 +40,65 @@ const padZero = (num: number): string => num.toString().padStart(2, '0');
 const getLocalTimeZone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 /**
+ * Converts a date to Supabase timestamp format (UTC)
+ * Used when sending dates to the backend
+ * 
+ * @param date - Date object to convert
+ * @returns String in Supabase timestamp format
+ */
+export const toSupabaseFormat = (date: Date): string => {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00`;
+};
+
+/**
+ * Creates a Date object from a Supabase timestamp
+ * 
+ * @param timestamp - Supabase timestamp string
+ * @returns JavaScript Date object
+ */
+export const fromSupabaseTimestamp = (timestamp: string): Date => {
+    return new Date(timestamp);
+};
+
+/**
  * Converts a date to local time string format
  * Used when displaying dates in a readable format
  * 
- * @param date - The input date, either a string or a Date object
+ * @param date - The input date, either a Supabase timestamp string or a Date object
  * @returns The date as a formatted local time string
  */
 export const toLocalString = (date: string | Date): string => {
-    const dateObj = new Date(date);
+    const dateObj = typeof date === 'string' ? fromSupabaseTimestamp(date) : date;
     return dateObj.toLocaleString('en-US', { timeZone: getLocalTimeZone() });
 };
 
 /**
- * Converts a UTC ISO string from the backend to a local Date object
- * JavaScript's Date constructor automatically handles this conversion
- * 
- * @param isoString - The UTC ISO string from the backend
- * @returns Date object in local time
- */
-export const fromUTCtoLocal = (isoString: ISODateString): Date => {
-    return new Date(isoString);
-};
-
-/**
  * Prepares a local date for sending to the backend
- * Converts to ISO string format while keeping the date in local time
- * The backend will handle UTC conversion for storage
+ * Converts to Supabase timestamp format
  * 
  * @param localDate - The local date to prepare
- * @returns ISO format date string
+ * @returns Supabase timestamp format
  */
 export const prepareForBackend = (localDate: Date): string => {
-    // Example: 2023-10-03T16:01:05.000Z
-    return localDate.toISOString();
+    return toSupabaseFormat(localDate);
 };
 
 /**
- * Converts a UTC date string to a local date format for display in forms
+ * Converts a Supabase timestamp to a local date format for display in forms
  * Creates a string suitable for datetime-local input fields
  * 
- * @param utcString - The UTC date string to convert
+ * @param timestamp - The Supabase timestamp to convert
  * @returns A string in the format YYYY-MM-DDTHH:mm:ss for use in datetime-local inputs
  */
-export const utcToLocalString = (utcString: ISODateString): string => {
-    const localDate = fromUTCtoLocal(utcString);
+export const supabaseToLocalString = (timestamp: string): string => {
+    const localDate = fromSupabaseTimestamp(timestamp);
     
     const year = localDate.getFullYear();
     const month = padZero(localDate.getMonth() + 1);
@@ -104,23 +120,38 @@ export const getCurrentDate = (): string => {
 };
 
 /**
- * Validates if a string is a valid ISO UTC date string
- * Uses regex to check proper format
+ * Returns the current date and time in Supabase timestamp format
+ * 
+ * @returns The current date as a Supabase timestamp
+ */
+export const getCurrentSupabaseDate = (): string => {
+    return toSupabaseFormat(new Date());
+};
+
+/**
+ * Validates if a string is a valid Supabase timestamp format
  * 
  * @param dateString - The string to validate
- * @returns Boolean indicating if the string is a valid ISO date
+ * @returns Boolean indicating if the string is a valid Supabase timestamp
  */
-export const isValidISOString = (dateString: string): boolean => {
-    return DATE_REGEX.test(dateString);
+export const isValidSupabaseString = (dateString: string): boolean => {
+    if (!dateString) return false;
+    try {
+        const date = new Date(dateString);
+        return !isNaN(date.getTime()) && SUPABASE_DATE_REGEX.test(dateString);
+    } catch {
+        return false;
+    }
 };
 
 /**
  * Gets a Date object from various input formats
  */
 const getDateObject = (date: string | Date): Date => {
-    return typeof date === 'string' && DATE_REGEX.test(date)
-        ? fromUTCtoLocal(date as ISODateString)
-        : new Date(date);
+    if (typeof date === 'string') {
+        return fromSupabaseTimestamp(date);
+    }
+    return date;
 };
 
 /**

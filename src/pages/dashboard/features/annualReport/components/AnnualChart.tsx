@@ -28,7 +28,7 @@ import {
     isCurrencyHidden,
     formatLargeNumber
 } from '../../../../../utils/currencyUtils';
-import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
+import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the AnnualChart component
 interface AnnualChartProps {
@@ -77,7 +77,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
 
         // Aggregate transactions by month
         transactions.forEach(transaction => {
-            const month = fromUTCtoLocal(transaction.transaction_date).getMonth();
+            const month = fromSupabaseTimestamp(transaction.transaction_date).getMonth();
             if (transaction.amount > 0) {
                 monthsData[month].income += transaction.amount;
             } else {

@@ -42,7 +42,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Utils
-import { formatDate, prepareForBackend, utcToLocalString } from '../../../../../utils/dateUtils';
+import { formatDate, prepareForBackend, supabaseToLocalString } from '../../../../../utils/dateUtils';
 import { dispatchTransactionUpdated } from '../../../../../utils/events';
 
 // Services
@@ -137,7 +137,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const [date, setDate] = useState(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
-            return utcToLocalString(transaction.transaction_date);
+            return supabaseToLocalString(transaction.transaction_date);
         }
         // For a new transaction, use the current local date and time
         const now = new Date();
@@ -169,7 +169,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     });
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
         if (transaction?.recurrence_end_date) {
-            return utcToLocalString(transaction.recurrence_end_date).substring(0, 10);
+            return supabaseToLocalString(transaction.recurrence_end_date).substring(0, 10);
         }
         return '';
     });
@@ -181,7 +181,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     useEffect(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
-            setDate(utcToLocalString(transaction.transaction_date));
+            setDate(supabaseToLocalString(transaction.transaction_date));
 
             setDescription(transaction.description || '');
             setAmount(Math.abs(transaction.amount).toString());
@@ -194,7 +194,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
             if (transaction.recurrence_end_date) {
                 // Convert recurrence end date to local format
-                setRecurrenceEndDate(utcToLocalString(transaction.recurrence_end_date).substring(0, 10));
+                setRecurrenceEndDate(supabaseToLocalString(transaction.recurrence_end_date).substring(0, 10));
             }
         }
     }, [transaction, categories]);

@@ -27,7 +27,7 @@ import type { Transaction } from '../../../../../types/supabase/transaction';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
-import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
+import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 /**
  * Interface for the props of the HomeBalances component
@@ -183,11 +183,11 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
 
         // Filter transactions for current and previous month
         const currentMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCtoLocal(transaction.transaction_date);
+            const date = fromSupabaseTimestamp(transaction.transaction_date);
             return date >= firstDayOfMonth && date <= now;
         });
         const previousMonthTransactions = transactions.filter(transaction => {
-            const date = fromUTCtoLocal(transaction.transaction_date);
+            const date = fromSupabaseTimestamp(transaction.transaction_date);
             return date >= firstDayOfPreviousMonth && date <= lastDayOfPreviousMonth;
         });
 

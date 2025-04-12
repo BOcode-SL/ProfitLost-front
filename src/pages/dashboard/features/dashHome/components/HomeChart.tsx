@@ -34,7 +34,7 @@ import {
     CURRENCY_VISIBILITY_EVENT,
     formatLargeNumber
 } from '../../../../../utils/currencyUtils';
-import { fromUTCtoLocal } from '../../../../../utils/dateUtils';
+import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 // Interface for the props of the HomeChart component
 interface HomeChartProps {
@@ -87,13 +87,13 @@ export default function HomeChart({ transactions, isLoading }: HomeChartProps) {
 
         // Filter transactions to include only those within the last six months
         const filteredTransactions = transactions.filter(transaction => {
-            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
+            const transactionDate = fromSupabaseTimestamp(transaction.transaction_date);
             return transactionDate >= sixMonthsAgo && transactionDate <= today;
         });
 
         // Categorize and sum transactions by month and type (income/expense)
         filteredTransactions.forEach(transaction => {
-            const transactionDate = fromUTCtoLocal(transaction.transaction_date);
+            const transactionDate = fromSupabaseTimestamp(transaction.transaction_date);
             const monthKey = MONTH_KEYS[transactionDate.getMonth()];
 
             if (monthlyDataMap[monthKey]) {
