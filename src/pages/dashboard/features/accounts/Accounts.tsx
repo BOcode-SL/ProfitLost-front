@@ -305,7 +305,16 @@ export default function Accounts() {
     // Set the selectedYear after availableYears are loaded
     useEffect(() => {
         if (availableYears.length > 0 && !selectedYear) {
-            setSelectedYear(availableYears[0].toString());
+            // Get current year
+            const currentYear = new Date().getFullYear();
+            
+            // Check if current year is in available years
+            if (availableYears.includes(currentYear)) {
+                setSelectedYear(currentYear.toString());
+            } else {
+                // Fall back to first available year if current year isn't available
+                setSelectedYear(availableYears[0].toString());
+            }
         }
     }, [availableYears, selectedYear]);
 
@@ -343,15 +352,49 @@ export default function Accounts() {
     // Handler for updating an existing account
     const handleAccountUpdate = async (updatedAccount: AccountWithYearRecords) => {
         try {
-            const response = await accountService.updateAccount(updatedAccount.id, {
+            // Create the basic update data object
+            const updateData = {
                 name: updatedAccount.name,
                 background_color: updatedAccount.background_color,
                 text_color: updatedAccount.text_color,
                 is_active: updatedAccount.is_active,
                 account_order: updatedAccount.account_order
-            });
+            };
+            
+            // Check if we need to update year records
+            if (updatedAccount.year_records && updatedAccount.year_records.length > 0) {
+                // Convert the year_records array to the yearRecords object format the backend expects
+                const yearRecordsData: Record<string, Record<string, number | null>> = {};
+                
+                updatedAccount.year_records.forEach(record => {
+                    if (record.year) {
+                        // Convert number to string for object key
+                        const yearKey = String(record.year);
+                        yearRecordsData[yearKey] = {
+                            jan: record.jan,
+                            feb: record.feb,
+                            mar: record.mar,
+                            apr: record.apr,
+                            may: record.may,
+                            jun: record.jun,
+                            jul: record.jul,
+                            aug: record.aug,
+                            sep: record.sep,
+                            oct: record.oct,
+                            nov: record.nov,
+                            dec: record.dec
+                        };
+                    }
+                });
+                
+                // Add yearRecords to the request payload
+                Object.assign(updateData, { yearRecords: yearRecordsData });
+            }
+            
+            // Send the update request
+            const response = await accountService.updateAccount(updatedAccount.id, updateData);
 
-            if (response.success && response.data) {
+            if (response.success) {
                 // Refresh the accounts data
                 await fetchAccountsByYear(parseInt(selectedYear));
                 toast.success(t('dashboard.accounts.success.accountUpdated'));
