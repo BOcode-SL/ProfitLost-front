@@ -75,6 +75,41 @@ export const transactionService = {
     },
 
     /**
+     * Retrieves optimized transaction data specifically for the dashboard
+     * This includes only what's needed for current dashboard components:
+     * - Current and previous month data for balance comparison
+     * - Last 6 months data for the chart
+     * - Recent transactions for transaction history
+     * 
+     * @returns Promise with the optimized dashboard data or error response
+     */
+    async getDashboardData(): Promise<TransactionApiResponse> {
+        try {
+            const response = await fetch(`${API_URL}/api/transactions/dashboard`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: getAuthHeaders()
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw {
+                    success: false,
+                    message: data.message || 'Failed to retrieve dashboard data',
+                    error: data.error || 'DATABASE_ERROR',
+                    statusCode: response.status as HttpStatusCode
+                } as TransactionApiResponse;
+            }
+
+            // Return standardized API response
+            return data as TransactionApiResponse;
+        } catch (error) {
+            throw handleTransactionError(error);
+        }
+    },
+
+    /**
      * Retrieves years that have transactions for the current user
      * @returns Promise with array of years sorted in descending order
      */

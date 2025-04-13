@@ -28,46 +28,73 @@ import HomeBalances from './components/HomeBalances';
 import HomeChart from './components/HomeChart';
 import HomeHistory from './components/HomeHistory';
 
+// Interface for dashboard data structure
+interface DashboardData {
+    currentMonthTransactions: Transaction[];
+    previousMonthTransactions: Transaction[];
+    sixMonthsTransactions: Transaction[];
+    recentTransactions: Transaction[];
+}
+
 // DashHome component
 export default function DashHome() {
     const { t } = useTranslation();
 
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [dashboardData, setDashboardData] = useState<DashboardData>({
+        currentMonthTransactions: [],
+        previousMonthTransactions: [],
+        sixMonthsTransactions: [],
+        recentTransactions: []
+    });
     const [isLoading, setIsLoading] = useState(true);
 
-    // Function to fetch all transactions, wrapped in useCallback to prevent unnecessary recreation
-    const fetchTransactions = useCallback(async () => {
+    // Function to fetch optimized dashboard data, wrapped in useCallback to prevent unnecessary recreation
+    const fetchDashboardData = useCallback(async () => {
         setIsLoading(true);
         try {
-            const response = await transactionService.getAllTransactions();
+            const response = await transactionService.getDashboardData();
             if (!response.success) {
-                throw new Error('Failed to fetch transactions');
+                throw new Error('Failed to fetch dashboard data');
             }
-            // Explicitly cast to Transaction[] since we're migrating from models to supabase types
-            if (Array.isArray(response.data)) {
-                setTransactions(response.data as Transaction[]);
+            
+            // Ensure proper type conversion
+            if (response.data && 
+                'currentMonthTransactions' in response.data && 
+                'previousMonthTransactions' in response.data &&
+                'sixMonthsTransactions' in response.data &&
+                'recentTransactions' in response.data) {
+                setDashboardData(response.data as DashboardData);
+            } else {
+                console.error('Invalid dashboard data format received');
+                throw new Error('Invalid data format');
             }
         } catch (error) {
-            console.error('Error fetching transactions:', error);
+            console.error('Error fetching dashboard data:', error);
             toast.error(t('dashboard.common.error.loading'));
         } finally {
             setIsLoading(false);
         }
     }, [t]);
 
-    // Fetch all transactions on component mount
+    // Fetch dashboard data on component mount
     useEffect(() => {
-        fetchTransactions();
-    }, [fetchTransactions]);
+        fetchDashboardData();
+    }, [fetchDashboardData]);
 
     // Listen for transaction update events and refresh data
     useEffect(() => {
-        window.addEventListener(TRANSACTION_UPDATED_EVENT, fetchTransactions);
+        window.addEventListener(TRANSACTION_UPDATED_EVENT, fetchDashboardData);
         
         return () => {
-            window.removeEventListener(TRANSACTION_UPDATED_EVENT, fetchTransactions);
+            window.removeEventListener(TRANSACTION_UPDATED_EVENT, fetchDashboardData);
         };
-    }, [fetchTransactions]);
+    }, [fetchDashboardData]);
+
+    // Combine transactions for balance calculations
+    const allTransactionsForBalance = [
+        ...dashboardData.currentMonthTransactions,
+        ...dashboardData.previousMonthTransactions
+    ];
 
     return (
         <Box sx={{
@@ -81,14 +108,32 @@ export default function DashHome() {
                 gap: 2,
                 flexDirection: { xs: 'column', sm: 'row' }
             }}>
-                <HomeBalances type="income" transactions={transactions} isLoading={isLoading} />
-                <HomeBalances type="expenses" transactions={transactions} isLoading={isLoading} />
-                <HomeBalances type="savings" transactions={transactions} isLoading={isLoading} />
+                <HomeBalances 
+                    type="income" 
+                    transactions={allTransactionsForBalance} 
+                    isLoading={isLoading} 
+                />
+                <HomeBalances 
+                    type="expenses" 
+                    transactions={allTransactionsForBalance} 
+                    isLoading={isLoading} 
+                />
+                <HomeBalances 
+                    type="savings" 
+                    transactions={allTransactionsForBalance} 
+                    isLoading={isLoading} 
+                />
             </Box>
             {/* Six-month financial trend visualization */}
-            <HomeChart transactions={transactions} isLoading={isLoading} />
+            <HomeChart 
+                transactions={dashboardData.sixMonthsTransactions} 
+                isLoading={isLoading} 
+            />
             {/* Recent transactions list */}
-            <HomeHistory transactions={transactions} isLoading={isLoading} />
+            <HomeHistory 
+                transactions={dashboardData.recentTransactions} 
+                isLoading={isLoading} 
+            />
         </Box>
     );
 }
