@@ -83,13 +83,69 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         
         setLoadingYears(true);
         try {
-            // First try to get details which should include all years
+            const currentYear = new Date().getFullYear();
+            
+            // Check if we already have years data in cache
+            const cacheKey = `account_${account.id}_available_years`;
+            const cachedData = sessionStorage.getItem(cacheKey);
+            
+            if (cachedData) {
+                try {
+                    const parsedData = JSON.parse(cachedData) as number[];
+                    setAvailableYearsData(parsedData);
+                    
+                    // Set current year if available, otherwise first year
+                    if (parsedData.includes(currentYear)) {
+                        setSelectedYear(currentYear);
+                    } else if (parsedData.length > 0) {
+                        setSelectedYear(parsedData[0]);
+                    }
+                    
+                    setLoadingYears(false);
+                    return;
+                } catch (e) {
+                    console.warn('Error parsing cached years data', e);
+                }
+            }
+            
+            // First try to use already loaded data from account
+            if (account.year_records && account.year_records.length > 0) {
+                const years = new Set<number>();
+                years.add(currentYear);
+                
+                account.year_records.forEach(record => {
+                    if (record.year) {
+                        years.add(record.year);
+                    }
+                });
+                
+                const sortedYears = Array.from(years).sort((a, b) => b - a);
+                setAvailableYearsData(sortedYears);
+                
+                // Cache for future use
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(sortedYears));
+                } catch (e) {
+                    console.warn('Failed to cache years data', e);
+                }
+                
+                // Set current year if available, otherwise first year
+                if (sortedYears.includes(currentYear)) {
+                    setSelectedYear(currentYear);
+                } else if (sortedYears.length > 0) {
+                    setSelectedYear(sortedYears[0]);
+                }
+                
+                setLoadingYears(false);
+                return;
+            }
+            
+            // If no loaded data, fetch from API
             const response = await accountService.getAccountDetailById(account.id);
             if (response.success && response.data) {
                 const accountData = response.data as AccountWithYearRecords;
                 if (accountData.year_records && accountData.year_records.length > 0) {
                     const years = new Set<number>();
-                    const currentYear = new Date().getFullYear();
                     years.add(currentYear);
                     
                     accountData.year_records.forEach(record => {
@@ -101,18 +157,29 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     const sortedYears = Array.from(years).sort((a, b) => b - a);
                     setAvailableYearsData(sortedYears);
                     
-                    // Set the first year as selected year
-                    if (sortedYears.length > 0) {
+                    // Cache for future use
+                    try {
+                        sessionStorage.setItem(cacheKey, JSON.stringify(sortedYears));
+                    } catch (e) {
+                        console.warn('Failed to cache years data', e);
+                    }
+                    
+                    // Set current year if available, otherwise first year
+                    if (sortedYears.includes(currentYear)) {
+                        setSelectedYear(currentYear);
+                    } else if (sortedYears.length > 0) {
                         setSelectedYear(sortedYears[0]);
                     }
                 }
             }
         } catch (error) {
             console.error('Error loading available years:', error);
+            // Fallback to current year
+            setSelectedYear(new Date().getFullYear());
         } finally {
             setLoadingYears(false);
         }
-    }, [account?.id]);
+    }, [account?.id, account?.year_records]);
 
     // Run once when the account is loaded or changed
     useEffect(() => {
@@ -177,34 +244,82 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             
             // If we don't have the data and this is an existing account, fetch it
             if (!hasExistingData && account?.id) {
+                // Set loading state
+                setSavingChanges(true);
+                
+                // Initialize with zeros first to avoid empty form while loading
+                months.forEach(month => {
+                    values[month] = 0;
+                    inputs[month] = '0';
+                });
+                setMonthlyValues(values);
+                setMonthlyInput(inputs);
+                
                 const loadAccountDetails = async () => {
                     try {
+                        // Try to get from session storage first
+                        const cacheKey = `account_${account.id}_year_${numericYear}`;
+                        const cachedData = sessionStorage.getItem(cacheKey);
+                        
+                        if (cachedData) {
+                            try {
+                                const parsedData = JSON.parse(cachedData);
+                                if (parsedData.yearRecord) {
+                                    const yearRecord = parsedData.yearRecord;
+                                    const newValues: Record<string, number> = {};
+                                    const newInputs: Record<string, string> = {};
+                                    
+                                    months.forEach(month => {
+                                        const monthKey = month.toLowerCase() as keyof YearRecord;
+                                        const value = yearRecord[monthKey] as number | null;
+                                        newValues[month] = value !== null ? value : 0;
+                                        newInputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
+                                    });
+                                    
+                                    setMonthlyValues(newValues);
+                                    setMonthlyInput(newInputs);
+                                    setSavingChanges(false);
+                                    return;
+                                }
+                            } catch (e) {
+                                // Ignore cache parsing errors and proceed with API call
+                                console.warn('Cache parsing error, fetching fresh data', e);
+                            }
+                        }
+                        
+                        // No cache or cache error, fetch from API
                         const response = await accountService.getAccountDetailById(account.id, numericYear);
                         if (response.success && response.data) {
                             const responseData = response.data as { yearRecord?: YearRecord };
                             const yearRecord = responseData.yearRecord;
                             
+                            // Cache the response for future use
+                            try {
+                                sessionStorage.setItem(cacheKey, JSON.stringify(responseData));
+                            } catch (e) {
+                                console.warn('Failed to cache account data', e);
+                            }
+                            
                             if (yearRecord) {
+                                const newValues: Record<string, number> = {};
+                                const newInputs: Record<string, string> = {};
+                                
                                 months.forEach(month => {
                                     const monthKey = month.toLowerCase() as keyof YearRecord;
                                     const value = yearRecord[monthKey] as number | null;
-                                    values[month] = value !== null ? value : 0;
-                                    // Convert to string and replace decimal point with comma for user input (locale handling)
-                                    inputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
+                                    newValues[month] = value !== null ? value : 0;
+                                    newInputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
                                 });
-                                setMonthlyValues(values);
-                                setMonthlyInput(inputs);
+                                
+                                setMonthlyValues(newValues);
+                                setMonthlyInput(newInputs);
                             }
                         }
                     } catch (error) {
                         console.error('Error loading account details:', error);
-                        // Set default values of zero if there's an error
-                        months.forEach(month => {
-                            values[month] = 0;
-                            inputs[month] = '0';
-                        });
-                        setMonthlyValues(values);
-                        setMonthlyInput(inputs);
+                        // Leave default zeros in place
+                    } finally {
+                        setSavingChanges(false);
                     }
                 };
                 
@@ -395,6 +510,14 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             year_records: [...(account!.year_records || []), initialYearData as YearRecord]
         };
 
+        // Clear account years cache to ensure it reloads properly
+        try {
+            const accountYearsCacheKey = `account_${account!.id}_available_years`;
+            sessionStorage.removeItem(accountYearsCacheKey);
+        } catch (e) {
+            console.warn('Error clearing account years cache', e);
+        }
+
         // Save changes and switch to the new year
         onSuccess(updatedAccount).then(() => {
             setShowYearInput(false);
@@ -480,6 +603,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         onChange={(e) => setNewYear(e.target.value)}
                                         placeholder={t('dashboard.accounts.form.enterYear')}
                                         fullWidth
+                                        inputProps={{ 
+                                            min: 1900, 
+                                            max: 9999,
+                                            step: 1
+                                        }}
                                     />
                                     <Button
                                         variant="contained"

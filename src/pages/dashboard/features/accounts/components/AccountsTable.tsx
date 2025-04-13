@@ -135,19 +135,23 @@ export default function AccountsTable({
     const fetchAccountDetails = async (accountId: UUID) => {
         setIsLoadingAccount(true);
         try {
+            // Get current year for optimized data loading
+            const currentYear = new Date().getFullYear();
+            
             // First check if we already have full account data in our existing accounts
             const existingAccount = [...accounts, ...inactiveAccounts].find(acc => acc.id === accountId);
             
-            // If we have year_records data for this account, use it directly without API call
-            if (existingAccount && existingAccount.year_records && existingAccount.year_records.length > 0) {
+            // If we have year_records data for this account with current year data, use it directly without API call
+            if (existingAccount && existingAccount.year_records && 
+                existingAccount.year_records.some(record => record.year === currentYear)) {
                 setSelectedAccount(existingAccount);
                 setIsDrawerOpen(true);
                 setIsLoadingAccount(false);
                 return;
             }
             
-            // Only make API call if necessary
-            const response = await accountService.getAccountDetailById(accountId);
+            // Only make API call if necessary - specifically request current year data
+            const response = await accountService.getAccountDetailById(accountId, currentYear);
             if (response.success && response.data) {
                 setSelectedAccount(response.data as AccountWithYearRecords);
                 setIsDrawerOpen(true);

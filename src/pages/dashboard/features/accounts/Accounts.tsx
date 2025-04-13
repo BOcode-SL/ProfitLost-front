@@ -83,9 +83,9 @@ export default function Accounts() {
     }, []);
 
     // Fetch accounts for the selected year
-    const fetchAccountsByYear = useCallback(async (year: number) => {
+    const fetchAccountsByYear = useCallback(async (year: number, silent: boolean = false) => {
         try {
-            setLoading(true);
+            if (!silent) setLoading(true);
             // Create a cache key for this year's data
             const cacheKey = `accounts_${year}`;
             
@@ -94,12 +94,12 @@ export default function Accounts() {
             if (cachedData) {
                 try {
                     const parsedData = JSON.parse(cachedData) as AccountWithYearRecords[];
-                    setAccounts(parsedData);
-                    setLoading(false);
+                    if (!silent) setAccounts(parsedData);
+                    if (!silent) setLoading(false);
                     
-                    // Refresh in the background without blocking UI
+                    // Refresh in the background without blocking UI or showing loading
                     refreshAccountsInBackground(year, cacheKey);
-                    return;
+                    return parsedData;
                 } catch {
                     console.warn('Error parsing cached account data, fetching fresh data instead');
                     // Continue with fresh data fetch if cache parsing fails
@@ -188,19 +188,42 @@ export default function Accounts() {
                 // Cache the transformed accounts for faster future loading
                 try {
                     sessionStorage.setItem(cacheKey, JSON.stringify(transformedAccounts));
+                    
+                    // Also cache individual account data for direct access
+                    transformedAccounts.forEach(account => {
+                        try {
+                            if (account.year_records) {
+                                const yearRecord = account.year_records.find(record => record.year === year);
+                                if (yearRecord) {
+                                    const accountYearData = {
+                                        id: account.id,
+                                        name: account.name,
+                                        yearRecord
+                                    };
+                                    sessionStorage.setItem(`account_${account.id}_year_${year}`, JSON.stringify(accountYearData));
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Error caching individual account data', e);
+                        }
+                    });
                 } catch {
                     console.warn('Error caching account data');
                 }
 
-                setAccounts(transformedAccounts);
+                if (!silent) setAccounts(transformedAccounts);
+                if (!silent) setLoading(false);
+                return transformedAccounts;
             } else {
-                toast.error(t('dashboard.accounts.errors.loadingError'));
+                if (!silent) toast.error(t('dashboard.accounts.errors.loadingError'));
+                if (!silent) setLoading(false);
+                return [];
             }
         } catch (error) {
             console.error('Error fetching accounts:', error);
-            toast.error(t('dashboard.accounts.errors.loadingError'));
-        } finally {
-            setLoading(false);
+            if (!silent) toast.error(t('dashboard.accounts.errors.loadingError'));
+            if (!silent) setLoading(false);
+            return [];
         }
     }, [t]);
 
@@ -288,6 +311,25 @@ export default function Accounts() {
                 // Update cache with fresh data
                 sessionStorage.setItem(cacheKey, JSON.stringify(transformedAccounts));
                 
+                // Also cache individual account data for direct access
+                transformedAccounts.forEach(account => {
+                    try {
+                        if (account.year_records) {
+                            const yearRecord = account.year_records.find(record => record.year === year);
+                            if (yearRecord) {
+                                const accountYearData = {
+                                    id: account.id,
+                                    name: account.name,
+                                    yearRecord
+                                };
+                                sessionStorage.setItem(`account_${account.id}_year_${year}`, JSON.stringify(accountYearData));
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Error caching individual account data in background refresh', e);
+                    }
+                });
+                
                 // Update state without showing loading indicator
                 setAccounts(transformedAccounts);
             }
@@ -302,7 +344,7 @@ export default function Accounts() {
         Promise.all([fetchUserData(), fetchAvailableYears()]);
     }, [fetchUserData, fetchAvailableYears]);
 
-    // Set the selectedYear after availableYears are loaded
+    // Effect to set the selectedYear after availableYears are loaded
     useEffect(() => {
         if (availableYears.length > 0 && !selectedYear) {
             // Get current year
@@ -311,12 +353,16 @@ export default function Accounts() {
             // Check if current year is in available years
             if (availableYears.includes(currentYear)) {
                 setSelectedYear(currentYear.toString());
+                // Pre-fetch current year data to have it ready for account forms
+                fetchAccountsByYear(currentYear, true);
             } else {
                 // Fall back to first available year if current year isn't available
                 setSelectedYear(availableYears[0].toString());
+                // Pre-fetch first year data
+                fetchAccountsByYear(availableYears[0], true);
             }
         }
-    }, [availableYears, selectedYear]);
+    }, [availableYears, selectedYear, fetchAccountsByYear]);
 
     // Fetch accounts when selected year changes
     useEffect(() => {
@@ -395,6 +441,29 @@ export default function Accounts() {
             const response = await accountService.updateAccount(updatedAccount.id, updateData);
 
             if (response.success) {
+                // Clear related caches to ensure data is refreshed
+                try {
+                    // Clear account years cache
+                    const accountYearsCacheKey = `account_${updatedAccount.id}_available_years`;
+                    sessionStorage.removeItem(accountYearsCacheKey);
+                    
+                    // Clear specific year caches for this account
+                    if (updatedAccount.year_records) {
+                        updatedAccount.year_records.forEach(record => {
+                            if (record.year) {
+                                const yearCacheKey = `account_${updatedAccount.id}_year_${record.year}`;
+                                sessionStorage.removeItem(yearCacheKey);
+                            }
+                        });
+                    }
+                    
+                    // Clear the accounts cache for selected year
+                    const accountsCacheKey = `accounts_${selectedYear}`;
+                    sessionStorage.removeItem(accountsCacheKey);
+                } catch (e) {
+                    console.warn('Error clearing caches during account update', e);
+                }
+                
                 // Refresh the accounts data
                 await fetchAccountsByYear(parseInt(selectedYear));
                 toast.success(t('dashboard.accounts.success.accountUpdated'));
