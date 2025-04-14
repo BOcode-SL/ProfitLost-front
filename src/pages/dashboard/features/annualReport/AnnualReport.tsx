@@ -23,7 +23,7 @@ import { transactionService } from '../../../../services/transaction.service';
 import { userService } from '../../../../services/user.service';
 
 // Types
-import type { Transaction } from '../../../../types/supabase/transaction';
+import type { Transaction } from '../../../../types/supabase/transactions';
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
 
 // Utils

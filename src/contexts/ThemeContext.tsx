@@ -8,7 +8,7 @@ import { createContext, useState, useMemo, ReactNode, useEffect, useCallback } f
 import { ThemeProvider } from '@mui/material';
 
 // Types
-import { Theme } from '../types/supabase/preference';
+import { Theme } from '../types/supabase/preferences';
 
 // Services
 import { userService } from '../services/user.service';

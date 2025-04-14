@@ -8,8 +8,8 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { useTranslation } from 'react-i18next';
 
 // Types
-import type { User } from '../types/supabase/user';
-import type { PreferenceContent } from '../types/supabase/preference';
+import type { User } from '../types/supabase/users';
+import type { PreferenceContent } from '../types/supabase/preferences';
 
 // Services
 import { userService } from '../services/user.service';

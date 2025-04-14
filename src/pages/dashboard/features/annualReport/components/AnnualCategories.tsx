@@ -47,8 +47,8 @@ import { categoryService } from '../../../../../services/category.service';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { Category } from '../../../../../types/supabase/category';
-import type { Transaction } from '../../../../../types/supabase/transaction';
+import type { Category } from '../../../../../types/supabase/categories';
+import type { Transaction } from '../../../../../types/supabase/transactions';
 import type { CategoryApiErrorResponse } from '../../../../../types/api/responses';
 
 type SortOption = 'name_asc' | 'name_desc' | 'balance_asc' | 'balance_desc';

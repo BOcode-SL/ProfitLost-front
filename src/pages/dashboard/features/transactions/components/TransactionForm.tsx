@@ -50,8 +50,8 @@ import { transactionService } from '../../../../../services/transaction.service'
 import { categoryService } from '../../../../../services/category.service';
 
 // Types
-import type { Category } from '../../../../../types/supabase/category';
-import type { Transaction, RecurrenceType } from '../../../../../types/supabase/transaction';
+import type { Category } from '../../../../../types/supabase/categories';
+import type { Transaction, RecurrenceType } from '../../../../../types/supabase/transactions';
 
 // Interface for transaction data to be updated
 interface TransactionUpdateData {

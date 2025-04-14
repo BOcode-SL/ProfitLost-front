@@ -18,9 +18,9 @@ import { accountService } from '../../../../services/account.service';
 import { userService } from '../../../../services/user.service';
 
 // Types
-import type { Account } from '../../../../types/supabase/account';
-import type { YearRecord } from '../../../../types/supabase/year_record';
-import type { User } from '../../../../types/supabase/user';
+import type { Account } from '../../../../types/supabase/accounts';
+import type { YearRecord } from '../../../../types/supabase/year_records';
+import type { User } from '../../../../types/supabase/users';
 import type { UUID } from '../../../../types/supabase/common';
 
 // Extended types for relationships

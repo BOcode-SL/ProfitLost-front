@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/supabase/transaction';
+import type { Transaction } from '../../../../../types/supabase/transactions';
 
 // Utils
 import { formatDateTime, fromSupabaseTimestamp } from '../../../../../utils/dateUtils';

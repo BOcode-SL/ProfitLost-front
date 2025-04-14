@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
 // Types
-import type { Note } from '../../../../types/supabase/note';
+import type { Note } from '../../../../types/supabase/notes';
 
 // Services
 import { noteService } from '../../../../services/note.service';

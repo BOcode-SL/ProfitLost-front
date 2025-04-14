@@ -18,8 +18,8 @@
  */
 
 // Import user type from Supabase
-import type { User } from '../types/supabase/user';
-import type { DateFormat, TimeFormat } from '../types/supabase/preference';
+import type { User } from '../types/supabase/users';
+import type { DateFormat, TimeFormat } from '../types/supabase/preferences';
 
 // Constants
 // Regex to validate Supabase timestamp format

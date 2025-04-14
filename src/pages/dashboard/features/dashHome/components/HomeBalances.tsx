@@ -23,7 +23,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Transaction } from '../../../../../types/supabase/transaction';
+import type { Transaction } from '../../../../../types/supabase/transactions';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';

@@ -4,8 +4,8 @@
  * Provides functionality for currency formatting and visibility management.
  * Handles user preferences for currency display across the application.
  */
-import { User } from '../types/supabase/user';
-import { Currency } from '../types/supabase/preference';
+import { User } from '../types/supabase/users';
+import { Currency } from '../types/supabase/preferences';
 
 /**
  * Custom event name for currency visibility changes

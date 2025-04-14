@@ -18,12 +18,12 @@ import type { HttpStatusCode } from './common';
 
 // Supabase models
 import type { UUID } from '../supabase/common';
-import type { User } from '../supabase/user';
-import type { RecurrenceType, Transaction } from '../supabase/transaction';
-import type { Category } from '../supabase/category';
-import type { Note } from '../supabase/note';
-import type { Account } from '../supabase/account';
-import type { PreferenceContent } from '../supabase/preference';
+import type { User } from '../supabase/users';
+import type { RecurrenceType, Transaction } from '../supabase/transactions';
+import type { Category } from '../supabase/categories';
+import type { Note } from '../supabase/notes';
+import type { Account } from '../supabase/accounts';
+import type { PreferenceContent } from '../supabase/preferences';
 
 /**
  * Types for authentication API responses

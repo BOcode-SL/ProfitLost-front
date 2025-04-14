@@ -21,8 +21,8 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useUser } from '../../../../../contexts/UserContext';
 
 // Types
-import type { Account } from '../../../../../types/supabase/account';
-import type { YearRecord } from '../../../../../types/supabase/year_record';
+import type { Account } from '../../../../../types/supabase/accounts';
+import type { YearRecord } from '../../../../../types/supabase/year_records';
 import type { UUID } from '../../../../../types/supabase/common';
 
 // Utils

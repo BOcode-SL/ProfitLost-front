@@ -10,7 +10,7 @@
 import { HttpStatusCode } from '../types/api/common';
 import { CommonErrorType } from '../types/api/errors';
 import type { UserApiResponse } from '../types/api/responses';
-import type { PreferenceContent } from '../types/supabase/preference';
+import type { PreferenceContent } from '../types/supabase/preferences';
 
 // Utils
 import { getAuthHeaders } from '../utils/apiHeaders';

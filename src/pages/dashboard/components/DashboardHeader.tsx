@@ -32,7 +32,7 @@ import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import { authService } from '../../../services/auth.service';
 
 // Types
-import { User } from '../../../types/supabase/user';
+import { User } from '../../../types/supabase/users';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';

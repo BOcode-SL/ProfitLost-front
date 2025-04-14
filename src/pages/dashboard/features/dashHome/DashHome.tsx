@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { transactionService } from '../../../../services/transaction.service';
 
 // Types
-import type { Transaction } from '../../../../types/supabase/transaction';
+import type { Transaction } from '../../../../types/supabase/transactions';
 
 // Utils
 import { TRANSACTION_UPDATED_EVENT } from '../../../../utils/events';

@@ -27,7 +27,7 @@ import { userService } from '../../../services/user.service';
 import { categoryService } from '../../../services/category.service';
 
 // Types
-import { Language, Currency, DateFormat, TimeFormat, PreferenceContent } from '../../../types/supabase/preference';
+import { Language, Currency, DateFormat, TimeFormat, PreferenceContent } from '../../../types/supabase/preferences';
 
 /**
  * Interface for tracking onboarding progress in localStorage

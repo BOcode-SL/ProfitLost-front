@@ -26,8 +26,8 @@ import {
 } from '../../../../../utils/currencyUtils';
 
 // Types
-import type { Account } from '../../../../../types/supabase/account';
-import type { YearRecord } from '../../../../../types/supabase/year_record';
+import type { Account } from '../../../../../types/supabase/accounts';
+import type { YearRecord } from '../../../../../types/supabase/year_records';
 
 // Extended Account interface that includes year_records relationship
 interface AccountWithYearRecords extends Account {

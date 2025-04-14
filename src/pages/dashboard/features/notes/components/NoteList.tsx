@@ -14,7 +14,7 @@ import { List, Box, Typography, useTheme, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Types
-import type { Note } from '../../../../../types/supabase/note';
+import type { Note } from '../../../../../types/supabase/notes';
 
 // Interface for the props of the NoteList component
 interface NoteListProps {

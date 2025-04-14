@@ -39,7 +39,7 @@ import {
     Currency, 
     DateFormat, 
     TimeFormat 
-} from '../../../../types/supabase/preference';
+} from '../../../../types/supabase/preferences';
 
 // Configuration options for selectable preferences
 const dateFormatOptions = [

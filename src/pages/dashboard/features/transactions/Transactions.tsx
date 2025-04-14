@@ -20,8 +20,8 @@ import { useUser } from '../../../../contexts/UserContext';
 
 // Types
 import type { TransactionApiErrorResponse } from '../../../../types/api/responses';
-import type { Transaction } from '../../../../types/supabase/transaction';
-import type { Category } from '../../../../types/supabase/category';
+import type { Transaction } from '../../../../types/supabase/transactions';
+import type { Category } from '../../../../types/supabase/categories';
 
 // Services
 import { transactionService } from '../../../../services/transaction.service';

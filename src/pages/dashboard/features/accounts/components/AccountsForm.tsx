@@ -34,8 +34,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { accountService } from '../../../../../services/account.service';
 
 // Types
-import type { Account } from '../../../../../types/supabase/account';
-import type { YearRecord } from '../../../../../types/supabase/year_record';
+import type { Account } from '../../../../../types/supabase/accounts';
+import type { YearRecord } from '../../../../../types/supabase/year_records';
 import type { UUID } from '../../../../../types/supabase/common';
 
 // Extended Account interface with year_records relationship

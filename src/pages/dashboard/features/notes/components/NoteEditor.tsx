@@ -30,7 +30,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 // Types
-import type { Note } from '../../../../../types/supabase/note';
+import type { Note } from '../../../../../types/supabase/notes';
 
 // Interface for the props of the NoteEditor component
 interface NoteEditorProps {

@@ -43,8 +43,8 @@ import { categoryService } from '../../../../../services/category.service';
 import { transactionService } from '../../../../../services/transaction.service';
 
 // Types
-import type { Category } from '../../../../../types/supabase/category';
-import type { Transaction } from '../../../../../types/supabase/transaction';
+import type { Category } from '../../../../../types/supabase/categories';
+import type { Transaction } from '../../../../../types/supabase/transactions';
 interface GroupedTransactions {
     [key: string]: Transaction[];
 }
