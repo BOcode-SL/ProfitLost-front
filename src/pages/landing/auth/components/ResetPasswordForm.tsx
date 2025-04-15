@@ -96,9 +96,20 @@ export default function ResetPasswordForm({
                         required
                         label={t('home.auth.resetPassword.steps.token.label')}
                         value={resetToken}
-                        onChange={(e) => setResetToken(e.target.value.trim())}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Only allow digits and maximum 6 characters
+                            if (/^\d*$/.test(value) && value.length <= 6) {
+                                setResetToken(value);
+                            }
+                        }}
                         sx={{ mb: 2 }}
-                        type="number"
+                        inputProps={{
+                            maxLength: 6,
+                            pattern: '[0-9]*',
+                            inputMode: 'numeric'
+                        }}
+                        helperText={t('home.auth.resetPassword.steps.token.helper', { defaultValue: '6-digit code sent to your email' })}
                     />
                     {/* Verify Code Button */}
                     <Button
