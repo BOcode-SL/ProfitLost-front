@@ -3,6 +3,9 @@
  * 
  * Provides theme management functionality for the application.
  * Supports light and dark mode themes with user preference persistence.
+ * Handles theme switching and synchronization with user preferences.
+ * 
+ * @module ThemeContext
  */
 import { createContext, useState, useMemo, ReactNode, useEffect, useCallback } from 'react';
 import { ThemeProvider } from '@mui/material';
@@ -23,6 +26,7 @@ import { useUser } from './UserContext';
 /**
  * Interface defining the Theme Context API.
  * Provides methods and states for theme management.
+ * Used throughout the application to access and modify theme settings.
  */
 interface ThemeContextType {
     toggleTheme: () => void; // Function to toggle between light and dark themes
@@ -32,6 +36,7 @@ interface ThemeContextType {
 /**
  * Create the Theme Context with default values.
  * The default implementation does nothing when toggling theme.
+ * Will be replaced by actual implementation in providers.
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const ThemeContext = createContext<ThemeContextType>({
@@ -43,8 +48,10 @@ export const ThemeContext = createContext<ThemeContextType>({
  * Global Theme Provider component.
  * Used for application-wide theming outside the dashboard.
  * Always provides light theme regardless of user preferences.
+ * Typically used for authentication pages and public-facing components.
  * 
- * @param children - Child components to be wrapped
+ * @param {ReactNode} children - Child components to be wrapped
+ * @returns {JSX.Element} Provider component with light theme applied
  */
 export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
     return (
@@ -59,8 +66,10 @@ export const GlobalThemeProvider = ({ children }: { children: ReactNode }) => {
  * Manages theme state based on user preferences.
  * Provides functionality to toggle between light and dark themes.
  * Persists theme preference to user profile through API.
+ * Used within authenticated dashboard areas of the application.
  * 
- * @param children - Child components to be wrapped
+ * @param {ReactNode} children - Child components to be wrapped
+ * @returns {JSX.Element} Provider component with theme toggling capability
  */
 export const DashboardThemeProvider = ({ children }: { children: ReactNode }) => {
     const { userPreferences } = useUser(); // Access user context for theme preferences
@@ -73,6 +82,9 @@ export const DashboardThemeProvider = ({ children }: { children: ReactNode }) =>
     /**
      * Toggles between light and dark themes.
      * Updates user preferences through API and updates local state.
+     * Ensures theme preference persists across sessions.
+     * 
+     * @returns {Promise<void>} Promise that resolves when theme is updated
      */
     const toggleTheme = useCallback(async () => {
         try {

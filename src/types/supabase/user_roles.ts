@@ -2,12 +2,16 @@
  * UserRole Model
  * 
  * Contains type definitions for mapping users to roles.
+ * 
+ * @module SupabaseUserRoles
  */
 
 import { UUID, RoleTrackingFields } from './common';
 
 /**
  * Mapping between users and roles
+ * 
+ * @interface UserRole
  */
 export interface UserRole extends RoleTrackingFields {
     id: UUID;                   // Unique identifier
@@ -18,17 +22,23 @@ export interface UserRole extends RoleTrackingFields {
 /**
  * Type for a Supabase Database UserRole
  * Represents how the user role mapping is stored in the database
+ * 
+ * @typedef DbUserRole
  */
 export type DbUserRole = UserRole;
 
 /**
  * Type for creating a new user role assignment
  * Omits auto-generated fields
+ * 
+ * @typedef UserRoleInsert
  */
 export type UserRoleInsert = Omit<UserRole, 'id' | 'created_at' | 'updated_at'>;
 
 /**
  * Type for updating an existing user role assignment
  * Makes all fields optional except id
+ * 
+ * @typedef UserRoleUpdate
  */
 export type UserRoleUpdate = Partial<Omit<UserRole, 'id'>> & { id: UUID }; 

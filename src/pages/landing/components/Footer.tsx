@@ -4,16 +4,29 @@
  * Site-wide footer displayed at the bottom of landing pages.
  * Contains logo, company description, legal links, and copyright information.
  * Responsive layout that adapts to different screen sizes.
+ * 
+ * @module Footer
  */
 import { Box, Container, Stack, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-// Define the Footer component
+/**
+ * Footer component for landing pages
+ * 
+ * Provides consistent site-wide footer with company branding,
+ * legal/policy links, and copyright attribution.
+ * Adjusts layout responsively based on screen dimensions.
+ * 
+ * @returns {JSX.Element} The rendered footer component
+ */
 export default function Footer() {
     const { t } = useTranslation();
     
-    // Define navigation links for the footer
+    /**
+     * Navigation links configuration for the footer
+     * Each item contains translated text and target route
+     */
     const footerLinks = [
         { text: t('home.footer.links.privacy'), href: '/privacy' },
         { text: t('home.footer.links.terms'), href: '/terms' },

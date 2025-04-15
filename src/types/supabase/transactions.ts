@@ -2,6 +2,8 @@
  * Transaction Model
  * 
  * Contains type definitions for financial transactions.
+ * 
+ * @module SupabaseTransactions
  */
 
 import { UUID, TrackingFields, ISODateString } from './common';
@@ -9,6 +11,8 @@ import { UUID, TrackingFields, ISODateString } from './common';
 /**
  * Types of transaction recurrence
  * Defines the frequency of recurring transactions
+ * 
+ * @typedef RecurrenceType
  */
 export type RecurrenceType = 'weekly' | 'monthly' | 'yearly' | null;
 
@@ -16,6 +20,8 @@ export type RecurrenceType = 'weekly' | 'monthly' | 'yearly' | null;
  * Represents a financial transaction in the frontend
  * Core entity for tracking income and expenses
  * Values are already decrypted for frontend use
+ * 
+ * @interface Transaction
  */
 export interface Transaction extends TrackingFields {
     id: UUID;                   // Unique identifier
@@ -32,6 +38,8 @@ export interface Transaction extends TrackingFields {
 /**
  * Type for a Supabase Database Transaction
  * Represents how the transaction record is stored in the database (encrypted)
+ * 
+ * @typedef DbTransaction
  */
 export type DbTransaction = Omit<Transaction, 'amount' | 'description'> & {
     amount: string;             // Amount stored as encrypted string in database
@@ -41,11 +49,15 @@ export type DbTransaction = Omit<Transaction, 'amount' | 'description'> & {
 /**
  * Type for creating a new transaction
  * Omits auto-generated fields
+ * 
+ * @typedef TransactionInsert
  */
 export type TransactionInsert = Omit<Transaction, 'id' | 'created_at' | 'updated_at'>;
 
 /**
  * Type for updating an existing transaction
  * Makes all fields optional except id
+ * 
+ * @typedef TransactionUpdate
  */
 export type TransactionUpdate = Partial<Omit<Transaction, 'id'>> & { id: UUID }; 

@@ -1,15 +1,18 @@
 /**
- * HomeHistory Component
+ * HomeHistory Module
  * 
- * Displays the most recent financial transactions in a list format.
- * Features include:
+ * Provides a chronological view of recent financial transactions with visual formatting.
+ * 
+ * Key Features:
  * - Automatic sorting of transactions by date (newest first)
  * - Color-coded transaction amounts (income vs expenses)
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
- * - Empty state handling when no transactions exist
- * - Responsive design for different screen sizes
- * - Loading skeleton state while data is being processed
+ * - Currency formatting based on user preferences and locale
+ * - Privacy mode with blurred monetary values
+ * - Empty state handling with appropriate messaging
+ * - Responsive design adapting to different screen sizes
+ * - Loading skeleton animation with progressive disclosure
+ * 
+ * @module HomeHistory
  */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Divider, Skeleton, useTheme } from '@mui/material';
@@ -25,13 +28,26 @@ import type { Transaction } from '../../../../../types/supabase/transactions';
 import { formatDateTime, fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
-// Interface for the props of the HomeHistory component
+/**
+ * Props interface for the HomeHistory component
+ * 
+ * @interface HomeHistoryProps
+ */
 interface HomeHistoryProps {
-    transactions: Transaction[]; // Array of transactions to display
-    isLoading: boolean; // Indicates if the component is currently loading data
+    /** Array of transactions to display in the history list */
+    transactions: Transaction[];
+    
+    /** Indicates if the component is currently loading data */
+    isLoading: boolean;
 }
 
-// Function to generate unique keys for transactions
+/**
+ * Generates a unique key for transaction items in the list
+ * Ensures stable keys for React rendering even with incomplete data
+ * 
+ * @param {Transaction} transaction - The transaction to generate a key for
+ * @returns {string} A unique identifier string for the transaction
+ */
 const generateTransactionKey = (transaction: Transaction) => {
     if (!transaction || !transaction.id) {
         // Generate a random ID for cases where there is no ID
@@ -41,14 +57,25 @@ const generateTransactionKey = (transaction: Transaction) => {
     return `transaction-${transaction.id}-${new Date(transaction.transaction_date).getTime()}`;
 };
 
-// HomeHistory component
+/**
+ * HomeHistory Component
+ * 
+ * Renders a list of the most recent financial transactions with
+ * their description, date, and amount information.
+ * 
+ * @param {HomeHistoryProps} props - Component properties
+ * @returns {JSX.Element} Rendered transaction history component
+ */
 export default function HomeHistory({ transactions, isLoading }: HomeHistoryProps) {
     const theme = useTheme();
     const { user } = useUser();
     const { t } = useTranslation();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for currency visibility toggle events across the application
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -61,7 +88,10 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
         };
     }, []);
 
-    // Get the 8 most recent transactions sorted by date
+    /**
+     * Filter and sort transactions to display only recent items
+     * Processes all transactions to show the most recent 8 entries
+     */
     const recentTransactionsMemo = useMemo(() => {
         if (isLoading || transactions.length === 0) return [];
 
@@ -76,7 +106,10 @@ export default function HomeHistory({ transactions, isLoading }: HomeHistoryProp
             .slice(0, 8); // Limit to most recent 8 transactions
     }, [transactions, isLoading]);
 
-    // Display skeleton loader while data is loading
+    /**
+     * Display skeleton loader while data is loading
+     * Shows a placeholder with multiple animated items
+     */
     if (isLoading) {
         return (
             <Paper

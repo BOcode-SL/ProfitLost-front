@@ -1,11 +1,15 @@
 /**
- * Dashboard Content Component
+ * Dashboard Content Module
  * 
- * Container that manages the content area of the dashboard:
- * - Loads the appropriate feature component based on active section
+ * Provides the main content area for the dashboard with dynamic section loading.
+ * 
+ * Responsibilities:
+ * - Dynamically loads the appropriate feature component based on active section
  * - Manages section introduction dialogs for first-time users
  * - Handles smooth transitions between sections
  * - Provides loading indicators during component loading
+ * 
+ * @module DashboardContent
  */
 
 import { Suspense, lazy, useEffect, useState } from 'react';
@@ -27,21 +31,42 @@ const Transactions = lazy(() => import('../features/transactions/Transactions'))
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
 const Notes = lazy(() => import('../features/notes/Notes'));
 
-// Interface for the props of the DashboardContent component
+/**
+ * Interface for the props of the DashboardContent component
+ * 
+ * @interface DashboardContentProps
+ */
 interface DashboardContentProps {
-    activeSection: string; // The currently active section to display
+    /** The currently active section key to display */
+    activeSection: string;
 }
 
+/**
+ * Dashboard Content Component
+ * 
+ * Main content area that dynamically renders the active dashboard section
+ * and manages first-time user introductions for each section.
+ * 
+ * @param {DashboardContentProps} props - The component props
+ * @param {string} props.activeSection - The key of the currently active section
+ * @returns {JSX.Element} The rendered DashboardContent component
+ */
 export default function DashboardContent({ activeSection }: DashboardContentProps) {
     const { user, userPreferences, loadUserData } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
-    // Scroll to top when section changes for better UX
+    /**
+     * Scrolls to the top of the page when section changes
+     * Improves user experience when navigating between sections
+     */
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeSection]);
 
-    // Show introduction dialog for new sections user hasn't seen before
+    /**
+     * Shows introduction dialog for sections the user hasn't seen before
+     * Only displays if onboarding is complete and the section is new
+     */
     useEffect(() => {
         if (user && activeSection && userPreferences && userPreferences.onboarding.completed) {
             const sectionIntro = userPreferences.onboarding.sections.find(
@@ -54,7 +79,10 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
         }
     }, [activeSection, user, userPreferences]);
 
-    // Handle introduction dialog close and update user preferences
+    /**
+     * Handles introduction dialog closure and updates user preferences
+     * Updates the server with the user's section visibility status
+     */
     const handleIntroClose = async () => {
         try {
             await userService.updateOnboardingSection(activeSection);
@@ -94,8 +122,10 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
 /**
  * Loading Indicator Component
  * 
- * Displays a centered circular progress indicator
- * while the section content is being loaded
+ * Displays a centered circular progress indicator while content is loading.
+ * Used as a fallback during lazy component loading.
+ * 
+ * @returns {JSX.Element} The rendered LoadingIndicator component
  */
 function LoadingIndicator() {
     return (
@@ -111,15 +141,25 @@ function LoadingIndicator() {
 }
 
 /**
- * Section Content Component
+ * Interface for the props of the SectionContent component
  * 
- * Renders the appropriate feature component based on the active section
- * Falls back to an "under construction" message for undefined sections
+ * @interface SectionContentProps
  */
 interface SectionContentProps {
+    /** The currently active section key to render */
     activeSection: string;
 }
 
+/**
+ * Section Content Component
+ * 
+ * Renders the appropriate feature component based on the active section key.
+ * Falls back to an "under construction" message for undefined sections.
+ * 
+ * @param {SectionContentProps} props - The component props
+ * @param {string} props.activeSection - The key of the active section to render
+ * @returns {JSX.Element} The rendered section component
+ */
 function SectionContent({ activeSection }: SectionContentProps) {
     switch (activeSection) {
         case 'dashhome':
@@ -138,15 +178,25 @@ function SectionContent({ activeSection }: SectionContentProps) {
 }
 
 /**
- * Under Construction Section Component
+ * Interface for the props of the UnderConstructionSection component
  * 
- * Displays a placeholder for sections that are not yet implemented
- * or if an invalid section name is provided
+ * @interface UnderConstructionSectionProps
  */
 interface UnderConstructionSectionProps {
+    /** The name of the section that is under construction */
     name: string;
 }
 
+/**
+ * Under Construction Section Component
+ * 
+ * Displays a placeholder for sections that are not yet implemented
+ * or if an invalid section name is provided.
+ * 
+ * @param {UnderConstructionSectionProps} props - The component props
+ * @param {string} props.name - The name of the section to display
+ * @returns {JSX.Element} The rendered placeholder component
+ */
 function UnderConstructionSection({ name }: UnderConstructionSectionProps) {
     return (
         <Paper

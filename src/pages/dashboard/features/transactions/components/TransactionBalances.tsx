@@ -1,13 +1,18 @@
 /**
- * TransactionBalances Component
+ * TransactionBalances Module
  * 
- * Displays financial balance summaries with income, expenses, and savings indicators.
- * Features include:
- * - Visual representation of financial metrics with appropriate icons
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
- * - Loading state with animated skeletons
- * - Responsive grid layout for different screen sizes
+ * Displays summarized financial metrics with visual indicators for income,
+ * expenses, and net savings in a responsive grid layout.
+ * 
+ * Key Features:
+ * - Visual representation of financial metrics with color-coded icons
+ * - Dynamic currency formatting based on user locale and preferences
+ * - Privacy mode with blurred monetary values for sensitive contexts
+ * - Progressive loading with animated skeleton placeholders
+ * - Responsive grid layout adapting to different screen sizes
+ * - Real-time updates via visibility event listeners
+ * 
+ * @module TransactionBalances
  */
 import { useState, useEffect } from 'react';
 import { Box, Paper, Skeleton } from '@mui/material';
@@ -22,15 +27,34 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 // Types
 import type { UserWithPreferences } from '../../../../../contexts/UserContext';
 
-// Interface for the props of the TransactionBalances component
+/**
+ * Props interface for the TransactionBalances component
+ * 
+ * @interface TransactionBalancesProps
+ */
 interface TransactionBalancesProps {
-    totalIncome: number; // Total income amount
-    totalExpenses: number; // Total expenses amount
-    user: UserWithPreferences | null; // User information with preferences
-    loading?: boolean; // Indicates if the data is currently loading
+    /** Total income amount for the selected period */
+    totalIncome: number;
+    
+    /** Total expenses amount for the selected period */
+    totalExpenses: number;
+    
+    /** User information with formatting preferences */
+    user: UserWithPreferences | null;
+    
+    /** Indicates if the data is currently loading */
+    loading?: boolean;
 }
 
-// TransactionBalances component
+/**
+ * TransactionBalances Component
+ * 
+ * Displays three financial metric cards showing income, expenses, and net savings
+ * with appropriate icons and color coding.
+ * 
+ * @param {TransactionBalancesProps} props - Component properties
+ * @returns {JSX.Element} Rendered balance metrics component
+ */
 export default function TransactionBalances({
     totalIncome,
     totalExpenses,
@@ -39,9 +63,13 @@ export default function TransactionBalances({
 }: TransactionBalancesProps) {
     const theme = useTheme();
 
+    /** State tracking whether currency values should be blurred for privacy */
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -54,7 +82,10 @@ export default function TransactionBalances({
         };
     }, []);
 
-    // If loading, show skeleton placeholders for better UX
+    /**
+     * Render loading skeleton placeholders during data retrieval
+     * Provides progressive visual feedback during loading
+     */
     if (loading) {
         return (
             <Box sx={{
@@ -93,7 +124,10 @@ export default function TransactionBalances({
         );
     }
 
-    // Prepare data for the three balance indicators: income, expenses, and net savings
+    /**
+     * Configuration for the three balance metric cards
+     * Defines icon, value, and color for each financial metric
+     */
     const balanceItems = [
         { 
             label: 'download', 
@@ -115,6 +149,10 @@ export default function TransactionBalances({
         }
     ];
 
+    /**
+     * Render the grid of balance metric cards
+     * Displays income, expenses, and net savings with icons
+     */
     return (
         <Box sx={{
             display: 'grid',
@@ -130,12 +168,15 @@ export default function TransactionBalances({
                     justifyContent: 'center',
                     gap: 2
                 }}>
+                    {/* Metric icon with appropriate color */}
                     <Box sx={{ 
                         color: color,
                         display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1
                     }}>{icon}</Box>
+                    
+                    {/* Metric value with currency formatting and privacy blur */}
                     <Box sx={{ 
                         fontSize: '1.5rem',
                         filter: isHidden ? 'blur(8px)' : 'none',

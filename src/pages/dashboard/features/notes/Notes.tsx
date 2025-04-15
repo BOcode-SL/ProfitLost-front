@@ -1,15 +1,19 @@
 /**
- * Notes Component
+ * Notes Module
  * 
- * Main notes management interface with features for creating, viewing, editing, and deleting notes.
- * Features include:
- * - Two-panel responsive layout (list and editor)
- * - Note creation with default title
- * - Real-time note editing
- * - Note deletion with confirmation
- * - Automatic selection of notes
- * - Loading states during data operations
- * - Error handling with user notifications
+ * Comprehensive note management system with dual-panel interface for creating, 
+ * viewing, editing, and organizing personal notes.
+ * 
+ * Key Features:
+ * - Two-panel responsive layout (list and editor) with adaptive design
+ * - Note creation with default localized title
+ * - Real-time note editing with automatic state synchronization
+ * - Note deletion with confirmation dialog for prevention of data loss
+ * - Intelligent note selection with automatic fallback
+ * - Loading states with visual feedback during asynchronous operations
+ * - Error handling with user-friendly notifications
+ * 
+ * @module Notes
  */
 import { Box, Button, Paper, CircularProgress } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
@@ -27,18 +31,39 @@ import { noteService } from '../../../../services/note.service';
 import NoteList from './components/NoteList';
 import NoteEditor from './components/NoteEditor';
 
-// Notes component
+/**
+ * Notes Component
+ * 
+ * Main container for the notes management feature. Handles data fetching,
+ * note selection, creation, editing, and deletion operations.
+ * 
+ * @returns {JSX.Element} The rendered notes management interface
+ */
 export default function Notes() {
     const { t } = useTranslation();
 
-    // State management
+    /**
+     * State Management
+     */
+    /** Collection of all user notes, sorted by last modified date */
     const [notes, setNotes] = useState<Note[]>([]);
+    
+    /** Currently active note for viewing/editing, or null if none selected */
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+    
+    /** Loading state for initial data fetch operation */
     const [isLoading, setIsLoading] = useState(true);
+    
+    /** Saving state for create/update/delete operations */
     const [isSaving, setIsSaving] = useState(false);
+    
+    /** Ref to prevent duplicate fetch calls on re-renders */
     const isFirstRender = useRef(true);
 
-    // Fetch notes on component mount
+    /**
+     * Fetch user's notes on component mount
+     * Uses a ref to ensure the fetch only happens once
+     */
     useEffect(() => {
         const fetchNotes = async () => {
             if (!isFirstRender.current) return;
@@ -65,12 +90,22 @@ export default function Notes() {
         fetchNotes();
     }, [t]);
 
-    // Set selected note when a note is clicked in the list
+    /**
+     * Updates the selected note when a note is clicked in the list
+     * 
+     * @param {Note} note - The note to be selected
+     */
     const handleSelectNote = (note: Note) => {
         setSelectedNote(note);
     };
 
-    // Update note in state when edited in the editor
+    /**
+     * Updates a specific field of the selected note in local state
+     * Enables real-time editing without immediate server updates
+     * 
+     * @param {keyof Note} key - The property of the note to update
+     * @param {string} value - The new value for the specified property
+     */
     const handleNoteChange = (key: keyof Note, value: string) => {
         if (selectedNote) {
             const updatedNote = { ...selectedNote, [key]: value };
@@ -78,7 +113,10 @@ export default function Notes() {
         }
     };
 
-    // Create a new note with default title
+    /**
+     * Creates a new note with default title and empty content
+     * Adds the new note to the beginning of the list and selects it
+     */
     const handleCreateNote = async () => {
         try {
             setIsSaving(true);
@@ -101,7 +139,10 @@ export default function Notes() {
         }
     };
 
-    // Save changes to the currently selected note
+    /**
+     * Persists changes to the currently selected note to the server
+     * Updates the notes list and the selected note with the server response
+     */
     const handleSaveNote = async () => {
         if (!selectedNote) return;
 
@@ -140,7 +181,10 @@ export default function Notes() {
         }
     };
 
-    // Delete the currently selected note
+    /**
+     * Deletes the currently selected note after confirmation
+     * Selects the next available note after deletion
+     */
     const handleDeleteNote = async () => {
         if (!selectedNote) return;
 

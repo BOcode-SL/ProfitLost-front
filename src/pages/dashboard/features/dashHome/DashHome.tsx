@@ -1,13 +1,18 @@
 /**
- * DashHome Component
+ * DashHome Module
  * 
- * Main dashboard home page that displays an overview of financial data.
- * Features include:
- * - Monthly financial summaries (income, expenses, savings)
- * - Six-month financial trend chart
- * - Recent transaction history
- * - Responsive layout adapting to different screen sizes
- * - Loading states while data is being fetched
+ * Primary dashboard landing page that provides a comprehensive overview
+ * of the user's financial status and recent activity.
+ * 
+ * Key Features:
+ * - Monthly financial summary metrics (income, expenses, net savings)
+ * - Six-month financial trend visualization with historical context
+ * - Recent transaction history with chronological display
+ * - Optimized data fetching with consolidated API requests
+ * - Responsive layout adapting to various screen sizes
+ * - Live updates via transaction event listeners
+ * 
+ * @module DashHome
  */
 import { useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
@@ -28,27 +33,55 @@ import HomeBalances from './components/HomeBalances';
 import HomeChart from './components/HomeChart';
 import HomeHistory from './components/HomeHistory';
 
-// Interface for dashboard data structure
+/**
+ * Interface for structured dashboard data segments
+ * Organizes transaction data into specific time periods for different visualizations
+ * 
+ * @interface DashboardData
+ */
 interface DashboardData {
+    /** Transactions from the current month for month-to-date analysis */
     currentMonthTransactions: Transaction[];
+    
+    /** Transactions from the previous month for month-over-month comparison */
     previousMonthTransactions: Transaction[];
+    
+    /** Last six months of transactions for trend analysis */
     sixMonthsTransactions: Transaction[];
+    
+    /** Most recent transactions across all time periods */
     recentTransactions: Transaction[];
 }
 
-// DashHome component
+/**
+ * DashHome Component
+ * 
+ * Main dashboard container that fetches and organizes financial data
+ * for display in various sub-components.
+ * 
+ * @returns {JSX.Element} Rendered dashboard home interface
+ */
 export default function DashHome() {
     const { t } = useTranslation();
 
+    /**
+     * State for segmented dashboard transaction data
+     * Initialized with empty arrays for each data segment
+     */
     const [dashboardData, setDashboardData] = useState<DashboardData>({
         currentMonthTransactions: [],
         previousMonthTransactions: [],
         sixMonthsTransactions: [],
         recentTransactions: []
     });
+    
+    /** Loading state indicator for all dashboard components */
     const [isLoading, setIsLoading] = useState(true);
 
-    // Function to fetch optimized dashboard data, wrapped in useCallback to prevent unnecessary recreation
+    /**
+     * Fetches optimized dashboard data in a single API call
+     * Wrapped in useCallback to prevent unnecessary recreation on renders
+     */
     const fetchDashboardData = useCallback(async () => {
         setIsLoading(true);
         try {
@@ -57,7 +90,7 @@ export default function DashHome() {
                 throw new Error('Failed to fetch dashboard data');
             }
             
-            // Ensure proper type conversion
+            // Ensure proper type validation before updating state
             if (response.data && 
                 'currentMonthTransactions' in response.data && 
                 'previousMonthTransactions' in response.data &&
@@ -76,12 +109,18 @@ export default function DashHome() {
         }
     }, [t]);
 
-    // Fetch dashboard data on component mount
+    /**
+     * Fetch dashboard data on component mount
+     * Initializes the dashboard with data
+     */
     useEffect(() => {
         fetchDashboardData();
     }, [fetchDashboardData]);
 
-    // Listen for transaction update events and refresh data
+    /**
+     * Listen for transaction update events across the application
+     * Refreshes dashboard data when transactions change elsewhere
+     */
     useEffect(() => {
         window.addEventListener(TRANSACTION_UPDATED_EVENT, fetchDashboardData);
         
@@ -90,7 +129,10 @@ export default function DashHome() {
         };
     }, [fetchDashboardData]);
 
-    // Combine transactions for balance calculations
+    /**
+     * Combined transaction set for balance calculations
+     * Merges current and previous month for comparative analysis
+     */
     const allTransactionsForBalance = [
         ...dashboardData.currentMonthTransactions,
         ...dashboardData.previousMonthTransactions
@@ -102,33 +144,38 @@ export default function DashHome() {
             flexDirection: 'column',
             gap: 2,
         }}>
-            {/* Financial summary cards (income, expenses, savings) */}
+            {/* Financial summary cards section */}
             <Box sx={{
                 display: 'flex',
                 gap: 2,
                 flexDirection: { xs: 'column', sm: 'row' }
             }}>
+                {/* Income summary card */}
                 <HomeBalances 
                     type="income" 
                     transactions={allTransactionsForBalance} 
                     isLoading={isLoading} 
                 />
+                {/* Expenses summary card */}
                 <HomeBalances 
                     type="expenses" 
                     transactions={allTransactionsForBalance} 
                     isLoading={isLoading} 
                 />
+                {/* Net savings summary card */}
                 <HomeBalances 
                     type="savings" 
                     transactions={allTransactionsForBalance} 
                     isLoading={isLoading} 
                 />
             </Box>
+            
             {/* Six-month financial trend visualization */}
             <HomeChart 
                 transactions={dashboardData.sixMonthsTransactions} 
                 isLoading={isLoading} 
             />
+            
             {/* Recent transactions list */}
             <HomeHistory 
                 transactions={dashboardData.recentTransactions} 

@@ -1,13 +1,18 @@
 /**
- * AccountsTable Component
+ * AccountsTable Module
  * 
- * Displays a list of accounts with their current balances in a clean, interactive UI.
- * Features include:
- * - Draggable account cards for custom ordering
- * - Search filtering for quick account lookup
- * - Toggle for showing/hiding inactive accounts
- * - Currency visibility respecting user privacy preferences
- * - Creation, editing, and deletion of accounts via drawer form
+ * Provides a comprehensive interface for managing financial accounts.
+ * 
+ * Responsibilities:
+ * - Displays active and inactive accounts with their current balances
+ * - Enables account reordering through drag and drop functionality
+ * - Supports filtering accounts by search term
+ * - Manages visibility toggle for inactive accounts
+ * - Respects privacy settings for currency display
+ * - Facilitates account creation, editing, and deletion workflows
+ * - Optimizes data loading with background refreshes and caching
+ * 
+ * @module AccountsTable
  */
 import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Collapse, CircularProgress, TextField } from '@mui/material';
@@ -35,24 +40,57 @@ import DrawerBase from '../../../components/ui/DrawerBase';
 // Services
 import { accountService } from '../../../../../services/account.service';
 
-// Extended Account interface that includes year_records relationship
+/**
+ * Extended Account interface that includes year_records relationship
+ * 
+ * @interface AccountWithYearRecords
+ * @extends {Account}
+ */
 interface AccountWithYearRecords extends Account {
+    /** Records of annual financial data for this account */
     year_records?: YearRecord[];
 }
 
-// Interface for the props of the AccountsTable component
+/**
+ * Interface for the props of the AccountsTable component
+ * 
+ * @interface AccountsTableProps
+ */
 interface AccountsTableProps {
-    accounts: AccountWithYearRecords[]; // List of active accounts
-    inactiveAccounts: AccountWithYearRecords[]; // List of inactive accounts
-    loading: boolean; // Indicator for loading state
-    selectedYear: number; // The year currently selected
-    onUpdate: (account: AccountWithYearRecords) => Promise<boolean>; // Function to update an account
-    onCreate: (account: AccountWithYearRecords) => Promise<boolean>; // Function to create a new account
-    onDelete: (accountId: UUID) => void; // Function to delete an account by its ID
-    onOrderChange: (newOrder: UUID[]) => void; // Function to change the order of accounts
+    /** List of active accounts */
+    accounts: AccountWithYearRecords[];
+    
+    /** List of inactive accounts */
+    inactiveAccounts: AccountWithYearRecords[];
+    
+    /** Indicator for loading state */
+    loading: boolean;
+    
+    /** The year currently selected */
+    selectedYear: number;
+    
+    /** Function to update an account */
+    onUpdate: (account: AccountWithYearRecords) => Promise<boolean>;
+    
+    /** Function to create a new account */
+    onCreate: (account: AccountWithYearRecords) => Promise<boolean>;
+    
+    /** Function to delete an account by its ID */
+    onDelete: (accountId: UUID) => void;
+    
+    /** Function to change the order of accounts */
+    onOrderChange: (newOrder: UUID[]) => void;
 }
 
-// AccountsTable component for displaying and managing accounts
+/**
+ * AccountsTable Component
+ * 
+ * Displays and manages accounts with their balances, providing UI for
+ * account creation, modification, deletion, and order customization.
+ * 
+ * @param {AccountsTableProps} props - The component props
+ * @returns {JSX.Element} The rendered AccountsTable component
+ */
 export default function AccountsTable({
     accounts,
     inactiveAccounts,
@@ -75,7 +113,10 @@ export default function AccountsTable({
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoadingAccount, setIsLoadingAccount] = useState(false);
 
-    // Effect to listen for currency visibility changes app-wide
+    /**
+     * Effect to listen for currency visibility changes app-wide
+     * Updates component state when visibility setting changes
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -88,7 +129,12 @@ export default function AccountsTable({
         };
     }, []);
 
-    // Function to get the current month's balance for an account
+    /**
+     * Gets the current month's balance for an account
+     * 
+     * @param {AccountWithYearRecords} account - The account to get balance for
+     * @returns {number} The current month's balance
+     */
     const getCurrentBalance = (account: AccountWithYearRecords): number => {
         const currentMonth = new Date().toLocaleString('en-US', { month: 'short' }).toLowerCase();
         
@@ -104,11 +150,21 @@ export default function AccountsTable({
         return value ? parseFloat(value) : 0;
     };
 
-    // Drag and drop handlers for account reordering
+    /**
+     * Initiates drag operation for account reordering
+     * 
+     * @param {UUID} accountId - ID of the account being dragged
+     */
     const handleDragStart = (accountId: UUID) => {
         setDraggedAccountId(accountId);
     };
 
+    /**
+     * Handles drop event to complete account reordering
+     * Calculates new account order and triggers update
+     * 
+     * @param {UUID} targetAccountId - ID of the target account where dragged account is dropped
+     */
     const handleDrop = (targetAccountId: UUID) => {
         if (draggedAccountId && draggedAccountId !== targetAccountId) {
             const draggedIndex = accounts.findIndex(acc => acc.id === draggedAccountId);
@@ -131,7 +187,12 @@ export default function AccountsTable({
         account.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Function to fetch complete account details
+    /**
+     * Fetches complete account details when an account is selected
+     * Uses optimized loading with cache for better performance
+     * 
+     * @param {UUID} accountId - ID of the account to load details for
+     */
     const fetchAccountDetails = async (accountId: UUID) => {
         setIsLoadingAccount(true);
         try {
@@ -171,7 +232,13 @@ export default function AccountsTable({
         }
     };
 
-    // Renderer function for account cards (active and inactive)
+    /**
+     * Renders an account card with appropriate styling and handlers
+     * 
+     * @param {AccountWithYearRecords} account - The account to render
+     * @param {boolean} [isInactive=false] - Whether this is an inactive account
+     * @returns {JSX.Element} The rendered account card
+     */
     const renderAccount = (account: AccountWithYearRecords, isInactive: boolean = false) => (
         // Card component for the account with appropriate styling
         <Paper

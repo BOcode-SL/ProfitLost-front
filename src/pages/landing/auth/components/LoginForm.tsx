@@ -1,3 +1,11 @@
+/**
+ * Login Form Component
+ * 
+ * Provides authentication interface with email/username login and Google OAuth.
+ * Includes password visibility toggle and forgot password functionality.
+ * 
+ * @module LoginForm
+ */
 import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography, Link } from '@mui/material';
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
@@ -5,16 +13,14 @@ import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-/**
- * Login Form Component
- * 
- * Provides authentication interface with email/username login and Google OAuth.
- * Includes password visibility toggle and forgot password functionality.
- */
-
 // Types
 import type { LoginCredentials } from '../../../../types/api/responses';
 
+/**
+ * Props interface for the LoginForm component
+ * 
+ * @interface LoginFormProps
+ */
 interface LoginFormProps {
     loginData: LoginCredentials; // User login data
     loading: boolean; // Loading state for the button
@@ -27,7 +33,16 @@ interface LoginFormProps {
     handleGoogleSuccess: (tokenResponse: TokenResponse) => Promise<void>; // Function to handle Google login success
 }
 
-// LoginForm component definition
+/**
+ * Login form component
+ * 
+ * Renders a form with email/username and password inputs,
+ * Google OAuth login option, and forgot password link.
+ * Handles form validation and submission.
+ * 
+ * @param {LoginFormProps} props - Component properties
+ * @returns {JSX.Element} The rendered login form
+ */
 export default function LoginForm({
     loginData,
     loading,
@@ -41,6 +56,10 @@ export default function LoginForm({
 }: LoginFormProps) {
     const { t } = useTranslation();
 
+    /**
+     * Initializes Google login functionality
+     * Handles success and error cases for Google authentication
+     */
     const loginWithGoogle = useGoogleLogin({
         onSuccess: handleGoogleSuccess,
         onError: () => { toast.error(t('home.auth.login.form.googleError')); }

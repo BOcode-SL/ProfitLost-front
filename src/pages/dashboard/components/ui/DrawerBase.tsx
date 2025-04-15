@@ -1,21 +1,48 @@
+/**
+ * DrawerBase Module
+ * 
+ * Provides a responsive drawer component that adapts to different screen sizes.
+ * On mobile devices, appears from the bottom with rounded corners.
+ * On desktop devices, slides in from the right side.
+ * 
+ * @module DrawerBase
+ */
+
 import { ReactNode } from 'react';
 import { Drawer, DrawerProps, useTheme, useMediaQuery, SlideProps, SxProps, Theme } from '@mui/material';
 
 /**
- * Responsive drawer component that adapts to different screen sizes.
- * On mobile devices, appears from the bottom with rounded corners.
- * On larger screens, slides in from the right side.
+ * Interface defining the properties for the DrawerBase component
+ * 
+ * @interface DrawerBaseProps
+ * @extends {Omit<DrawerProps, 'children'>}
  */
 interface DrawerBaseProps extends Omit<DrawerProps, 'children'> {
-  children: ReactNode; // Content to be displayed inside the drawer
-  onClose: () => void; // Function to call when the drawer needs to be closed
+  /** Content to be displayed inside the drawer */
+  children: ReactNode;
+  
+  /** Function to call when the drawer needs to be closed */
+  onClose: () => void;
+  
+  /** Optional slot properties for customizing drawer sub-components */
   slotProps?: {
     paper?: {
-      sx?: SxProps<Theme>; // Optional styling for the drawer paper component
+      /** Optional styling for the drawer paper component */
+      sx?: SxProps<Theme>;
     };
   };
 }
 
+/**
+ * Responsive drawer component that adapts to different screen sizes
+ * 
+ * @param {DrawerBaseProps} props - The component props
+ * @param {ReactNode} props.children - Content to be displayed inside the drawer
+ * @param {() => void} props.onClose - Function to call when the drawer needs to be closed
+ * @param {boolean} props.open - Whether the drawer is open
+ * @param {object} props.slotProps - Optional slot properties for customizing drawer sub-components
+ * @returns {JSX.Element} The rendered DrawerBase component
+ */
 export default function DrawerBase({
   children,
   onClose,

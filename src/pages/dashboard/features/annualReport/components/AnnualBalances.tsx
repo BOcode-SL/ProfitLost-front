@@ -1,13 +1,17 @@
 /**
- * AnnualBalances Component
+ * AnnualBalances Module
  * 
- * Displays financial summary cards showing income, expenses, and net balance.
- * Features include:
- * - Currency formatting based on user preferences
- * - Visual indicators using appropriate icons and colors
- * - Support for currency visibility toggling for privacy
+ * Provides summary financial metrics for annual reporting in a visually appealing card layout.
+ * 
+ * Key Features:
+ * - Income, expense, and net balance display with appropriate visual indicators
+ * - Currency formatting based on user preferences and locale
+ * - Privacy mode with blurred monetary values for sensitive information
+ * - Color-coded indicators for positive/negative values
  * - Responsive grid layout adapting to different screen sizes
- * - Loading skeleton state while data is being processed
+ * - Loading skeleton state with animation during data retrieval
+ * 
+ * @module AnnualBalances
  */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, useTheme, Skeleton } from '@mui/material';
@@ -24,18 +28,37 @@ import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../
 // Types
 import type { Transaction } from '../../../../../types/supabase/transactions';
 
-// Interface for the props of the AnnualBalances component
+/**
+ * Props interface for the AnnualBalances component
+ * 
+ * @interface AnnualBalancesProps
+ */
 interface AnnualBalancesProps {
-    transactions: Transaction[]; // Array of transactions to calculate balances from
-    isLoading: boolean; // Loading state indicator
+    /** Array of transactions to calculate balance summaries from */
+    transactions: Transaction[];
+    
+    /** Indicates if data is currently loading */
+    isLoading: boolean;
 }
 
+/**
+ * AnnualBalances Component
+ * 
+ * Renders three cards showing income total, expense total, and net balance with
+ * appropriate icons and color coding.
+ * 
+ * @param {AnnualBalancesProps} props - Component properties
+ * @returns {JSX.Element} Rendered balance cards
+ */
 export default function AnnualBalances({ transactions, isLoading }: AnnualBalancesProps) {
     const { user } = useUser();
     const theme = useTheme();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Calculate income, expenses, and net balance from transactions
+    /**
+     * Calculate income, expenses, and net balance from transaction data
+     * Processes all transactions and aggregates the financial totals
+     */
     const totals = useMemo(() => {
         const { income, expenses } = transactions.reduce((acc, transaction) => {
             if (transaction.amount > 0) {
@@ -53,7 +76,10 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         };
     }, [transactions]);
 
-    // Define the cards to be displayed with their respective icons and colors
+    /**
+     * Configuration for the three balance cards with their respective icons and colors
+     * Each item represents one card to be displayed in the grid
+     */
     const balanceItems = [
         { 
             label: 'download', 
@@ -75,7 +101,10 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         }
     ];
 
-    // Listen for currency visibility toggle events across the application
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -88,7 +117,10 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
         };
     }, []);
 
-    // Display skeleton loaders while data is being fetched
+    /**
+     * Render skeleton loaders while data is being fetched
+     * Shows placeholder cards with animated pulse effect
+     */
     if (isLoading) {
         return (
             <Box sx={{
@@ -133,7 +165,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
             gap: 2
         }}>
-            {/* Display each financial metric in its own card */}
+            {/* Financial metric cards: income, expenses, and balance */}
             {balanceItems.map(({ value, color, icon }, index) => (
                 <Paper key={index} elevation={3} sx={{
                     p: 1,
@@ -143,7 +175,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
                     justifyContent: 'center',
                     gap: 2
                 }}>
-                    {/* Icon representing the type of financial metric */}
+                    {/* Icon with appropriate color for financial metric type */}
                     <Box sx={{ 
                         color: color,
                         display: 'flex',

@@ -1,12 +1,17 @@
 /**
  * AccountsForm Component
  * 
- * Provides a form interface for creating and editing accounts with the following features:
+ * Provides a comprehensive form interface for creating and editing financial accounts.
+ * 
+ * Features:
  * - Account name, color, and active status management
  * - Year-based monthly balance data entry
  * - Adding new years to existing accounts
- * - Account deletion with confirmation
+ * - Account deletion with confirmation dialog
  * - Validation and error handling
+ * - Optimized data loading with caching
+ * 
+ * @module AccountsForm
  */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
@@ -38,33 +43,57 @@ import type { Account } from '../../../../../types/supabase/accounts';
 import type { YearRecord } from '../../../../../types/supabase/year_records';
 import type { UUID } from '../../../../../types/supabase/common';
 
-// Extended Account interface with year_records relationship
+/**
+ * Extended Account interface with year_records relationship
+ * 
+ * @interface AccountWithYearRecords
+ * @extends {Account}
+ */
 interface AccountWithYearRecords extends Account {
+    /** Records of annual financial data for this account */
     year_records?: YearRecord[];
 }
 
-// Interface for the props of the AccountsForm component
+/**
+ * Props for the AccountsForm component
+ * 
+ * @interface AccountsFormProps
+ */
 interface AccountsFormProps {
-    onClose: () => void; // Function to close the form
-    onSuccess: (account: AccountWithYearRecords) => Promise<boolean>; // Function to handle success
-    onDelete?: (accountId: UUID) => void; // Optional function to handle account deletion
-    account?: AccountWithYearRecords | null; // Optional account object for editing
+    /** Function to handle dialog close action */
+    onClose: () => void;
+    
+    /** Function to handle successful form submission with account data */
+    onSuccess: (account: AccountWithYearRecords) => Promise<boolean>;
+    
+    /** Optional function to handle account deletion */
+    onDelete?: (accountId: UUID) => void;
+    
+    /** Optional account data for editing (null/undefined for new account creation) */
+    account?: AccountWithYearRecords | null;
 }
 
-// Months array for data entry in chronological order
+/** Array of month names in chronological order (for backend data mapping) */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// AccountsForm component for creating and editing accounts
+/**
+ * AccountsForm Component
+ * 
+ * Handles both creation and editing of financial accounts with year-based monthly data.
+ * 
+ * @param {AccountsFormProps} props - Component properties
+ * @returns {JSX.Element} Rendered form component
+ */
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
 
-    // Form state management for account properties
+    // Form state for account properties
     const [accountName, setAccountName] = useState(account?.name || '');
     const [backgroundColor, setBackgroundColor] = useState(account?.background_color || '#c84f03');
     const [textColor, setTextColor] = useState(account?.text_color || '#ffffff');
     const [isActive, setIsActive] = useState(account?.is_active ?? true);
 
-    // Monthly data entry state management
+    // Monthly data entry state
     const [monthlyInput, setMonthlyInput] = useState<Record<string, string>>({});
     const [monthlyValues, setMonthlyValues] = useState<Record<string, number>>({});
 
@@ -77,7 +106,10 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [loadingYears, setLoadingYears] = useState(false);
     const [availableYearsData, setAvailableYearsData] = useState<number[]>([]);
 
-    // Load available years for this account
+    /**
+     * Loads available years for the current account
+     * Uses caching for optimized performance
+     */
     const loadAvailableYears = useCallback(async () => {
         if (!account?.id) return;
         
@@ -85,7 +117,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         try {
             const currentYear = new Date().getFullYear();
             
-            // Check if we already have years data in cache
+            // Check for cached years data
             const cacheKey = `account_${account.id}_available_years`;
             const cachedData = sessionStorage.getItem(cacheKey);
             
@@ -108,7 +140,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 }
             }
             
-            // First try to use already loaded data from account
+            // Try to use already loaded data from account
             if (account.year_records && account.year_records.length > 0) {
                 const years = new Set<number>();
                 years.add(currentYear);
@@ -181,17 +213,22 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     }, [account?.id, account?.year_records]);
 
-    // Run once when the account is loaded or changed
+    /**
+     * Initialize component on mount or when account changes
+     */
     useEffect(() => {
         if (account?.id) {
             loadAvailableYears();
         } else {
-            // If creating a new account, default to current year
+            // Default to current year for new accounts
             setSelectedYear(new Date().getFullYear());
         }
     }, [account?.id, loadAvailableYears]);
 
-    // Calculate available years from account data and current year
+    /**
+     * Calculate available years from account data and current year
+     * When API data is unavailable, use fallback calculation
+     */
     const availableYears = useMemo(() => {
         // If we have loaded available years from the API, use those
         if (availableYearsData.length > 0) {
@@ -211,7 +248,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         return Array.from(years).sort((a: number, b: number) => b - a);
     }, [account?.year_records, availableYearsData]);
 
-    // Load monthly values when account data or selected year changes
+    /**
+     * Load monthly values when account data or selected year changes
+     */
     useEffect(() => {
         // Only proceed if we have a valid numeric year and an account
         const numericYear = typeof selectedYear === 'string' && selectedYear !== ''
@@ -219,7 +258,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             : typeof selectedYear === 'number' ? selectedYear : null;
             
         if (numericYear !== null) {
-            // Initialize with zeros
+            // Initialize data containers
             const values: Record<string, number> = {};
             const inputs: Record<string, string> = {};
             
@@ -234,7 +273,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         const monthKey = month.toLowerCase() as keyof YearRecord;
                         const value = yearRecord[monthKey] as number | null;
                         values[month] = value !== null ? value : 0;
-                        // Convert to string and replace decimal point with comma for user input (locale handling)
+                        // Convert to string and replace decimal point with comma for user input
                         inputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
                     });
                     setMonthlyValues(values);
@@ -255,6 +294,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 setMonthlyValues(values);
                 setMonthlyInput(inputs);
                 
+                /**
+                 * Load account details from cache or API
+                 */
                 const loadAccountDetails = async () => {
                     try {
                         // Try to get from session storage first
@@ -336,13 +378,22 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     }, [account, selectedYear]);
 
-    // Helper function to get translated month names
+    /**
+     * Gets translated month names for display
+     * 
+     * @param {string} monthKey - The month key to translate
+     * @param {boolean} short - Whether to use short month names
+     * @returns {string} The translated month name
+     */
     const getMonthName = (monthKey: string, short: boolean = false) => {
         const path = short ? 'dashboard.common.monthNamesShort.' : 'dashboard.common.monthNames.';
         return t(path + monthKey);
     };
 
-    // Handle form submission for both create and update operations
+    /**
+     * Form submission handler for both create and update operations
+     * Validates and transforms form data to the required format
+     */
     const handleSubmit = async () => {
         // Validate account name
         if (!accountName.trim()) {
@@ -350,7 +401,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             return;
         }
 
-        // Make sure we have a valid numeric year value
+        // Ensure valid year value
         const numericYear = typeof selectedYear === 'string' 
             ? parseInt(selectedYear) 
             : selectedYear;
@@ -362,7 +413,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
         setSavingChanges(true);
         try {
-            // Prepare year record from monthly values with proper number conversion
+            // Prepare year record from monthly values
             const yearData: Partial<YearRecord> = {
                 jan: monthlyValues["Jan"] || 0,
                 feb: monthlyValues["Feb"] || 0,
@@ -411,7 +462,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
                 await onSuccess(updatedAccount);
             } else {
-                // Create new account with placeholder values for the TrackingFields
+                // Create new account with placeholder values for required fields
                 const newAccount: AccountWithYearRecords = {
                     id: '' as UUID,
                     user_id: '' as UUID,
@@ -449,7 +500,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Handle account deletion with confirmation
+    /**
+     * Handles account deletion with confirmation
+     */
     const handleDelete = async () => {
         if (!account) return;
 
@@ -465,7 +518,10 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
     };
 
-    // Handle adding a new year to an existing account
+    /**
+     * Handles adding a new year to an existing account
+     * Validates the input and adds an empty year record
+     */
     const handleAddYear = () => {
         // Validate year input
         const yearNumber = parseInt(newYear);
@@ -510,7 +566,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             year_records: [...(account!.year_records || []), initialYearData as YearRecord]
         };
 
-        // Clear account years cache to ensure it reloads properly
+        // Clear account years cache
         try {
             const accountYearsCacheKey = `account_${account!.id}_available_years`;
             sessionStorage.removeItem(accountYearsCacheKey);

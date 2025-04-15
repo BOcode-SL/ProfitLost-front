@@ -1,15 +1,22 @@
 /**
- * TransactionForm Component
+ * TransactionForm Module
  * 
- * Provides a form interface for creating and editing financial transactions.
- * Features include:
- * - Date, amount, category, and description management
- * - Income/expense type selection with appropriate styling
- * - Recurring transaction support with different frequencies
- * - Transaction deletion with confirmation
- * - Real-time validation with user feedback
- * - Responsive layout for different screen sizes
- * - Customized UI for creation vs. editing workflows
+ * Comprehensive form interface for creating and editing financial transactions
+ * with support for recurring transactions and detailed configuration options.
+ * 
+ * Key Features:
+ * - Complete transaction creation and editing workflows
+ * - Support for both income and expense type transactions
+ * - Category selection with visual indicators
+ * - Recurrence configuration (weekly, monthly, yearly)
+ * - Date selection with appropriate formatting
+ * - Real-time validation and error handling
+ * - Specialized handling for recurring transaction series
+ * - Transaction deletion with confirmation dialog
+ * - Visual feedback during loading and submission states
+ * - Responsive layout adapting to different viewport sizes
+ * 
+ * @module TransactionForm
  */
 import { useState, useEffect, forwardRef } from 'react';
 import {
@@ -53,35 +60,79 @@ import { categoryService } from '../../../../../services/category.service';
 import type { Category } from '../../../../../types/supabase/categories';
 import type { Transaction, RecurrenceType } from '../../../../../types/supabase/transactions';
 
-// Interface for transaction data to be updated
+/**
+ * Interface for transaction data to be created or updated
+ * 
+ * @interface TransactionUpdateData
+ */
 interface TransactionUpdateData {
+    /** Date and time of the transaction in UTC format */
     transaction_date: string;
+    
+    /** Description or purpose of the transaction */
     description: string | null;
+    
+    /** Monetary value (positive for income, negative for expenses) */
     amount: number;
+    
+    /** Reference to the category ID for categorization */
     category_id: string;
+    
+    /** Type of recurrence if this is a recurring transaction */
     recurrence_type: RecurrenceType;
+    
+    /** End date for recurring transactions series */
     recurrence_end_date: string | null;
+    
+    /** Optional ID linking related recurring transactions */
     recurrence_id?: string | null;
 }
 
-// Interface for updates to recurrent transactions
+/**
+ * Interface for updates to recurrent transactions
+ * 
+ * @interface UpdateData
+ */
 interface UpdateData {
+    /** Description or purpose of the transaction */
     description: string | null;
+    
+    /** Monetary value (positive for income, negative for expenses) */
     amount: number;
+    
+    /** Reference to the category ID for categorization */
     category_id: string;
+    
+    /** Optional date to update single transactions in a series */
     transaction_date?: string;
+    
+    /** Flag to update all future instances of a recurring transaction */
     updateAll?: boolean;
 }
 
-// Interface for the TransactionForm component props
+/**
+ * Props interface for the TransactionForm component
+ * 
+ * @interface TransactionFormProps
+ */
 interface TransactionFormProps {
-    transaction?: Transaction; // Optional existing transaction for editing mode
-    onSubmit: () => void;     // Callback when form is successfully submitted
-    onClose: () => void;      // Callback to close the form
-    categories?: Category[];   // Optional categories array (can be passed from parent for performance)
+    /** Optional existing transaction for editing mode (omit for creation mode) */
+    transaction?: Transaction;
+    
+    /** Callback function triggered after successful form submission */
+    onSubmit: () => void;
+    
+    /** Callback function to close the form dialog/drawer */
+    onClose: () => void;
+    
+    /** Optional pre-loaded categories to improve performance */
+    categories?: Category[];
 }
 
-// Transition component for dialog animations
+/**
+ * Animation transition component for material-ui dialogs
+ * Creates a slide-up animation effect for better UX
+ */
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -93,11 +144,12 @@ const Transition = forwardRef(function Transition(
 
 /**
  * Calculates dates for recurring transactions based on parameters
+ * Generates all dates in a recurring series from start to end
  * 
- * @param startDate - Beginning date of the recurrence
- * @param endDate - End date of the recurrence 
- * @param recurrenceType - Frequency type (weekly, monthly, yearly)
- * @returns Array of calculated dates for the recurring transactions
+ * @param {string} startDate - Beginning date of the recurrence in local format
+ * @param {string} endDate - End date of the recurrence in local format
+ * @param {RecurrenceType} recurrenceType - Frequency type (weekly, monthly, yearly)
+ * @returns {Date[]} Array of calculated dates for the recurring transactions
  */
 const calculateRecurringDates = (startDate: string, endDate: string, recurrenceType: RecurrenceType): Date[] => {
     // Create Date objects directly from the local dates from the form
@@ -129,14 +181,30 @@ const calculateRecurringDates = (startDate: string, endDate: string, recurrenceT
     return dates;
 };
 
-// TransactionForm component
+/**
+ * TransactionForm Component
+ * 
+ * Renders a comprehensive form for creating and editing financial transactions
+ * with support for both one-time and recurring transactions.
+ * 
+ * @param {TransactionFormProps} props - Component properties
+ * @returns {JSX.Element} Rendered transaction form component
+ */
 export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories }: TransactionFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
+    
+    /**
+     * Component State
+     */
+    /** Available categories for transaction categorization */
     const [categories, setCategories] = useState<Category[]>(propCategories || []);
+    
+    /** Loading state for categories data */
     const [isLoadingCategories, setIsLoadingCategories] = useState(!propCategories);
 
-    // Initialize form state, handling both new and edit modes
+    // Form field states
+    /** Transaction date and time in local string format */
     const [date, setDate] = useState(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
@@ -155,27 +223,54 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         // Format as YYYY-MM-DDTHH:mm:ss
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     });
+    
+    /** Transaction description text */
     const [description, setDescription] = useState(transaction?.description || '');
+    
+    /** Transaction amount as string (positive value) */
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
+    
+    /** Selected category for the transaction */
     const [category, setCategory] = useState<Category | null>(null);
+    
+    /** Flag indicating if transaction is income (true) or expense (false) */
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
+    
+    /** Loading state during deletion operation */
     const [isDeleting, setIsDeleting] = useState(false);
+    
+    /** Loading state during form submission */
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    /** Flag to control visibility of delete confirmation dialog */
     const [deleteDialog, setDeleteDialog] = useState(false);
+    
+    /** Recurrence type for recurring transactions */
     const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(() => {
         return transaction?.recurrence_type || null;
     });
+    
+    /** End date for recurring transaction series */
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
         if (transaction?.recurrence_end_date) {
             return supabaseToLocalString(transaction.recurrence_end_date).substring(0, 10);
         }
         return '';
     });
+    
+    /** Flag to control visibility of recurrent transaction edit dialog */
     const [editRecurrentDialog, setEditRecurrentDialog] = useState(false);
+    
+    /** Temporary storage for transaction data during update workflow */
     const [transactionDataToUpdate, setTransactionDataToUpdate] = useState<TransactionUpdateData | null>(null);
+    
+    /** Flag to update all future instances of a recurring transaction */
     const [updateAllRecurrent, setUpdateAllRecurrent] = useState(false);
 
-    // Fetch categories if not provided via props
+    /**
+     * Fetches categories if not provided via props
+     * Uses the category service to retrieve all available categories
+     */
     useEffect(() => {
         const fetchCategories = async () => {
             if (propCategories) {
@@ -201,7 +296,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         fetchCategories();
     }, [propCategories, t]);
 
-    // Set category after categories are loaded
+    /**
+     * Sets the category after categories are loaded
+     * Finds and sets the matching category based on transaction's category_id
+     */
     useEffect(() => {
         if (categories.length > 0 && transaction) {
             const foundCategory = categories.find(cat => cat.id === transaction.category_id);
@@ -209,7 +307,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     }, [categories, transaction]);
 
-    // Update form data when transaction prop changes
+    /**
+     * Updates form data when transaction prop changes
+     * Synchronizes form fields with the provided transaction data
+     */
     useEffect(() => {
         if (transaction) {
             // Convert UTC date to local format for the datetime-local input
@@ -228,7 +329,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     }, [transaction]);
 
-    // Handle form submission with validation
+    /**
+     * Handles form submission with validation
+     * Processes form data and calls appropriate service methods
+     * 
+     * @param {React.FormEvent} e - Form submission event
+     */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -306,12 +412,18 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
-    // Open the delete confirmation dialog
+    /**
+     * Opens the delete confirmation dialog
+     * Initiates transaction deletion workflow
+     */
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
-    // Delete transaction with recurrence awareness
+    /**
+     * Deletes transaction with recurrence awareness
+     * Handles both single transactions and recurring series
+     */
     const confirmDelete = async () => {
         try {
             if (!transaction) return;
@@ -333,7 +445,10 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
     };
 
-    // Handle editing of recurrent transactions
+    /**
+     * Handles editing of recurrent transactions
+     * Provides options to update single or all occurrences
+     */
     const handleEditRecurrent = async () => {
         if (!transaction || !transactionDataToUpdate) return;
 
@@ -376,12 +491,20 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         a.name.localeCompare(b.name)
     );
 
-    // Calculate recurring dates for preview
+    /**
+     * Calculate recurring dates for preview display
+     * Gives users visual feedback about their recurrence settings
+     */
     const recurringDates = date && recurrenceType && recurrenceEndDate
         ? calculateRecurringDates(date, recurrenceEndDate, recurrenceType)
         : [];
 
-    // Delete confirmation dialog component
+    /**
+     * Delete confirmation dialog component
+     * Requests confirmation before transaction deletion
+     * 
+     * @returns {JSX.Element} Delete confirmation dialog
+     */
     const DeleteDialog = () => (
         <Dialog
             open={deleteDialog}
@@ -467,7 +590,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         </Dialog>
     );
 
-    // Recurrence configuration fields component
+    /**
+     * Recurrence configuration fields component
+     * Provides controls for setting up recurring transactions
+     * 
+     * @param {Object} props - Component properties
+     * @param {boolean} props.isEditing - Whether form is in edit mode
+     * @returns {JSX.Element} Recurrence fields component
+     */
     const RecurrenceFields = ({ isEditing }: { isEditing: boolean }) => {
         // Determine if fields should be disabled
         // For existing recurring transactions, always disable
@@ -540,7 +670,14 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         );
     };
 
-    // Recurrence toggle switch component
+    /**
+     * Recurrence toggle switch component
+     * Controls enabling/disabling recurring transaction functionality
+     * 
+     * @param {Object} props - Component properties
+     * @param {boolean} props.isEditing - Whether form is in edit mode
+     * @returns {JSX.Element|null} Recurrence switch component or null
+     */
     const RecurrenceSwitch = ({ isEditing }: { isEditing: boolean }) => {
         // If editing a non-recurring transaction, don't show recurrence options at all
         if (isEditing && transaction?.recurrence_id === null) {
@@ -591,7 +728,12 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         );
     };
 
-    // Dialog for editing recurrent transactions
+    /**
+     * Dialog for editing recurrent transactions
+     * Prompts user to choose between updating single or all occurrences
+     * 
+     * @returns {JSX.Element} Edit recurrent transaction dialog
+     */
     const EditRecurrentDialog = () => (
         <Dialog
             open={editRecurrentDialog}

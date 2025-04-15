@@ -3,6 +3,8 @@
  * 
  * Provides functionality for managing financial transactions including creating,
  * retrieving, updating, and deleting transactions. Supports filtering by year and month.
+ * 
+ * @module TransactionService
  */
 
 // Types
@@ -23,8 +25,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during transaction operations
- * @param error - The error that occurred during an API request
- * @returns A standardized TransactionApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {TransactionApiResponse} A standardized TransactionApiResponse with error details
  */
 const handleTransactionError = (error: unknown): TransactionApiResponse => {
     // Check if the error has a statusCode
@@ -46,7 +49,8 @@ const handleTransactionError = (error: unknown): TransactionApiResponse => {
 export const transactionService = {
     /**
      * Retrieves all transactions belonging to the current user
-     * @returns Promise with the transaction data or error response
+     * 
+     * @returns {Promise<TransactionApiResponse>} Promise with the transaction data or error response
      */
     async getAllTransactions(): Promise<TransactionApiResponse> {
         try {
@@ -81,7 +85,7 @@ export const transactionService = {
      * - Last 6 months data for the chart
      * - Recent transactions for transaction history
      * 
-     * @returns Promise with the optimized dashboard data or error response
+     * @returns {Promise<TransactionApiResponse>} Promise with the optimized dashboard data or error response
      */
     async getDashboardData(): Promise<TransactionApiResponse> {
         try {
@@ -111,7 +115,8 @@ export const transactionService = {
 
     /**
      * Retrieves years that have transactions for the current user
-     * @returns Promise with array of years sorted in descending order
+     * 
+     * @returns {Promise<TransactionYearsApiResponse>} Promise with array of years sorted in descending order
      */
     async getTransactionYears(): Promise<TransactionYearsApiResponse> {
         try {
@@ -150,8 +155,9 @@ export const transactionService = {
 
     /**
      * Retrieves transactions for a specific year
-     * @param year - The year to filter transactions by
-     * @returns Promise with the filtered transaction data or error response
+     * 
+     * @param {number} year - The year to filter transactions by
+     * @returns {Promise<TransactionApiResponse>} Promise with the filtered transaction data or error response
      */
     async getTransactionsByYear(year: number): Promise<TransactionApiResponse> {
         try {
@@ -181,9 +187,10 @@ export const transactionService = {
 
     /**
      * Retrieves transactions for a specific year and month
-     * @param year - The year to filter transactions by
-     * @param month - The month to filter transactions by
-     * @returns Promise with the filtered transaction data or error response
+     * 
+     * @param {string} year - The year to filter transactions by
+     * @param {string} month - The month to filter transactions by
+     * @returns {Promise<TransactionApiResponse>} Promise with the filtered transaction data or error response
      */
     async getTransactionsByYearAndMonth(year: string, month: string): Promise<TransactionApiResponse> {
         try {
@@ -213,8 +220,9 @@ export const transactionService = {
 
     /**
      * Retrieves transactions for a specific category
-     * @param categoryId - The category ID to filter transactions by
-     * @returns Promise with the filtered transaction data or error response
+     * 
+     * @param {string} categoryId - The category ID to filter transactions by
+     * @returns {Promise<TransactionApiResponse>} Promise with the filtered transaction data or error response
      */
     async getTransactionsByCategory(categoryId: string): Promise<TransactionApiResponse> {
         try {
@@ -244,8 +252,9 @@ export const transactionService = {
 
     /**
      * Creates a new transaction with the provided data
-     * @param transactionData - The data for the transaction to be created
-     * @returns Promise with the created transaction data or error response
+     * 
+     * @param {CreateTransactionRequest} transactionData - The data for the transaction to be created
+     * @returns {Promise<TransactionApiResponse>} Promise with the created transaction data or error response
      */
     async createTransaction(transactionData: CreateTransactionRequest): Promise<TransactionApiResponse> {
         try {
@@ -286,9 +295,10 @@ export const transactionService = {
 
     /**
      * Updates an existing transaction with the provided data
-     * @param id - The ID of the transaction to be updated
-     * @param updateData - The new data to update the transaction with
-     * @returns Promise with the updated transaction data or error response
+     * 
+     * @param {string} id - The ID of the transaction to be updated
+     * @param {UpdateTransactionRequest} updateData - The new data to update the transaction with
+     * @returns {Promise<TransactionApiResponse>} Promise with the updated transaction data or error response
      */
     async updateTransaction(id: string, updateData: UpdateTransactionRequest): Promise<TransactionApiResponse> {
         try {
@@ -330,9 +340,10 @@ export const transactionService = {
 
     /**
      * Deletes a transaction with the specified ID
-     * @param id - The ID of the transaction to be deleted
-     * @param deleteAll - Optional flag to delete all recurring instances of the transaction
-     * @returns Promise with the response data or error response
+     * 
+     * @param {string} id - The ID of the transaction to be deleted
+     * @param {boolean} [deleteAll] - Optional flag to delete all recurring instances of the transaction
+     * @returns {Promise<TransactionApiResponse>} Promise with the response data or error response
      */
     async deleteTransaction(id: string, deleteAll?: boolean): Promise<TransactionApiResponse> {
         try {

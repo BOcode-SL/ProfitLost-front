@@ -1,3 +1,13 @@
+/**
+ * Home Landing Page Component
+ * 
+ * Displays marketing content with sections for:
+ * - Hero section with app introduction
+ * - How it works step-by-step guide
+ * - Features showcase with bento grid layout
+ * 
+ * @module Home
+ */
 import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
@@ -23,10 +33,11 @@ import './Home.css';
 /**
  * Home component - Landing page of the application
  * 
- * Displays marketing content with sections for:
- * - Hero section with app introduction
- * - How it works step-by-step guide
- * - Features showcase with bento grid layout
+ * Presents the marketing content for the application with responsive design.
+ * Includes animated elements, step carousel, and feature showcases.
+ * Provides navigation to authentication pages.
+ * 
+ * @returns {JSX.Element} The rendered home page component
  */
 export default function Home() {
     const { t } = useTranslation();
@@ -37,8 +48,10 @@ export default function Home() {
     /**
      * Handles step change for the mobile carousel view
      * Updates the active step based on direction (prev/next)
+     * Implements circular navigation through the step cards
      * 
-     * @param direction - Direction to move: 'prev' or 'next'
+     * @param {('prev'|'next')} direction - Direction to move: 'prev' or 'next'
+     * @returns {void}
      */
     const handleStepChange = (direction: 'prev' | 'next') => {
         if (direction === 'prev') {

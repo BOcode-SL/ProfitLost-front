@@ -1,3 +1,17 @@
+/**
+ * Main Application Component
+ * 
+ * Defines the routing structure and authentication flow for the Profit & Lost application.
+ * This component:
+ * - Sets up the primary routing system with protected and public routes
+ * - Manages authentication state through UserProvider context
+ * - Implements route protection with redirect logic for unauthorized access
+ * - Handles loading states during authentication checks
+ * - Applies theme context to authenticated dashboard routes
+ * 
+ * @module App
+ */
+
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
@@ -18,14 +32,28 @@ const TermsOfService = React.lazy(() => import('./pages/landing/legal/TermsOfSer
 const Contact = React.lazy(() => import('./pages/landing/legal/Contact'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
-// Interface for the private route component props
+/**
+ * Interface for the private route component props
+ * @interface PrivateRouteProps
+ * @property {React.ReactNode} children - Components to render when authenticated
+ */
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
-// Main App component that defines the application's routing structure
+/**
+ * Main App component that defines the application's routing structure
+ * 
+ * @returns {JSX.Element} The complete application with all routes
+ */
 export default function App() {
-  // PrivateRoute component that protects routes requiring authentication
+  /**
+   * PrivateRoute component that protects routes requiring authentication
+   * Redirects to the auth page if user is not authenticated
+   * 
+   * @param {PrivateRouteProps} props - Component props with children to render
+   * @returns {JSX.Element} Protected route content or redirect
+   */
   const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const { user, isLoading } = useUser(); // Get user authentication state and loading status
 
@@ -52,24 +80,29 @@ export default function App() {
     <UserProvider>
       {/* Application routing configuration */}
       <Routes>
+        {/* Public routes - accessible to all users */}
         <Route path='/' element={<Home />} />
         <Route path='/auth' element={<AuthPage />} />
         <Route path='/blog' element={<BlogPage />} />
         <Route path='/blog/:id' element={<BlogPostDetail />} />
+        
+        {/* Legal and information pages */}
         <Route path='/legal' element={<LegalNotice />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/cookies' element={<CookiePolicy />} />
         <Route path='/terms' element={<TermsOfService />} />
         <Route path='/contact' element={<Contact />} />
+        
+        {/* Protected dashboard routes - require authentication */}
         <Route
           path='/dashboard/*'
           element={
-            // Protect dashboard routes with authentication
             <PrivateRoute>
               <Dashboard />
             </PrivateRoute>
           }
         />
+        
         {/* Catch-all route for handling 404 errors */}
         <Route path='*' element={<NotFound />} />
       </Routes>

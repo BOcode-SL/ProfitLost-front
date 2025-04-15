@@ -1,15 +1,32 @@
-/* Main container for the home page */
+/* 
+ * Home Page Stylesheet
+ *
+ * Contains styling for the landing page components including:
+ * - Main container layout
+ * - Features section with grid layout
+ * - Feature cards with animations and effects
+ * - Responsive adjustments for different screen sizes
+ */
+
+/* Main container for the home page - provides full-height layout and base styling */
 .home-container {
     min-height: 100vh;
 }
 
-/* Features section styling with padding and rounded corners */
+/* 
+ * Features section styling 
+ * Creates spacing and rounded borders for the features showcase area
+ */
 .home-container .features-section {
     padding: 5rem 1rem;
     border-radius: 2rem;
 }
 
-/* Features grid container layout */
+/* 
+ * Features grid container layout
+ * Implements a responsive grid system for feature cards
+ * Uses a 3-column layout on desktop with consistent spacing
+ */
 .home-container .features-section .features-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -19,14 +36,21 @@
     padding: 1rem;
 }
 
-/* Responsive layout adjustment for mobile devices */
+/* 
+ * Responsive layout adjustment for mobile devices
+ * Converts grid to single column layout on screens smaller than 768px
+ */
 @media (max-width: 768px) {
     .home-container .features-section .features-container {
         grid-template-columns: 1fr;
     }
 }
 
-/* Individual feature card styling */
+/* 
+ * Individual feature card styling
+ * Creates a clean, elevated card design with consistent spacing
+ * Includes transition effects for interactive elements
+ */
 .home-container .features-section .features-container .feature-card {
     background: white;
     border-radius: 16px;
@@ -39,26 +63,42 @@
     overflow: hidden;
 }
 
-/* Highlight styling for featured cards that span two rows */
+/* 
+ * Highlight styling for featured cards
+ * Applies gradient background and spans two rows in the grid
+ * Uses brand colors to create visual emphasis for important features
+ */
 .home-container .features-section .features-container .feature-card.highlight {
     grid-row: span 2;
     background: linear-gradient(135deg, #fe6f14 0%, #ff8f4c 100%);
     color: white;
 }
 
-/* Text color adjustment for highlighted cards */
+/* 
+ * Text color adjustment for highlighted cards
+ * Ensures text remains readable on the colored background
+ * Applies to both headings and paragraphs within highlighted cards
+ */
 .home-container .features-section .features-container .feature-card.highlight h4,
 .home-container .features-section .features-container .feature-card.highlight p {
     color: white;
 }
 
-/* Hover effect for feature cards */
+/* 
+ * Hover effect for feature cards
+ * Creates subtle elevation and shadow effect on mouse hover
+ * Improves interactive feel with a slight upward movement
+ */
 .home-container .features-section .features-container .feature-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Feature card heading styling */
+/* 
+ * Feature card heading styling
+ * Sets up the title with icon alignment and proper spacing
+ * Uses consistent typography with brand styling guidelines
+ */
 .home-container .features-section .features-container .feature-card h4 {
     display: flex;
     align-items: center;
@@ -69,13 +109,21 @@
     margin-bottom: 0.5rem;
 }
 
-/* Feature card paragraph styling */
+/* 
+ * Feature card paragraph styling
+ * Creates readable body text with proper line height
+ * Uses a lighter color to differentiate from headings
+ */
 .home-container .features-section .features-container .feature-card p {
     color: #666;
     line-height: 1.6;
 }
 
-/* Floating animation keyframes for hero image */
+/* 
+ * Floating animation keyframes for hero image
+ * Creates a gentle up and down movement to add visual interest
+ * Used on the main dashboard image in the hero section
+ */
 @keyframes float {
     0% {
         transform: translateY(0px);

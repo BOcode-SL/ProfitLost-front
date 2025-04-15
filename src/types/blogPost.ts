@@ -2,11 +2,16 @@
  * Blog Post Models Module
  * 
  * Contains type definitions for blog content used in the application.
+ * These types are used for displaying educational and marketing content.
+ * 
+ * @module BlogPost
  */
 
 /**
  * Represents a blog post in the system
- * Used for educational and marketing content
+ * Used for educational and marketing content in the blog section
+ * 
+ * @interface BlogPost
  */
 export interface BlogPost {
     id: number;                  // Unique identifier
@@ -22,6 +27,8 @@ export interface BlogPost {
 
 /**
  * Categories for blog posts
- * Used for filtering and organization
+ * Used for filtering and organization of content
+ * 
+ * @typedef {string} CategoryType
  */
 export type CategoryType = 'introduction' | 'tutorials' | 'tips' | 'updates';

@@ -1,9 +1,3 @@
-import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
-import { FormEvent } from 'react';
-import { useTranslation } from 'react-i18next';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
 /**
  * Reset Password Form Component
  * 
@@ -11,9 +5,20 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
  * 1. Email step - Collects user email to send recovery code
  * 2. Token step - Validates the verification code sent to email
  * 3. Password step - Allows setting a new password with confirmation
+ * 
+ * @module ResetPasswordForm
  */
+import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
+import { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-// Types
+/**
+ * Props interface for the ResetPasswordForm component
+ * 
+ * @interface ResetPasswordFormProps
+ */
 interface ResetPasswordFormProps {
     resetStep: 'email' | 'token' | 'password'; // Step of the reset process
     resetEmail: string; // Email for password reset
@@ -34,7 +39,16 @@ interface ResetPasswordFormProps {
     handleResetPassword: (e: FormEvent) => void; // Function to handle password reset
 }
 
-// ResetPasswordForm component definition
+/**
+ * Reset password form component
+ * 
+ * Provides a multi-step password recovery interface.
+ * Changes form fields and validation based on the current step.
+ * Features numeric validation for token and visibility toggles for passwords.
+ * 
+ * @param {ResetPasswordFormProps} props - Component properties
+ * @returns {JSX.Element | null} The rendered reset password form or null if invalid step
+ */
 export default function ResetPasswordForm({
     resetStep,
     resetEmail,

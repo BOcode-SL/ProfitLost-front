@@ -3,6 +3,8 @@
  * 
  * Provides functionality for currency formatting and visibility management.
  * Handles user preferences for currency display across the application.
+ * 
+ * @module CurrencyUtils
  */
 import { User } from '../types/supabase/users';
 import { Currency } from '../types/supabase/preferences';
@@ -16,7 +18,7 @@ export const CURRENCY_VISIBILITY_EVENT = 'currencyVisibilityChanged';
 /**
  * Checks if currency amounts should be hidden based on user preference
  * 
- * @returns Boolean indicating if currency should be hidden
+ * @returns {boolean} True if currency should be hidden, false otherwise
  */
 export const isCurrencyHidden = (): boolean => {
     const value = localStorage.getItem('hideCurrency');
@@ -42,9 +44,9 @@ export const toggleCurrencyVisibility = (): void => {
  * Formats a monetary amount based on the user's preferred currency
  * Applies appropriate locale and currency symbol
  * 
- * @param amount - The numeric amount to format
- * @param user - The user object containing preferences (or null for defaults)
- * @returns Formatted currency string with appropriate symbol and decimal places
+ * @param {number} amount - The numeric amount to format
+ * @param {User|null} user - The user object containing preferences (or null for defaults)
+ * @returns {string} Formatted currency string with appropriate symbol and decimal places
  */
 export const formatCurrency = (amount: number, user: User & { preferences?: { currency?: string } } | null): string => {
     // Get the user's preferred currency from userPreferences or default to 'USD'
@@ -92,8 +94,8 @@ export const formatCurrency = (amount: number, user: User & { preferences?: { cu
  * Formats large numbers into a more readable format with abbreviations
  * Converts numbers to k (thousands), M (millions), or B (billions) notation
  * 
- * @param value - The numeric value to format
- * @returns Formatted string with appropriate abbreviation (e.g., 1.5k, 2.3M, 4B)
+ * @param {number} value - The numeric value to format
+ * @returns {string} Formatted string with appropriate abbreviation (e.g., 1.5k, 2.3M, 4B)
  */
 export const formatLargeNumber = (value: number): string => {
     if (value >= 1000000000) {

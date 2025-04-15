@@ -1,15 +1,19 @@
 /**
- * CategoryForm Component
+ * CategoryForm Module
  * 
- * Form for creating and editing transaction categories.
- * Features include:
- * - Category name and color selection
+ * Provides an interface for creating, editing, and managing transaction categories
+ * with comprehensive history tracking.
+ * 
+ * Features:
+ * - Category name and color selection with visual preview
  * - Transaction history display for existing categories
- * - Year-based transaction filtering 
- * - Transaction search functionality
- * - Month-based transaction grouping
- * - Responsive design for different screen sizes
- * - Category deletion with confirmation
+ * - Year-based transaction filtering with quick selection
+ * - Transaction search functionality with real-time filtering
+ * - Month-based transaction grouping for organized display
+ * - Responsive design optimized for different screen sizes
+ * - Category deletion with appropriate safeguards
+ * 
+ * @module CategoryForm
  */
 import { useState, useEffect } from 'react';
 import {
@@ -45,6 +49,12 @@ import { transactionService } from '../../../../../services/transaction.service'
 // Types
 import type { Category } from '../../../../../types/supabase/categories';
 import type { Transaction } from '../../../../../types/supabase/transactions';
+
+/**
+ * Interface for grouping transactions by month
+ * 
+ * @interface GroupedTransactions
+ */
 interface GroupedTransactions {
     [key: string]: Transaction[];
 }
@@ -53,20 +63,43 @@ interface GroupedTransactions {
 import { formatCurrency } from '../../../../../utils/currencyUtils';
 import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
-// Month abbreviations in English for consistent sorting
+/**
+ * Constant array of month abbreviations in English for consistent sorting
+ * Used to ensure months are displayed in chronological order
+ */
 const MONTH_ORDER = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-// Interface for the props of the CategoryForm component
+/**
+ * Props for the CategoryForm component
+ * 
+ * @interface CategoryFormProps
+ */
 interface CategoryFormProps {
-    category?: Category; // Optional category for edit mode (undefined for create mode)
-    onSubmit: () => void; // Callback function when form is successfully submitted
-    onClose: () => void; // Callback function to close the form
-    onDelete?: () => void; // Optional callback function for deletion
+    /** Optional category for edit mode (undefined for create mode) */
+    category?: Category;
+    
+    /** Callback function when form is successfully submitted */
+    onSubmit: () => void;
+    
+    /** Callback function to close the form */
+    onClose: () => void;
+    
+    /** Optional callback function for deletion */
+    onDelete?: () => void;
 }
 
+/**
+ * CategoryForm Component
+ * 
+ * Renders a form for creating and editing transaction categories with
+ * transaction history display for existing categories.
+ * 
+ * @param {CategoryFormProps} props - Component properties
+ * @returns {JSX.Element} Rendered form component
+ */
 export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
@@ -86,7 +119,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Fetch all transactions for the category once
+    /**
+     * Fetch all transactions for the category when component mounts
+     * Loads transaction history and determines available years with data
+     */
     useEffect(() => {
         const fetchCategoryTransactions = async () => {
             if (!category) return;
@@ -124,7 +160,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         fetchCategoryTransactions();
     }, [category]);
 
-    // Filter transactions based on selected year and search query
+    /**
+     * Filter transactions based on selected year and search query
+     * Updates the displayed transactions when filters change
+     */
     useEffect(() => {
         if (!showTransactions || !allCategoryTransactions.length) {
             setDisplayTransactions([]);
@@ -151,7 +190,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     // Group transactions by month for organized display
     const groupedTransactions: GroupedTransactions = {};
 
-    // Create an object to store transactions grouped by month key
+    /**
+     * Process transactions to group them by month
+     * Creates a temporary object to store transactions by month key
+     */
     const tempGroupedByMonthKey: Record<string, Transaction[]> = {};
 
     displayTransactions.forEach(tx => {
@@ -165,7 +207,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         tempGroupedByMonthKey[monthKey].push(tx);
     });
 
-    // Sort months by calendar order and translate them
+    /**
+     * Convert month-grouped transactions to use translated month names
+     * Ensures months appear in chronological order using MONTH_ORDER
+     */
     MONTH_ORDER.forEach(monthKey => {
         if (tempGroupedByMonthKey[monthKey]) {
             // Use the translation for display
@@ -174,7 +219,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         }
     });
 
-    // Filter transactions based on search query
+    /**
+     * Further filter grouped transactions based on search query
+     * Creates a new object with only matching transactions
+     */
     const filteredGroupedTransactions: GroupedTransactions = {};
 
     Object.entries(groupedTransactions).forEach(([month, monthTransactions]) => {
@@ -188,7 +236,10 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         }
     });
 
-    // Handle form submission (create or update)
+    /**
+     * Handle form submission for creating or updating a category
+     * Validates inputs and makes appropriate API calls
+     */
     const handleSubmit = async () => {
         // Validate category name
         if (!name.trim()) {
@@ -550,7 +601,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                     ))}
                                 </Box>
                             ) : searchQuery && (
-                                // Empty search results message
+                                /* Empty search results message */
                                 <Box sx={{ 
                                     display: 'flex', 
                                     flexDirection: 'column', 

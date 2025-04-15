@@ -3,6 +3,8 @@
  * 
  * Provides functionality for managing notes including creating,
  * retrieving, updating, and deleting user notes.
+ * 
+ * @module NoteService
  */
 
 // Types
@@ -18,8 +20,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during note operations
- * @param error - The error that occurred during an API request
- * @returns A standardized NoteApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {NoteApiResponse} A standardized NoteApiResponse with error details
  */
 const handleNoteError = (error: unknown): NoteApiResponse => {
     // Check if the error has a statusCode
@@ -42,7 +45,8 @@ export const noteService = {
     /**
      * Retrieves all notes belonging to the current user
      * Notes are automatically decrypted by the backend
-     * @returns Promise with the notes data or error response
+     * 
+     * @returns {Promise<NoteApiResponse>} Promise with the notes data or error response
      */
     async getAllNotes(): Promise<NoteApiResponse> {
         try {
@@ -70,8 +74,9 @@ export const noteService = {
     /**
      * Creates a new note with the provided data
      * Note content will be encrypted by the backend
-     * @param noteData - The data for the note to be created
-     * @returns Promise with the created note data or error response
+     * 
+     * @param {CreateNoteRequest} noteData - The data for the note to be created
+     * @returns {Promise<NoteApiResponse>} Promise with the created note data or error response
      */
     async createNote(noteData: CreateNoteRequest): Promise<NoteApiResponse> {
         try {
@@ -100,9 +105,10 @@ export const noteService = {
     /**
      * Updates an existing note with the provided data
      * Note content will be encrypted by the backend
-     * @param id - The ID of the note to be updated
-     * @param updateData - The new data to update the note with
-     * @returns Promise with the updated note data or error response
+     * 
+     * @param {string} id - The ID of the note to be updated
+     * @param {UpdateNoteRequest} updateData - The new data to update the note with
+     * @returns {Promise<NoteApiResponse>} Promise with the updated note data or error response
      */
     async updateNote(id: string, updateData: UpdateNoteRequest): Promise<NoteApiResponse> {
         try {
@@ -133,8 +139,9 @@ export const noteService = {
     /**
      * Deletes a note with the specified ID
      * Implements soft delete by setting deleted_at timestamp in the backend
-     * @param id - The ID of the note to be deleted
-     * @returns Promise with the response data or error response
+     * 
+     * @param {string} id - The ID of the note to be deleted
+     * @returns {Promise<NoteApiResponse>} Promise with the response data or error response
      */
     async deleteNote(id: string): Promise<NoteApiResponse> {
         try {

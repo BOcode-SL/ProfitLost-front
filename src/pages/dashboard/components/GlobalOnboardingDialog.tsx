@@ -1,3 +1,18 @@
+/**
+ * Global Onboarding Dialog Module
+ * 
+ * Provides a multi-step onboarding experience for new users.
+ * 
+ * Responsibilities:
+ * - Guides users through initial application setup
+ * - Collects user preferences (language, currency, date format)
+ * - Facilitates selection of financial tracking categories
+ * - Persists progress across browser sessions
+ * - Communicates with backend services to save preferences
+ * 
+ * @module GlobalOnboardingDialog
+ */
+
 import { useState, forwardRef, useEffect } from 'react';
 import {
     Dialog,
@@ -31,15 +46,29 @@ import { Language, Currency, DateFormat, TimeFormat, PreferenceContent } from '.
 
 /**
  * Interface for tracking onboarding progress in localStorage
+ * 
+ * @interface OnboardingProgress
  */
 interface OnboardingProgress {
+    /** Current active step in the wizard */
     activeStep: number;
+    
+    /** User selected preferences */
     preferences: {
+        /** User interface language */
         language?: Language;
+        
+        /** Currency for financial calculations */
         currency?: Currency;
+        
+        /** Date display format */
         dateFormat?: DateFormat;
+        
+        /** Time display format */
         timeFormat?: TimeFormat;
     };
+    
+    /** Array of category IDs selected by the user */
     selectedCategories: string[];
 }
 
@@ -103,21 +132,27 @@ const defaultCategories = {
 } as const;
 
 /**
- * Local storage management functions for onboarding progress
- * These allow for persisting user selections between sessions
+ * Saves onboarding progress to local storage
+ * 
+ * @param {OnboardingProgress} progress - The current onboarding progress to save
  */
-// Function to save onboarding progress to local storage
 const saveProgress = (progress: OnboardingProgress) => {
     localStorage.setItem('onboarding_progress', JSON.stringify(progress));
 };
 
-// Function to load onboarding progress from local storage
+/**
+ * Loads onboarding progress from local storage
+ * 
+ * @returns {OnboardingProgress|null} The saved progress or null if none exists
+ */
 const loadProgress = (): OnboardingProgress | null => {
     const saved = localStorage.getItem('onboarding_progress');
     return saved ? JSON.parse(saved) : null;
 };
 
-// Function to clear onboarding progress from local storage
+/**
+ * Clears onboarding progress from local storage
+ */
 const clearProgress = () => {
     localStorage.removeItem('onboarding_progress');
 };
@@ -125,6 +160,10 @@ const clearProgress = () => {
 /**
  * Dialog transition component for smooth animation
  * Uses a slide-up effect for better user experience
+ * 
+ * @param {TransitionProps & {children: React.ReactElement}} props - Transition properties
+ * @param {React.Ref<unknown>} ref - Forwarded ref
+ * @returns {JSX.Element} The transition component
  */
 const Transition = forwardRef(function Transition(
     props: TransitionProps & { children: React.ReactElement },
@@ -133,9 +172,17 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/**
+ * Interface for GlobalOnboardingDialog component props
+ * 
+ * @interface GlobalOnboardingDialogProps
+ */
 interface GlobalOnboardingDialogProps {
-    open: boolean; // Indicates if the dialog is currently open
-    onClose: () => void; // Callback function to execute when the dialog is closed
+    /** Indicates if the dialog is currently open */
+    open: boolean;
+    
+    /** Callback function to execute when the dialog is closed */
+    onClose: () => void;
 }
 
 /**
@@ -150,6 +197,11 @@ interface GlobalOnboardingDialogProps {
  * - Responsive design
  * - Language-specific content
  * - API integration for saving preferences
+ * 
+ * @param {GlobalOnboardingDialogProps} props - The component props
+ * @param {boolean} props.open - Whether the dialog is currently open
+ * @param {() => void} props.onClose - Function to call when the dialog closes
+ * @returns {JSX.Element} The rendered GlobalOnboardingDialog component
  */
 export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardingDialogProps) {
     const { t, i18n } = useTranslation();
@@ -170,7 +222,9 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         t('dashboard.onboarding.steps.categories')
     ];
 
-    // Load saved progress when the dialog opens
+    /**
+     * Loads saved progress when the dialog opens
+     */
     useEffect(() => {
         if (open) {
             const savedProgress = loadProgress();
@@ -187,7 +241,9 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         }
     }, [open]);
 
-    // Save progress when states change
+    /**
+     * Saves progress when states change
+     */
     useEffect(() => {
         if (open) {
             saveProgress({
@@ -198,7 +254,12 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         }
     }, [activeStep, preferences, selectedCategories, open]);
 
-    // Handler for preference changes with language switching
+    /**
+     * Handles preference changes with language switching
+     * 
+     * @param {string} key - The preference key to update
+     * @param {string} value - The new value for the preference
+     */
     const handlePreferenceChange = (key: string, value: string) => {
         setPreferences(prev => {
             const newPreferences = {
@@ -216,7 +277,10 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         });
     };
 
-    // Handler for the next button with API interactions
+    /**
+     * Handles the next button with API interactions
+     * Saves user preferences and categories, advancing through wizard steps
+     */
     const handleNext = async () => {
         try {
             if (activeStep === 0) {
@@ -267,12 +331,20 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
         }
     };
 
-    // Handler for the back button
+    /**
+     * Handles the back button
+     * Returns to the previous step in the wizard
+     */
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
 
-    // Get content for the current step
+    /**
+     * Renders content for the current step in the wizard
+     * 
+     * @param {number} step - The current step index
+     * @returns {JSX.Element|null} The step content or null
+     */
     const getStepContent = (step: number) => {
         switch (step) {
             case 0:

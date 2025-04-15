@@ -1,13 +1,17 @@
 /**
- * AccountsChart Component
+ * AccountsChart Module
  * 
- * Renders a bar chart visualization of account balances across months for a selected year.
- * Features include:
- * - Monthly balance comparison for all active accounts
- * - Currency visibility respecting user privacy preferences
- * - Responsive design for mobile and desktop layouts
- * - Loading skeleton while data is being fetched
- * - Empty state message when no data is available
+ * Provides a visualization component for account balances across months.
+ * 
+ * Responsibilities:
+ * - Renders a bar chart showing monthly balances for all active accounts
+ * - Respects currency visibility preferences for user privacy
+ * - Adapts to different screen sizes with responsive design
+ * - Shows loading skeleton during data fetching
+ * - Displays appropriate message when no data is available
+ * - Handles formatting of currency values and large numbers
+ * 
+ * @module AccountsChart
  */
 import { useState, useEffect } from 'react';
 import { Box, Skeleton, useTheme, Typography, useMediaQuery } from '@mui/material';
@@ -29,28 +33,63 @@ import {
 import type { Account } from '../../../../../types/supabase/accounts';
 import type { YearRecord } from '../../../../../types/supabase/year_records';
 
-// Extended Account interface that includes year_records relationship
+/**
+ * Extended Account interface that includes year_records relationship
+ * 
+ * @interface AccountWithYearRecords
+ * @extends {Account}
+ */
 interface AccountWithYearRecords extends Account {
+    /** Records of annual financial data for this account */
     year_records?: YearRecord[];
 }
 
-// Interface for the props of the AccountsChart component
+/**
+ * Interface for the props of the AccountsChart component
+ * 
+ * @interface AccountsChartProps
+ */
 interface AccountsChartProps {
-    accounts: AccountWithYearRecords[];  // Array of account objects with year records
-    loading: boolean;                    // Flag indicating if data is still being loaded
-    selectedYear: number;                // The year for which to display account data
+    /** Array of account objects with year records */
+    accounts: AccountWithYearRecords[];
+    
+    /** Flag indicating if data is still being loaded */
+    loading: boolean;
+    
+    /** The year for which to display account data */
+    selectedYear: number;
 }
 
-// Interface for the data point in chart dataset
+/**
+ * Interface for the data point in chart dataset
+ * 
+ * @interface DataPoint
+ */
 interface DataPoint {
-    month: string;             // Month identifier (e.g., "Jan", "Feb")
-    monthDisplay: string;      // Localized month display name
-    [key: string]: number | string; // Dynamic properties for each account's monthly balance
+    /** Month identifier (e.g., "Jan", "Feb") */
+    month: string;
+    
+    /** Localized month display name */
+    monthDisplay: string;
+    
+    /** Dynamic properties for each account's monthly balance */
+    [key: string]: number | string;
 }
 
-// Months in English for backend data mapping
+/** Months in English for backend data mapping */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+/**
+ * AccountsChart Component
+ * 
+ * Renders a bar chart visualization of account balances across months for a selected year.
+ * 
+ * @param {AccountsChartProps} props - The component props
+ * @param {AccountWithYearRecords[]} props.accounts - Array of account objects with year records
+ * @param {boolean} props.loading - Flag indicating if data is still being loaded
+ * @param {number} props.selectedYear - The year for which to display account data
+ * @returns {JSX.Element} The rendered AccountsChart component
+ */
 export default function AccountsChart({ accounts, loading, selectedYear }: AccountsChartProps) {
     const { user } = useUser();
     const { t } = useTranslation();
@@ -59,7 +98,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Effect to listen for currency visibility toggle events throughout the app
+    /**
+     * Effect to listen for currency visibility toggle events throughout the app
+     * Updates the local state when currency visibility changes
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -72,7 +114,12 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         };
     }, []);
 
-    // Helper function to get the localized short month name from translation keys
+    /**
+     * Gets the localized short month name from translation keys
+     * 
+     * @param {string} monthKey - The month key to translate
+     * @returns {string} The localized month name
+     */
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
@@ -100,7 +147,13 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
     // Check if there is no data available to display
     const isDataEmpty = activeAccounts.length === 0;
 
-    // Helper function to get month value safely
+    /**
+     * Gets month value safely from year record
+     * 
+     * @param {YearRecord | undefined} yearRecord - The year record to extract value from
+     * @param {string} month - The month key to look up
+     * @returns {number} The monthly value or 0 if not found
+     */
     const getMonthValue = (yearRecord: YearRecord | undefined, month: string): number => {
         if (!yearRecord) return 0;
         const monthKey = month.toLowerCase() as keyof YearRecord;
@@ -109,7 +162,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return value ? parseFloat(value as string) : 0;
     };
 
-    // Create the dataset structure for the chart with month data points
+    /**
+     * Creates the dataset structure for the chart with month data points
+     * Includes each account's monthly values and translated month labels
+     */
     const dataset: DataPoint[] = months.map(month => {
         const monthLower = month.toLowerCase();
         const dataPoint: DataPoint = {
@@ -128,7 +184,10 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         return dataPoint;
     });
 
-    // Configure the series definitions for each account with styling and formatting
+    /**
+     * Configure the series definitions for each account with styling and formatting
+     * Each series represents one account in the chart
+     */
     const series = activeAccounts.map(account => ({
         dataKey: account.name,
         label: account.name,
@@ -137,7 +196,12 @@ export default function AccountsChart({ accounts, loading, selectedYear }: Accou
         valueFormatter: (value: number | null) => formatCurrency(value || 0, user),
     }));
 
-    // Helper function to calculate the total balance for a specific month across all accounts
+    /**
+     * Calculates the total balance for a specific month across all accounts
+     * 
+     * @param {string} month - The month to calculate total for
+     * @returns {number} The total balance for the month
+     */
     const getMonthTotal = (month: string): number => {
         const monthData = dataset.find(d => d.month === month);
         if (!monthData) return 0;

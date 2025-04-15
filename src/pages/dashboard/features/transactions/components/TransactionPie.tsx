@@ -1,14 +1,19 @@
 /**
- * TransactionPie Component
+ * TransactionPie Module
  * 
- * Renders a customizable pie chart to visualize financial data by categories.
- * Features include:
- * - Interactive pie segments with hover effects
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
- * - Loading state with animated skeletons
- * - Empty state handling with user-friendly messaging
- * - Responsive sizing for different screen sizes
+ * Renders an interactive pie chart to visualize financial data distribution
+ * across different categories with rich interaction features.
+ * 
+ * Key Features:
+ * - Interactive segments with hover highlighting and focus effects
+ * - Customizable visualization with configurable colors and labels
+ * - Localized currency formatting based on user preferences
+ * - Privacy mode with disabled tooltips for sensitive contexts
+ * - Progressive loading with animated skeleton placeholders
+ * - Empty state handling with appropriate user messaging
+ * - Responsive design adapting to various screen dimensions
+ * 
+ * @module TransactionPie
  */
 import { useState, useEffect } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -21,21 +26,47 @@ import { useUser } from '../../../../../contexts/UserContext';
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 
-// Types
+/**
+ * Interface defining pie chart segment data structure
+ * 
+ * @interface PieChartData
+ */
 interface PieChartData {
-    id: string;      // Unique identifier for the segment
-    value: number;   // Numerical value of the segment
-    label: string;   // Display label for the segment
-    color: string;   // Color code for the segment
+    /** Unique identifier for the segment */
+    id: string;
+    
+    /** Numerical value determining segment size */
+    value: number;
+    
+    /** Display text for the segment in tooltips and legend */
+    label: string;
+    
+    /** Color code for visual representation */
+    color: string;
 }
 
-// Interface for the TransactionPie component props
+/**
+ * Props interface for the TransactionPie component
+ * 
+ * @interface TransactionPieProps
+ */
 interface TransactionPieProps {
-    loading: boolean;     // Indicates whether the data is still loading
-    data: PieChartData[]; // Array of data for the pie chart
+    /** Indicates whether data is still loading */
+    loading: boolean;
+    
+    /** Array of data segments to visualize in the pie chart */
+    data: PieChartData[];
 }
 
-// TransactionPie component
+/**
+ * TransactionPie Component
+ * 
+ * Renders a donut-style pie chart to visualize distribution of financial data
+ * across categories, with appropriate loading and empty states.
+ * 
+ * @param {TransactionPieProps} props - Component properties
+ * @returns {JSX.Element} Rendered pie chart component
+ */
 export default function TransactionPie({
     loading,
     data
@@ -43,9 +74,13 @@ export default function TransactionPie({
     const { t } = useTranslation();
     const { user } = useUser();
 
+    /** State tracking whether currency values should be blurred for privacy */
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -58,7 +93,9 @@ export default function TransactionPie({
         };
     }, []);
 
-    // Container for the pie chart with responsive layout
+    /**
+     * Render the chart with appropriate container and responsive layout
+     */
     return (
         <Box sx={{
             flex: 1,
@@ -76,15 +113,15 @@ export default function TransactionPie({
                 position: 'relative',
                 height: 285
             }}>
-                {/* Conditional rendering based on loading state and data availability */}
+                {/* Conditional rendering based on loading and data state */}
                 {loading ? (
-                    // Loading state - animated skeleton
+                    // Loading state - animated skeleton placeholder
                     <Skeleton variant="rectangular" width="100%" height={250} sx={{
                         borderRadius: 3,
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
                 ) : data.length === 0 ? (
-                    // Empty data state - display "No data" message
+                    // Empty data state - display guidance message
                     <Typography
                         variant="body1"
                         color="text.secondary"
@@ -102,27 +139,27 @@ export default function TransactionPie({
                         {t('dashboard.common.noData')}
                     </Typography>
                 ) : (
-                    // Render pie chart with data
+                    // Data available - render interactive pie chart
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <PieChart
                             series={[{
                                 data,
-                                innerRadius: 60,
-                                paddingAngle: 2,
-                                cornerRadius: 4,
-                                highlightScope: { faded: 'global', highlighted: 'item' },
+                                innerRadius: 60,           // Creates donut-style chart
+                                paddingAngle: 2,           // Spacing between segments
+                                cornerRadius: 4,           // Rounded corners on segments
+                                highlightScope: { faded: 'global', highlighted: 'item' }, // Highlight effect
                                 valueFormatter: (value: { value: number }) => formatCurrency(value.value, user)
                             }]}
                             height={250}
                             width={250}
                             margin={{ top: 5, bottom: 5, left: 5, right: 5 }}
                             slotProps={{
-                                legend: { hidden: true }
+                                legend: { hidden: true }   // Hide default legend
                             }}
                             tooltip={isHidden ? {
-                                trigger: 'none'
+                                trigger: 'none'            // Disable tooltips in privacy mode
                             } : {
-                                trigger: 'item'
+                                trigger: 'item'            // Show tooltips on segment hover
                             }}
                         />
                     </Box>

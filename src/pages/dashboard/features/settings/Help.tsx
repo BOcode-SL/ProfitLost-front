@@ -1,18 +1,31 @@
 /**
- * Help Component
+ * Help Module
  * 
- * Displays frequently asked questions and help topics in an accordion format.
- * Features include:
- * - Collapsible sections for different help topics
- * - Step-by-step instructions for common tasks
- * - Responsive layout for different screen sizes
- * - Internationalization support for all help content
+ * Provides comprehensive user assistance through an organized FAQ interface
+ * with collapsible accordion sections for different help topics.
+ * 
+ * Key Features:
+ * - Expandable/collapsible sections organized by topic
+ * - Step-by-step instructions for common user workflows
+ * - Visual separation of different help categories
+ * - Fully responsive layout adapting to various screen sizes
+ * - Internationalization support for multilingual documentation
+ * - Semantic HTML structure for improved accessibility
+ * 
+ * @module Help
  */
 import { Box, Paper, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// Help component
+/**
+ * Help Component
+ * 
+ * Renders a comprehensive help center interface with expandable sections
+ * covering various aspects of the application functionality.
+ * 
+ * @returns {JSX.Element} The rendered help page
+ */
 export default function Help() {
     const { t } = useTranslation();
 
@@ -43,7 +56,7 @@ export default function Help() {
 
                 {/* FAQ accordion container */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                    {/* Getting started section */}
+                    {/* Getting started section - Basic application introduction */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -73,7 +86,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Account management section */}
+                    {/* Account management section - Creating and managing financial accounts */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -103,7 +116,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Categories explanation section */}
+                    {/* Categories explanation section - Understanding transaction categorization */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -131,7 +144,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Data protection section */}
+                    {/* Data protection section - Security and privacy information */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -162,7 +175,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Reports and analytics section */}
+                    {/* Reports and analytics section - Working with financial reports */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -190,7 +203,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Mobile usage guidance */}
+                    {/* Mobile usage guidance - Using the application on mobile devices */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -214,7 +227,7 @@ export default function Help() {
                         </AccordionDetails>
                     </Accordion>
 
-                    {/* Support and contact information */}
+                    {/* Support and contact information - How to get additional help */}
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography

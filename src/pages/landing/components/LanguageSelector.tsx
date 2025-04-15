@@ -3,11 +3,22 @@
  * 
  * Provides a floating button allowing users to toggle between supported languages (English/Spanish).
  * Persists language selection to localStorage and updates the i18n context.
+ * Repositions based on screen size for optimal visibility on all devices.
+ * 
+ * @module LanguageSelector
  */
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Language selector floating button component
+ * 
+ * Displays a floating button with the current language flag that toggles
+ * between English and Spanish when clicked. Position adapts to screen size.
+ * 
+ * @returns {JSX.Element} The rendered language selector button
+ */
 export default function LanguageSelector() {
     const { t, i18n } = useTranslation();
 
@@ -19,6 +30,9 @@ export default function LanguageSelector() {
 
     // Listen for language changes in the browser
     useEffect(() => {
+        /**
+         * Updates the language state when browser language settings change
+         */
         const handleLanguageChange = () => {
             const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
             setCurrentLanguage(i18nextLng.startsWith('es') ? 'es' : 'en');
@@ -28,7 +42,10 @@ export default function LanguageSelector() {
         return () => window.removeEventListener('languagechange', handleLanguageChange);
     }, []);
 
-    // Toggle between English and Spanish
+    /**
+     * Toggles between English and Spanish languages
+     * Updates both the local state and i18n context language
+     */
     const toggleLanguage = () => {
         const newLang = currentLanguage === 'en' ? 'es' : 'en';
         setCurrentLanguage(newLang);

@@ -4,18 +4,32 @@
  * Fixed navigation header that appears across the landing pages.
  * Includes brand logo, navigation links, and login button.
  * Features a scroll-based styling that changes opacity and blur when scrolling.
+ * 
+ * @module Header
  */
 import { useState, useEffect } from 'react';
 import { Box, Button, Container, Toolbar } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Landing page header component
+ * 
+ * Provides navigation across the website with responsive design.
+ * Includes branding, navigation links, and authentication button.
+ * Changes appearance based on scroll position for better UX.
+ * 
+ * @returns {JSX.Element} The rendered header component
+ */
 export default function Header() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // Add scroll event listener to apply visual effects when scrolling
+    /**
+     * Sets up scroll event listener for header appearance changes
+     * Updates isScrolled state when page is scrolled beyond 50px
+     */
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);

@@ -1,14 +1,18 @@
 /**
- * NoteList Component
+ * NoteList Module
  * 
- * Displays a scrollable list of notes with visual selection indicators.
- * Features include:
- * - Highlighting of currently selected note
- * - Note title and content preview with ellipsis for overflow
- * - Empty state handling when no notes exist
- * - Skeleton loading state during data fetching
- * - Responsive design to work within the sidebar layout
- * - Theme-aware styling for light and dark modes
+ * Displays a scrollable, interactive list of user notes with visual selection indicators.
+ * 
+ * Key Features:
+ * - Visual highlighting of currently selected note with color accent
+ * - Truncated note previews with title and content ellipsis for better overview
+ * - Empty state handling with appropriate user guidance
+ * - Progressive loading skeleton animation during data retrieval
+ * - Responsive design adapting to different screen sizes and sidebar layouts
+ * - Theme-aware styling with automatic light/dark mode support
+ * - Optimized scrolling for handling large collections of notes
+ * 
+ * @module NoteList
  */
 import { List, Box, Typography, useTheme, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -16,15 +20,34 @@ import { useTranslation } from 'react-i18next';
 // Types
 import type { Note } from '../../../../../types/supabase/notes';
 
-// Interface for the props of the NoteList component
+/**
+ * Props interface for the NoteList component
+ * 
+ * @interface NoteListProps
+ */
 interface NoteListProps {
-    notes: Note[]; // Array of notes to display
-    selectedNote: Note | null; // Currently selected note or null if none is selected
-    onSelectNote: (note: Note) => void; // Callback function when a note is clicked
-    isLoading: boolean; // Indicates if notes are being loaded
+    /** Array of notes to display in the scrollable list */
+    notes: Note[];
+    
+    /** Currently selected note or null if none is selected */
+    selectedNote: Note | null;
+    
+    /** Callback function when a note is clicked to select it */
+    onSelectNote: (note: Note) => void;
+    
+    /** Indicates if notes are currently being loaded */
+    isLoading: boolean;
 }
 
-// NoteList component
+/**
+ * NoteList Component
+ * 
+ * Renders a scrollable list of notes with selection indicators,
+ * empty state handling, and loading animations.
+ * 
+ * @param {NoteListProps} props - Component properties
+ * @returns {JSX.Element} Rendered note list component
+ */
 export default function NoteList({
     notes,
     selectedNote,
@@ -34,7 +57,10 @@ export default function NoteList({
     const { t } = useTranslation();
     const theme = useTheme();
 
-    // Display skeleton loaders while data is loading
+    /**
+     * Render loading skeleton during data retrieval
+     * Provides visual feedback during the loading process
+     */
     if (isLoading) {
         return (
             <List sx={{
@@ -90,7 +116,10 @@ export default function NoteList({
         );
     }
 
-    // Display empty state message when no notes exist
+    /**
+     * Render empty state message when no notes exist
+     * Provides user guidance when collection is empty
+     */
     if (notes.length === 0) {
         return (
             <Box sx={{ mt: 2, textAlign: 'center' }}>
@@ -101,7 +130,10 @@ export default function NoteList({
         );
     }
 
-    // Display list of notes
+    /**
+     * Render interactive list of note items
+     * Shows notes with selection highlighting and content preview
+     */
     return (
         <List sx={{
             mt: 2,
@@ -112,9 +144,9 @@ export default function NoteList({
             gap: 1,
             width: '100%'
         }}>
-            {/* Map through notes array to render each note */}
+            {/* Map through notes array to render each note item */}
             {notes.map((note) => (
-                // Individual note item with selection indicator
+                // Individual note item with selection indicator and hover states
                 <Box
                     key={note.id}
                     onClick={() => onSelectNote(note)}

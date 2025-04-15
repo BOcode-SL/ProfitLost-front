@@ -4,6 +4,8 @@
  * Provides functionality for managing user profile, preferences, and account settings.
  * Handles operations such as retrieving user data, updating profiles, managing themes,
  * changing passwords, and controlling onboarding flow.
+ * 
+ * @module UserService
  */
 
 // Types
@@ -21,8 +23,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during user operations
- * @param error - The error that occurred during an API request
- * @returns A standardized UserApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {UserApiResponse} A standardized UserApiResponse with error details
  */
 const handleUserError = (error: unknown): UserApiResponse => {
     // Check if the error has a statusCode
@@ -44,7 +47,8 @@ const handleUserError = (error: unknown): UserApiResponse => {
 export const userService = {
     /**
      * Retrieves the current user's profile data
-     * @returns Promise with the user data or error response
+     * 
+     * @returns {Promise<UserApiResponse>} Promise with the user data or error response
      */
     async getUserData(): Promise<UserApiResponse> {
         try {
@@ -72,8 +76,15 @@ export const userService = {
 
     /**
      * Updates the user's profile information
-     * @param userData - Object containing user profile information to update
-     * @returns Promise with the updated user data or error response
+     * 
+     * @param {Object} userData - Object containing user profile information to update
+     * @param {string} [userData.name] - User's first name
+     * @param {string} [userData.surname] - User's last name
+     * @param {string} [userData.language] - Preferred language code
+     * @param {string} [userData.currency] - Preferred currency code
+     * @param {string} [userData.dateFormat] - Preferred date format
+     * @param {string} [userData.timeFormat] - Preferred time format
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async updateProfile(userData: {
         name?: string;
@@ -120,8 +131,9 @@ export const userService = {
 
     /**
      * Updates the user's theme preference
-     * @param theme - The theme preference ('light' or 'dark')
-     * @returns Promise with the updated user data or error response
+     * 
+     * @param {('light'|'dark')} theme - The theme preference ('light' or 'dark')
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async updateTheme(theme: 'light' | 'dark'): Promise<UserApiResponse> {
         try {
@@ -152,8 +164,9 @@ export const userService = {
 
     /**
      * Updates the user's view mode preference
-     * @param viewMode - The view mode preference ('yearToday' or 'fullYear')
-     * @returns Promise with the updated user data or error response
+     * 
+     * @param {('yearToday'|'fullYear')} viewMode - The view mode preference ('yearToday' or 'fullYear')
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async updateViewMode(viewMode: 'yearToday' | 'fullYear'): Promise<UserApiResponse> {
         try {
@@ -184,9 +197,10 @@ export const userService = {
 
     /**
      * Changes the user's password
-     * @param currentPassword - The user's current password
-     * @param newPassword - The new password to set
-     * @returns Promise with the response data or error response
+     * 
+     * @param {string} currentPassword - The user's current password
+     * @param {string} newPassword - The new password to set
+     * @returns {Promise<UserApiResponse>} Promise with the response data or error response
      */
     async changePassword(currentPassword: string, newPassword: string): Promise<UserApiResponse> {
         try {
@@ -214,7 +228,8 @@ export const userService = {
 
     /**
      * Permanently deletes the user's account
-     * @returns Promise with the response data or error response
+     * 
+     * @returns {Promise<UserApiResponse>} Promise with the response data or error response
      */
     async deleteAccount(): Promise<UserApiResponse> {
         try {
@@ -241,9 +256,10 @@ export const userService = {
 
     /**
      * Sets the user's preferences during the onboarding process
-     * @param preferences - Partial preferences object with only the properties to update.
+     * 
+     * @param {PreferenceContent} preferences - Partial preferences object with only the properties to update.
      *                      This will be merged with existing preferences on the server.
-     * @returns Promise with the updated user data or error response
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async onboardingPreferences(preferences: PreferenceContent): Promise<UserApiResponse> {
         try {
@@ -274,7 +290,8 @@ export const userService = {
 
     /**
      * Marks the onboarding process as complete for the user
-     * @returns Promise with the updated user data or error response
+     * 
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async completeOnboarding(): Promise<UserApiResponse> {
         try {
@@ -304,8 +321,9 @@ export const userService = {
 
     /**
      * Updates the completion status of a specific onboarding section
-     * @param section - The name of the onboarding section to mark as completed
-     * @returns Promise with the updated user data or error response
+     * 
+     * @param {string} section - The name of the onboarding section to mark as completed
+     * @returns {Promise<UserApiResponse>} Promise with the updated user data or error response
      */
     async updateOnboardingSection(section: string): Promise<UserApiResponse> {
         try {

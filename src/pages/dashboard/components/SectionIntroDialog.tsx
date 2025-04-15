@@ -1,3 +1,18 @@
+/**
+ * Section Introduction Dialog Module
+ * 
+ * Provides contextual introductions to different dashboard sections.
+ * 
+ * Responsibilities:
+ * - Displays welcome information for each section of the dashboard
+ * - Presents section-specific features and instructions
+ * - Creates a consistent onboarding experience across the application
+ * - Adapts content based on the current language
+ * - Provides animated transitions for better user experience
+ * 
+ * @module SectionIntroDialog
+ */
+
 import {
     Dialog,
     DialogTitle,
@@ -23,23 +38,45 @@ import { getIconComponent } from '../../../utils/sectionIconUtils';
  * Section Information Interface
  * 
  * Defines the structure for section introductions
+ * 
+ * @interface SectionInfo
  */
 interface SectionInfo {
+    /** Section title displayed in the dialog header */
     title: string;
+    
+    /** Array of content points to display as a list */
     content: string[];
+    
+    /** Icon identifier for the section */
     icon: string;
 }
 
+/**
+ * Interface for SectionIntroDialog component props
+ * 
+ * @interface SectionIntroDialogProps
+ */
 interface SectionIntroDialogProps {
-    open: boolean; // Indicates whether the dialog is visible
-    onClose: () => void; // Callback function to execute when the dialog is closed
-    section: string; // The section for which the introduction is displayed
+    /** Indicates whether the dialog is visible */
+    open: boolean;
+    
+    /** Callback function to execute when the dialog is closed */
+    onClose: () => void;
+    
+    /** The section for which the introduction is displayed */
+    section: string;
 }
 
 /**
  * Dialog Title With Icon Component
  * 
  * Displays a section title with a themed icon in a circle
+ * 
+ * @param {Object} props - The component props
+ * @param {string} props.title - The title text to display
+ * @param {string} props.icon - The icon identifier
+ * @returns {JSX.Element} The rendered component
  */
 const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) => {
     return (
@@ -72,6 +109,10 @@ const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) =
  * Icon Circle Component
  * 
  * Creates a circular badge with the section icon
+ * 
+ * @param {Object} props - The component props
+ * @param {string} props.icon - The icon identifier
+ * @returns {JSX.Element} The rendered icon circle
  */
 const IconCircle = ({ icon }: { icon: string }) => {
     return (
@@ -106,11 +147,30 @@ const IconCircle = ({ icon }: { icon: string }) => {
 };
 
 /**
+ * Interface for AnimatedListItem component props
+ * 
+ * @interface AnimatedListItemProps
+ */
+interface AnimatedListItemProps {
+    /** Content text to display */
+    item: string;
+    
+    /** Index used for staggered animation */
+    index: number;
+    
+    /** Whether the animation should be visible */
+    isVisible: boolean;
+}
+
+/**
  * Animated List Item Component
  * 
  * Renders a list item with a staggered fade-in animation
+ * 
+ * @param {AnimatedListItemProps} props - The component props
+ * @returns {JSX.Element} The rendered animated list item
  */
-const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: number; isVisible: boolean }) => {
+const AnimatedListItem = ({ item, index, isVisible }: AnimatedListItemProps) => {
     return (
         <ListItem
             key={index}
@@ -149,6 +209,9 @@ const AnimatedListItem = ({ item, index, isVisible }: { item: string; index: num
  * 
  * Retrieves introduction content for a specific section
  * from translation files
+ * 
+ * @param {string} section - The section key to get information for
+ * @returns {SectionInfo} The section information
  */
 const useSectionInfo = (section: string): SectionInfo => {
     const { t } = useTranslation();
@@ -193,6 +256,12 @@ const useSectionInfo = (section: string): SectionInfo => {
  * - An animated list of feature descriptions
  * - Section icon and title
  * - Responsive design for different screen sizes
+ * 
+ * @param {SectionIntroDialogProps} props - The component props
+ * @param {boolean} props.open - Whether the dialog is visible
+ * @param {() => void} props.onClose - Function to call when the dialog is closed
+ * @param {string} props.section - The section key to show information for
+ * @returns {JSX.Element} The rendered SectionIntroDialog component
  */
 export default function SectionIntroDialog({ open, onClose, section }: SectionIntroDialogProps) {
     const { t } = useTranslation();
@@ -202,13 +271,19 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
 
     const sectionInfo = useSectionInfo(section);
 
-    // Handle content as either array or single string
+    /**
+     * Processes content to ensure it's always an array
+     * Handles cases where translation returns string or array
+     */
     const contentArray = useMemo(() =>
         Array.isArray(sectionInfo.content) ? sectionInfo.content : [sectionInfo.content as string],
         [sectionInfo.content]
     );
 
-    // Manage the visibility of the animation when dialog opens
+    /**
+     * Manages animation timing when dialog opens or closes
+     * Adds a small delay before starting animations for better UX
+     */
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
 

@@ -4,6 +4,8 @@
  * Displays detailed information about data collection practices,
  * user rights, data protection measures, and retention policies.
  * Content is internationalized through translation keys.
+ * 
+ * @module PrivacyPolicy
  */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +13,16 @@ import { useTranslation } from 'react-i18next';
 // Components
 import LegalLayout from './components/LegalLayout';
 
-// Privacy Policy page
+/**
+ * Privacy Policy page component
+ * 
+ * Presents comprehensive information about data handling practices,
+ * including what data is collected, how it's used, user rights,
+ * and data security measures implemented by the organization.
+ * Uses translation keys for multi-language support.
+ * 
+ * @returns {JSX.Element} The rendered privacy policy page
+ */
 export default function PrivacyPolicy() {
     const { t } = useTranslation();
 
@@ -19,8 +30,8 @@ export default function PrivacyPolicy() {
      * Safely converts translation objects to arrays
      * Handles both array returns and non-array returns for flexibility
      * 
-     * @param key - Translation key to retrieve
-     * @returns Array of translation strings or empty array if not found
+     * @param {string} key - Translation key to retrieve
+     * @returns {string[]} Array of translation strings or empty array if not found
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });

@@ -4,6 +4,8 @@
  * Displays the website's contact information, support details,
  * and available hours of operation for user inquiries.
  * Content is internationalized through translation keys.
+ * 
+ * @module Contact
  */
 import { Typography, Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +13,15 @@ import { useTranslation } from 'react-i18next';
 // Components
 import LegalLayout from './components/LegalLayout';
 
-// Contact page
+/**
+ * Contact page component
+ * 
+ * Presents company contact information, technical support details,
+ * and available support hours in a structured layout.
+ * Uses translation keys for multi-language support.
+ * 
+ * @returns {JSX.Element} The rendered contact information page
+ */
 export default function Contact() {
     const { t } = useTranslation();
 

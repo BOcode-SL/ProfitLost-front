@@ -3,12 +3,16 @@
  * 
  * Defines the light mode theme settings for the application using Material-UI's theming system.
  * Includes custom palette colors, typography, and component style overrides.
+ * Used as the default theme or when the user manually selects light mode in settings.
+ * 
+ * @module LightTheme
  */
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 /**
  * Type declaration extensions for Material-UI's theme
  * Adds custom palette options for chart colors and status indicators
+ * These extensions allow TypeScript to recognize our custom theme properties
  */
 declare module '@mui/material/styles' {
     interface Palette {
@@ -48,6 +52,7 @@ declare module '@mui/material/styles' {
 /**
  * Light theme configuration options
  * Defines colors, typography, and component style overrides
+ * These settings create a clean, bright UI with our brand's orange accent color
  */
 const themeOptions: ThemeOptions = {
     palette: {

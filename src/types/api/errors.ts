@@ -3,11 +3,15 @@
  * 
  * Contains type definitions for all error types returned by the API.
  * Organized by domain/entity for better error handling in the client.
+ * 
+ * @module ApiErrors
  */
 
 /**
  * Common error types shared across all entities
  * Used for general error handling throughout the application
+ * 
+ * @typedef {string} CommonErrorType
  */
 export type CommonErrorType =
     | 'SERVER_ERROR'
@@ -23,6 +27,8 @@ export type CommonErrorType =
 /**
  * Types for authentication errors
  * Used for login, registration, and password management
+ * 
+ * @typedef {string} AuthErrorType
  */
 export type AuthErrorType =
     | CommonErrorType
@@ -40,6 +46,8 @@ export type AuthErrorType =
 
 /**
  * Subset of authentication errors specific to registration
+ * 
+ * @typedef {string} RegisterErrorType
  */
 export type RegisterErrorType = Extract<
     AuthErrorType,
@@ -48,6 +56,8 @@ export type RegisterErrorType = Extract<
 
 /**
  * Subset of authentication errors specific to login
+ * 
+ * @typedef {string} LoginErrorType
  */
 export type LoginErrorType = Extract<
     AuthErrorType,
@@ -57,6 +67,8 @@ export type LoginErrorType = Extract<
 /**
  * Types for user errors
  * Used for user profile management and preferences
+ * 
+ * @typedef {string} UserErrorType
  */
 export type UserErrorType =
     | CommonErrorType
@@ -71,6 +83,8 @@ export type UserErrorType =
 /**
  * Types for account errors
  * Used for financial account management
+ * 
+ * @typedef {string} AccountErrorType
  */
 export type AccountErrorType =
     | CommonErrorType
@@ -83,6 +97,8 @@ export type AccountErrorType =
 /**
  * Types for transaction errors
  * Used for financial transaction management
+ * 
+ * @typedef {string} TransactionErrorType
  */
 export type TransactionErrorType =
     | CommonErrorType
@@ -95,6 +111,8 @@ export type TransactionErrorType =
 /**
  * Types for category errors
  * Used for transaction category management
+ * 
+ * @typedef {string} CategoryErrorType
  */
 export type CategoryErrorType =
     | CommonErrorType
@@ -105,6 +123,8 @@ export type CategoryErrorType =
 /**
  * Types for note errors
  * Used for user notes management
+ * 
+ * @typedef {string} NoteErrorType
  */
 export type NoteErrorType =
     | CommonErrorType

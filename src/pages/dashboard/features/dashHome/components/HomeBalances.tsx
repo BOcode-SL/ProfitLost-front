@@ -1,15 +1,18 @@
 /**
- * HomeBalances Component
+ * HomeBalances Module
  * 
- * Displays financial metric cards showing current month's data compared to previous month.
- * Features include:
- * - Dynamic trend indicators (up/down/flat) with appropriate colors
- * - Percentage change calculation between current and previous month
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
+ * Provides metric cards displaying financial performance with month-over-month comparison.
+ * 
+ * Key Features:
+ * - Dynamic trend indicators (up/down/flat) with contextual colors
+ * - Intelligent percentage change calculation with edge case handling
+ * - Currency formatting based on user preferences and locale
+ * - Privacy mode with blurred monetary values
  * - Three distinct balance types: income, expenses, and net savings
- * - Responsive design for different screen sizes
- * - Loading skeleton state during data fetching
+ * - Responsive layout adapting to different screen sizes
+ * - Loading skeleton animation during data retrieval
+ * 
+ * @module HomeBalances
  */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
@@ -30,21 +33,33 @@ import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../
 import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 /**
- * Interface for the props of the HomeBalances component
+ * Props interface for the HomeBalances component
+ * 
+ * @interface HomeBalancesProps
  */
 interface HomeBalancesProps {
-    type: 'income' | 'expenses' | 'savings'; // Type of balance (income, expenses, or savings)
-    transactions: Transaction[]; // Array of transactions to analyze
-    isLoading: boolean; // Loading state indicator
+    /** Type of financial metric to display (income, expenses, or savings) */
+    type: 'income' | 'expenses' | 'savings';
+    
+    /** Array of transactions to analyze for comparison */
+    transactions: Transaction[];
+    
+    /** Indicates if data is currently loading */
+    isLoading: boolean;
 }
 
 /**
- * BalanceCard component - Displays financial data with trend indicators
+ * BalanceCard Component
  * 
- * @param type - The type of financial data (Earnings, Spendings, Savings)
- * @param amount - The current amount value
- * @param percentage - The percentage change compared to previous period
- * @param previousAmount - The amount from the previous period
+ * Renders an individual metric card with appropriate styling, trend indicators,
+ * and percentage change visualization.
+ * 
+ * @param {Object} props - Component properties
+ * @param {string} props.type - The type of financial data to display (Earnings, Spendings, Savings)
+ * @param {number} props.amount - The current period amount value
+ * @param {number} props.percentage - The percentage change compared to previous period
+ * @param {number} props.previousAmount - The amount from the previous period
+ * @returns {JSX.Element} Rendered balance card
  */
 const BalanceCard = ({ type, amount, percentage, previousAmount }:
     { type: string; amount: number; percentage: number; previousAmount: number }) => {
@@ -53,7 +68,10 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
     const { t } = useTranslation();
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for currency visibility toggle events across the application
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -66,14 +84,25 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
         };
     }, []);
 
-    // Determine if the trend is positive based on the balance type
+    /**
+     * Determine if the trend direction is positive based on balance type
+     * Different logic applies to different metric types:
+     * - Savings: positive when current exceeds previous
+     * - Expenses: positive when spending decreases
+     * - Income: positive when earnings increase
+     */
     const isPositiveTrend = type === 'Savings'
         ? (amount > previousAmount)  // For savings, positive if current amount exceeds previous
         : type === 'Spendings'
             ? percentage <= 0  // For spending, positive if spending decreased
             : percentage >= 0;  // For earnings, positive if earnings increased
 
-    // Get the appropriate trend icon based on the type and percentage
+    /**
+     * Get the appropriate trend icon based on percentage change and metric type
+     * Returns the correct icon component with styling
+     * 
+     * @returns {JSX.Element} Trend direction icon component
+     */
     const getTrendIcon = () => {
         if (percentage === 0) {
             return <TrendingFlatIcon sx={{ fontSize: '1.2rem' }} />;
@@ -97,11 +126,11 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
             borderRadius: 3,
             minHeight: { xs: '120px', sm: 'auto' },
         }}>
-            {/* Balance type label */}
+            {/* Balance type label with localized text */}
             <Typography variant="subtitle1" color="primary.light">
                 {t(`dashboard.dashhome.balance.${type.toLowerCase()}`)}
             </Typography>
-            {/* Balance amount with privacy blur support */}
+            {/* Current period amount with privacy protection */}
             <Typography
                 sx={{
                     fontWeight: '450',
@@ -113,7 +142,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
             >
                 {formatCurrency(amount, user)}
             </Typography>
-            {/* Percentage change indicator */}
+            {/* Trend indicator with percentage change */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box sx={{
                     display: 'flex',
@@ -139,7 +168,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
                     }}>
                         {getTrendIcon()}
                     </Box>
-                    {/* Percentage value */}
+                    {/* Percentage change value */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -148,7 +177,7 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
                         {Math.abs(percentage).toFixed(1)}%
                     </Box>
                 </Box>
-                {/* Comparison text */}
+                {/* Comparison period text */}
                 <Typography variant="body2" color="text.secondary">
                     {t('dashboard.dashhome.balance.thanLastMonth')}
                 </Typography>
@@ -158,14 +187,20 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
 };
 
 /**
- * HomeBalances component - Displays financial balances with trend analysis
+ * HomeBalances Component
  * 
- * Calculates and displays current month's financial data compared to previous month,
- * showing trends and percentage changes.
+ * Calculates financial metrics by comparing current and previous month data,
+ * then renders the appropriate balance card with trend analysis.
+ * 
+ * @param {HomeBalancesProps} props - Component properties
+ * @returns {JSX.Element} Rendered balance metric component
  */
 export default function HomeBalances({ type, transactions, isLoading }: HomeBalancesProps) {
 
-    // Calculate the balance data for current and previous month
+    /**
+     * Calculate the balance metrics for current and previous periods
+     * Processes transaction data to extract key financial metrics and trends
+     */
     const balanceData = useMemo(() => {
         if (isLoading || transactions.length === 0) return { amount: 0, percentage: 0, previousAmount: 0 };
 
@@ -194,7 +229,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         let currentAmount = 0;
         let previousAmount = 0;
 
-        // Calculate amounts based on balance type
+        // Calculate amounts based on balance type with distinct logic for each
         if (type === 'income') {
             // For income, sum all positive transactions
             currentAmount = currentMonthTransactions
@@ -230,7 +265,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
             previousAmount = previousIncome - previousExpenses;
         }
 
-        // Calculate percentage change, handling division by zero
+        // Calculate percentage change with edge case handling for division by zero
         const percentage = previousAmount === 0
             ? currentAmount === 0 ? 0 : 100
             : ((currentAmount - previousAmount) / previousAmount) * 100;
@@ -238,7 +273,10 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         return { amount: currentAmount, percentage, previousAmount };
     }, [transactions, isLoading, type]);
 
-    // Display skeleton loader while data is loading
+    /**
+     * Render loading skeleton while data is being fetched
+     * Provides visual feedback during data loading
+     */
     if (isLoading) {
         return (
             <Paper elevation={3} sx={{
@@ -292,7 +330,7 @@ export default function HomeBalances({ type, transactions, isLoading }: HomeBala
         );
     }
 
-    // Render the balance card with calculated data
+    // Render the appropriate balance card with calculated metrics
     return (
         <BalanceCard
             type={type === 'income' ? 'Earnings' : type === 'expenses' ? 'Spendings' : 'Savings'}

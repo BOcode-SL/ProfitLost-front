@@ -7,6 +7,8 @@
  * 3. Password Reset - Multi-step flow for password recovery
  * 
  * Includes form validation, error handling, and analytics tracking.
+ * 
+ * @module AuthPage
  */
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +48,15 @@ declare global {
     }
 }
 
+/**
+ * Authentication page component
+ * 
+ * Main container for user authentication flows including login,
+ * registration, and password reset functionality.
+ * Manages form state, validation, API interactions, and error handling.
+ * 
+ * @returns {JSX.Element} The rendered authentication page
+ */
 export default function AuthPage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -83,8 +94,8 @@ export default function AuthPage() {
      * Validates password strength using regex pattern
      * Requires at least one lowercase, uppercase, digit, and special character
      * 
-     * @param password - Password string to validate
-     * @returns Boolean indicating if password meets requirements
+     * @param {string} password - Password string to validate
+     * @returns {boolean} True if password meets requirements
      */
     const validatePassword = (password: string): boolean => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
@@ -93,8 +104,9 @@ export default function AuthPage() {
 
     /**
      * Handles form input changes for login and registration
+     * Updates the appropriate state based on current mode
      * 
-     * @param e - Input change event
+     * @param {ChangeEvent<HTMLInputElement>} e - Input change event
      */
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -113,8 +125,9 @@ export default function AuthPage() {
 
     /**
      * Tracks successful login events in Google Tag Manager
+     * Adds the login method used for analytics tracking
      * 
-     * @param method - Authentication method used ('email' or 'google')
+     * @param {'email' | 'google'} method - Authentication method used
      */
     const pushLoginSuccessEvent = (method: 'email' | 'google') => {
         window.dataLayer = window.dataLayer || [];
@@ -126,8 +139,9 @@ export default function AuthPage() {
 
     /**
      * Tracks successful registration events in Google Tag Manager
+     * Adds the registration method used for analytics tracking
      * 
-     * @param method - Registration method used ('email' or 'google')
+     * @param {'email' | 'google'} method - Registration method used
      */
     const pushRegisterSuccessEvent = (method: 'email' | 'google') => {
         window.dataLayer = window.dataLayer || [];
@@ -141,7 +155,8 @@ export default function AuthPage() {
      * Handles form submission for login and registration
      * Performs validation, API calls, and error handling
      * 
-     * @param e - Form submission event
+     * @param {FormEvent} e - Form submission event
+     * @returns {Promise<void>}
      */
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -230,8 +245,10 @@ export default function AuthPage() {
 
     /**
      * Initiates password reset process by sending recovery email
+     * Advances to token verification step on success
      * 
-     * @param e - Form submission event
+     * @param {FormEvent} e - Form submission event
+     * @returns {Promise<void>}
      */
     const handleForgotPassword = async (e: FormEvent) => {
         e.preventDefault();
@@ -257,8 +274,10 @@ export default function AuthPage() {
 
     /**
      * Verifies the reset token provided by the user
+     * Advances to new password step on successful verification
      * 
-     * @param e - Form submission event
+     * @param {FormEvent} e - Form submission event
+     * @returns {Promise<void>}
      */
     const handleVerifyToken = async (e: FormEvent) => {
         e.preventDefault();
@@ -276,8 +295,10 @@ export default function AuthPage() {
 
     /**
      * Completes the password reset process with new password
+     * Validates password match and strength before submission
      * 
-     * @param e - Form submission event
+     * @param {FormEvent} e - Form submission event
+     * @returns {Promise<void>}
      */
     const handleResetPassword = async (e: FormEvent) => {
         e.preventDefault();
@@ -313,8 +334,9 @@ export default function AuthPage() {
 
     /**
      * Validates if the current form has all required fields completed
+     * Different validation based on login or registration mode
      * 
-     * @returns Boolean indicating if form is ready for submission
+     * @returns {boolean} True if form is valid and complete
      */
     const isFormValid = () => {
         if (isLogin) {
@@ -334,7 +356,8 @@ export default function AuthPage() {
      * Handles successful Google OAuth login
      * Processes the token and navigates to dashboard on success
      * 
-     * @param tokenResponse - OAuth token response from Google
+     * @param {TokenResponse} tokenResponse - OAuth token response from Google
+     * @returns {Promise<void>}
      */
     const handleGoogleSuccess = async (tokenResponse: TokenResponse) => {
         setLoading(true);

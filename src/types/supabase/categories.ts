@@ -2,6 +2,8 @@
  * Category Model
  * 
  * Contains type definitions for transaction categories.
+ * 
+ * @module SupabaseCategories
  */
 
 import { UUID, TrackingFields } from './common';
@@ -10,6 +12,8 @@ import { UUID, TrackingFields } from './common';
  * Represents a transaction category in the frontend
  * Used for organizing and filtering financial transactions
  * Values are already decrypted for frontend use
+ * 
+ * @interface Category
  */
 export interface Category extends TrackingFields {
     id: UUID;                   // Unique identifier
@@ -21,6 +25,8 @@ export interface Category extends TrackingFields {
 /**
  * Type for a Supabase Database Category
  * Represents how the category record is stored in the database with encryption
+ * 
+ * @typedef {Object} DbCategory
  */
 export type DbCategory = Omit<Category, 'name'> & {
     name: string;               // Category name (encrypted in database)
@@ -29,11 +35,15 @@ export type DbCategory = Omit<Category, 'name'> & {
 /**
  * Type for creating a new category
  * Omits auto-generated fields
+ * 
+ * @typedef {Object} CategoryInsert
  */
 export type CategoryInsert = Omit<Category, 'id' | 'created_at' | 'updated_at'>;
 
 /**
  * Type for updating an existing category
  * Makes all fields optional except id
+ * 
+ * @typedef {Object} CategoryUpdate
  */
 export type CategoryUpdate = Partial<Omit<Category, 'id'>> & { id: UUID }; 

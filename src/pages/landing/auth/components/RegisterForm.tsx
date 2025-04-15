@@ -9,6 +9,8 @@
  * 
  * Includes field validation, input formatting, and accessibility features.
  * Username input is restricted to lowercase alphanumeric characters only.
+ * 
+ * @module RegisterForm
  */
 import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
@@ -19,6 +21,11 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 // Types for registration form data and handlers
 import type { RegisterCredentials } from '../../../../types/api/responses';
 
+/**
+ * Props interface for the RegisterForm component
+ * 
+ * @interface RegisterFormProps
+ */
 interface RegisterFormProps {
     registerData: RegisterCredentials; // User registration data
     loading: boolean; // Loading state during submission
@@ -29,7 +36,16 @@ interface RegisterFormProps {
     handleSubmit: (e: React.FormEvent) => void; // Form submission handler
 }
 
-// RegisterForm component definition
+/**
+ * Registration form component
+ * 
+ * Provides a form for user account creation with validation.
+ * Includes fields for personal information, username, email, and password.
+ * Applies restrictions and formatting to ensure valid input.
+ * 
+ * @param {RegisterFormProps} props - Component properties
+ * @returns {JSX.Element} The rendered registration form
+ */
 export default function RegisterForm({
     registerData,
     loading,

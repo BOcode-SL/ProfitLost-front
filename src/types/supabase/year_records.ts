@@ -2,6 +2,8 @@
  * YearRecord Model
  * 
  * Contains type definitions for yearly financial records.
+ * 
+ * @module SupabaseYearRecords
  */
 
 import { UUID, TrackingFields } from './common';
@@ -11,6 +13,8 @@ import { UUID, TrackingFields } from './common';
  * Each month stores a numerical amount, which is decrypted from the database
  * 
  * Note: Database enforces a unique constraint on (account_id, year) pair
+ * 
+ * @interface YearRecord
  */
 export interface YearRecord extends TrackingFields {
     id: UUID;                   // Unique identifier
@@ -33,6 +37,8 @@ export interface YearRecord extends TrackingFields {
 /**
  * Type for a Supabase Database YearRecord
  * Represents how the year record is stored in the database (encrypted)
+ * 
+ * @typedef DbYearRecord
  */
 export type DbYearRecord = Omit<YearRecord, 'jan' | 'feb' | 'mar' | 'apr' | 'may' | 'jun' | 
     'jul' | 'aug' | 'sep' | 'oct' | 'nov' | 'dec'> & {
@@ -53,18 +59,24 @@ export type DbYearRecord = Omit<YearRecord, 'jan' | 'feb' | 'mar' | 'apr' | 'may
 /**
  * Type for creating a new year record
  * Omits auto-generated fields
+ * 
+ * @typedef YearRecordInsert
  */
 export type YearRecordInsert = Omit<YearRecord, 'id' | 'created_at' | 'updated_at'>;
 
 /**
  * Type for updating an existing year record
  * Makes all fields optional except id
+ * 
+ * @typedef YearRecordUpdate
  */
 export type YearRecordUpdate = Partial<Omit<YearRecord, 'id'>> & { id: UUID };
 
 /**
  * Interface for decrypted year record with numeric values.
  * Used for calculations and display after decryption.
+ * 
+ * @interface DecryptedYearRecord
  */
 export interface DecryptedYearRecord {
     id: UUID;

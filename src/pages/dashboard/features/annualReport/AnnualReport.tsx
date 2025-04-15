@@ -1,14 +1,18 @@
 /**
- * AnnualReport Component
+ * AnnualReport Module
  * 
- * Main component for the Annual Report feature, providing year-based financial insights.
- * Features include:
+ * Provides a comprehensive financial reporting interface for analyzing transaction data
+ * on a yearly basis with summary visualizations and category breakdowns.
+ * 
+ * Key Features:
  * - Year selection with data-driven available years
  * - View mode toggle (Year-to-date vs Full Year)
  * - Monthly transaction breakdown via charts
  * - Income, expense, and balance summaries
  * - Category-based transaction analysis
  * - User preference persistence across sessions
+ * 
+ * @module AnnualReport
  */
 import { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, Select, MenuItem, InputLabel, ToggleButtonGroup, ToggleButton } from '@mui/material';
@@ -35,7 +39,14 @@ import AnnualChart from './components/AnnualChart';
 import AnnualCategories from './components/AnnualCategories';
 import AnnualBalances from './components/AnnualBalances';
 
-// AnnualReport component
+/**
+ * AnnualReport Component
+ * 
+ * Main container component for financial reporting that aggregates transactions
+ * by year and provides visual summaries and detailed breakdowns.
+ * 
+ * @returns {JSX.Element} Rendered annual report interface
+ */
 export default function AnnualReport() {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
@@ -48,14 +59,19 @@ export default function AnnualReport() {
     const [viewMode, setViewMode] = useState<'yearToday' | 'fullYear'>(user?.preferences.viewMode || 'fullYear');
     const [isUpdatingViewMode, setIsUpdatingViewMode] = useState(false);
 
-    // Initialize view mode from user preferences
+    /**
+     * Initialize view mode from user preferences when user data is loaded
+     */
     useEffect(() => {
         if (user?.preferences.viewMode) {
             setViewMode(user.preferences.viewMode);
         }
     }, [user?.preferences.viewMode]);
 
-    // Fetch all transaction years to populate the year selector
+    /**
+     * Fetch all years that have transaction data to populate the year selector
+     * Falls back to current year if no data is available or an error occurs
+     */
     useEffect(() => {
         const fetchTransactionYears = async () => {
             try {
@@ -94,7 +110,10 @@ export default function AnnualReport() {
         fetchTransactionYears();
     }, [t, currentYear]);
 
-    // Fetch transactions for the selected year
+    /**
+     * Fetch all transactions for the selected year when year changes
+     * Updates the transactions state and handles loading/error states
+     */
     useEffect(() => {
         const fetchTransactionsByYear = async () => {
             setIsLoading(true);
@@ -133,7 +152,10 @@ export default function AnnualReport() {
         fetchTransactionsByYear();
     }, [year, t]);
 
-    // Listen for transaction update events and refresh data
+    /**
+     * Listen for transaction update events and refresh data
+     * Uses a custom event to detect when transactions have been modified elsewhere
+     */
     useEffect(() => {
         const handleTransactionUpdated = async () => {
             setIsLoading(true);
@@ -156,7 +178,11 @@ export default function AnnualReport() {
         };
     }, [year]);
 
-    // Apply the selected view mode filter to transactions
+    /**
+     * Filter transactions based on the selected view mode
+     * - 'yearToday': Shows only transactions up to the current date
+     * - 'fullYear': Shows all transactions for the selected year
+     */
     const filteredTransactions = transactions.filter(transaction => {
         if (viewMode === 'yearToday') {
             // For year-to-date mode, only include transactions up to today
@@ -168,7 +194,11 @@ export default function AnnualReport() {
         return true;
     });
 
-    // Update user preference when view mode is changed
+    /**
+     * Updates the user's view mode preference and persists it to the server
+     * 
+     * @param {('yearToday'|'fullYear')} newMode - The new view mode to set
+     */
     const handleViewModeChange = async (newMode: 'yearToday' | 'fullYear') => {
         if (newMode === viewMode) return;
 
@@ -186,14 +216,13 @@ export default function AnnualReport() {
         }
     };
 
-    // Main container for the annual report
     return (
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
         }}>
-            {/* Year and view mode selection controls */}
+            {/* Control panel for year selection and view mode toggle */}
             <Paper elevation={3} sx={{ p: 1, borderRadius: 3, width: '100%' }}>
                 <Box sx={{
                     display: 'flex',
@@ -252,13 +281,13 @@ export default function AnnualReport() {
                 />
             </Paper>
 
-            {/* Income, expense and balance summary */}
+            {/* Income, expense and balance summary cards */}
             <AnnualBalances 
                 transactions={filteredTransactions} 
                 isLoading={isLoading && !isUpdatingViewMode} 
             />
 
-            {/* Categories breakdown and management */}
+            {/* Category breakdown and management section */}
             <Paper elevation={3} sx={{ p: 1, borderRadius: 3 }}>
                 <AnnualCategories
                     transactions={filteredTransactions}

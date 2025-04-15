@@ -3,6 +3,8 @@
  * 
  * Provides functionality for managing user accounts including creating,
  * retrieving, updating, and deleting accounts.
+ * 
+ * @module AccountService
  */
 
 // Types
@@ -19,8 +21,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during account operations
- * @param error - The error that occurred during an API request
- * @returns A standardized AccountApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {AccountApiResponse} A standardized AccountApiResponse with error details
  */
 const handleAccountError = (error: unknown): AccountApiResponse => {
     // Check if the error has a statusCode
@@ -42,7 +45,8 @@ const handleAccountError = (error: unknown): AccountApiResponse => {
 export const accountService = {
     /**
      * Retrieves all accounts belonging to the current user
-     * @returns Promise with the account data or error response
+     * 
+     * @returns {Promise<AccountApiResponse>} Promise with the account data or error response
      */
     async getAllAccounts(): Promise<AccountApiResponse> {
         try {
@@ -69,7 +73,8 @@ export const accountService = {
 
     /**
      * Retrieves all available years for the user's accounts
-     * @returns Promise with the years data or error response
+     * 
+     * @returns {Promise<AccountApiResponse>} Promise with the years data or error response
      */
     async getAvailableYears(): Promise<AccountApiResponse> {
         try {
@@ -96,9 +101,10 @@ export const accountService = {
 
     /**
      * Retrieves detailed information for a specific account
-     * @param id - The ID of the account to retrieve
-     * @param year - Optional year to retrieve data for (defaults to current year)
-     * @returns Promise with the account detail data or error response
+     * 
+     * @param {UUID} id - The ID of the account to retrieve
+     * @param {number} [year] - Optional year to retrieve data for (defaults to current year)
+     * @returns {Promise<AccountApiResponse>} Promise with the account detail data or error response
      */
     async getAccountDetailById(id: UUID, year?: number): Promise<AccountApiResponse> {
         try {
@@ -129,8 +135,9 @@ export const accountService = {
 
     /**
      * Retrieves accounts for a specific year
-     * @param year - The year to filter accounts by
-     * @returns Promise with the filtered account data or error response
+     * 
+     * @param {number} year - The year to filter accounts by
+     * @returns {Promise<AccountApiResponse>} Promise with the filtered account data or error response
      */
     async getAccountsByYear(year: number): Promise<AccountApiResponse> {
         try {
@@ -157,8 +164,9 @@ export const accountService = {
 
     /**
      * Creates a new account with the provided data
-     * @param accountData - The data for the account to be created
-     * @returns Promise with the created account data or error response
+     * 
+     * @param {CreateAccountRequest} accountData - The data for the account to be created
+     * @returns {Promise<AccountApiResponse>} Promise with the created account data or error response
      */
     async createAccount(accountData: CreateAccountRequest): Promise<AccountApiResponse> {
         try {
@@ -186,9 +194,10 @@ export const accountService = {
 
     /**
      * Updates an existing account with the provided data
-     * @param id - The ID of the account to be updated
-     * @param updateData - The new data to update the account with
-     * @returns Promise with the updated account data or error response
+     * 
+     * @param {UUID} id - The ID of the account to be updated
+     * @param {UpdateAccountRequest} updateData - The new data to update the account with
+     * @returns {Promise<AccountApiResponse>} Promise with the updated account data or error response
      */
     async updateAccount(id: UUID, updateData: UpdateAccountRequest): Promise<AccountApiResponse> {
         try {
@@ -216,8 +225,9 @@ export const accountService = {
 
     /**
      * Deletes an account with the specified ID
-     * @param id - The ID of the account to be deleted
-     * @returns Promise with the response data or error response
+     * 
+     * @param {UUID} id - The ID of the account to be deleted
+     * @returns {Promise<AccountApiResponse>} Promise with the response data or error response
      */
     async deleteAccount(id: UUID): Promise<AccountApiResponse> {
         try {
@@ -244,8 +254,9 @@ export const accountService = {
     
     /**
      * Updates the display order of accounts
-     * @param accountsOrder - Array of account IDs in the desired display order
-     * @returns Promise with the response data or error response
+     * 
+     * @param {UUID[]} accountsOrder - Array of account IDs in the desired display order
+     * @returns {Promise<AccountApiResponse>} Promise with the response data or error response
      */
     async updateAccountsOrder(accountsOrder: UUID[]): Promise<AccountApiResponse> {
         try {

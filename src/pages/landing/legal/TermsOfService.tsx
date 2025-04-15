@@ -4,6 +4,8 @@
  * Displays the website's terms and conditions that govern usage of the service,
  * including user rights, restrictions, data handling, and legal jurisdiction.
  * Content is internationalized through translation keys.
+ * 
+ * @module TermsOfService
  */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +13,16 @@ import { useTranslation } from 'react-i18next';
 // Components
 import LegalLayout from './components/LegalLayout';
 
-// Terms of Service page
+/**
+ * Terms of Service page component
+ * 
+ * Presents comprehensive terms and conditions governing website usage,
+ * including user account requirements, rights, legal jurisdiction,
+ * and dispute resolution processes for different regions.
+ * Uses translation keys for multi-language support.
+ * 
+ * @returns {JSX.Element} The rendered terms of service page
+ */
 export default function TermsOfService() {
     const { t } = useTranslation();
 
@@ -19,8 +30,8 @@ export default function TermsOfService() {
      * Safely converts translation objects to arrays
      * Handles both array returns and non-array returns for flexibility
      * 
-     * @param key - Translation key to retrieve
-     * @returns Array of translation strings or empty array if not found
+     * @param {string} key - Translation key to retrieve
+     * @returns {string[]} Array of translation strings or empty array if not found
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });

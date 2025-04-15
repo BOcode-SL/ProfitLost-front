@@ -3,6 +3,8 @@
  * 
  * Provides functionality for detecting device types and operating systems.
  * Currently focuses on iOS detection for platform-specific behavior.
+ * 
+ * @module DeviceDetection
  */
 
 /**
@@ -17,8 +19,9 @@
  * - Authentication token storage (localStorage vs cookies)
  * - Touch-based interactions
  * - WebKit-specific behaviors
+ * - PWA (Progressive Web App) capabilities
  * 
- * @returns Boolean indicating whether the device is running iOS
+ * @returns {boolean} True if the device is running iOS, false otherwise
  */
 export const isIOS = (): boolean => {
     // Get the userAgent from the browser and convert it to lowercase

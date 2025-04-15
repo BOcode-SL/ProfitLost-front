@@ -1,11 +1,18 @@
 /**
  * Main Application Entry Point
  * 
- * Sets up the React application with all required providers:
- * - Google OAuth for authentication
- * - Global theme provider for consistent styling
- * - Router for navigation
- * - Toast notifications for user feedback
+ * Sets up the React application with all required providers arranged in a specific
+ * hierarchy to ensure proper context inheritance throughout the component tree:
+ * 
+ * - GoogleOAuthProvider: Enables Google authentication services
+ * - GlobalThemeProvider: Provides theme context for consistent UI styling
+ * - BrowserRouter: Manages navigation and URL routing
+ * - Toaster: Displays toast notifications for user feedback
+ * 
+ * This arrangement ensures that all components have access to their required contexts
+ * regardless of where they are in the component hierarchy.
+ * 
+ * @module main
  */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

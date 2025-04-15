@@ -3,6 +3,14 @@
  * 
  * Sets up multilingual support for the application using i18next.
  * Handles language detection, translation loading, and language normalization.
+ * 
+ * This module configures:
+ * - Translation resource loading (English and Spanish)
+ * - Automatic language detection based on browser settings
+ * - Language persistence using localStorage
+ * - Normalization of language codes for consistency (e.g., 'es-ES' → 'es')
+ * 
+ * @module i18n
  */
 
 // Core i18n library for internationalization functionality
@@ -21,7 +29,7 @@ import es from './i18n/es.json';
  * Converts regional variants (e.g., es-ES, en-US) to base language codes (es, en)
  * 
  * @param {string} lng - Language code to normalize
- * @returns {string} Normalized language code
+ * @returns {string} Normalized language code ('en' or 'es')
  */
 const normalizeLanguage = (lng) => {
     // Convert es-ES, es-AR, etc. to simply 'es'
@@ -33,9 +41,13 @@ const normalizeLanguage = (lng) => {
 
 // Initialize i18n with configuration options
 i18n
+    // Add language detection plugin
     .use(LanguageDetector)
+    // Add React integration plugin
     .use(initReactI18next)
+    // Configure i18n instance
     .init({
+        // Define available translation resources
         resources: {
             en: {
                 translation: en
@@ -44,16 +56,16 @@ i18n
                 translation: es
             }
         },
-        fallbackLng: 'en',
-        debug: false,
+        fallbackLng: 'en',           // Default language if translation is missing
+        debug: false,                 // Disable debug mode in production
         detection: {
-            order: ['localStorage', 'navigator'],
-            lookupLocalStorage: 'i18nextLng',
-            caches: ['localStorage']
+            order: ['localStorage', 'navigator'],  // Check localStorage first, then browser settings
+            lookupLocalStorage: 'i18nextLng',      // Key to use in localStorage
+            caches: ['localStorage']               // Cache the language selection
         },
-        load: 'languageOnly', // Load only the base language code (e.g., 'es' instead of 'es-ES')
+        load: 'languageOnly',         // Load only the base language code (e.g., 'es' instead of 'es-ES')
         interpolation: {
-            escapeValue: false // React already escapes values, so this is safe
+            escapeValue: false        // React already escapes values, so this is safe
         }
     });
 

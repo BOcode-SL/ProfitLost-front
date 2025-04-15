@@ -1,14 +1,20 @@
 /**
- * Transactions Component
+ * Transactions Module
  * 
- * Main dashboard view for managing and visualizing transaction data.
- * Features include:
- * - Year and month based filtering of transactions
- * - Visual representations of income and expenses through charts
- * - Financial summary statistics
- * - Detailed transaction listing with sorting and filtering
- * - Data fetching with loading states
- * - Error handling with user feedback
+ * Comprehensive financial transaction management dashboard with data
+ * visualization, filtering capabilities, and detailed transaction listing.
+ * 
+ * Key Features:
+ * - Year and month filtering for targeted financial analysis
+ * - Multi-dimensional data visualization with charts and summaries
+ * - Real-time financial metrics calculation and display
+ * - Category-based income and expense breakdowns
+ * - Data fetching with loading states and error handling
+ * - User feedback for error conditions with localized messages
+ * - Responsive layout adapting to different viewport sizes
+ * - Event-based transaction updates for real-time data synchronization
+ * 
+ * @module Transactions
  */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
@@ -36,28 +42,58 @@ import TransactionBarChart from './components/TransactionBarChart';
 import TransactionBalances from './components/TransactionBalances';
 import TransactionTable from './components/TransactionTable';
 
-// Array of month abbreviations for localization and display
+/**
+ * Standard month abbreviations in English
+ * Used for localized month selection and display
+ */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// Transactions component
+/**
+ * Transactions Component
+ * 
+ * Main container for the transactions dashboard that manages data fetching,
+ * filtering, and presentation of financial information.
+ * 
+ * @returns {JSX.Element} Rendered transactions dashboard
+ */
 export default function Transactions() {
     const { t } = useTranslation();
     const theme = useTheme();
     const { user } = useUser();
 
-    // Initialize state with current date information
+    /**
+     * Component State
+     */
+    // Initialize with current date information for default filters
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear().toString();
+    
+    /** Selected year for filtering transactions */
     const [year, setYear] = useState<string>(currentYear);
+    
+    /** Selected month for filtering transactions (1-12, zero-padded) */
     const [month, setMonth] = useState<string>(
         (currentDate.getMonth() + 1).toString().padStart(2, '0')
     );
+    
+    /** Transaction data for the selected period */
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    
+    /** Available categories for transaction categorization */
     const [categories, setCategories] = useState<Category[]>([]);
+    
+    /** Years that contain transaction data */
     const [yearsWithData, setYearsWithData] = useState<string[]>([]);
+    
+    /** Loading state during data fetching */
     const [loading, setLoading] = useState(true);
 
-    // Handle API errors with appropriate user feedback
+    /**
+     * Handles API errors with appropriate user feedback
+     * Maps error types to localized error messages
+     * 
+     * @param {TransactionApiErrorResponse} error - Error response from API
+     */
     const handleError = useCallback((error: TransactionApiErrorResponse) => {
         switch (error.error) {
             case 'UNAUTHORIZED':
@@ -77,7 +113,10 @@ export default function Transactions() {
         }
     }, [t]);
 
-    // Fetch transaction and category data from API
+    /**
+     * Fetches transaction and category data from API
+     * Uses parallel promises for optimal loading performance
+     */
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
@@ -93,12 +132,12 @@ export default function Transactions() {
                 throw new Error('Error fetching data');
             }
 
-            // Use data from standardized responses
+            // Process and store response data
             setYearsWithData(yearsResponse.data as string[]);
             setTransactions(transactionsResponse.data as Transaction[]);
             setCategories(categoriesResponse.data as Category[]);
 
-            // Ensure yearsWithData contains at least the current year
+            // Ensure at least current year is available for selection
             if ((yearsResponse.data as string[]).length === 0) {
                 setYearsWithData([currentYear]);
             }
@@ -110,12 +149,17 @@ export default function Transactions() {
         }
     }, [year, month, handleError, currentYear]);
 
-    // Fetch data when component mounts or when year/month changes
+    /**
+     * Fetch data when component mounts or when year/month selection changes
+     */
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // Listen for transaction update events and refresh data
+    /**
+     * Listen for transaction update events and refresh data
+     * Provides real-time updates when transactions change elsewhere
+     */
     useEffect(() => {
         const handleTransactionUpdated = () => {
             fetchData();
@@ -128,7 +172,10 @@ export default function Transactions() {
         };
     }, [fetchData]);
 
-    // Process transaction data for charts and summaries
+    /**
+     * Process transaction data for visualization components
+     * Calculates totals and formats data for pie charts
+     */
     const { incomeData, expensesData, totalIncome, totalExpenses } = useMemo(() => {
         const income: Record<string, number> = {};
         const expenses: Record<string, number> = {};
@@ -147,6 +194,7 @@ export default function Transactions() {
                 return;
             }
 
+            // Separate income and expenses for different visualizations
             if (amount > 0) {
                 income[category.name] = (income[category.name] || 0) + amount;
                 totalInc += amount;
@@ -157,7 +205,7 @@ export default function Transactions() {
             }
         });
 
-        // Format data for pie charts with appropriate colors
+        // Format data for pie charts with appropriate styling
         return {
             incomeData: Object.entries(income).map(([name, value]) => ({
                 id: name,
@@ -178,7 +226,7 @@ export default function Transactions() {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Year and Month selection filters */}
+            {/* Period selection filters */}
             <Box sx={{
                 display: 'flex',
                 gap: 2
@@ -196,7 +244,7 @@ export default function Transactions() {
                             label={t('dashboard.common.year')}
                             onChange={(e) => setYear(e.target.value)}
                         >
-                            {/* Display years with transaction data or current year if empty */}
+                            {/* Display years with transaction data or fallback to current year */}
                             {yearsWithData.length > 0
                                 ? yearsWithData.map(y => (
                                     <MenuItem key={y} value={y}>{y}</MenuItem>
@@ -220,7 +268,7 @@ export default function Transactions() {
                             label={t('dashboard.common.month')}
                             onChange={(e) => setMonth(e.target.value)}
                         >
-                            {/* Generate all 12 months as options */}
+                            {/* Generate month options with localized names */}
                             {Array.from({ length: 12 }, (_, i) => {
                                 const monthNum = (i + 1).toString().padStart(2, '0');
                                 return (
@@ -234,23 +282,23 @@ export default function Transactions() {
                 </Paper>
             </Box>
 
-            {/* Data visualization section with charts */}
+            {/* Financial data visualization section */}
             <Box sx={{
                 display: 'flex',
                 gap: 2,
                 flexWrap: 'wrap',
             }}>
-                {/* Income distribution pie chart */}
+                {/* Income distribution by category */}
                 <TransactionPie
                     loading={loading}
                     data={incomeData}
                 />
-                {/* Expenses distribution pie chart */}
+                {/* Expenses distribution by category */}
                 <TransactionPie
                     loading={loading}
                     data={expensesData}
                 />
-                {/* Income vs expenses bar chart comparison */}
+                {/* Monthly income vs expenses comparison */}
                 <TransactionBarChart
                     loading={loading}
                     month={month}
@@ -259,7 +307,7 @@ export default function Transactions() {
                 />
             </Box>
 
-            {/* Financial summary with totals and balance */}
+            {/* Financial summary metrics */}
             <TransactionBalances
                 totalIncome={totalIncome}
                 totalExpenses={totalExpenses}
@@ -267,7 +315,7 @@ export default function Transactions() {
                 loading={loading}
             />
 
-            {/* Detailed transaction listing with CRUD capabilities */}
+            {/* Detailed transaction listing with management capabilities */}
             <Box>
                 <TransactionTable
                     data={transactions}

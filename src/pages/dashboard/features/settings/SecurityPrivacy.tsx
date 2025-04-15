@@ -1,11 +1,19 @@
 /**
- * SecurityPrivacy Component
+ * SecurityPrivacy Module
  * 
- * Allows users to manage security and privacy settings including:
- * - Password changes with validation
- * - Account deletion functionality with confirmation
- * - Error handling with user feedback
- * - Comprehensive security measures for sensitive actions
+ * Provides comprehensive security and privacy management interface with robust
+ * validation and confirmation workflows for sensitive operations.
+ * 
+ * Key Features:
+ * - Password management with strong validation requirements
+ * - Progressive account deletion process with multiple safeguards
+ * - Comprehensive error handling with specific user feedback
+ * - Password visibility toggles for improved user experience
+ * - Secured form submissions with validation checks
+ * - Responsive design adapting to different screen sizes
+ * - Multi-step confirmation for critical account operations
+ * 
+ * @module SecurityPrivacy
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,32 +33,59 @@ import { useUser } from '../../../../contexts/UserContext';
 // Types
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
 
-// Interface for the props of the SecurityPrivacy component
+/**
+ * Props interface for the SecurityPrivacy component
+ * 
+ * @interface SecurityPrivacyProps
+ */
 interface SecurityPrivacyProps {
-    onSuccess?: () => void; // Optional callback function to be called on success
+    /** Optional callback function triggered after successful operations */
+    onSuccess?: () => void;
 }
 
-// SecurityPrivacy component
+/**
+ * SecurityPrivacy Component
+ * 
+ * Manages user security settings including password changes and account deletion
+ * with appropriate validation and confirmation workflows.
+ * 
+ * @param {SecurityPrivacyProps} props - Component properties
+ * @returns {JSX.Element} The rendered security and privacy settings interface
+ */
 export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
     const { t } = useTranslation();
     const { user, setUser } = useUser();
     const navigate = useNavigate();
 
-    // State for password visibility toggles and form data
+    /**
+     * Component State Management
+     */
+    /** Controls visibility of password fields for better user experience */
     const [showPassword, setShowPassword] = useState({
         current: false,
         new: false,
         confirm: false
     });
+    
+    /** Manages password change form input values */
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
     });
+    
+    /** Controls visibility of account deletion confirmation UI */
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    
+    /** Tracks user-entered confirmation text for account deletion */
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
-    // Handle password change with validation and API communication
+    /**
+     * Handles password change with comprehensive validation
+     * Ensures password strength and matching confirmation
+     * 
+     * @param {React.FormEvent} e - Form submission event
+     */
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -106,7 +141,10 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         }
     };
 
-    // Handle account deletion with confirmation check
+    /**
+     * Handles account deletion with username confirmation
+     * Requires exact username match to prevent accidental deletion
+     */
     const handleDeleteAccount = async () => {
         // Validate the confirmation text matches username
         if (!user || deleteConfirmation !== user.username) {
@@ -287,7 +325,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                     </Typography>
 
                     {!showDeleteConfirmation ? (
-                        // Initial Delete Account Button
+                        // Initial Delete Account Button - triggers confirmation UI
                         <Button
                             variant="outlined"
                             color="error"
@@ -312,7 +350,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                 flexDirection: 'column',
                                 gap: 2
                             }}>
-                                {/* Username confirmation input */}
+                                {/* Username confirmation input - must match exactly */}
                                 <TextField
                                     fullWidth
                                     size="small"

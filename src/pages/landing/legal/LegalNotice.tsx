@@ -4,6 +4,8 @@
  * Displays important legal information about the website ownership,
  * intellectual property rights, usage conditions, and responsibilities.
  * Content is internationalized through translation keys.
+ * 
+ * @module LegalNotice
  */
 import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +13,15 @@ import { useTranslation } from 'react-i18next';
 // Components
 import LegalLayout from './components/LegalLayout';
 
-// Legal Notice page
+/**
+ * Legal Notice page component
+ * 
+ * Presents comprehensive legal information including ownership details,
+ * intellectual property rights, usage conditions, and liability limitations.
+ * Uses translation keys for multi-language support.
+ * 
+ * @returns {JSX.Element} The rendered legal notice page
+ */
 export default function LegalNotice() {
     const { t } = useTranslation();
 
@@ -19,8 +29,8 @@ export default function LegalNotice() {
      * Safely converts translation objects to arrays
      * Handles both array returns and non-array returns for flexibility
      * 
-     * @param key - Translation key to retrieve
-     * @returns Array of translation strings or empty array if not found
+     * @param {string} key - Translation key to retrieve
+     * @returns {string[]} Array of translation strings or empty array if not found
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });

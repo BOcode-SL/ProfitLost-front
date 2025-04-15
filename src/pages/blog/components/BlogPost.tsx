@@ -3,6 +3,8 @@
  * 
  * Displays a blog post preview card with image, title, excerpt, and metadata.
  * Handles navigation to the full post when clicked and formats dates based on language.
+ * 
+ * @module BlogPost
  */
 import { Box, Paper, Typography, alpha, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -13,15 +15,20 @@ import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined
 // Types
 import { BlogPost as BlogPostType } from '../../../types/blogPost';
 
+/**
+ * Props interface for the BlogPost component
+ * 
+ * @interface BlogPostProps
+ */
 export interface BlogPostProps {
-    post: BlogPostType;
+    post: BlogPostType; // Blog post data object
 }
 
 /**
  * Formats a date string according to the user's selected language
  * 
- * @param dateString - ISO date string to format
- * @returns Formatted date string in the user's locale format
+ * @param {string} dateString - ISO date string (YYYY-MM-DD) to format
+ * @returns {string} Formatted date string in the user's locale format
  */
 const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -35,6 +42,19 @@ const formatBlogDate = (dateString: string) => {
     });
 };
 
+/**
+ * Blog post card component
+ * 
+ * Renders a preview card for a blog post with:
+ * - Featured image with category label
+ * - Title with line clamping
+ * - Excerpt with line clamping
+ * - Author and publication date metadata
+ * - Hover animation effects
+ * 
+ * @param {BlogPostProps} props - Component properties
+ * @returns {JSX.Element} The rendered blog post card
+ */
 export default function BlogPost({ post }: BlogPostProps) {
     const navigate = useNavigate();
     const { t } = useTranslation();

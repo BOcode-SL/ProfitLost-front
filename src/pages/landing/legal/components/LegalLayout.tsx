@@ -8,6 +8,8 @@
  * - Breadcrumb navigation
  * - Consistent heading styles
  * - Footer
+ * 
+ * @module LegalLayout
  */
 import { useEffect } from 'react';
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
@@ -20,13 +22,26 @@ import LanguageSelector from '../../components/LanguageSelector';
 
 /**
  * Props for the LegalLayout component
+ * 
+ * @interface LegalLayoutProps
  */
 interface LegalLayoutProps {
     title: string; // Title displayed in the header and breadcrumbs
     children: React.ReactNode; // Content to be rendered within the layout
 }
 
-// Export the LegalLayout component
+/**
+ * Layout component for legal pages
+ * 
+ * Provides consistent structure and styling for all legal documents
+ * including terms of service, privacy policy, and cookie policies.
+ * Implements responsive design with appropriate spacing for different devices.
+ * 
+ * @param {LegalLayoutProps} props - Component properties
+ * @param {string} props.title - Page title displayed in breadcrumbs and header
+ * @param {React.ReactNode} props.children - Content to render within the layout
+ * @returns {JSX.Element} The rendered legal page with consistent layout
+ */
 export default function LegalLayout({ title, children }: LegalLayoutProps) {
     const navigate = useNavigate();
 

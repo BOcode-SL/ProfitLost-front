@@ -3,15 +3,20 @@
  * 
  * Provides functionality for generating HTTP headers for API requests.
  * Handles authorization tokens specifically for iOS devices due to cookie limitations.
+ * 
+ * @module ApiHeaders
  */
 import { isIOS } from './deviceDetection';
 
 /**
- * Generates authentication headers for API requests
+ * Generates authentication headers for API requests.
  * On iOS devices, retrieves the auth token from localStorage and adds it to the headers
- * On other platforms, cookies are used for authentication (handled automatically by fetch)
+ * because iOS has limitations with cookies in certain contexts (WebView, PWA).
+ * On other platforms, cookies are used for authentication (handled automatically by fetch).
  * 
- * @returns HeadersInit object with the appropriate headers for API requests
+ * @returns {HeadersInit} Object with the appropriate headers for API requests, including:
+ *   - Content-Type: Always set to 'application/json'
+ *   - Authorization: Set to 'Bearer [token]' on iOS devices when a token exists
  */
 export const getAuthHeaders = (): HeadersInit => {
     // Initialize headers with content type

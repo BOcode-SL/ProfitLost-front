@@ -3,6 +3,8 @@
  * 
  * Provides functionality for managing categories including creating,
  * retrieving, updating, and deleting transaction categories.
+ * 
+ * @module CategoryService
  */
 
 // Types
@@ -18,8 +20,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during category operations
- * @param error - The error that occurred during an API request
- * @returns A standardized CategoryApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {CategoryApiResponse} A standardized CategoryApiResponse with error details
  */
 const handleCategoryError = (error: unknown): CategoryApiResponse => {
     // Check if the error has a statusCode
@@ -41,7 +44,8 @@ const handleCategoryError = (error: unknown): CategoryApiResponse => {
 export const categoryService = {
     /**
      * Retrieves all categories belonging to the current user
-     * @returns Promise with the category data or error response
+     * 
+     * @returns {Promise<CategoryApiResponse>} Promise with the category data or error response
      */
     async getAllCategories(): Promise<CategoryApiResponse> {
         try {
@@ -70,8 +74,9 @@ export const categoryService = {
 
     /**
      * Creates a new category with the provided data
-     * @param categoryData - The data for the category to be created
-     * @returns Promise with the created category data or error response
+     * 
+     * @param {CreateCategoryRequest} categoryData - The data for the category to be created
+     * @returns {Promise<CategoryApiResponse>} Promise with the created category data or error response
      */
     async createCategory(categoryData: CreateCategoryRequest): Promise<CategoryApiResponse> {
         try {
@@ -101,9 +106,10 @@ export const categoryService = {
 
     /**
      * Updates an existing category with the provided data
-     * @param id - The ID of the category to be updated
-     * @param categoryData - The new data to update the category with
-     * @returns Promise with the updated category data or error response
+     * 
+     * @param {string} id - The ID of the category to be updated
+     * @param {UpdateCategoryRequest} categoryData - The new data to update the category with
+     * @returns {Promise<CategoryApiResponse>} Promise with the updated category data or error response
      */
     async updateCategory(id: string, categoryData: UpdateCategoryRequest): Promise<CategoryApiResponse> {
         try {
@@ -131,8 +137,9 @@ export const categoryService = {
 
     /**
      * Deletes a category with the specified ID
-     * @param id - The ID of the category to be deleted
-     * @returns Promise with the response data or error response
+     * 
+     * @param {string} id - The ID of the category to be deleted
+     * @returns {Promise<CategoryApiResponse>} Promise with the response data or error response
      */
     async deleteCategory(id: string): Promise<CategoryApiResponse> {
         try {
@@ -159,8 +166,9 @@ export const categoryService = {
     
     /**
      * Creates default categories for a new user
-     * @param categories - Array of category objects with name and color properties
-     * @returns Promise with the created categories data or error response
+     * 
+     * @param {Array<{name: string, color: string}>} categories - Array of category objects with name and color properties
+     * @returns {Promise<CategoryApiResponse>} Promise with the created categories data or error response
      */
     async createDefaultCategories(categories: { name: string, color: string }[]): Promise<CategoryApiResponse> {
         try {

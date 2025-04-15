@@ -3,6 +3,8 @@
  * 
  * Displays a full blog post with its content, author information, and publication date.
  * Handles routing, translations, and proper content formatting.
+ * 
+ * @module BlogPostDetail
  */
 import { useEffect } from 'react';
 import { Container, Typography, Box, Divider, Paper, Breadcrumbs, Link, Chip, useTheme, useMediaQuery } from '@mui/material';
@@ -22,8 +24,8 @@ import LanguageSelector from '../../landing/components/LanguageSelector';
 /**
  * Formats a date string based on the user's language preference
  * 
- * @param dateString - ISO date string to format
- * @returns Formatted date string according to the user's locale
+ * @param {string} dateString - ISO date string (YYYY-MM-DD) to format
+ * @returns {string} Formatted date string according to the user's locale (ES or EN)
  */
 const formatBlogDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -37,6 +39,19 @@ const formatBlogDate = (dateString: string) => {
     });
 };
 
+/**
+ * Blog Post Detail page component
+ * 
+ * Displays the full content of a blog post including:
+ * - Featured image with category label
+ * - Title, author and publication date
+ * - Formatted content with proper styling
+ * - Breadcrumb navigation
+ * 
+ * Handles post not found state and multilingual content processing.
+ * 
+ * @returns {JSX.Element} Rendered blog post detail page
+ */
 export default function BlogPostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -85,7 +100,7 @@ export default function BlogPostDetail() {
                     px: { xs: 2, sm: 3, md: 4 }
                 }}
             >
-                {/* Breadcrumb navigation */}
+                {/* Breadcrumb navigation for intuitive site traversal */}
                 <Breadcrumbs 
                     sx={{ 
                         mb: { xs: 3, sm: 4 }, 
@@ -162,7 +177,7 @@ export default function BlogPostDetail() {
                     </Box>
                 )}
 
-                {/* Main content paper */}
+                {/* Main content paper with post details */}
                 <Paper 
                     elevation={0} 
                     sx={{ 
@@ -170,7 +185,7 @@ export default function BlogPostDetail() {
                         borderRadius: { xs: 2, sm: 3, md: 4 } 
                     }}
                 >
-                    {/* Post title */}
+                    {/* Post title with responsive sizing */}
                     <Typography 
                         variant="h3" 
                         component="h1" 
@@ -184,7 +199,7 @@ export default function BlogPostDetail() {
                         {t(post.title)}
                     </Typography>
 
-                    {/* Author and publication date */}
+                    {/* Author and publication date metadata */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -224,7 +239,7 @@ export default function BlogPostDetail() {
 
                     <Divider sx={{ mb: { xs: 3, sm: 4 } }} />
 
-                    {/* Post content with processed HTML */}
+                    {/* Post content with processed HTML and consistent styling */}
                     <Box
                         sx={{
                             typography: 'body1',

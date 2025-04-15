@@ -3,6 +3,8 @@
  * 
  * Contains type definitions for all API response structures.
  * Includes both request and response types for each entity.
+ * 
+ * @module ApiResponses
  */
 
 import type { ApiSuccessResponse, ApiErrorResponse, ISODateString } from './common';
@@ -28,6 +30,8 @@ import type { PreferenceContent } from '../supabase/preferences';
 /**
  * Types for authentication API responses
  * Includes extended error information for auth-specific scenarios
+ * 
+ * @interface AuthApiErrorResponse
  */
 export interface AuthApiErrorResponse extends ApiErrorResponse<AuthErrorType> {
     remainingTime?: number;      // Time until account is unlocked (in seconds)
@@ -40,6 +44,8 @@ export interface AuthApiErrorResponse extends ApiErrorResponse<AuthErrorType> {
 
 /**
  * Successful authentication response with user token and basic data
+ * 
+ * @interface AuthApiSuccessResponse
  */
 export interface AuthApiSuccessResponse extends ApiSuccessResponse {
     token: string;               // JWT token for authenticated sessions
@@ -52,6 +58,8 @@ export interface AuthApiSuccessResponse extends ApiSuccessResponse {
 
 /**
  * Combined type for authentication API responses
+ * 
+ * @interface AuthApiResponse
  */
 export interface AuthApiResponse {
     success: boolean;
@@ -69,6 +77,10 @@ export interface AuthApiResponse {
 
 /**
  * Types for user API responses
+ * 
+ * @typedef UserApiErrorResponse
+ * @typedef UserApiSuccessResponse
+ * @typedef UserApiResponse
  */
 export type UserApiErrorResponse = ApiErrorResponse<UserErrorType>;
 export type UserApiSuccessResponse = ApiSuccessResponse<User | User[]>;
@@ -76,6 +88,10 @@ export type UserApiResponse = UserApiSuccessResponse | UserApiErrorResponse;
 
 /**
  * Types for transaction API responses
+ * 
+ * @typedef TransactionApiErrorResponse
+ * @typedef TransactionApiSuccessResponse
+ * @typedef TransactionApiResponse
  */
 export type TransactionApiErrorResponse = ApiErrorResponse<TransactionErrorType>;
 export type TransactionApiSuccessResponse = ApiSuccessResponse<Transaction | Transaction[]>;
@@ -84,6 +100,8 @@ export type TransactionApiResponse = TransactionApiSuccessResponse | Transaction
 /**
  * Specialized type for transaction years response
  * Used specifically for the getTransactionYears endpoint which returns an array of year strings
+ * 
+ * @interface TransactionYearsApiResponse
  */
 export interface TransactionYearsApiResponse {
     success: boolean;
@@ -95,6 +113,10 @@ export interface TransactionYearsApiResponse {
 
 /**
  * Types for category API responses
+ * 
+ * @typedef CategoryApiErrorResponse
+ * @typedef CategoryApiSuccessResponse
+ * @typedef CategoryApiResponse
  */
 export type CategoryApiErrorResponse = ApiErrorResponse<CategoryErrorType>;
 export type CategoryApiSuccessResponse = ApiSuccessResponse<Category | Category[]>;
@@ -103,6 +125,8 @@ export type CategoryApiResponse = CategoryApiSuccessResponse | CategoryApiErrorR
 /**
  * Types for account API responses
  * Includes extended error details and metadata for account information
+ * 
+ * @interface AccountApiErrorResponse
  */
 export interface AccountApiErrorResponse extends ApiErrorResponse<AccountErrorType> {
     details?: {
@@ -113,6 +137,8 @@ export interface AccountApiErrorResponse extends ApiErrorResponse<AccountErrorTy
 
 /**
  * Successful account response with optional metadata about the account collection
+ * 
+ * @interface AccountApiSuccessResponse
  */
 export interface AccountApiSuccessResponse extends ApiSuccessResponse<Account | Account[]> {
     metadata?: {
@@ -121,11 +147,18 @@ export interface AccountApiSuccessResponse extends ApiSuccessResponse<Account | 
     };
 }
 
+/**
+ * Combined type for account API responses
+ * 
+ * @typedef AccountApiResponse
+ */
 export type AccountApiResponse = AccountApiSuccessResponse | AccountApiErrorResponse;
 
 /**
  * Types for note API responses
  * Includes extended error details
+ * 
+ * @interface NoteApiErrorResponse
  */
 export interface NoteApiErrorResponse extends ApiErrorResponse<NoteErrorType> {
     details?: {
@@ -136,6 +169,8 @@ export interface NoteApiErrorResponse extends ApiErrorResponse<NoteErrorType> {
 
 /**
  * Successful note response with optional metadata
+ * 
+ * @interface NoteApiSuccessResponse
  */
 export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]> {
     metadata?: {
@@ -143,16 +178,28 @@ export interface NoteApiSuccessResponse extends ApiSuccessResponse<Note | Note[]
     };
 }
 
+/**
+ * Combined type for note API responses
+ * 
+ * @typedef NoteApiResponse
+ */
 export type NoteApiResponse = NoteApiSuccessResponse | NoteApiErrorResponse;
 
 /**
  * Request Types for authentication
+ * 
+ * @interface LoginCredentials
  */
 export interface LoginCredentials {
     identifier: string;
     password: string;
 }
 
+/**
+ * Registration credentials request object
+ * 
+ * @interface RegisterCredentials
+ */
 export interface RegisterCredentials {
     username: string;
     email: string;
@@ -163,12 +210,19 @@ export interface RegisterCredentials {
 
 /**
  * Request Types for category
+ * 
+ * @interface CreateCategoryRequest
  */
 export interface CreateCategoryRequest {
     name: string;
     color: string;
 }
 
+/**
+ * Request to update an existing category
+ * 
+ * @interface UpdateCategoryRequest
+ */
 export interface UpdateCategoryRequest {
     name?: string;
     color?: string;
@@ -176,6 +230,8 @@ export interface UpdateCategoryRequest {
 
 /**
  * Request Types for transaction
+ * 
+ * @interface CreateTransactionRequest
  */
 export interface CreateTransactionRequest {
     transaction_date: ISODateString;
@@ -187,6 +243,11 @@ export interface CreateTransactionRequest {
     recurrence_id?: UUID | null;
 }
 
+/**
+ * Request to update an existing transaction
+ * 
+ * @interface UpdateTransactionRequest
+ */
 export interface UpdateTransactionRequest {
     transaction_date?: ISODateString;
     description?: string | null;
@@ -199,6 +260,8 @@ export interface UpdateTransactionRequest {
 
 /**
  * Request Types for account
+ * 
+ * @interface CreateAccountRequest
  */
 export interface CreateAccountRequest {
     name: string;
@@ -208,6 +271,11 @@ export interface CreateAccountRequest {
     account_order?: number;
 }
 
+/**
+ * Request to update an existing account
+ * 
+ * @interface UpdateAccountRequest
+ */
 export interface UpdateAccountRequest {
     name?: string;
     background_color?: string;
@@ -218,6 +286,8 @@ export interface UpdateAccountRequest {
 
 /**
  * Request Types for year record
+ * 
+ * @interface CreateYearRecordRequest
  */
 export interface CreateYearRecordRequest {
     account_id: UUID;
@@ -236,6 +306,11 @@ export interface CreateYearRecordRequest {
     dec?: string;
 }
 
+/**
+ * Request to update an existing year record
+ * 
+ * @interface UpdateYearRecordRequest
+ */
 export interface UpdateYearRecordRequest {
     jan?: string;
     feb?: string;
@@ -253,6 +328,8 @@ export interface UpdateYearRecordRequest {
 
 /**
  * Request Types for user preferences
+ * 
+ * @interface UpdatePreferencesRequest
  */
 export interface UpdatePreferencesRequest {
     preferences: Partial<PreferenceContent>;
@@ -260,25 +337,47 @@ export interface UpdatePreferencesRequest {
 
 /**
  * Request Types for note
+ * 
+ * @interface CreateNoteRequest
  */
 export interface CreateNoteRequest {
     title: string;
     content: string;
 }
 
+/**
+ * Request to update an existing note
+ * 
+ * @interface UpdateNoteRequest
+ */
 export interface UpdateNoteRequest {
     title?: string;
     content?: string;
 }
 
+/**
+ * Request to reset a user's password
+ * 
+ * @interface ResetPasswordRequest
+ */
 export interface ResetPasswordRequest {
     email: string;
 }
 
+/**
+ * Request to verify a password reset token
+ * 
+ * @interface VerifyResetTokenRequest
+ */
 export interface VerifyResetTokenRequest {
     token: string;
 }
 
+/**
+ * Request to update a forgotten password with a valid token
+ * 
+ * @interface UpdateForgottenPasswordRequest
+ */
 export interface UpdateForgottenPasswordRequest {
     token: string;
     newPassword: string;

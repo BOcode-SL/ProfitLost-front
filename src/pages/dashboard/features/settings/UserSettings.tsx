@@ -1,13 +1,19 @@
 /**
- * UserSettings Component
+ * UserSettings Module
  * 
- * Allows users to update their profile information and preferences.
- * Features include:
- * - Profile image upload and management
- * - Personal information editing
- * - User preferences configuration (language, currency, date/time formats)
- * - Real-time validation and error handling
- * - Responsive layout
+ * Comprehensive user profile management interface that allows customization
+ * of personal information and application preferences.
+ * 
+ * Key Features:
+ * - Profile image management with upload/delete capabilities
+ * - Personal information editing with validation
+ * - Application preferences configuration (language, currency, date formats)
+ * - Form validation with user-friendly error handling
+ * - Real-time feedback for user actions
+ * - Responsive layout adapting to various screen sizes
+ * - Internationalization support for multilingual interface
+ * 
+ * @module UserSettings
  */
 import { useState, useRef } from 'react';
 import {
@@ -41,7 +47,10 @@ import {
     TimeFormat 
 } from '../../../../types/supabase/preferences';
 
-// Configuration options for selectable preferences
+/**
+ * Configuration options for selectable user preferences
+ * Defines available choices for date formats, time formats, currencies, and languages
+ */
 const dateFormatOptions = [
     { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' as DateFormat },
     { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' as DateFormat }
@@ -75,17 +84,39 @@ const languageOptions = [
     }
 ];
 
-// Interface for the props of the UserSettings component
+/**
+ * Props interface for the UserSettings component
+ * 
+ * @interface UserSettingsProps
+ */
 interface UserSettingsProps {
-    onSuccess?: () => void; // Optional callback function to be called on success
+    /** Optional callback function triggered after successful profile update */
+    onSuccess?: () => void;
 }
 
+/**
+ * UserSettings Component
+ * 
+ * Allows users to customize their profile information and application preferences
+ * with real-time validation and feedback.
+ * 
+ * @param {UserSettingsProps} props - Component properties
+ * @returns {JSX.Element} The rendered user settings interface
+ */
 export default function UserSettings({ onSuccess }: UserSettingsProps) {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
 
+    /**
+     * Component State Management
+     */
+    /** Reference to hidden file input for profile image selection */
     const fileInputRef = useRef<HTMLInputElement>(null);
+    
+    /** Loading state for form submission */
     const [loading, setLoading] = useState(false);
+    
+    /** Form data state containing all user preferences and profile information */
     const [formData, setFormData] = useState({
         name: user?.name || '',
         surname: user?.surname || '',
@@ -100,7 +131,12 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         deleteImage: false
     });
 
-    // Handle text input changes with validation
+    /**
+     * Handles changes to text input fields with validation
+     * Prevents empty name field and updates form state
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
+     */
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'name' && !value.trim()) {
@@ -112,7 +148,12 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle dropdown select changes
+    /**
+     * Handles changes to dropdown select fields
+     * Updates form state with selected preference values
+     * 
+     * @param {SelectChangeEvent} e - Select change event
+     */
     const handleSelectChange = (e: SelectChangeEvent) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -121,7 +162,12 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle profile image upload with size validation
+    /**
+     * Processes profile image upload with size validation
+     * Creates local preview URL for immediate visual feedback
+     * 
+     * @param {File} file - The selected image file
+     */
     const handleImageUpload = (file: File) => {
         if (file.size > 8 * 1024 * 1024) {
             toast.error(t('dashboard.settings.userSettings.profileImageError'));
@@ -136,7 +182,10 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Handle profile image deletion
+    /**
+     * Handles profile image deletion request
+     * Cleans up preview URL and marks image for deletion
+     */
     const handleDeleteImage = () => {
         if (formData.previewUrl) {
             URL.revokeObjectURL(formData.previewUrl);
@@ -149,7 +198,10 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         }));
     };
 
-    // Submit form with validation and API communication
+    /**
+     * Submits form data to update user profile
+     * Includes validation, API communication, and error handling
+     */
     const handleSubmit = async () => {
         if (!formData.name.trim()) {
             toast.error(t('dashboard.settings.userSettings.nameRequired'));
@@ -211,7 +263,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                 flexDirection: 'column',
                 gap: 3
             }}>
-                {/* Profile Image Section */}
+                {/* Profile Image Section - Avatar display and management */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -274,7 +326,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* Personal Information Section */}
+                {/* Personal Information Section - Name and surname fields */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -312,7 +364,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* User Preferences Section */}
+                {/* User Preferences Section - Language, currency, and format options */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     <Typography
                         variant="h3"
@@ -397,7 +449,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                     </Box>
                 </Paper>
 
-                {/* Save Changes Button */}
+                {/* Save Changes Button - Primary action with loading state */}
                 <Button
                     variant="contained"
                     onClick={handleSubmit}

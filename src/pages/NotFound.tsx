@@ -3,19 +3,33 @@
  * 
  * Displays a visually appealing error page when users navigate to a route that doesn't exist.
  * Features an animated 404 message, brand logo, and a button to return to the home page.
+ * Uses Material-UI components with custom styling for a cohesive experience.
+ * 
+ * @module NotFound
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, Button, Container, useTheme, useMediaQuery, Fade } from '@mui/material';
 
+/**
+ * NotFound component
+ * 
+ * Error page displayed when a user navigates to a non-existent route.
+ * Contains responsive design elements that adapt to different screen sizes.
+ * 
+ * @returns {JSX.Element} The rendered 404 page component
+ */
 const NotFound: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
-    // Handle navigation back to the home page
+    /**
+     * Handles navigation back to the home page
+     * Triggered when the user clicks the return button
+     */
     const handleNavigateHome = () => {
         navigate('/');
     };

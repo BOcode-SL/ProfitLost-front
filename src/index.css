@@ -1,11 +1,29 @@
-/* Root styles and text selection highlight */
+/**
+ * Global Styles for Profit & Lost Application
+ * 
+ * Contains core styling elements including:
+ * - Scrollbar customization
+ * - Text selection highlighting
+ * - Link hover effects
+ * - Loading animations
+ * - UI element styling
+ */
+
+/* 
+ * Root Element and Text Selection
+ * Custom highlight color for selected text across the application
+ */
 :root {
     ::selection {
         background-color: #ffc69e61;
     }
 }
 
-/* Global scrollbar styling */
+/* 
+ * Scrollbar Styling
+ * Custom scrollbars with brand colors for better user experience
+ * Supports both standard and webkit-based browsers
+ */
 * {
     scrollbar-width: thin;
     scrollbar-color: #fe6f14 #f7f7f7;
@@ -32,12 +50,19 @@
     background: #c84f03;
 }
 
-/* Body styles */
+/* 
+ * Body Element
+ * Prevents horizontal overflow to maintain layout integrity
+ */
 body {
     overflow-x: hidden;
 }
 
-/* Link styling with animated underline effect */
+/* 
+ * Link Styling
+ * Creates an animated underline effect on hover using pseudo-elements
+ * for a more interactive user experience
+ */
 body a {
     color: #666;
     text-decoration: none;
@@ -67,7 +92,11 @@ body a:hover::after {
     transform-origin: bottom left;
 }
 
-/* Loading animation container */
+/* 
+ * Loading Animation
+ * Centered loading indicator with pulsing animation
+ * for asynchronous operations feedback
+ */
 body .loading-container {
     display: flex;
     justify-content: center;
@@ -80,7 +109,7 @@ body .loading-container img {
     animation: scale 1s infinite;
 }
 
-/* Pulsing animation for loading indicator */
+/* Pulsing animation keyframes for loading indicator */
 @keyframes scale {
     0%, 100% {
         transform: scale(1);
@@ -90,7 +119,12 @@ body .loading-container img {
     }
 }
 
-/* "Coming Soon" badge styling */
+/* 
+ * UI Element Styling
+ * Various utility classes for common UI elements like badges,
+ * buttons, and form controls
+ */
+/* "Coming Soon" badge with soft brand color */
 body .soon-badge {
     background-color: #ffc69e;
     color: #333;
@@ -99,17 +133,17 @@ body .soon-badge {
     font-size: 0.8rem;
 }
 
-/* Disable text selection */
+/* Disable text selection for specific elements */
 body .no-select {
     user-select: none;
 }
 
-/* Button styling */
+/* Ensure all buttons have pointer cursor */
 body button {
     cursor: pointer;
 }
 
-/* Color picker input styling */
+/* Custom styling for color picker inputs */
 body input[type="color"] {
     -webkit-appearance: none;
     -moz-appearance: none;

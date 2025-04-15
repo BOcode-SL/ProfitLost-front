@@ -1,5 +1,25 @@
+/**
+ * Blog Data Module
+ * 
+ * Contains the mock blog post data used throughout the blog section of the application.
+ * All content uses i18n translation keys (format: blog.post.X.content.section) for multi-language support.
+ * 
+ * @module blogData
+ */
 import { BlogPost } from "../../../types/blogPost";
 
+/**
+ * Collection of blog posts with translation keys for multi-language content
+ * 
+ * Each post contains:
+ * - Unique ID
+ * - Translation keys for title, excerpt, author
+ * - HTML content with translation placeholders ({{key}})
+ * - Publication date (format: YYYY-MM-DD)
+ * - Featured image URL (Cloudinary hosted)
+ * - Content type (currently only 'html')
+ * - Category for filtering
+ */
 export const blogPosts: BlogPost[] = [
     {
         id: 1,

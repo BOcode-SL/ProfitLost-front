@@ -4,6 +4,8 @@
  * Provides user authentication state management and preferences.
  * Handles user data loading, language preferences, and state synchronization.
  * Serves as the central source of truth for user-related data across the application.
+ * 
+ * @module UserContext
  */
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
@@ -68,7 +70,8 @@ const defaultPreferences: PreferenceContent = {
  * Handles loading user data from API and syncing with i18n.
  * Provides user context to all child components in the tree.
  * 
- * @param children - Child components to be wrapped
+ * @param {ReactNode} children - Child components to be wrapped
+ * @returns {JSX.Element} Provider component with user context
  */
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserWithPreferences | null>(null); // State for user data
@@ -81,8 +84,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
      * Converts user language preference format to i18n format.
      * Maps from application-specific format to i18n's expected format.
      * 
-     * @param userLanguage - User's language preference from profile
-     * @returns The corresponding i18n language code
+     * @param {string | undefined} userLanguage - User's language preference from profile
+     * @returns {string} The corresponding i18n language code
      */
     const convertLanguageFormat = (userLanguage: string | undefined) => {
         switch (userLanguage) {
@@ -99,6 +102,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
      * Loads user data from the API.
      * Updates application language based on user preferences.
      * Sets user state, preferences, and role in the context.
+     * 
+     * @returns {Promise<void>} Promise that resolves when user data is loaded
      */
     const loadUserData = useCallback(async () => {
         try {
@@ -188,7 +193,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
  * Provides type-safe access to user state and methods.
  * Throws error if used outside of UserProvider.
  * 
- * @returns The user context value with full typing support
+ * @returns {UserContextType} The user context value with full typing support
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => {

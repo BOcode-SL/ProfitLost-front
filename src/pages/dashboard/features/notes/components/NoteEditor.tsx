@@ -1,14 +1,19 @@
 /**
- * NoteEditor Component
+ * NoteEditor Module
  * 
- * Provides an interface for editing note content with title and body fields.
- * Features include:
- * - Real-time editing of note title and content
- * - Save and delete actions with proper button states
- * - Confirmation dialog for note deletion
- * - Empty state handling when no note is selected
- * - Loading skeleton state during save operations
- * - Responsive design for different screen sizes
+ * Provides a rich editing interface for note creation and modification with
+ * real-time feedback and contextual action buttons.
+ * 
+ * Key Features:
+ * - Real-time editing of note title and content with immediate state updates
+ * - Save and delete actions with contextual button states and loading indicators
+ * - Animated confirmation dialog for preventing accidental note deletion
+ * - Empty state handling with appropriate user guidance
+ * - Loading skeleton animation during data operations
+ * - Responsive design adapting to different screen sizes and device types
+ * - Accessible form controls with proper keyboard navigation
+ * 
+ * @module NoteEditor
  */
 import {
     Box,
@@ -32,16 +37,32 @@ import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 // Types
 import type { Note } from '../../../../../types/supabase/notes';
 
-// Interface for the props of the NoteEditor component
+/**
+ * Props interface for the NoteEditor component
+ * 
+ * @interface NoteEditorProps
+ */
 interface NoteEditorProps {
-    note: Note | null; // The note object to edit, or null if no note is selected
-    onChange?: (key: keyof Note, value: string) => void; // Callback when note content changes
-    onSave?: () => void; // Callback when save button is clicked
-    onDelete?: () => void; // Callback when delete is confirmed
-    isSaving?: boolean; // Indicates if a save/delete operation is in progress
+    /** The note object to edit, or null if no note is selected */
+    note: Note | null;
+    
+    /** Callback function triggered when note content or title changes */
+    onChange?: (key: keyof Note, value: string) => void;
+    
+    /** Callback function triggered when save button is clicked */
+    onSave?: () => void;
+    
+    /** Callback function triggered when delete is confirmed */
+    onDelete?: () => void;
+    
+    /** Indicates if a save or delete operation is in progress */
+    isSaving?: boolean;
 }
 
-// Slide transition component for the delete confirmation dialog
+/**
+ * Slide transition component for the delete confirmation dialog
+ * Creates an animated entrance and exit for the dialog
+ */
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -52,6 +73,15 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/**
+ * NoteEditor Component
+ * 
+ * Provides an interactive interface for editing note content with
+ * title and body fields, plus action buttons for saving and deletion.
+ * 
+ * @param {NoteEditorProps} props - Component properties
+ * @returns {JSX.Element} Rendered note editor component
+ */
 export default function NoteEditor({
     note,
     onChange,
@@ -61,15 +91,21 @@ export default function NoteEditor({
 }: NoteEditorProps) {
     const { t } = useTranslation();
 
-    // State to control the delete confirmation dialog
+    /** State to control the visibility of delete confirmation dialog */
     const [deleteDialog, setDeleteDialog] = useState(false);
 
-    // Open delete confirmation dialog
+    /**
+     * Opens the delete confirmation dialog
+     * Prevents accidental deletion by requiring confirmation
+     */
     const handleDeleteClick = () => {
         setDeleteDialog(true);
     };
 
-    // Display skeleton loaders during save operations
+    /**
+     * Render loading skeleton during save/delete operations
+     * Provides visual feedback during asynchronous processes
+     */
     if (isSaving) {
         return (
             <Box sx={{
@@ -78,7 +114,7 @@ export default function NoteEditor({
                 flexDirection: 'column',
                 gap: 2
             }}>
-                {/* Title field skeleton */}
+                {/* Title field skeleton with animation */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <Skeleton
                         variant="rectangular"
@@ -90,7 +126,7 @@ export default function NoteEditor({
                         }}
                     />
                 </Box>
-                {/* Content field skeleton */}
+                {/* Content field skeleton with animation */}
                 <Skeleton
                     variant="rectangular"
                     width="100%"
@@ -100,7 +136,7 @@ export default function NoteEditor({
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }}
                 />
-                {/* Action buttons skeleton */}
+                {/* Action buttons skeleton with animation */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
@@ -129,7 +165,10 @@ export default function NoteEditor({
         );
     }
 
-    // Empty state when no note is selected
+    /**
+     * Render empty state when no note is selected
+     * Provides user guidance for note selection
+     */
     if (!note) {
         return (
             <Box sx={{
@@ -147,14 +186,14 @@ export default function NoteEditor({
 
     return (
         <>
-            {/* Note editor form */}
+            {/* Note editor form container */}
             <Box sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2
             }}>
-                {/* Note title input */}
+                {/* Note title input field */}
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <TextField
                         fullWidth
@@ -167,7 +206,7 @@ export default function NoteEditor({
                     />
                 </Box>
 
-                {/* Note content textarea */}
+                {/* Note content textarea with auto-expanding rows */}
                 <TextField
                     multiline
                     fullWidth
@@ -178,13 +217,13 @@ export default function NoteEditor({
                     disabled={isSaving}
                 />
 
-                {/* Action buttons container */}
+                {/* Action buttons container with responsive layout */}
                 <Box sx={{
                     display: 'flex',
                     gap: 2,
                     justifyContent: 'flex-end'
                 }}>
-                    {/* Delete button */}
+                    {/* Delete button with icon and responsive width */}
                     <Button
                         variant="outlined"
                         color="primary"
@@ -198,7 +237,7 @@ export default function NoteEditor({
                     >
                         {t('dashboard.common.delete')}
                     </Button>
-                    {/* Save button with loading indicator */}
+                    {/* Save button with loading indicator and responsive width */}
                     <Button
                         variant="contained"
                         color="primary"
@@ -219,7 +258,7 @@ export default function NoteEditor({
                 </Box>
             </Box>
 
-            {/* Delete confirmation dialog */}
+            {/* Delete confirmation dialog with animation */}
             <Dialog
                 open={deleteDialog}
                 TransitionComponent={Transition}
@@ -235,7 +274,7 @@ export default function NoteEditor({
                     }
                 }}
             >
-                {/* Dialog title */}
+                {/* Dialog title with warning */}
                 <DialogTitle sx={{
                     textAlign: 'center',
                     pt: 3,
@@ -243,7 +282,7 @@ export default function NoteEditor({
                 }}>
                     {t('dashboard.notes.delete.title')}
                 </DialogTitle>
-                {/* Dialog message */}
+                {/* Dialog content with explanation */}
                 <DialogContent sx={{
                     textAlign: 'center',
                     py: 2
@@ -261,7 +300,7 @@ export default function NoteEditor({
                     gap: 2,
                     p: 3
                 }}>
-                    {/* Cancel button */}
+                    {/* Cancel button to dismiss dialog */}
                     <Button
                         variant="outlined"
                         onClick={() => setDeleteDialog(false)}

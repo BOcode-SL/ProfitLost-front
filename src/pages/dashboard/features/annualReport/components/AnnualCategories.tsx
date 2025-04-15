@@ -1,15 +1,20 @@
 /**
- * AnnualCategories Component
+ * AnnualCategories Module
  * 
- * Displays and manages transaction categories with their yearly balances.
- * Features include:
- * - Category list with balance totals
- * - Sorting options (name or balance, ascending or descending)
- * - Search functionality to filter categories
- * - Category creation, editing, and deletion
- * - Balance visibility toggle for privacy
- * - Color-coded indicators for income vs expense categories
- * - Responsive layout for different screen sizes
+ * Provides a comprehensive interface for managing and visualizing transaction categories
+ * with their respective balances in a financial reporting context.
+ * 
+ * Key Features:
+ * - Category list with annual balance totals and visual indicators
+ * - Advanced sorting options (by name or balance, ascending or descending)
+ * - Real-time search functionality with dynamic filtering
+ * - Complete category management (creation, editing, and deletion)
+ * - Currency visibility toggle for privacy protection
+ * - Color-coded indicators for income and expense categories
+ * - Fully responsive layout optimized for various screen sizes
+ * - Comprehensive error handling with user feedback
+ * 
+ * @module AnnualCategories
  */
 import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
@@ -51,11 +56,29 @@ import type { Category } from '../../../../../types/supabase/categories';
 import type { Transaction } from '../../../../../types/supabase/transactions';
 import type { CategoryApiErrorResponse } from '../../../../../types/api/responses';
 
+/**
+ * Sort option types for category ordering
+ * Specifies the field and direction for sorting the category list
+ */
 type SortOption = 'name_asc' | 'name_desc' | 'balance_asc' | 'balance_desc';
+
+/**
+ * State interface for category editing
+ * Tracks the current category being edited and its properties
+ * 
+ * @interface EditCategoryState
+ */
 interface EditCategoryState {
+    /** Whether the edit dialog is open */
     isOpen: boolean;
+    
+    /** The category being edited (null when creating new) */
     category: Category | null;
+    
+    /** Current value of category name in the form */
     name: string;
+    
+    /** Current value of category color in the form */
     color: string;
 }
 
@@ -63,13 +86,23 @@ interface EditCategoryState {
 import CategoryForm from './CategoryForm';
 import DrawerBase from '../../../components/ui/DrawerBase';
 
-// Interface for the props of the AnnualCategories component
+/**
+ * Props interface for the AnnualCategories component
+ * 
+ * @interface AnnualCategoriesProps
+ */
 interface AnnualCategoriesProps {
+    /** Array of transactions to process for category balances */
     transactions: Transaction[];
-    isLoading: boolean; // Loading state indicator
+    
+    /** Indicates if transaction data is still loading */
+    isLoading: boolean;
 }
 
-// Transition component for dialog animations
+/**
+ * Transition component for dialog animations
+ * Provides slide-up animation effect for dialog boxes
+ */
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -79,6 +112,15 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/**
+ * AnnualCategories Component
+ * 
+ * Manages the display and interaction with transaction categories, including
+ * their balances, filtering, sorting, and CRUD operations.
+ * 
+ * @param {AnnualCategoriesProps} props - Component properties
+ * @returns {JSX.Element} Rendered categories management interface
+ */
 export default function AnnualCategories({ transactions, isLoading }: AnnualCategoriesProps) {
     const { t } = useTranslation();
     const { user } = useUser();
@@ -103,7 +145,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
     const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
-    // Fetch all categories on component mount
+    /**
+     * Fetch all categories on component mount
+     * Loads the initial list of categories from the backend
+     */
     useEffect(() => {
         const fetchCategories = async () => {
             setIsCategoriesLoading(true);
@@ -122,7 +167,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         fetchCategories();
     }, [t]);
 
-    // Calculate the balance for each category based on transactions
+    /**
+     * Calculate the balance for each category based on transactions
+     * Filters, sorts, and processes transactions to derive category balances
+     */
     const categoriesBalance = useMemo(() => {
         if (!categories.length) {
             return [];
@@ -167,7 +215,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         });
     }, [categories, transactions, searchTerm, sortOption]);
 
-    // Handler for category creation
+    /**
+     * Handler for category creation
+     * Refreshes the category list after successful creation
+     */
     const handleCreateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -175,7 +226,12 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         }
     };
 
-    // Handler for category selection to edit
+    /**
+     * Handler for category selection to edit
+     * Opens the category edit form with the selected category data
+     * 
+     * @param {Category} category - The category to edit
+     */
     const handleCategoryClick = (category: Category) => {
         setEditCategory({
             isOpen: true,
@@ -185,7 +241,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         });
     };
 
-    // Handler for category update
+    /**
+     * Handler for category update
+     * Refreshes the category list after successful update
+     */
     const handleUpdateCategory = async () => {
         const categoriesResponse = await categoryService.getAllCategories();
         if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
@@ -193,7 +252,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         }
     };
 
-    // Handler for category deletion with error handling
+    /**
+     * Handler for category deletion with comprehensive error handling
+     * Processes deletion request and handles various error scenarios
+     */
     const confirmDelete = async () => {
         if (!editCategory.category) return;
 
@@ -231,7 +293,10 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
         }
     };
 
-    // Listen for currency visibility toggle events
+    /**
+     * Listen for currency visibility toggle events
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -304,7 +369,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     </Button>
                 </Box>
 
-                {/* Loading, empty state, or category list display */}
+                {/* Loading indicator, empty state message, or category list */}
                 {isLoading || isCategoriesLoading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
                         <CircularProgress />
@@ -323,7 +388,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                         </Typography>
                     </Box>
                 ) : categoriesBalance.length === 0 ? (
-                    // Empty search results message
+                    // Empty search results message when filtering returns no matches
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'center',
@@ -336,7 +401,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                         </Typography>
                     </Box>
                 ) : (
-                    // Category list with balances
+                    // Category list with interactive items and balances
                     <Box sx={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -360,7 +425,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                                         }
                                     }}
                                 >
-                                    {/* Category color indicator */}
+                                    {/* Category color indicator dot */}
                                     <Box
                                         sx={{
                                             width: { xs: 20, sm: 24 },
@@ -381,7 +446,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                                             }
                                         }}
                                     />
-                                    {/* Category balance with privacy support */}
+                                    {/* Category balance with privacy protection */}
                                     <Box
                                         sx={{
                                             color: balance >= 0 ? theme.palette.chart.income : theme.palette.chart.expenses,
@@ -403,7 +468,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     </Box>
                 )}
 
-                {/* Category creation drawer */}
+                {/* Category creation drawer dialog */}
                 <DrawerBase
                     open={drawerOpen}
                     onClose={() => setDrawerOpen(false)}
@@ -414,7 +479,7 @@ export default function AnnualCategories({ transactions, isLoading }: AnnualCate
                     />
                 </DrawerBase>
 
-                {/* Category editing drawer */}
+                {/* Category editing drawer dialog */}
                 <DrawerBase
                     open={editCategory.isOpen}
                     onClose={() => setEditCategory({ isOpen: false, category: null, name: '', color: '' })}

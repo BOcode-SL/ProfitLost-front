@@ -1,35 +1,79 @@
+/**
+ * Dashboard Navigation Module
+ * 
+ * Provides responsive navigation for the dashboard interface.
+ * 
+ * Responsibilities:
+ * - Renders different layouts based on screen size (desktop/mobile)
+ * - Displays the application logo with theme awareness
+ * - Manages navigation menu items with proper highlighting
+ * - Provides quick access to transaction creation
+ * - Filters menu items based on user role
+ * 
+ * @module DashboardNav
+ */
+
 import { useState, useContext } from 'react';
 import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Fab } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 
+// Utils
 import { getIconComponent } from '../../../utils/sectionIconUtils';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
 
-// Types
+/**
+ * Interface defining a menu item in the navigation
+ * 
+ * @interface MenuItem
+ */
 interface MenuItem {
+  /** Display label for the menu item */
   label: string;
+  
+  /** Icon identifier string to render */
   icon: string;
+  
+  /** Unique identifier for the section */
   key: string;
+  
+  /** Whether the item should only be shown to admins */
   adminOnly?: boolean;
 }
 
+/**
+ * Interface for the props of the DashboardNav component
+ * 
+ * @interface DashboardNavProps
+ */
 interface DashboardNavProps {
-  activeSection: string; // The currently active section of the dashboard
-  handleMenuItemClick: (sectionKey: string) => void; // Function to handle clicks on menu items
-  menuItems: MenuItem[]; // Array of menu items available in the navigation
-  onAddTransaction?: () => void; // Optional function to handle the click event for adding a transaction
-  userRole: string | null; // User role from context for admin item filtering
+  /** The currently active section of the dashboard */
+  activeSection: string;
+  
+  /** Function to handle clicks on menu items */
+  handleMenuItemClick: (sectionKey: string) => void;
+  
+  /** Array of menu items available in the navigation */
+  menuItems: MenuItem[];
+  
+  /** Optional function to handle the click event for adding a transaction */
+  onAddTransaction?: () => void;
+  
+  /** User role from context for admin item filtering */
+  userRole: string | null;
 }
 
 /**
  * Logo Component
  * 
- * Displays the application logo, adapting to dark/light mode
- * @param isDarkMode - Boolean indicating if dark mode is active
+ * Displays the application logo, adapting to dark/light mode.
+ * 
+ * @param {Object} props - The component props
+ * @param {boolean} props.isDarkMode - Boolean indicating if dark mode is active
+ * @returns {JSX.Element} The rendered Logo component
  */
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <Box sx={{
@@ -52,20 +96,35 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
 );
 
 /**
+ * Interface for the props of the DesktopNavItem component
+ * 
+ * @interface DesktopNavItemProps
+ */
+interface DesktopNavItemProps {
+  /** Menu item to render */
+  item: MenuItem;
+  
+  /** Currently active section key */
+  activeSection: string;
+  
+  /** Function to handle item click */
+  handleMenuItemClick: (key: string) => void;
+}
+
+/**
  * Desktop Navigation Item Component
  * 
- * Renders an individual navigation item for desktop view
- * Highlights the active section and applies hover effects
+ * Renders an individual navigation item for desktop view.
+ * Highlights the active section and applies hover effects.
+ * 
+ * @param {DesktopNavItemProps} props - The component props
+ * @returns {JSX.Element} The rendered desktop navigation item
  */
 const DesktopNavItem = ({
   item,
   activeSection,
   handleMenuItemClick
-}: {
-  item: MenuItem;
-  activeSection: string;
-  handleMenuItemClick: (key: string) => void;
-}) => (
+}: DesktopNavItemProps) => (
   <ListItem
     key={item.label}
     onClick={() => handleMenuItemClick(item.key)}
@@ -94,21 +153,40 @@ const DesktopNavItem = ({
 );
 
 /**
+ * Interface for the props of the MobileNavItem component
+ * 
+ * @interface MobileNavItemProps
+ */
+interface MobileNavItemProps {
+  /** Menu item to render */
+  item: MenuItem;
+  
+  /** Currently active section key */
+  activeSection: string;
+  
+  /** Function to handle item click */
+  handleMenuItemClick: (key: string) => void;
+}
+
+/**
  * Mobile Navigation Item Component
  * 
- * Renders an individual navigation item for mobile view
- * Adapts label display based on screen width
+ * Renders an individual navigation item for mobile view.
+ * Adapts label display based on screen width.
+ * 
+ * @param {MobileNavItemProps} props - The component props
+ * @returns {JSX.Element} The rendered mobile navigation item
  */
 const MobileNavItem = ({
   item,
   activeSection,
   handleMenuItemClick
-}: {
-  item: MenuItem;
-  activeSection: string;
-  handleMenuItemClick: (key: string) => void;
-}) => {
-  // Function to display a shortened label for the Annual Report
+}: MobileNavItemProps) => {
+  /**
+   * Displays a shortened label for the Annual Report based on screen size
+   * 
+   * @returns {JSX.Element} The appropriately sized label element
+   */
   const displayLabel = () => {
     if (item.key === 'annualReport') {
       // Use specific shortened versions for the Annual Report
@@ -151,22 +229,39 @@ const MobileNavItem = ({
 };
 
 /**
+ * Interface for the props of the DesktopNav component
+ * 
+ * @interface DesktopNavProps
+ */
+interface DesktopNavProps {
+  /** Array of all menu items to display */
+  allMenuItems: MenuItem[];
+  
+  /** Currently active section key */
+  activeSection: string;
+  
+  /** Function to handle menu item clicks */
+  handleMenuItemClick: (key: string) => void;
+  
+  /** Whether dark mode is active */
+  isDarkMode: boolean;
+}
+
+/**
  * Desktop Navigation Component
  * 
- * Renders the full sidebar navigation for desktop view
- * Fixed position with scrollable content if needed
+ * Renders the full sidebar navigation for desktop view.
+ * Fixed position with scrollable content if needed.
+ * 
+ * @param {DesktopNavProps} props - The component props
+ * @returns {JSX.Element} The rendered desktop navigation
  */
 const DesktopNav = ({
   allMenuItems,
   activeSection,
   handleMenuItemClick,
   isDarkMode
-}: {
-  allMenuItems: MenuItem[];
-  activeSection: string;
-  handleMenuItemClick: (key: string) => void;
-  isDarkMode: boolean;
-}) => (
+}: DesktopNavProps) => (
   <Box sx={{
     gridArea: 'Nav',
     position: 'fixed',
@@ -200,11 +295,48 @@ const DesktopNav = ({
 );
 
 /**
+ * Interface for the props of the MobileNav component
+ * 
+ * @interface MobileNavProps
+ */
+interface MobileNavProps {
+  /** Main menu items for primary navigation */
+  mainMenuItems: MenuItem[];
+  
+  /** Additional menu items for the "more" menu */
+  moreMenuItems: MenuItem[];
+  
+  /** Currently active section key */
+  activeSection: string;
+  
+  /** Function to handle menu item clicks */
+  handleMenuItemClick: (key: string) => void;
+  
+  /** Element to anchor the "more" menu to */
+  moreAnchorEl: null | HTMLElement;
+  
+  /** Function to handle click on the "more" button */
+  handleMoreClick: (event: React.MouseEvent<HTMLElement>) => void;
+  
+  /** Function to close the "more" menu */
+  handleMoreClose: () => void;
+  
+  /** Function to handle clicks on items in the "more" menu */
+  handleMoreItemClick: (key: string) => void;
+  
+  /** Optional function to handle transaction creation */
+  onAddTransaction?: () => void;
+}
+
+/**
  * Mobile Navigation Component
  * 
- * Renders the bottom navigation bar for mobile view
+ * Renders the bottom navigation bar for mobile view.
  * Includes a floating action button for adding transactions
- * and a "more" button for additional menu items
+ * and a "more" button for additional menu items.
+ * 
+ * @param {MobileNavProps} props - The component props
+ * @returns {JSX.Element} The rendered mobile navigation
  */
 const MobileNav = ({
   mainMenuItems,
@@ -216,17 +348,7 @@ const MobileNav = ({
   handleMoreClose,
   handleMoreItemClick,
   onAddTransaction
-}: {
-  mainMenuItems: MenuItem[];
-  moreMenuItems: MenuItem[];
-  activeSection: string;
-  handleMenuItemClick: (key: string) => void;
-  moreAnchorEl: null | HTMLElement;
-  handleMoreClick: (event: React.MouseEvent<HTMLElement>) => void;
-  handleMoreClose: () => void;
-  handleMoreItemClick: (key: string) => void;
-  onAddTransaction?: () => void;
-}) => {
+}: MobileNavProps) => {
   const { t } = useTranslation();
 
   return (
@@ -346,8 +468,14 @@ const MobileNav = ({
  * 
  * Main navigation component that renders different layouts
  * based on screen size (desktop or mobile).
- * Handles user role-based menu item filtering and
- * provides navigation functionality.
+ * 
+ * @param {DashboardNavProps} props - The component props
+ * @param {string} props.activeSection - The currently active section
+ * @param {Function} props.handleMenuItemClick - Handler for menu item clicks
+ * @param {MenuItem[]} props.menuItems - Available menu items
+ * @param {Function} [props.onAddTransaction] - Optional handler for add transaction
+ * @param {string|null} props.userRole - User role for filtering menu items
+ * @returns {JSX.Element} The rendered navigation component
  */
 export default function DashboardNav({ activeSection, handleMenuItemClick, menuItems, onAddTransaction, userRole }: DashboardNavProps) {
   const { isDarkMode } = useContext(ThemeContext);
@@ -362,15 +490,27 @@ export default function DashboardNav({ activeSection, handleMenuItemClick, menuI
   const mainMenuItems = allMenuItems.slice(0, 3);
   const moreMenuItems = allMenuItems.slice(3);
 
-  // Event handlers for the "more" menu
+  /**
+   * Handles click on the "more" button in mobile navigation
+   * 
+   * @param {React.MouseEvent<HTMLElement>} event - The click event
+   */
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
     setMoreAnchorEl(event.currentTarget);
   };
 
+  /**
+   * Closes the "more" menu
+   */
   const handleMoreClose = () => {
     setMoreAnchorEl(null);
   };
 
+  /**
+   * Handles click on an item in the "more" menu
+   * 
+   * @param {string} key - The key of the clicked menu item
+   */
   const handleMoreItemClick = (key: string) => {
     handleMenuItemClick(key);
     handleMoreClose();

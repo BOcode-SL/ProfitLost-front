@@ -3,6 +3,8 @@
  * 
  * Renders a list of blog posts with filtering by category and search capabilities.
  * Includes pagination for improved user experience with large numbers of posts.
+ * 
+ * @module BlogPage
  */
 import { useEffect, useState } from 'react';
 import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination, useTheme, useMediaQuery } from '@mui/material';
@@ -26,8 +28,8 @@ import LanguageSelector from '../landing/components/LanguageSelector';
  * Normalizes text by removing accents, punctuation, and converting to lowercase
  * Helps make search functionality more robust by standardizing text comparisons
  * 
- * @param text - The text to normalize
- * @returns Normalized text string
+ * @param {string} text - The text to normalize
+ * @returns {string} Normalized text string without accents, punctuation, and in lowercase
  */
 const normalizeText = (text: string): string => {
   return text
@@ -42,9 +44,9 @@ const normalizeText = (text: string): string => {
  * Searches for matches in the post content based on search terms
  * Splits search input into words and requires all words to be present
  * 
- * @param content - The content to search within
- * @param searchTerm - The search term to look for
- * @returns Boolean indicating if all search words are found in the content
+ * @param {string} content - The content to search within
+ * @param {string} searchTerm - The search term to look for
+ * @returns {boolean} Boolean indicating if all search words are found in the content
  */
 const searchInContent = (content: string, searchTerm: string): boolean => {
   if (!content || !searchTerm) return false;
@@ -54,6 +56,14 @@ const searchInContent = (content: string, searchTerm: string): boolean => {
   return searchWords.every(word => normalizedContent.includes(word));
 };
 
+/**
+ * Blog page component for displaying and filtering blog posts
+ * 
+ * Features category filtering, text search, responsive layout,
+ * and pagination for improved user experience.
+ * 
+ * @returns {JSX.Element} The rendered blog page
+ */
 export default function BlogPage() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -68,19 +78,32 @@ export default function BlogPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Handler for category filter selection
+  /**
+   * Handles category filter selection
+   * 
+   * @param {('all' | CategoryType)} category - The category to filter by
+   */
   const handleCategoryFilter = (category: 'all' | CategoryType) => {
     setSelectedCategory(category);
     setCurrentPage(1); // Reset to first page when changing filters
   };
 
-  // Handler for search input changes
+  /**
+   * Handles search input changes
+   * 
+   * @param {string} term - The search term entered by the user
+   */
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     setCurrentPage(1); // Reset to first page when searching
   };
 
-  // Handler for pagination changes
+  /**
+   * Handles pagination changes
+   * 
+   * @param {React.ChangeEvent<unknown>} _event - The change event (unused)
+   * @param {number} value - The new page number
+   */
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new page

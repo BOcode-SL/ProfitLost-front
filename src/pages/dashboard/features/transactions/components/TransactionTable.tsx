@@ -1,16 +1,21 @@
 /**
- * TransactionTable Component
+ * TransactionTable Module
  * 
- * Provides an interactive list view of transactions with filtering, sorting, and CRUD operations.
- * Features include:
- * - Transaction filtering with text search
- * - Multiple sorting options (date, amount)
- * - Add/Edit/Delete transaction functionality
- * - Category color coding for visual identification
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
- * - Loading states and empty state handling
- * - Responsive design for different screen sizes
+ * Provides a comprehensive interactive transaction management interface
+ * with filtering, sorting and full CRUD operations.
+ * 
+ * Key Features:
+ * - Transaction filtering with real-time text search capabilities
+ * - Flexible sorting options (date ascending/descending, amount ascending/descending)
+ * - Complete transaction management (view, add, edit, delete)
+ * - Visual category identification with color coding
+ * - Localized currency formatting based on user preferences
+ * - Privacy mode with blurred monetary values
+ * - Progressive loading states and empty state messaging
+ * - Responsive layout adapting to different viewport sizes
+ * - Drawer-based transaction form for better mobile experience
+ * 
+ * @module TransactionTable
  */
 import { useState, useCallback, useEffect } from 'react';
 import {
@@ -45,15 +50,34 @@ import { formatDateTime } from '../../../../../utils/dateUtils';
 import TransactionForm from './TransactionForm';
 import DrawerBase from '../../../components/ui/DrawerBase';
 
-// Interface for the props of the TransactionTable component
+/**
+ * Props interface for the TransactionTable component
+ * 
+ * @interface TransactionTableProps
+ */
 interface TransactionTableProps {
-    data: Transaction[]; // Array of transactions
-    loading: boolean; // Indicates if the data is currently loading
-    categories: Category[]; // Array of categories
-    onReload: () => void; // Function to reload the transaction data
+    /** Array of transaction records to display in the table */
+    data: Transaction[];
+    
+    /** Indicates if data is currently being loaded */
+    loading: boolean;
+    
+    /** Available categories for transaction categorization */
+    categories: Category[];
+    
+    /** Callback function to trigger data refresh */
+    onReload: () => void;
 }
 
-// TransactionTable component
+/**
+ * TransactionTable Component
+ * 
+ * Renders an interactive transaction list with filtering, sorting,
+ * and CRUD operations through modals/drawers.
+ * 
+ * @param {TransactionTableProps} props - Component properties
+ * @returns {JSX.Element} Rendered transaction table component
+ */
 export default function TransactionTable({
     data,
     loading,
@@ -64,14 +88,31 @@ export default function TransactionTable({
     const { user } = useUser();
     const theme = useTheme();
 
+    /**
+     * Component State
+     */
+    /** Search filter text for transaction filtering */
     const [searchTerm, setSearchTerm] = useState('');
+    
+    /** Current sort option for transaction ordering */
     const [sortOption, setSortOption] = useState<string>('date_desc');
+    
+    /** Controls visibility of the edit transaction drawer */
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+    
+    /** Controls visibility of the create transaction drawer */
     const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
+    
+    /** Currently selected transaction for editing */
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    
+    /** Controls whether monetary values should be blurred for privacy */
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -84,7 +125,12 @@ export default function TransactionTable({
         };
     }, []);
 
-    // Open the edit drawer when a transaction is selected
+    /**
+     * Opens the edit drawer with the selected transaction
+     * Uses animation frame to ensure smooth transitions
+     * 
+     * @param {Transaction} transaction - The transaction to be edited
+     */
     const handleTransactionClick = useCallback((transaction: Transaction) => {
         setCreateDrawerOpen(false);
         setEditDrawerOpen(false);
@@ -97,7 +143,10 @@ export default function TransactionTable({
         });
     }, []);
 
-    // Close the edit drawer and clear the selected transaction after animation
+    /**
+     * Closes the edit drawer with animation and cleans up state
+     * Uses timeout to complete animation before state cleanup
+     */
     const handleCloseEditDrawer = useCallback(() => {
         setEditDrawerOpen(false);
         setTimeout(() => {
@@ -105,30 +154,53 @@ export default function TransactionTable({
         }, 300);
     }, []);
 
-    // Open the create drawer for adding a new transaction
+    /**
+     * Opens the create drawer for adding a new transaction
+     * Resets selection state to ensure clean form
+     */
     const handleCreateClick = useCallback(() => {
         setSelectedTransaction(null);
         setCreateDrawerOpen(true);
     }, []);
 
-    // Get category by ID
+    /**
+     * Retrieves the category object for a given category ID
+     * 
+     * @param {string} categoryId - The category ID to look up
+     * @returns {Category|null} The found category or null if not found
+     */
     const getCategoryById = (categoryId: string) => {
         return categories.find(cat => cat.id === categoryId) || null;
     };
 
-    // Get category name by ID
+    /**
+     * Gets the display name for a category based on its ID
+     * Falls back to "Uncategorized" if category not found
+     * 
+     * @param {string} categoryId - The category ID to look up
+     * @returns {string} The category name or fallback text
+     */
     const getCategoryNameById = (categoryId: string) => {
         const category = getCategoryById(categoryId);
         return category ? category.name : 'Uncategorized';
     };
 
-    // Get category color for visual categorization of transactions
+    /**
+     * Retrieves the color for a category based on its ID
+     * Used for visual identification of transaction categories
+     * 
+     * @param {string} categoryId - The category ID to look up
+     * @returns {string} The color code or fallback color
+     */
     const getCategoryColor = (categoryId: string) => {
         const category = getCategoryById(categoryId);
         return category?.color || theme.palette.grey[500];
     };
 
-    // Apply filters and sorting to the transaction data
+    /**
+     * Filtered and sorted transactions based on search term and sort option
+     * Applies both text filtering and appropriate sorting logic
+     */
     const filteredAndSortedTransactions = data
         .filter(transaction => {
             const searchLower = searchTerm.toLowerCase();
@@ -150,7 +222,6 @@ export default function TransactionTable({
             }
         });
 
-    // Main component structure
     return (
         <Box sx={{ width: '100%' }}>
             <Paper
@@ -171,7 +242,7 @@ export default function TransactionTable({
                         gap: 2,
                         p: 2,
                     }}>
-                    {/* Search, sort and add transaction row */}
+                    {/* Search, sort and add transaction controls row */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -180,7 +251,7 @@ export default function TransactionTable({
                             gap: 2,
                             mb: 2,
                         }}>
-                        {/* Search field for filtering transactions */}
+                        {/* Search field for filtering transactions by text */}
                         <TextField
                             size="small"
                             placeholder={t('dashboard.transactions.filters.search')}
@@ -193,7 +264,7 @@ export default function TransactionTable({
                                 }
                             }}
                         />
-                        {/* Sort dropdown for changing transaction order */}
+                        {/* Sort dropdown for ordering transactions */}
                         <FormControl
                             size="small"
                             sx={{
@@ -216,7 +287,7 @@ export default function TransactionTable({
                                 <MenuItem value="amount_asc">{t('dashboard.transactions.filters.sort.amountAsc')}</MenuItem>
                             </Select>
                         </FormControl>
-                        {/* Add transaction button */}
+                        {/* Add transaction button to open creation form */}
                         <Button
                             variant="contained"
                             onClick={handleCreateClick}
@@ -227,14 +298,14 @@ export default function TransactionTable({
                         </Button>
                     </Box>
 
-                    {/* Conditional rendering based on data state */}
+                    {/* Conditional content rendering based on data state */}
                     {loading ? (
-                        // Loading state with spinner
+                        // Loading state with centered spinner
                         <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
                             <CircularProgress sx={{ animation: 'pulse 1.5s ease-in-out infinite' }} />
                         </Box>
                     ) : data.length === 0 ? (
-                        // Empty state when no transactions exist
+                        // Empty state when no transactions exist at all
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -247,7 +318,7 @@ export default function TransactionTable({
                             </Typography>
                         </Box>
                     ) : filteredAndSortedTransactions.length === 0 ? (
-                        // No results state when search returns empty
+                        // No results state when search filters out all transactions
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -260,13 +331,13 @@ export default function TransactionTable({
                             </Typography>
                         </Box>
                     ) : (
-                        // Transaction list with data
+                        // Transaction list rendering when data is available
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 1,
                         }}>
-                            {/* Transaction items */}
+                            {/* Transaction item rows with click handling */}
                             {filteredAndSortedTransactions.map((transaction) => (
                                 <Box key={transaction.id}>
                                     <Box
@@ -284,7 +355,7 @@ export default function TransactionTable({
                                             }
                                         }}
                                     >
-                                        {/* Category color indicator for mobile */}
+                                        {/* Category color indicator for mobile view */}
                                         <Box sx={{
                                             width: 12,
                                             height: 12,
@@ -293,7 +364,7 @@ export default function TransactionTable({
                                             display: { xs: 'block', md: 'none' }
                                         }} />
 
-                                        {/* Transaction description and date */}
+                                        {/* Transaction description and date information */}
                                         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 1 }}>
                                             <Typography variant="body1" fontWeight={500}>
                                                 {transaction.description || t('dashboard.transactions.table.noDescription')}
@@ -303,7 +374,7 @@ export default function TransactionTable({
                                             </Typography>
                                         </Box>
 
-                                        {/* Category display (desktop only) */}
+                                        {/* Category display with color indicator (desktop only) */}
                                         <Box sx={{
                                             display: { xs: 'none', md: 'flex' },
                                             alignItems: 'center',
@@ -319,7 +390,7 @@ export default function TransactionTable({
                                             <Typography>{getCategoryNameById(transaction.category_id)}</Typography>
                                         </Box>
 
-                                        {/* Transaction amount with color coding */}
+                                        {/* Transaction amount with color coding and privacy blur */}
                                         <Typography
                                             sx={{
                                                 color: transaction.amount >= 0
@@ -343,7 +414,7 @@ export default function TransactionTable({
                 </Box>
             </Paper>
 
-            {/* Edit transaction drawer */}
+            {/* Transaction edit drawer - appears when editing a transaction */}
             <DrawerBase
                 open={editDrawerOpen}
                 onClose={handleCloseEditDrawer}
@@ -361,7 +432,7 @@ export default function TransactionTable({
                 )}
             </DrawerBase>
 
-            {/* Create transaction drawer */}
+            {/* Transaction create drawer - appears when adding a new transaction */}
             <DrawerBase
                 open={createDrawerOpen}
                 onClose={() => setCreateDrawerOpen(false)}

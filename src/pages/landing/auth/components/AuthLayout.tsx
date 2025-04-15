@@ -1,3 +1,11 @@
+/**
+ * Authentication Layout Component
+ * 
+ * Provides a consistent container layout for all authentication forms (login, registration, password reset).
+ * Features a centered card with responsive styling, branding elements, and language selector.
+ * 
+ * @module AuthLayout
+ */
 import { Box, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -5,13 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import LanguageSelector from '../../components/LanguageSelector';
 
 /**
- * AuthLayout Component
+ * Props interface for the AuthLayout component
  * 
- * Provides a consistent container layout for all authentication forms (login, registration, password reset).
- * Features a centered card with responsive styling, branding elements, and language selector.
+ * @interface AuthLayoutProps
  */
-
-// Define the props for the AuthLayout component
 interface AuthLayoutProps {
     children: React.ReactNode; // Children elements to be rendered inside the layout
     title: string; // Title of the layout
@@ -22,7 +27,16 @@ interface AuthLayoutProps {
     onAlternativeActionClick?: () => void; // Function to handle alternative action click
 }
 
-// Define the AuthLayout functional component
+/**
+ * Authentication Layout component
+ * 
+ * Provides a consistent branded container for all authentication forms.
+ * Includes responsive layout with header, content area, and footer elements.
+ * Used for login, registration, and password reset screens.
+ * 
+ * @param {AuthLayoutProps} props - Component properties
+ * @returns {JSX.Element} The rendered authentication layout
+ */
 export default function AuthLayout({
     children,
     title,

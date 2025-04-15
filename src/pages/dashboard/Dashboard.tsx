@@ -1,18 +1,22 @@
+/**
+ * Dashboard Module
+ * 
+ * Main application container that serves as the primary layout after user authentication.
+ * 
+ * Responsibilities:
+ * - Manages navigation between different application sections
+ * - Verifies user authentication state and redirects if necessary
+ * - Handles onboarding process for new users
+ * - Provides transaction creation workflow
+ * - Structures global layout (header, navigation, content areas)
+ * 
+ * @module Dashboard
+ */
+
 import { useState, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-/**
- * Dashboard Component
- * 
- * Main application container that manages:
- * - Navigation between different sections
- * - User authentication verification
- * - Onboarding process for new users
- * - Transaction creation flow
- * - Global layout structure (header, nav, content)
- */
 
 // Contexts
 import { useUser } from '../../contexts/UserContext';
@@ -29,6 +33,13 @@ import DrawerBase from './components/ui/DrawerBase';
 // Utils
 import { dispatchTransactionUpdated } from '../../utils/events';
 
+/**
+ * Dashboard Component
+ * 
+ * Provides the main structure and functionality for the authenticated user experience.
+ * 
+ * @returns {JSX.Element} The rendered Dashboard component
+ */
 export default function Dashboard() {
     const { t } = useTranslation();
     const { user, isLoading, userPreferences, userRole } = useUser();
@@ -39,14 +50,19 @@ export default function Dashboard() {
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [transactionDrawerOpen, setTransactionDrawerOpen] = useState(false);
 
-    // Redirect to the authentication page if the user is not logged in
+    /**
+     * Redirects unauthenticated users to the authentication page
+     */
     useEffect(() => {
         if (!isLoading && !user) {
             navigate('/auth');
         }
     }, [user, isLoading, navigate]);
 
-    // Manage the visibility of the onboarding dialog for new users
+    /**
+     * Manages the visibility of the onboarding dialog for new users
+     * Checks user preferences to determine if onboarding should be shown
+     */
     useEffect(() => {
         // Check if onboarding data exists in user's preferences from context
         const onboardingCompleted = userPreferences?.onboarding?.completed || false;
@@ -65,13 +81,17 @@ export default function Dashboard() {
         }
     }, [user, userPreferences, searchParams, setSearchParams]);
 
-    // Synchronize the active section with URL parameters
+    /**
+     * Synchronizes the active section with URL parameters
+     */
     useEffect(() => {
         const section = searchParams.get('section');
         setActiveSection(section || 'dashhome');
     }, [searchParams]);
 
-    // Define menu items with translations for the navigation
+    /**
+     * Constructs menu items with translations for the navigation
+     */
     const menuItems = useMemo(() => [
         { label: t('dashboard.dashhome.title'), icon: 'home', key: 'dashhome' },
         { label: t('dashboard.annualReport.title'), icon: 'bar_chart_4_bars', key: 'annualReport' },
@@ -80,25 +100,42 @@ export default function Dashboard() {
         { label: t('dashboard.notes.title'), icon: 'note_alt', key: 'notes' },
     ], [t]);
 
-    // Event handlers
+    /**
+     * Handles navigation to a different section
+     * 
+     * @param {string} sectionKey - The key of the section to navigate to
+     */
     const handleMenuItemClick = (sectionKey: string) => {
         setActiveSection(sectionKey);
         setSearchParams(sectionKey === 'dashhome' ? {} : { section: sectionKey });
     };
 
+    /**
+     * Handles the completion of the onboarding process
+     */
     const handleOnboardingClose = () => {
         localStorage.removeItem('onboarding_progress');
         setShowOnboarding(false);
     };
 
+    /**
+     * Opens the transaction creation drawer
+     */
     const handleAddTransaction = () => {
         setTransactionDrawerOpen(true);
     };
 
+    /**
+     * Closes the transaction creation drawer
+     */
     const handleTransactionDrawerClose = () => {
         setTransactionDrawerOpen(false);
     };
 
+    /**
+     * Handles successful transaction creation
+     * Notifies relevant components to refresh their data
+     */
     const handleTransactionSubmit = () => {
         setTransactionDrawerOpen(false);
         

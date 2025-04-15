@@ -1,3 +1,18 @@
+/**
+ * Dashboard Header Module
+ * 
+ * Provides the main header component for the dashboard interface.
+ * 
+ * Responsibilities:
+ * - Displays user profile and account access
+ * - Manages theme toggling between dark/light modes
+ * - Controls currency visibility throughout the application
+ * - Provides access to user settings and preferences
+ * - Handles user logout functionality
+ * 
+ * @module DashboardHeader
+ */
+
 import React, { useState, Suspense, useContext, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -38,39 +53,51 @@ import { User } from '../../../types/supabase/users';
 import { ThemeContext } from '../../../contexts/ThemeContext';
 import { useUser } from '../../../contexts/UserContext';
 
-/**
- * Lazy-loaded components for better performance
- * These components are only loaded when needed
- */
+// Utils
+import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';
+
+// Components
+import DrawerBase from './ui/DrawerBase';
 const UserSettings = React.lazy(() => import('../features/settings/UserSettings'));
 const SecurityPrivacy = React.lazy(() => import('../features/settings/SecurityPrivacy'));
 const Help = React.lazy(() => import('../features/settings/Help'));
-import DrawerBase from './ui/DrawerBase';
 
-import { toggleCurrencyVisibility, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../utils/currencyUtils';
 
+/**
+ * Interface for DashboardHeader component props
+ * 
+ * @interface DashboardHeaderProps
+ */
 interface DashboardHeaderProps {
-    user: User | null; // User object or null
+    /** User object or null if not logged in */
+    user: User | null;
 }
 
 /**
  * Settings drawer state interface
  * Tracks the current component to display and navigation source
+ * 
+ * @interface SettingsDrawerState
  */
 interface SettingsDrawerState {
+    /** Whether the drawer is open */
     open: boolean;
+    
+    /** The current component to display */
     component: string;
+    
+    /** Optional source of navigation */
     source?: 'settings';
 }
 
 /**
  * Dashboard Header Component
  * 
- * Main header component that provides:
- * - User account access and settings
- * - Theme toggling (dark/light mode)
- * - Currency visibility control
- * - Profile drawer with account options
+ * Main header component that provides user account access and global application controls.
+ * 
+ * @param {DashboardHeaderProps} props - The component props
+ * @param {User|null} props.user - The current user object or null
+ * @returns {JSX.Element} The rendered DashboardHeader component
  */
 export default function DashboardHeader({ user }: DashboardHeaderProps) {
     const { t } = useTranslation();
@@ -100,7 +127,10 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         ]
     };
 
-    // Listen for changes in currency visibility
+    /**
+     * Listen for changes in currency visibility
+     * Updates the state when visibility is toggled
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -114,9 +144,9 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     }, []);
 
     /**
-     * Event Handlers
+     * Handles user logout process
+     * Clears user session and redirects to authentication page
      */
-    // Handles user logout process
     const handleLogout = async () => {
         try {
             await authService.logout();
@@ -129,7 +159,11 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         }
     };
 
-    // Opens the settings drawer with the selected component
+    /**
+     * Opens the settings drawer with the selected component
+     * 
+     * @param {string} component - The component key to display
+     */
     const handleSettingsClick = (component: string) => {
         setDrawerOpen(false);
         setSettingsDrawer({
@@ -139,12 +173,16 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         });
     };
 
-    // Closes the settings drawer
+    /**
+     * Closes the settings drawer
+     */
     const handleCloseSettingsDrawer = () => {
         setSettingsDrawer({ open: false, component: '' });
     };
 
-    // Toggles currency visibility throughout the app
+    /**
+     * Toggles currency visibility throughout the app
+     */
     const handleToggleCurrency = () => {
         toggleCurrencyVisibility();
     };
@@ -152,6 +190,8 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     /**
      * Renders the appropriate settings component based on selection
      * Used inside the settings drawer
+     * 
+     * @returns {JSX.Element|null} The selected settings component or null
      */
     const renderSettingsComponent = () => {
         switch (settingsDrawer.component) {
@@ -208,22 +248,44 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
 }
 
 /**
- * Header Bar Component
+ * Interface for HeaderBar component props
  * 
- * Top navigation bar with user profile and action buttons
- * Provides access to theme toggle and currency visibility
+ * @interface HeaderBarProps
  */
 interface HeaderBarProps {
+    /** User object or null if not logged in */
     user: User | null;
+    
+    /** Whether dark mode is currently active */
     isDarkMode: boolean;
+    
+    /** Whether currency amounts are currently hidden */
     isDisabledCurrencyAmount: boolean;
+    
+    /** Function to toggle between dark and light themes */
     toggleTheme: () => void;
+    
+    /** Function to toggle currency visibility */
     onToggleCurrency: () => void;
+    
+    /** Function to open the user profile drawer */
     onOpenUserDrawer: () => void;
+    
+    /** Whether the current user has admin privileges */
     isAdmin: boolean;
+    
+    /** Optional user profile image URL */
     profileImage?: string;
 }
 
+/**
+ * Header Bar Component
+ * 
+ * Top navigation bar with user profile and action buttons.
+ * 
+ * @param {HeaderBarProps} props - The component props
+ * @returns {JSX.Element} The rendered HeaderBar component
+ */
 function HeaderBar({
     user,
     isDarkMode,
@@ -299,24 +361,44 @@ function HeaderBar({
 }
 
 /**
- * User Drawer Component
+ * Interface for UserDrawer component props
  * 
- * Slide-in panel with user profile information and settings options
- * Provides navigation to settings pages and logout functionality
+ * @interface UserDrawerProps
  */
 interface UserDrawerProps {
+    /** Whether the drawer is open */
     open: boolean;
+    
+    /** User object or null if not logged in */
     user: User | null;
+    
+    /** Menu items to display in the drawer */
     menuItems: {
         primary: Array<{ icon: React.ReactNode; text: string }>;
         secondary: Array<{ icon: React.ReactNode; text: string }>;
     };
+    
+    /** Function to close the drawer */
     onClose: () => void;
+    
+    /** Function to handle settings item clicks */
     onSettingsClick: (component: string) => void;
+    
+    /** Function to handle logout */
     onLogout: () => void;
+    
+    /** Optional user profile image URL */
     profileImage?: string;
 }
 
+/**
+ * User Drawer Component
+ * 
+ * Slide-in panel with user profile information and settings options.
+ * 
+ * @param {UserDrawerProps} props - The component props
+ * @returns {JSX.Element} The rendered UserDrawer component
+ */
 function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout, profileImage }: UserDrawerProps) {
     const { t } = useTranslation();
 
@@ -440,19 +522,35 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
 }
 
 /**
- * Settings Drawer Component
+ * Interface for SettingsDrawer component props
  * 
- * Slide-in panel displaying various settings components
- * Includes a back button for navigation between drawers
+ * @interface SettingsDrawerProps
  */
 interface SettingsDrawerProps {
+    /** Whether the drawer is open */
     open: boolean;
+    
+    /** The title of the current component being displayed */
     component: string;
+    
+    /** Function to close the drawer */
     onClose: () => void;
+    
+    /** Function to navigate back to the previous screen */
     onBack: () => void;
+    
+    /** The component to render inside the drawer */
     children: React.ReactNode;
 }
 
+/**
+ * Settings Drawer Component
+ * 
+ * Slide-in panel displaying various settings components.
+ * 
+ * @param {SettingsDrawerProps} props - The component props
+ * @returns {JSX.Element} The rendered SettingsDrawer component
+ */
 function SettingsDrawer({ open, component, onClose, onBack, children }: SettingsDrawerProps) {
     return (
         <DrawerBase

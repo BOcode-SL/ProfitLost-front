@@ -1,14 +1,19 @@
 /**
- * TransactionBarChart Component
+ * TransactionBarChart Module
  * 
- * Visualizes income and expenses data for a specified month using a bar chart.
- * Features include:
- * - Side-by-side comparison of income and expenses
- * - Currency formatting based on user preferences
- * - Support for currency visibility toggling for privacy
- * - Loading state with animated skeletons
- * - Empty state handling with user-friendly messaging
- * - Responsive layout with proper sizing
+ * Provides a visual comparison of monthly income and expenses through
+ * an interactive bar chart with accessibility and privacy features.
+ * 
+ * Key Features:
+ * - Side-by-side comparison of income and expenses with distinct colors
+ * - Localized currency formatting based on user preferences
+ * - Privacy mode with blurred monetary values and disabled tooltips
+ * - Progressive loading with animated skeleton placeholders
+ * - Empty state handling with appropriate messaging
+ * - Responsive layout adapting to various screen sizes
+ * - Localized month names based on user language
+ * 
+ * @module TransactionBarChart
  */
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Box, Paper, Skeleton, useTheme, Typography } from '@mui/material';
@@ -26,18 +31,40 @@ import {
     formatLargeNumber
 } from '../../../../../utils/currencyUtils';
 
-// Array of month abbreviations for localization
+/**
+ * Standard month abbreviations in English
+ * Used for consistent data processing and localization
+ */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// Interface for the props of the TransactionBarChart component
+/**
+ * Props interface for the TransactionBarChart component
+ * 
+ * @interface TransactionBarChartProps
+ */
 interface TransactionBarChartProps {
-    loading: boolean; // Indicates whether the data is currently loading
-    month: string;    // The month for which the data is displayed
-    income: number;   // Total income for the specified month
-    expenses: number; // Total expenses for the specified month
+    /** Indicates whether the chart data is currently loading */
+    loading: boolean;
+    
+    /** The month number (1-12) for which to display data */
+    month: string;
+    
+    /** Total income amount for the specified month */
+    income: number;
+    
+    /** Total expenses amount for the specified month */
+    expenses: number;
 }
 
-// TransactionBarChart component
+/**
+ * TransactionBarChart Component
+ * 
+ * Renders a bar chart comparing income and expenses for a specific month
+ * with appropriate loading states and empty data handling.
+ * 
+ * @param {TransactionBarChartProps} props - Component properties
+ * @returns {JSX.Element} Rendered bar chart component
+ */
 export default function TransactionBarChart({
     loading,
     month,
@@ -48,9 +75,13 @@ export default function TransactionBarChart({
     const { user } = useUser();
     const theme = useTheme();
 
+    /** State tracking whether currency values should be blurred for privacy */
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for changes in currency visibility
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -63,16 +94,23 @@ export default function TransactionBarChart({
         };
     }, []);
 
-    // Check if the data is empty to display appropriate UI
+    /** Flag indicating whether no financial data exists for the month */
     const isDataEmpty = income === 0 && expenses === 0;
 
-    // Function to get the translated month name
+    /**
+     * Converts numeric month to localized month name
+     * 
+     * @param {string} month - Month number (1-12) as string
+     * @returns {string} Localized month name
+     */
     const getMonthName = (month: string) => {
         const monthIndex = parseInt(month) - 1;
         return t(`dashboard.common.monthNames.${months[monthIndex]}`);
     }
 
-    // Return the main container for the chart
+    /**
+     * Render the chart with appropriate container and responsive layout
+     */
     return (
         <Box sx={{
             flex: 1,
@@ -94,12 +132,15 @@ export default function TransactionBarChart({
                 }}>
                 {/* Conditional rendering based on loading state */}
                 {loading ? (
+                    // Loading skeleton with animation
                     <Skeleton variant="rectangular" width="100%" height={250} sx={{
                         borderRadius: 3,
                         animation: 'pulse 1.5s ease-in-out infinite'
                     }} />
                 ) : (
+                    // Render chart with actual data or empty state
                     <Box sx={{ width: '100%', position: 'relative' }}>
+                        {/* Bar chart comparing income and expenses */}
                         <BarChart
                             xAxis={[{
                                 scaleType: 'band',
@@ -139,12 +180,12 @@ export default function TransactionBarChart({
                                 valueFormatter: (value: number) => formatLargeNumber(value)
                             }]}
                             tooltip={isHidden ? {
-                                trigger: 'none'
+                                trigger: 'none' // Disable tooltips in privacy mode
                             } : {
-                                trigger: 'axis'
+                                trigger: 'axis' // Show tooltips on hover
                             }}
                         />
-                        {/* Display a message if there is no data */}
+                        {/* Empty state overlay message */}
                         {isDataEmpty && (
                             <Typography
                                 variant="body1"

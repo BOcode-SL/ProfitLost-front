@@ -1,12 +1,17 @@
 /**
- * Accounts Feature Component
+ * Accounts Feature Module
  * 
- * Main component for the Accounts section of the dashboard, providing features for:
- * - Viewing account balances by month and year
- * - Creating, editing, and managing multiple accounts
- * - Visualizing account data through charts
- * - Preserving user preferences for account display order
- * - Toggling active/inactive accounts
+ * Provides the main interface for managing financial accounts within the application.
+ * 
+ * Responsibilities:
+ * - Manages the display and interaction with user's financial accounts
+ * - Handles year-based data retrieval and visualization
+ * - Provides account creation, editing, and deletion capabilities
+ * - Implements account ordering and active/inactive account management
+ * - Optimizes data loading with caching strategies for better performance
+ * - Handles error states and provides appropriate user feedback
+ * 
+ * @module Accounts
  */
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Box, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
@@ -23,20 +28,41 @@ import type { YearRecord } from '../../../../types/supabase/year_records';
 import type { User } from '../../../../types/supabase/users';
 import type { UUID } from '../../../../types/supabase/common';
 
-// Extended types for relationships
+/**
+ * Extended Account interface with year_records relationship and additional properties
+ * 
+ * @interface AccountWithYearRecords
+ * @extends {Account}
+ */
 interface AccountWithYearRecords extends Account {
+    /** Records of annual financial data */
     year_records?: YearRecord[];
+    
+    /** Year records in a key-value format */
     yearRecords?: Record<string, YearRecord>;
+    
+    /** Single year record for the currently selected year */
     yearRecord?: YearRecord;
+    
+    /** Account configuration settings */
     configuration?: {
         backgroundColor: string;
         color: string;
         isActive: boolean;
     };
+    
+    /** Order position in the account list */
     accountOrder?: number;
 }
 
+/**
+ * User interface extended with account ordering preferences
+ * 
+ * @interface UserWithPreferences
+ * @extends {User}
+ */
 interface UserWithPreferences extends User {
+    /** User-defined order of accounts */
     accounts_order?: UUID[];
 }
 
@@ -44,7 +70,14 @@ interface UserWithPreferences extends User {
 import AccountsChart from './components/AccountsChart';
 import AccountsTable from './components/AccountsTable';
 
-// Main Accounts component for the dashboard
+/**
+ * Accounts Component
+ * 
+ * Main container for the Accounts section of the application.
+ * Manages account data loading, processing, and presentation.
+ * 
+ * @returns {JSX.Element} The rendered Accounts component
+ */
 export default function Accounts() {
     const { t } = useTranslation();
 
@@ -55,7 +88,10 @@ export default function Accounts() {
     const [selectedYear, setSelectedYear] = useState<string>('');
     const [availableYears, setAvailableYears] = useState<number[]>([]);
 
-    // Fetch user data including preferences and account ordering
+    /**
+     * Fetches user data including preferences and account ordering
+     * Used to get the user's preferred account display order
+     */
     const fetchUserData = useCallback(async () => {
         try {
             const response = await userService.getUserData();
@@ -68,7 +104,10 @@ export default function Accounts() {
         }
     }, [t]);
 
-    // Fetch available years from the backend
+    /**
+     * Fetches available years from the backend
+     * Used to populate the year selector dropdown
+     */
     const fetchAvailableYears = useCallback(async () => {
         try {
             const response = await accountService.getAvailableYears();
@@ -82,7 +121,14 @@ export default function Accounts() {
         }
     }, []);
 
-    // Fetch accounts for the selected year
+    /**
+     * Fetches accounts data for the selected year
+     * Includes caching strategy for performance optimization
+     * 
+     * @param {number} year - The year to fetch accounts for
+     * @param {boolean} [silent=false] - Whether to show loading indicators
+     * @returns {Promise<AccountWithYearRecords[]>} The fetched accounts data
+     */
     const fetchAccountsByYear = useCallback(async (year: number, silent: boolean = false) => {
         try {
             if (!silent) setLoading(true);
@@ -227,7 +273,13 @@ export default function Accounts() {
         }
     }, [t]);
 
-    // Function to refresh accounts data in the background without blocking UI
+    /**
+     * Refreshes accounts data in the background without blocking UI
+     * Used to keep data current after initial load from cache
+     * 
+     * @param {number} year - Year to refresh data for
+     * @param {string} cacheKey - Cache key for storing refreshed data
+     */
     const refreshAccountsInBackground = async (year: number, cacheKey: string) => {
         try {
             const response = await accountService.getAccountsByYear(year);
@@ -339,12 +391,17 @@ export default function Accounts() {
         }
     };
 
-    // Load initial data on component mount
+    /**
+     * Loads initial data on component mount
+     */
     useEffect(() => {
         Promise.all([fetchUserData(), fetchAvailableYears()]);
     }, [fetchUserData, fetchAvailableYears]);
 
-    // Effect to set the selectedYear after availableYears are loaded
+    /**
+     * Sets the selectedYear after availableYears are loaded
+     * Defaults to current year or first available year
+     */
     useEffect(() => {
         if (availableYears.length > 0 && !selectedYear) {
             // Get current year
@@ -364,14 +421,19 @@ export default function Accounts() {
         }
     }, [availableYears, selectedYear, fetchAccountsByYear]);
 
-    // Fetch accounts when selected year changes
+    /**
+     * Fetches accounts when selected year changes
+     */
     useEffect(() => {
         if (selectedYear) {
             fetchAccountsByYear(parseInt(selectedYear));
         }
     }, [selectedYear, fetchAccountsByYear]);
 
-    // Apply user's preferred account ordering
+    /**
+     * Applies user's preferred account ordering
+     * Creates a sorted account list based on user preferences
+     */
     const orderedAccounts = useMemo(() => {
         if (!userData?.accounts_order || !accounts.length) return accounts;
 
@@ -395,7 +457,12 @@ export default function Accounts() {
         return orderedAccounts;
     }, [accounts, userData?.accounts_order]);
 
-    // Handler for updating an existing account
+    /**
+     * Handles updating an existing account
+     * 
+     * @param {AccountWithYearRecords} updatedAccount - The account to update
+     * @returns {Promise<boolean>} Success indicator
+     */
     const handleAccountUpdate = async (updatedAccount: AccountWithYearRecords) => {
         try {
             // Create the basic update data object
@@ -479,7 +546,12 @@ export default function Accounts() {
         }
     };
 
-    // Handler for creating a new account
+    /**
+     * Handles creating a new account
+     * 
+     * @param {AccountWithYearRecords} newAccount - The account to create
+     * @returns {Promise<boolean>} Success indicator
+     */
     const handleAccountCreate = async (newAccount: AccountWithYearRecords): Promise<boolean> => {
         try {
             const response = await accountService.createAccount({
@@ -506,7 +578,12 @@ export default function Accounts() {
         }
     };
 
-    // Handler for deleting an account
+    /**
+     * Handles deleting an account
+     * 
+     * @param {UUID} accountId - ID of the account to delete
+     * @returns {Promise<boolean>} Success indicator
+     */
     const handleAccountDelete = async (accountId: UUID): Promise<boolean> => {
         try {
             const response = await accountService.deleteAccount(accountId);
@@ -527,7 +604,11 @@ export default function Accounts() {
         }
     };
 
-    // Handler for changing the order of accounts (drag and drop)
+    /**
+     * Handles changing the order of accounts (drag and drop)
+     * 
+     * @param {UUID[]} newOrder - New order of account IDs
+     */
     const handleOrderChange = async (newOrder: UUID[]) => {
         try {
             const response = await accountService.updateAccountsOrder(newOrder);
@@ -546,7 +627,9 @@ export default function Accounts() {
         }
     };
 
-    // Separate active and inactive accounts for display
+    /**
+     * Separates active and inactive accounts for display
+     */
     const { activeAccounts, inactiveAccounts } = useMemo(() => {
         return {
             activeAccounts: orderedAccounts.filter(account => account.is_active !== false),

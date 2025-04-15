@@ -4,6 +4,8 @@
  * Provides functionality for user authentication including registration, login, logout,
  * password management, and third-party authentication via Google.
  * Uses Supabase for authentication handling.
+ * 
+ * @module AuthService
  */
 
 // Types
@@ -19,8 +21,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Handles errors that occur during authentication operations
- * @param error - The error that occurred during an API request
- * @returns A standardized AuthApiResponse with error details
+ * 
+ * @param {unknown} error - The error that occurred during an API request
+ * @returns {AuthApiResponse} A standardized AuthApiResponse with error details
  */
 const handleAuthError = (error: unknown): AuthApiResponse => {
     // Check if the error has a statusCode
@@ -51,8 +54,9 @@ const handleAuthError = (error: unknown): AuthApiResponse => {
 export const authService = {
     /**
      * Registers a new user with the provided credentials
-     * @param credentials - The registration information including username, email, and password
-     * @returns Promise with the registration response or error
+     * 
+     * @param {RegisterCredentials} credentials - The registration information including username, email, and password
+     * @returns {Promise<AuthApiResponse>} Promise with the registration response or error
      */
     async register(credentials: RegisterCredentials): Promise<AuthApiResponse> {
         try {
@@ -93,8 +97,9 @@ export const authService = {
 
     /**
      * Authenticates a user with the provided login credentials using Supabase
-     * @param credentials - The login information including username/email and password
-     * @returns Promise with the login response or error
+     * 
+     * @param {LoginCredentials} credentials - The login information including username/email and password
+     * @returns {Promise<AuthApiResponse>} Promise with the login response or error
      */
     async login(credentials: LoginCredentials): Promise<AuthApiResponse> {
         try {
@@ -134,7 +139,8 @@ export const authService = {
 
     /**
      * Logs out the current user by clearing session data in Supabase
-     * @returns Promise with the logout response or error
+     * 
+     * @returns {Promise<AuthApiResponse>} Promise with the logout response or error
      */
     async logout(): Promise<AuthApiResponse> {
         try {
@@ -178,8 +184,9 @@ export const authService = {
 
     /**
      * Initiates the password recovery process for a user
-     * @param email - The email address of the account to recover
-     * @returns Promise with the password recovery response or error
+     * 
+     * @param {string} email - The email address of the account to recover
+     * @returns {Promise<AuthApiResponse>} Promise with the password recovery response or error
      */
     async forgotPassword(email: string): Promise<AuthApiResponse> {
         try {
@@ -208,8 +215,9 @@ export const authService = {
 
     /**
      * Verifies the validity of a password reset token
-     * @param token - The reset token to verify
-     * @returns Promise with the token verification response or error
+     * 
+     * @param {string} token - The reset token to verify
+     * @returns {Promise<AuthApiResponse>} Promise with the token verification response or error
      */
     async verifyResetToken(token: string): Promise<AuthApiResponse> {
         try {
@@ -238,9 +246,10 @@ export const authService = {
 
     /**
      * Resets a user's password using a valid reset token
-     * @param token - The valid reset token
-     * @param newPassword - The new password to set
-     * @returns Promise with the password reset response or error
+     * 
+     * @param {string} token - The valid reset token
+     * @param {string} newPassword - The new password to set
+     * @returns {Promise<AuthApiResponse>} Promise with the password reset response or error
      */
     async resetPassword(token: string, newPassword: string): Promise<AuthApiResponse> {
         try {
@@ -269,8 +278,9 @@ export const authService = {
 
     /**
      * Authenticates a user using a Google OAuth token via Supabase
-     * @param token - The Google authentication token
-     * @returns Promise with the login response or error, including isNewUser flag
+     * 
+     * @param {string} token - The Google authentication token
+     * @returns {Promise<AuthApiResponse>} Promise with the login response or error, including isNewUser flag
      */
     async googleLogin(token: string): Promise<AuthApiResponse> {
         try {

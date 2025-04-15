@@ -1,14 +1,17 @@
 /**
- * AnnualChart Component
+ * AnnualChart Module
  * 
- * Displays a monthly breakdown of income and expenses as a bar chart.
- * Features include:
+ * Provides visual representation of monthly financial trends through a bar chart.
+ * 
+ * Key Features:
  * - Side-by-side comparison of income vs expenses for each month
  * - Currency formatting based on user preferences
  * - Privacy mode with blurred monetary values
- * - Responsive design for different screen sizes
- * - Empty state handling when no transaction data exists
+ * - Responsive design adapting to different screen sizes
+ * - Empty state handling with appropriate messaging
  * - Loading skeleton while data is being processed
+ * 
+ * @module AnnualChart
  */
 import { useMemo, useState, useEffect } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
@@ -30,16 +33,33 @@ import {
 } from '../../../../../utils/currencyUtils';
 import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
-// Interface for the props of the AnnualChart component
+/**
+ * Props interface for the AnnualChart component
+ * 
+ * @interface AnnualChartProps
+ */
 interface AnnualChartProps {
-    transactions: Transaction[]; // Array of transactions to visualize
-    isLoading: boolean; // Indicates if the data is currently loading
+    /** Array of transactions to visualize in the chart */
+    transactions: Transaction[];
+    
+    /** Indicates if the data is currently loading */
+    isLoading: boolean;
 }
 
-// Month abbreviations in English for consistent sorting and processing
+/**
+ * Standard month abbreviations in English for consistent sorting and processing
+ * Used to ensure consistent month ordering across the application
+ */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// AnnualChart component
+/**
+ * AnnualChart Component
+ * 
+ * Renders a bar chart comparing monthly income and expenses.
+ * 
+ * @param {AnnualChartProps} props - Component properties
+ * @returns {JSX.Element} Rendered chart component
+ */
 export default function AnnualChart({ transactions, isLoading }: AnnualChartProps) {
     const { t } = useTranslation();
     const theme = useTheme();
@@ -48,7 +68,10 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
-    // Listen for currency visibility toggle events across the application
+    /**
+     * Listen for currency visibility toggle events across the application
+     * Updates local component state when visibility changes elsewhere
+     */
     useEffect(() => {
         const handleVisibilityChange = (event: Event) => {
             const customEvent = event as CustomEvent;
@@ -61,12 +84,20 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         };
     }, []);
 
-    // Get localized abbreviated month names for chart labels
+    /**
+     * Get localized abbreviated month name for chart labels
+     * 
+     * @param {string} monthKey - Month key to translate (e.g., "Jan")
+     * @returns {string} Localized month abbreviation
+     */
     const getMonthShortName = (monthKey: string) => {
         return t(`dashboard.common.monthNamesShort.${monthKey}`);
     };
 
-    // Calculate monthly income and expense totals from transaction data
+    /**
+     * Calculate monthly income and expense totals from transaction data
+     * Processes all transactions and groups them by month
+     */
     const chartData = useMemo(() => {
         // Initialize an array with 12 empty month buckets
         const monthsData = Array.from({ length: 12 }, (_, i) => ({
@@ -88,7 +119,10 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
         return monthsData;
     }, [transactions]);
 
-    // Display loading skeleton while data is being fetched
+    /**
+     * Display loading skeleton while data is being fetched
+     * Shows a placeholder with an animated pulse effect
+     */
     if (isLoading) {
         return (
             <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5, p: 1 }}>
@@ -105,7 +139,6 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
     // Check if there is any data to display
     const isDataEmpty = Object.values(chartData).every(item => item.income === 0 && item.expenses === 0);
 
-    // Main container for the chart
     return (
         <Box sx={{
             width: '100%',
