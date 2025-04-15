@@ -3,7 +3,9 @@
  * 
  * Provides user authentication state management and preferences.
  * Handles user data loading, language preferences, and state synchronization.
+ * Serves as the central source of truth for user-related data across the application.
  */
+
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,40 +17,17 @@ import type { PreferenceContent } from '../types/supabase/preferences';
 import { userService } from '../services/user.service';
 
 /**
- * API response structure from the backend
- */
-interface UserApiResponse {
-    id: string;
-    username: string;
-    email: string;
-    name: string;
-    surname: string;
-    profile_image?: string;
-    preferences: {
-        language?: string;
-        currency?: string;
-        dateFormat?: string;
-        timeFormat?: string;
-        theme?: string;
-        viewMode?: string;
-        onboarding?: {
-            completed: boolean;
-            sections: Array<{ section: string; shown: boolean }>;
-        };
-    };
-    role: string;
-}
-
-/**
- * Extended User interface that includes preferences directly on the user object
- * for easier access in utility functions
+ * Extended User interface that includes preferences and role
+ * for easier access in utility functions and components
  */
 export interface UserWithPreferences extends User {
     preferences: PreferenceContent;
+    role: string; // Role code like 'admin', 'user', etc.
 }
 
 /**
  * Interface for UserContext
+ * Defines the shape and capabilities of the user context throughout the application
  */
 interface UserContextType {
     user: UserWithPreferences | null;   // Current user data with preferences or null if not logged in
@@ -68,6 +47,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 /**
  * Default user preferences.
  * Applied when user has no stored preferences or as fallback values.
+ * Ensures consistent experience even when preferences are missing.
  */
 const defaultPreferences: PreferenceContent = {
     language: 'enUS',
@@ -86,6 +66,7 @@ const defaultPreferences: PreferenceContent = {
  * User Provider component.
  * Manages user authentication state and preferences.
  * Handles loading user data from API and syncing with i18n.
+ * Provides user context to all child components in the tree.
  * 
  * @param children - Child components to be wrapped
  */
@@ -117,14 +98,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     /**
      * Loads user data from the API.
      * Updates application language based on user preferences.
+     * Sets user state, preferences, and role in the context.
      */
     const loadUserData = useCallback(async () => {
         try {
             const response = await userService.getUserData(); // Fetch user profile data
 
             if (response.success && response.data) {
-                // Cast response data to our API response interface
-                const apiData = response.data as unknown as UserApiResponse;
+                // Los datos de usuario vienen directamente en el response.data, no en un subobjeto 'user'
+                const apiData = response.data as unknown as {
+                    id: string;
+                    username: string;
+                    email: string;
+                    name: string;
+                    surname: string;
+                    google_id?: string | null;
+                    last_login?: string;
+                    reset_token?: number | null;
+                    reset_token_expired?: string | null;
+                    preferences: PreferenceContent;
+                    role: string;
+                };
                 
                 // Create a user preferences object with defaults merged with API data
                 const preferences = {
@@ -132,27 +126,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                     ...(apiData.preferences || {})
                 } as PreferenceContent;
                 
-                // Create a User object that matches the Supabase schema and includes preferences
+                // Create a User object with all required fields
                 const userData: UserWithPreferences = {
                     id: apiData.id,
                     username: apiData.username,
                     email: apiData.email,
                     name: apiData.name,
                     surname: apiData.surname,
-                    // Add other required fields with defaults
                     password: null,
-                    google_id: null,
-                    last_login: new Date().toISOString(),
-                    reset_token: null,
-                    reset_token_expired: null,
+                    google_id: apiData.google_id || null,
+                    last_login: apiData.last_login || new Date().toISOString(),
+                    reset_token: apiData.reset_token || null,
+                    reset_token_expired: apiData.reset_token_expired || null,
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                     deleted_at: null,
                     created_by: null,
                     updated_by: null,
                     deleted_by: null,
-                    // Add the preferences directly to the user object
-                    preferences: preferences
+                    preferences: preferences,
+                    role: apiData.role || 'user'
                 };
 
                 setUser(userData);
@@ -195,7 +188,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
  * Provides type-safe access to user state and methods.
  * Throws error if used outside of UserProvider.
  * 
- * @returns The user context value
+ * @returns The user context value with full typing support
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => {
