@@ -166,12 +166,13 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         updateFormData.append('dateFormat', formData.dateFormat);
         updateFormData.append('timeFormat', formData.timeFormat);
 
-        if (formData.deleteImage) {
-            updateFormData.append('deleteImage', 'true');
-        }
-        else if (formData.profileImage) {
-            updateFormData.append('profileImage', formData.profileImage);
-        }
+        // Profile image functionality temporarily disabled
+        // if (formData.deleteImage) {
+        //     updateFormData.append('deleteImage', 'true');
+        // }
+        // else if (formData.profileImage) {
+        //     updateFormData.append('profileImage', formData.profileImage);
+        // }
 
         try {
             const response = await userService.updateProfile({
@@ -254,7 +255,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                                 <Button
                                     variant="text"
                                     onClick={handleDeleteImage}
-                                    disabled={loading}
+                                    disabled={true}
                                     size="small"
                                 >
                                     {t('dashboard.settings.userSettings.deleteImage')}
@@ -263,7 +264,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                                 <Button
                                     variant="text"
                                     onClick={() => fileInputRef.current?.click()}
-                                    disabled={loading}
+                                    disabled={true}
                                     size="small"
                                 >
                                     {t('dashboard.settings.userSettings.changeImage')}
