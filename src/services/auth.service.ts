@@ -121,9 +121,9 @@ export const authService = {
                 } as AuthApiResponse;
             }
 
-            // Store the session data in local storage if on iOS
-            if (isIOS() && data.data?.session) {
-                localStorage.setItem('supabase_session', JSON.stringify(data.data.session));
+            // Store the token in local storage if on iOS
+            if (isIOS() && data.token) {
+                localStorage.setItem('auth_token', data.token);
             }
 
             return {

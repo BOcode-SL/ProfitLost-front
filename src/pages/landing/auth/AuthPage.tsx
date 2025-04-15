@@ -170,7 +170,15 @@ export default function AuthPage() {
                     await loadUserData();
                     pushLoginSuccessEvent('email');
                     toast.success(t('home.auth.login.title'));
-                    navigate('/dashboard', { replace: true });
+                    
+                    // iOS PWA workaround for token persistence
+                    if (isIOS() && window.matchMedia('(display-mode: standalone)').matches) {
+                        setTimeout(() => {
+                            navigate('/dashboard', { replace: true });
+                        }, 500);
+                    } else {
+                        navigate('/dashboard', { replace: true });
+                    }
                 }
             } else {
                 // Process registration with validation
