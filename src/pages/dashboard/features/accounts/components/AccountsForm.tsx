@@ -1,15 +1,17 @@
 /**
- * AccountsForm Component
+ * AccountsForm Module
  * 
- * Provides a comprehensive form interface for creating and editing financial accounts.
+ * Comprehensive form interface for creating and editing financial accounts
+ * with support for monthly data entry and year-based management.
  * 
  * Features:
- * - Account name, color, and active status management
- * - Year-based monthly balance data entry
- * - Adding new years to existing accounts
+ * - Account name, color, and active status configuration
+ * - Year-based monthly balance data entry and visualization
+ * - Dynamic year selection with ability to add new years
  * - Account deletion with confirmation dialog
- * - Validation and error handling
- * - Optimized data loading with caching
+ * - Data validation and error handling
+ * - Real-time preview of account appearance
+ * - Optimized data loading with caching strategies
  * 
  * @module AccountsForm
  */
@@ -44,45 +46,51 @@ import type { YearRecord } from '../../../../../types/supabase/year_records';
 import type { UUID } from '../../../../../types/supabase/common';
 
 /**
- * Extended Account interface with year_records relationship
+ * Extended Account interface with year_records relationship and additional properties
+ * Used for managing account data across multiple years
  * 
  * @interface AccountWithYearRecords
  * @extends {Account}
  */
 interface AccountWithYearRecords extends Account {
-    /** Records of annual financial data for this account */
+    /** Annual financial records containing monthly data */
     year_records?: YearRecord[];
+    
+    /** All available years in the system for year selection */
+    available_years?: number[];
 }
 
 /**
- * Props for the AccountsForm component
+ * Props interface for the AccountsForm component
+ * Defines the required callbacks and optional account data
  * 
  * @interface AccountsFormProps
  */
 interface AccountsFormProps {
-    /** Function to handle dialog close action */
+    /** Function called when form is closed without saving */
     onClose: () => void;
     
-    /** Function to handle successful form submission with account data */
+    /** Function called after successful form submission, returns success status */
     onSuccess: (account: AccountWithYearRecords) => Promise<boolean>;
     
-    /** Optional function to handle account deletion */
+    /** Optional function for handling account deletion */
     onDelete?: (accountId: UUID) => void;
     
-    /** Optional account data for editing (null/undefined for new account creation) */
+    /** Account data for editing mode (undefined/null for creation mode) */
     account?: AccountWithYearRecords | null;
 }
 
-/** Array of month names in chronological order (for backend data mapping) */
+/** Array of month abbreviations used for data mapping and display */
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /**
  * AccountsForm Component
  * 
- * Handles both creation and editing of financial accounts with year-based monthly data.
+ * Renders a form for creating and editing financial accounts,
+ * with support for managing monthly data across multiple years.
  * 
  * @param {AccountsFormProps} props - Component properties
- * @returns {JSX.Element} Rendered form component
+ * @returns {JSX.Element} Rendered account form component
  */
 export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
@@ -104,64 +112,35 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [showYearInput, setShowYearInput] = useState(false);
     const [newYear, setNewYear] = useState<string>('');
     const [loadingYears, setLoadingYears] = useState(false);
-    const [availableYearsData, setAvailableYearsData] = useState<number[]>([]);
+    const [availableYearsData, setAvailableYearsData] = useState<number[]>(
+        // Initialize directly with provided years if available
+        account?.available_years && account.available_years.length > 0 
+            ? [...account.available_years].sort((a, b) => b - a)
+            : []
+    );
+    
+    /** Years that have been added but not yet saved */
+    const [pendingYears, setPendingYears] = useState<number[]>([]);
+
+    /** Counter used to force component re-renders when needed */
+    const [forceRefresh, setForceRefresh] = useState(0);
 
     /**
      * Loads available years for the current account
-     * Uses caching for optimized performance
+     * Attempts multiple sources in order of reliability
      */
     const loadAvailableYears = useCallback(async () => {
         if (!account?.id) return;
         
         setLoadingYears(true);
         try {
-            const currentYear = new Date().getFullYear();
-            
-            // Check for cached years data
-            const cacheKey = `account_${account.id}_available_years`;
-            const cachedData = sessionStorage.getItem(cacheKey);
-            
-            if (cachedData) {
-                try {
-                    const parsedData = JSON.parse(cachedData) as number[];
-                    setAvailableYearsData(parsedData);
-                    
-                    // Set current year if available, otherwise first year
-                    if (parsedData.includes(currentYear)) {
-                        setSelectedYear(currentYear);
-                    } else if (parsedData.length > 0) {
-                        setSelectedYear(parsedData[0]);
-                    }
-                    
-                    setLoadingYears(false);
-                    return;
-                } catch (e) {
-                    console.warn('Error parsing cached years data', e);
-                }
-            }
-            
-            // Try to use already loaded data from account
-            if (account.year_records && account.year_records.length > 0) {
-                const years = new Set<number>();
-                years.add(currentYear);
-                
-                account.year_records.forEach(record => {
-                    if (record.year) {
-                        years.add(record.year);
-                    }
-                });
-                
-                const sortedYears = Array.from(years).sort((a, b) => b - a);
+            // Strategy 1: Use years provided by parent component
+            if (account.available_years && account.available_years.length > 0) {
+                const sortedYears = [...account.available_years].sort((a, b) => b - a);
                 setAvailableYearsData(sortedYears);
                 
-                // Cache for future use
-                try {
-                    sessionStorage.setItem(cacheKey, JSON.stringify(sortedYears));
-                } catch (e) {
-                    console.warn('Failed to cache years data', e);
-                }
-                
                 // Set current year if available, otherwise first year
+                const currentYear = new Date().getFullYear();
                 if (sortedYears.includes(currentYear)) {
                     setSelectedYear(currentYear);
                 } else if (sortedYears.length > 0) {
@@ -172,13 +151,60 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 return;
             }
             
-            // If no loaded data, fetch from API
+            // Strategy 2: Get ALL available years from the API
+            const yearsResponse = await accountService.getAvailableYears();
+            if (yearsResponse.success && yearsResponse.data) {
+                const apiYears = yearsResponse.data as unknown as number[];
+                
+                if (apiYears && apiYears.length > 0) {
+                    const sortedYears = [...apiYears].sort((a, b) => b - a);
+                    setAvailableYearsData(sortedYears);
+                    
+                    const currentYear = new Date().getFullYear();
+                    if (sortedYears.includes(currentYear)) {
+                        setSelectedYear(currentYear);
+                    } else if (sortedYears.length > 0) {
+                        setSelectedYear(sortedYears[0]);
+                    }
+                    
+                    setLoadingYears(false);
+                    return;
+                }
+            }
+            
+            // Strategy 3: Use account's existing year_records
+            if (account.year_records && account.year_records.length > 0) {
+                const years = new Set<number>();
+                
+                account.year_records.forEach(record => {
+                    if (record.year) {
+                        years.add(record.year);
+                    }
+                });
+                
+                // Always add current year as a fallback option
+                const currentYear = new Date().getFullYear();
+                years.add(currentYear);
+                
+                const sortedYears = Array.from(years).sort((a, b) => b - a);
+                setAvailableYearsData(sortedYears);
+                
+                if (sortedYears.includes(currentYear)) {
+                    setSelectedYear(currentYear);
+                } else if (sortedYears.length > 0) {
+                    setSelectedYear(sortedYears[0]);
+                }
+                
+                setLoadingYears(false);
+                return;
+            }
+            
+            // Strategy 4: Get account detail from API as last resort
             const response = await accountService.getAccountDetailById(account.id);
             if (response.success && response.data) {
                 const accountData = response.data as AccountWithYearRecords;
                 if (accountData.year_records && accountData.year_records.length > 0) {
                     const years = new Set<number>();
-                    years.add(currentYear);
                     
                     accountData.year_records.forEach(record => {
                         if (record.year) {
@@ -186,17 +212,13 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         }
                     });
                     
+                    // Always add current year as a fallback
+                    const currentYear = new Date().getFullYear();
+                    years.add(currentYear);
+                    
                     const sortedYears = Array.from(years).sort((a, b) => b - a);
                     setAvailableYearsData(sortedYears);
                     
-                    // Cache for future use
-                    try {
-                        sessionStorage.setItem(cacheKey, JSON.stringify(sortedYears));
-                    } catch (e) {
-                        console.warn('Failed to cache years data', e);
-                    }
-                    
-                    // Set current year if available, otherwise first year
                     if (sortedYears.includes(currentYear)) {
                         setSelectedYear(currentYear);
                     } else if (sortedYears.length > 0) {
@@ -211,31 +233,53 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         } finally {
             setLoadingYears(false);
         }
-    }, [account?.id, account?.year_records]);
+    }, [account?.id, account?.year_records, account?.available_years]);
 
     /**
      * Initialize component on mount or when account changes
+     * Sets up initial year selection and loads available years
      */
     useEffect(() => {
-        if (account?.id) {
+        // Strategy 1: Use years from parent component
+        if (account?.available_years && account.available_years.length > 0) {
+            const sortedYears = [...account.available_years].sort((a, b) => b - a);
+            const currentYear = new Date().getFullYear();
+            
+            if (sortedYears.includes(currentYear)) {
+                setSelectedYear(currentYear);
+            } else if (sortedYears.length > 0) {
+                setSelectedYear(sortedYears[0]);
+            }
+        }
+        // Strategy 2: Load available years if we have an account ID
+        else if (account?.id) {
             loadAvailableYears();
         } else {
             // Default to current year for new accounts
             setSelectedYear(new Date().getFullYear());
         }
-    }, [account?.id, loadAvailableYears]);
+    }, [account?.id, account?.available_years, loadAvailableYears]);
 
     /**
-     * Calculate available years from account data and current year
-     * When API data is unavailable, use fallback calculation
+     * Calculates available years from multiple sources
+     * Combines API data, account data, and pending years
      */
     const availableYears = useMemo(() => {
-        // If we have loaded available years from the API, use those
-        if (availableYearsData.length > 0) {
-            return availableYearsData;
+        // Strategy 1: Years provided by parent component
+        if (account?.available_years && account.available_years.length > 0) {
+            // Include both available_years and pendingYears
+            const allYears = new Set([...account.available_years, ...pendingYears]);
+            return Array.from(allYears).sort((a, b) => b - a);
         }
         
-        // Otherwise use the fallback calculation
+        // Strategy 2: Years loaded from API
+        if (availableYearsData.length > 0) {
+            // Combine with pending years
+            const allYears = new Set([...availableYearsData, ...pendingYears]);
+            return Array.from(allYears).sort((a, b) => b - a);
+        }
+        
+        // Strategy 3: Calculate from account data
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
         years.add(currentYear);
@@ -243,13 +287,17 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         if (account?.year_records) {
             account.year_records.forEach(record => years.add(record.year));
         }
+        
+        // Add pending years
+        pendingYears.forEach(year => years.add(year));
 
-        // Sort years in descending order (newest first)
+        // Sort newest first
         return Array.from(years).sort((a: number, b: number) => b - a);
-    }, [account?.year_records, availableYearsData]);
+    }, [account?.year_records, account?.available_years, availableYearsData, pendingYears]);
 
     /**
-     * Load monthly values when account data or selected year changes
+     * Loads monthly values when account data or selected year changes
+     * Populates the form with data for the selected year
      */
     useEffect(() => {
         // Only proceed if we have a valid numeric year and an account
@@ -273,7 +321,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         const monthKey = month.toLowerCase() as keyof YearRecord;
                         const value = yearRecord[monthKey] as number | null;
                         values[month] = value !== null ? value : 0;
-                        // Convert to string and replace decimal point with comma for user input
+                        // Convert to string with comma decimal separator for input fields
                         inputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
                     });
                     setMonthlyValues(values);
@@ -295,52 +343,16 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 setMonthlyInput(inputs);
                 
                 /**
-                 * Load account details from cache or API
+                 * Load account details directly from API
+                 * Fetches year-specific data for the account
                  */
                 const loadAccountDetails = async () => {
                     try {
-                        // Try to get from session storage first
-                        const cacheKey = `account_${account.id}_year_${numericYear}`;
-                        const cachedData = sessionStorage.getItem(cacheKey);
-                        
-                        if (cachedData) {
-                            try {
-                                const parsedData = JSON.parse(cachedData);
-                                if (parsedData.yearRecord) {
-                                    const yearRecord = parsedData.yearRecord;
-                                    const newValues: Record<string, number> = {};
-                                    const newInputs: Record<string, string> = {};
-                                    
-                                    months.forEach(month => {
-                                        const monthKey = month.toLowerCase() as keyof YearRecord;
-                                        const value = yearRecord[monthKey] as number | null;
-                                        newValues[month] = value !== null ? value : 0;
-                                        newInputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
-                                    });
-                                    
-                                    setMonthlyValues(newValues);
-                                    setMonthlyInput(newInputs);
-                                    setSavingChanges(false);
-                                    return;
-                                }
-                            } catch (e) {
-                                // Ignore cache parsing errors and proceed with API call
-                                console.warn('Cache parsing error, fetching fresh data', e);
-                            }
-                        }
-                        
-                        // No cache or cache error, fetch from API
+                        // Fetch from API with year filter
                         const response = await accountService.getAccountDetailById(account.id, numericYear);
                         if (response.success && response.data) {
                             const responseData = response.data as { yearRecord?: YearRecord };
                             const yearRecord = responseData.yearRecord;
-                            
-                            // Cache the response for future use
-                            try {
-                                sessionStorage.setItem(cacheKey, JSON.stringify(responseData));
-                            } catch (e) {
-                                console.warn('Failed to cache account data', e);
-                            }
                             
                             if (yearRecord) {
                                 const newValues: Record<string, number> = {};
@@ -366,24 +378,17 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 };
                 
                 loadAccountDetails();
-            } else if (!hasExistingData) {
-                // New account or no existing data - initialize with zeros
-                months.forEach(month => {
-                    values[month] = 0;
-                    inputs[month] = '0';
-                });
-                setMonthlyValues(values);
-                setMonthlyInput(inputs);
             }
         }
     }, [account, selectedYear]);
 
     /**
      * Gets translated month names for display
+     * Returns localized month name based on the current language
      * 
-     * @param {string} monthKey - The month key to translate
-     * @param {boolean} short - Whether to use short month names
-     * @returns {string} The translated month name
+     * @param {string} monthKey - Month abbreviation key (e.g., "Jan")
+     * @param {boolean} short - Whether to use short month name format
+     * @returns {string} Translated month name
      */
     const getMonthName = (monthKey: string, short: boolean = false) => {
         const path = short ? 'dashboard.common.monthNamesShort.' : 'dashboard.common.monthNames.';
@@ -391,8 +396,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     };
 
     /**
-     * Form submission handler for both create and update operations
-     * Validates and transforms form data to the required format
+     * Form submission handler
+     * Validates form data and calls appropriate create/update functions
      */
     const handleSubmit = async () => {
         // Validate account name
@@ -440,7 +445,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     year_records: [...(account.year_records || [])]
                 };
 
-                // Update or create year record
+                // Update or create year record for the currently selected year
                 const yearRecordIndex = updatedAccount.year_records?.findIndex(record => 
                     record.year === numericYear
                 );
@@ -451,7 +456,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         ...yearData
                     };
                 } else if (updatedAccount.year_records) {
-                    // Create new year record
+                    // Create new year record for the currently selected year
                     const newYearRecord: Partial<YearRecord> = {
                         account_id: account.id,
                         year: numericYear,
@@ -460,9 +465,51 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     updatedAccount.year_records.push(newYearRecord as YearRecord);
                 }
 
-                await onSuccess(updatedAccount);
+                // Add pending years to the year_records array
+                pendingYears.forEach(year => {
+                    // Skip if year already exists in year_records
+                    if (updatedAccount.year_records?.some(record => record.year === year)) {
+                        return;
+                    }
+
+                    // Create empty year record for each pending year
+                    const emptyYearRecord: Partial<YearRecord> = {
+                        account_id: account.id,
+                        year: year,
+                        jan: 0, feb: 0, mar: 0, apr: 0, may: 0, jun: 0,
+                        jul: 0, aug: 0, sep: 0, oct: 0, nov: 0, dec: 0
+                    };
+
+                    updatedAccount.year_records?.push(emptyYearRecord as YearRecord);
+                });
+
+                // Save the account with all updates
+                const success = await onSuccess(updatedAccount);
+                if (success) {
+                    // Clear pending years after successful save
+                    setPendingYears([]);
+                    
+                    // Refresh available years if we added new ones
+                    if (pendingYears.length > 0) {
+                        try {
+                            // Refresh from API to ensure parent component is updated
+                            const yearsResponse = await accountService.getAvailableYears();
+                            if (yearsResponse.success && yearsResponse.data) {
+                                const apiYears = yearsResponse.data as unknown as number[];
+                                if (apiYears && apiYears.length > 0) {
+                                    setAvailableYearsData([...apiYears].sort((a, b) => b - a));
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error refreshing available years:', error);
+                        }
+                    }
+                    
+                    // Force refresh the UI
+                    setForceRefresh(prev => prev + 1);
+                }
             } else {
-                // Create new account with placeholder values for required fields
+                // Create new account with default values for required fields
                 const newAccount: AccountWithYearRecords = {
                     id: '' as UUID,
                     user_id: '' as UUID,
@@ -502,6 +549,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
     /**
      * Handles account deletion with confirmation
+     * Calls the onDelete callback with account ID
      */
     const handleDelete = async () => {
         if (!account) return;
@@ -520,7 +568,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
     /**
      * Handles adding a new year to an existing account
-     * Validates the input and adds an empty year record
+     * Validates the year input and adds it to pending years
      */
     const handleAddYear = () => {
         // Validate year input
@@ -530,57 +578,64 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             return;
         }
 
-        // Check if year already exists
+        // Check if year already exists in actual records
         if (account?.year_records?.some(record => record.year === yearNumber)) {
             toast.error(t('dashboard.accounts.errors.yearExists'));
             return;
         }
 
-        // Create empty year record with zeros for all months
-        const initialYearData: Partial<YearRecord> = {
-            account_id: account!.id,
-            year: yearNumber,
-            jan: 0,
-            feb: 0,
-            mar: 0,
-            apr: 0,
-            may: 0,
-            jun: 0,
-            jul: 0,
-            aug: 0,
-            sep: 0,
-            oct: 0,
-            nov: 0,
-            dec: 0,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            deleted_at: null,
-            created_by: account!.created_by,
-            updated_by: account!.updated_by,
-            deleted_by: null
-        };
-
-        // Update account with new year record
-        const updatedAccount: AccountWithYearRecords = {
-            ...account!,
-            year_records: [...(account!.year_records || []), initialYearData as YearRecord]
-        };
-
-        // Clear account years cache
-        try {
-            const accountYearsCacheKey = `account_${account!.id}_available_years`;
-            sessionStorage.removeItem(accountYearsCacheKey);
-        } catch (e) {
-            console.warn('Error clearing account years cache', e);
+        // Check if year already exists in pending years
+        if (pendingYears.includes(yearNumber)) {
+            toast.error(t('dashboard.accounts.errors.yearExists'));
+            return;
         }
 
-        // Save changes and switch to the new year
-        onSuccess(updatedAccount).then(() => {
-            setShowYearInput(false);
-            setNewYear('');
-            setSelectedYear(yearNumber);
+        // Check if year already exists in availableYearsData
+        if (availableYearsData.includes(yearNumber)) {
+            toast.error(t('dashboard.accounts.errors.yearExists'));
+            return;
+        }
+
+        // Add year to pending list
+        setPendingYears(prev => [...prev, yearNumber]);
+        
+        // Update local UI state - add year to dropdown
+        setAvailableYearsData(prevYears => {
+            const newYears = [...prevYears];
+            if (!newYears.includes(yearNumber)) {
+                newYears.push(yearNumber);
+                newYears.sort((a, b) => b - a);
+            }
+            return newYears;
         });
+        
+        // Select the newly added year
+        setSelectedYear(yearNumber);
+        
+        // Reset input and hide the form
+        setShowYearInput(false);
+        setNewYear('');
+        
+        // Force refresh to update dropdown
+        setForceRefresh(prev => prev + 1);
+        
+        // Show notification
+        toast.success(t('dashboard.accounts.success.yearAddedPending'));
     };
+
+    /**
+     * Refreshes available years when selected year changes
+     * Ensures the year selector always has up-to-date options
+     */
+    useEffect(() => {
+        // Only run if we have account id and a valid selected year
+        if (account?.id && selectedYear && availableYearsData.length > 0) {
+            // If the selected year is not in available years, refresh the years list
+            if (typeof selectedYear === 'number' && !availableYearsData.includes(selectedYear)) {
+                loadAvailableYears();
+            }
+        }
+    }, [selectedYear, account?.id, availableYearsData, loadAvailableYears]);
 
     return (
         <Box sx={{ p: 3 }}>
@@ -613,45 +668,60 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     <>
                         {/* Year selection dropdown with option to add new year */}
                         <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
-                            <FormControl size="small" fullWidth>
-                                <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                                <Select
-                                    value={showYearInput ? '' : selectedYear.toString()}
-                                    label={t('dashboard.common.year')}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        if (value === 'add') {
-                                            setShowYearInput(true);
-                                        } else if (value !== '') {
-                                            setSelectedYear(Number(value));
-                                        }
-                                    }}
-                                    disabled={loadingYears}
-                                >
-                                    {loadingYears ? (
-                                        <MenuItem value="">
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <CircularProgress size={20} />
-                                                <span>{t('dashboard.common.loading')}</span>
-                                            </Box>
-                                        </MenuItem>
-                                    ) : (
-                                        availableYears.map(year => (
-                                            <MenuItem key={year} value={year.toString()}>
-                                                {year}
+                            {!showYearInput ? (
+                                <FormControl size="small" fullWidth>
+                                    <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                                    <Select
+                                        key={`year-select-${forceRefresh}-${availableYears.length}-${pendingYears.length}`}
+                                        value={selectedYear === '' ? '' : selectedYear.toString()}
+                                        label={t('dashboard.common.year')}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (value === 'add') {
+                                                setShowYearInput(true);
+                                            } else if (value !== '') {
+                                                setSelectedYear(Number(value));
+                                            }
+                                        }}
+                                        disabled={loadingYears}
+                                    >
+                                        {loadingYears ? (
+                                            <MenuItem value="">
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                    <CircularProgress size={20} />
+                                                    <span>{t('dashboard.common.loading')}</span>
+                                                </Box>
                                             </MenuItem>
-                                        ))
-                                    )}
-                                    <MenuItem value="add">
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        {t('dashboard.accounts.form.addYear')}
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {/* New year input field with add/cancel buttons */}
-                            {showYearInput && (
-                                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                        ) : (
+                                            // Map years to menu items with pending indicator
+                                            (() => {
+                                                return availableYears.map(year => (
+                                                    <MenuItem 
+                                                        key={`year-option-${year}`} 
+                                                        value={year.toString()}
+                                                        sx={pendingYears.includes(year) ? {
+                                                            fontStyle: 'italic',
+                                                            '&::after': {
+                                                                content: '"*"',
+                                                                color: 'primary.main',
+                                                                ml: 1,
+                                                                fontWeight: 'bold'
+                                                            }
+                                                        } : {}}
+                                                    >
+                                                        {year}
+                                                    </MenuItem>
+                                                ));
+                                            })()
+                                        )}
+                                        <MenuItem value="add">
+                                            <AddIcon sx={{ mr: 1 }} />
+                                            {t('dashboard.accounts.form.addYear')}
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            ) : (
+                                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                                     <TextField
                                         size="small"
                                         type="number"
@@ -667,6 +737,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                     />
                                     <Button
                                         variant="contained"
+                                        size="small"
                                         onClick={handleAddYear}
                                         sx={{ minWidth: 'auto', px: 2 }}
                                     >
@@ -674,6 +745,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                     </Button>
                                     <Button
                                         variant="outlined"
+                                        size="small"
                                         onClick={() => {
                                             setShowYearInput(false);
                                             setNewYear('');
@@ -696,11 +768,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         <TextField
                                             size="small"
                                             type="text"
-                                            slotProps={{
-                                                htmlInput: {
-                                                    inputMode: 'decimal',
-                                                    pattern: '^[0-9]*([.,][0-9]{0,2})?$'
-                                                }
+                                            inputProps={{
+                                                inputMode: 'decimal',
+                                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
                                             }}
                                             value={monthlyInput[month] || ''}
                                             onChange={(e) => {
@@ -776,7 +846,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         variant="contained"
                         onClick={handleSubmit}
                         disabled={savingChanges}
-                        sx={{ flex: 1 }}
+                        sx={{ flex: 1}}
                     >
                         {savingChanges ? (
                             <CircularProgress size={24} color="inherit" />
@@ -785,6 +855,25 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         )}
                     </Button>
                 </Box>
+                
+                {/* Pending years notification */}
+                {pendingYears.length > 0 && (
+                    <Typography 
+                        variant="caption" 
+                        color="primary.main" 
+                        sx={{ 
+                            mt: 1, 
+                            textAlign: 'center',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        {pendingYears.length === 1 
+                            ? t('dashboard.accounts.pendingYear') 
+                            : t('dashboard.accounts.pendingYears', { count: pendingYears.length })}
+                    </Typography>
+                )}
             </Box>
 
             {/* Confirmation dialog for account deletion */}

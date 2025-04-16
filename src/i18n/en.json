@@ -1061,29 +1061,32 @@
             "deleteWarning": "This action cannot be undone",
             "noAccounts": "No accounts found",
             "success": {
-                "accountCreated": "Account created successfully",
-                "accountUpdated": "Account updated successfully",
-                "accountDeleted": "Account deleted successfully",
-                "accountsOrderUpdated": "Accounts order updated successfully"
+                "accountCreated": "Account successfully created",
+                "accountUpdated": "Account successfully updated",
+                "accountDeleted": "Account successfully deleted",
+                "accountsOrderUpdated": "Account order successfully updated",
+                "yearAdded": "Year successfully added",
+                "yearAddedPending": "Year successfully added, pending to save"
             },
             "errors": {
                 "nameRequired": "Account name is required",
-                "savingError": "Error saving changes",
+                "savingError": "Error saving",
                 "loadingError": "Error loading accounts",
                 "createError": "Error creating account",
                 "updateError": "Error updating account",
                 "deleteError": "Error deleting account",
-                "accountsOrderError": "Error updating accounts order",
+                "accountsOrderError": "Error updating account order",
                 "invalidYear": "Invalid year. Must be between 1900 and 9999",
-                "yearExists": "This year already exists in the account"
+                "yearExists": "This year already exists in the account",
+                "yearAddError": "Error adding year"
             },
             "chart": {
                 "noData": "No data available"
             },
             "form": {
                 "title": {
-                    "edit": "Edit Account",
-                    "new": "New Account"
+                    "edit": "Edit account",
+                    "new": "New account"
                 },
                 "fields": {
                     "name": {
@@ -1099,7 +1102,7 @@
                 "addYear": "Add year",
                 "enterYear": "Enter year",
                 "delete": {
-                    "title": "Delete Account",
+                    "title": "Delete account",
                     "message": "Are you sure you want to delete the account",
                     "warning": "This action cannot be undone"
                 },
@@ -1114,7 +1117,9 @@
                 "addAccount": "Add account",
                 "inactiveAccounts": "Inactive accounts",
                 "addAccountBanner": "🏦 Add your first account 🏦"
-            }
+            },
+            "pendingYear": "You have 1 pending year to save",
+            "pendingYears": "You have {{count}} pending years to save"
         },
         "transactions": {
             "title": "Transactions",

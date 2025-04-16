@@ -1062,7 +1062,9 @@
                 "accountCreated": "Cuenta creada correctamente",
                 "accountUpdated": "Cuenta actualizada correctamente",
                 "accountDeleted": "Cuenta eliminada correctamente",
-                "accountsOrderUpdated": "Orden de cuentas actualizado correctamente"
+                "accountsOrderUpdated": "Orden de cuentas actualizado correctamente",
+                "yearAdded": "Año añadido correctamente",
+                "yearAddedPending": "Año añadido correctamente, pendiente de guardar"
             },
             "errors": {
                 "nameRequired": "El nombre de la cuenta es requerido",
@@ -1073,7 +1075,8 @@
                 "deleteError": "Error al eliminar la cuenta",
                 "accountsOrderError": "Error al actualizar el orden de las cuentas",
                 "invalidYear": "Año inválido. Debe estar entre 1900 y 9999",
-                "yearExists": "Este año ya existe en la cuenta"
+                "yearExists": "Este año ya existe en la cuenta",
+                "yearAddError": "Error al añadir el año"
             },
             "chart": {
                 "noData": "No hay datos disponibles"
@@ -1112,7 +1115,9 @@
                 "addAccount": "Agregar cuenta",
                 "inactiveAccounts": "Cuentas inactivas",
                 "addAccountBanner": "🏦 Agrega tu primera cuenta 🏦"
-            }
+            },
+            "pendingYear": "Tienes 1 año pendiente por guardar",
+            "pendingYears": "Tienes {{count}} años pendientes por guardar"
         },
         "transactions": {
             "title": "Movimientos",
