@@ -58,13 +58,13 @@ import DrawerBase from '../../../components/ui/DrawerBase';
 interface TransactionTableProps {
     /** Array of transaction records to display in the table */
     data: Transaction[];
-    
+
     /** Indicates if data is currently being loaded */
     loading: boolean;
-    
+
     /** Available categories for transaction categorization */
     categories: Category[];
-    
+
     /** Callback function to trigger data refresh */
     onReload: () => void;
 }
@@ -93,19 +93,19 @@ export default function TransactionTable({
      */
     /** Search filter text for transaction filtering */
     const [searchTerm, setSearchTerm] = useState('');
-    
+
     /** Current sort option for transaction ordering */
     const [sortOption, setSortOption] = useState<string>('date_desc');
-    
+
     /** Controls visibility of the edit transaction drawer */
     const [editDrawerOpen, setEditDrawerOpen] = useState(false);
-    
+
     /** Controls visibility of the create transaction drawer */
     const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
-    
+
     /** Currently selected transaction for editing */
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    
+
     /** Controls whether monetary values should be blurred for privacy */
     const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
@@ -335,7 +335,6 @@ export default function TransactionTable({
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: 1,
                         }}>
                             {/* Transaction item rows with click handling */}
                             {filteredAndSortedTransactions.map((transaction) => (
@@ -344,6 +343,7 @@ export default function TransactionTable({
                                         onClick={() => handleTransactionClick(transaction)}
                                         sx={{
                                             p: 1,
+                                            my: 1,
                                             borderRadius: 3,
                                             cursor: 'pointer',
                                             display: 'flex',
