@@ -125,7 +125,7 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
      */
     if (isLoading) {
         return (
-            <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5, p: 1 }}>
+            <Box sx={{ width: '100%', height: { xs: 300, sm: 350 }, borderRadius: 5 }}>
                 <Skeleton variant="rectangular" width="100%" height="100%"
                     sx={{
                         borderRadius: 3,
