@@ -853,6 +853,19 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                             onChange={(e) => setDate(e.target.value)}
                             fullWidth
                             required
+                            sx={{
+                                '& input': {
+                                    // Normalize appearance on iOS
+                                    appearance: 'none',
+                                    WebkitAppearance: 'none',
+                                    MozAppearance: 'none',
+                                    padding: '8.5px 14px',
+                                    borderRadius: 1,
+                                    height: '1.4375em',
+                                    fontSize: '1rem',
+                                },
+                            }}
+                            InputLabelProps={{ shrink: true }}
                         />
                     </Paper>
 
