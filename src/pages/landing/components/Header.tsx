@@ -76,7 +76,7 @@ export default function Header() {
                     {/* Brand logo with navigation to home page */}
                     <Box
                         component="img"
-                        src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"
+                        src="/logo/logoPL3.svg"
                         alt="logo"
                         sx={{
                             width: { xs: 120, sm: 150 },

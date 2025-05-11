@@ -61,7 +61,7 @@ export default function App() {
     if (isLoading) {
       return (
         <div className='loading-container'>
-          <img src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg" alt="logo" />
+          <img src="/logo/logoPL.svg" alt="logo" />
         </div>
       );
     }

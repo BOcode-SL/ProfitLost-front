@@ -88,8 +88,8 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
     <img
       className="no-select"
       src={isDarkMode
-        ? "https://res.cloudinary.com/dnhlagojg/image/upload/v1737624634/logoPL3_white.png"
-        : "https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL3.svg"}
+        ? "/logo/logoPL3_white.png"
+        : "/logo/logoPL3.svg"}
       alt="logo"
     />
   </Box>

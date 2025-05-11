@@ -34,7 +34,7 @@ const LoadingScreen = () => {
         }}>
             <Box
                 component="img"
-                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1726670794/AppPhotos/Brand/logoPL.svg"
+                src="/logo/logoPL.svg"
                 alt="logo"
                 sx={{
                     width: 200,

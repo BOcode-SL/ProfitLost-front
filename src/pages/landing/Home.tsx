@@ -136,7 +136,7 @@ export default function Home() {
                         }}>
                             <Box
                                 component="img"
-                                src="https://res.cloudinary.com/dnhlagojg/image/upload/v1739794876/AppPhotos/Brand/mockup/rjlpdnlnqvejgsyvxoxs.png"
+                                src="/assets/mockup/mockupHome.png"
                                 alt="Dashboard Preview"
                                 className="no-select"
                                 sx={{
