@@ -84,7 +84,7 @@ export default function PrivacyPolicy() {
                 ))}
             </Box>
 
-            {/* Section 4: Purpose */}
+            {/* Section 4: Purpose of the Treatment */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.privacyPolicy.sections.purpose.title')}
             </Typography>
@@ -147,20 +147,39 @@ export default function PrivacyPolicy() {
                 {t('home.legal.privacyPolicy.sections.minors.content')}
             </Typography>
 
-            {/* Section 9: Modifications */}
+            {/* Section 9: International Data Transfers */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.privacyPolicy.sections.dataTransfers.title')}
+            </Typography>
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.dataTransfers.content')}
+            </Typography>
+
+            {/* Section 10: Accessibility */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.privacyPolicy.sections.accessibility.title')}
+            </Typography>
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.accessibility.content')}
+            </Typography>
+
+            {/* Section 11: California Residents' Rights */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.privacyPolicy.sections.californiaRights.title')}
+            </Typography>
+            <Typography sx={{ mb: 2 }}>
+                {t('home.legal.privacyPolicy.sections.californiaRights.content')}
+            </Typography>
+            <Typography>
+                {t('home.legal.privacyPolicy.sections.californiaRights.contact')}
+            </Typography>
+
+            {/* Section 12: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.privacyPolicy.sections.modifications.title')}
             </Typography>
             <Typography>
                 {t('home.legal.privacyPolicy.sections.modifications.content')}
-            </Typography>
-
-            {/* Section 10: Contact */}
-            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
-                {t('home.legal.privacyPolicy.sections.contact.title')}
-            </Typography>
-            <Typography>
-                {t('home.legal.privacyPolicy.sections.contact.content')}
             </Typography>
         </LegalLayout>
     );

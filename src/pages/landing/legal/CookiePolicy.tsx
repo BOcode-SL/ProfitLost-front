@@ -7,7 +7,7 @@
  * 
  * @module CookiePolicy
  */
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 // Components
@@ -21,6 +21,18 @@ import LegalLayout from './components/LegalLayout';
 interface CookieType {
     title: string;
     description: string;
+}
+
+/**
+ * Interface for specific cookie information
+ * 
+ * @interface SpecificCookie
+ */
+interface SpecificCookie {
+    name: string;
+    purpose: string;
+    duration: string;
+    type: string;
 }
 
 /**
@@ -54,6 +66,17 @@ export default function CookiePolicy() {
      * @returns {CookieType[]} Array of CookieType objects or empty array if not found
      */
     const getCookieTypesArray = (key: string): CookieType[] => {
+        const translation = t(key, { returnObjects: true });
+        return Array.isArray(translation) ? translation : [];
+    };
+
+    /**
+     * Safely converts translation objects to arrays of SpecificCookie objects
+     * 
+     * @param {string} key - Translation key to retrieve
+     * @returns {SpecificCookie[]} Array of SpecificCookie objects or empty array if not found
+     */
+    const getSpecificCookiesArray = (key: string): SpecificCookie[] => {
         const translation = t(key, { returnObjects: true });
         return Array.isArray(translation) ? translation : [];
     };
@@ -94,15 +117,55 @@ export default function CookiePolicy() {
                 ))}
             </Box>
 
-            {/* Section 4: Cookies management */}
+            {/* Section 4: Specific cookies used */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.cookiesPolicy.sections.specificCookies.title')}
+            </Typography>
+            <Typography sx={{ mb: 2 }}>
+                {t('home.legal.cookiesPolicy.sections.specificCookies.subtitle')}
+            </Typography>
+            <TableContainer component={Paper} sx={{ mb: 4, overflowX: 'auto' }}>
+                <Table aria-label="cookies table">
+                    <TableHead>
+                        <TableRow sx={{ backgroundColor: 'primary.main' }}>
+                            <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
+                            <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Purpose</TableCell>
+                            <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Duration</TableCell>
+                            <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Type</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {getSpecificCookiesArray('home.legal.cookiesPolicy.sections.specificCookies.table').map((cookie: SpecificCookie, index: number) => (
+                            <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
+                                <TableCell component="th" scope="row">{cookie.name}</TableCell>
+                                <TableCell>{cookie.purpose}</TableCell>
+                                <TableCell>{cookie.duration}</TableCell>
+                                <TableCell>{cookie.type}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {/* Section 5: Cookies management */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.cookiesPolicy.sections.management.title')}
             </Typography>
             <Typography>
                 {t('home.legal.cookiesPolicy.sections.management.content')}
             </Typography>
+            
+            {/* Browser instructions */}
+            <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>
+                {t('home.legal.cookiesPolicy.sections.management.browsers.title')}
+            </Typography>
+            <Box component="ul" sx={{ pl: 4, mb: 4 }}>
+                {getTranslationArray('home.legal.cookiesPolicy.sections.management.browsers.items').map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                ))}
+            </Box>
 
-            {/* Section 5: Third-party cookies */}
+            {/* Section 6: Third-party cookies */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.cookiesPolicy.sections.thirdParty.title')}
             </Typography>
@@ -115,7 +178,7 @@ export default function CookiePolicy() {
                 ))}
             </Box>
 
-            {/* Section 6: Cookies retention period */}
+            {/* Section 7: Cookies retention period */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.cookiesPolicy.sections.retention.title')}
             </Typography>
@@ -123,7 +186,7 @@ export default function CookiePolicy() {
                 {t('home.legal.cookiesPolicy.sections.retention.content')}
             </Typography>
 
-            {/* Section 7: Your rights */}
+            {/* Section 8: Your rights */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.cookiesPolicy.sections.rights.title')}
             </Typography>
@@ -135,7 +198,7 @@ export default function CookiePolicy() {
                 <li>{t('home.legal.cookiesPolicy.sections.rights.contact.website')}</li>
             </Box>
 
-            {/* Section 8: Modifications */}
+            {/* Section 9: Modifications */}
             <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
                 {t('home.legal.cookiesPolicy.sections.modifications.title')}
             </Typography>

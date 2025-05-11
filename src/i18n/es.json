@@ -118,7 +118,7 @@
                     },
                     "purpose": {
                         "title": "4. Finalidad del tratamiento",
-                        "subtitle": "Tus datos se procesarán con las siguientes finalidades específicas:",
+                        "subtitle": "Tus datos serán procesados con las siguientes finalidades específicas:",
                         "items": [
                             "Gestionar tu cuenta y proporcionar nuestros servicios",
                             "Procesar y visualizar tus datos financieros",
@@ -140,7 +140,7 @@
                             "Limitación del tratamiento",
                             "Portabilidad de tus datos"
                         ],
-                        "contact": "Para ejercer estos derechos, contacta con support@profit-lost.com. También tienes el derecho a presentar una reclamación a la Agencia Española de Protección de Datos (www.aepd.es)."
+                        "contact": "Para ejercer estos derechos, contacta con support@profit-lost.com. También tienes derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es)."
                     },
                     "retention": {
                         "title": "6. Retención de datos",
@@ -163,15 +163,24 @@
                     },
                     "minors": {
                         "title": "8. Menores",
-                        "content": "Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos información personal de menores. Si estás consciente de que un menor ha proporcionado información personal a nosotros, por favor contacta con nosotros y procederemos a su eliminación."
+                        "content": "Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos información personal de menores a sabiendas. Si detectas que un menor ha proporcionado información personal a nosotros, por favor contacta con nosotros y procederemos a su eliminación."
+                    },
+                    "dataTransfers": {
+                        "title": "9. Transferencias internacionales de datos",
+                        "content": "Tus datos se almacenan y procesan principalmente dentro del Espacio Económico Europeo (EEE). En los casos en que los datos puedan ser transferidos fuera del EEE, garantizamos las salvaguardias adecuadas a través de Cláusulas Contractuales Estándar aprobadas por la Comisión Europea u otros mecanismos legalmente aprobados."
+                    },
+                    "accessibility": {
+                        "title": "10. Accesibilidad",
+                        "content": "Estamos comprometidos con hacer nuestros servicios accesibles para todos los usuarios, incluidos aquellos con discapacidades. Nuestra aplicación está diseñada para ser compatible con las tecnologías de asistencia comunes y sigue las directrices de accesibilidad WCAG 2.1 cuando es posible."
+                    },
+                    "californiaRights": {
+                        "title": "11. Derechos de residentes en California",
+                        "content": "Si eres residente en California, puedes tener derechos adicionales bajo la Ley de Privacidad del Consumidor de California (CCPA) y la Ley de Derechos de Privacidad de California (CPRA), incluyendo el derecho a conocer qué información personal recopilamos, el derecho a eliminar tu información personal, el derecho a excluirte de la venta de tu información personal y el derecho a la no discriminación por ejercer tus derechos de privacidad.",
+                        "contact": "Para ejercer estos derechos, por favor contacta con nosotros en support@profit-lost.com."
                     },
                     "modifications": {
-                        "title": "9. Modificaciones",
-                        "content": "Reservamos el derecho a modificar esta política de privacidad. Los cambios se publicarán en esta página y, en caso de modificaciones sustanciales, se notificarán a través de correo electrónico."
-                    },
-                    "contact": {
-                        "title": "10. Contacto",
-                        "content": "Para cualquier pregunta relacionada con la privacidad: support@profit-lost.com"
+                        "title": "12. Modificaciones",
+                        "content": "Reservamos el derecho a modificar esta política de privacidad. Los cambios se publicarán en esta página y, en caso de modificaciones sustanciales, te notificaremos a través de correo electrónico."
                     }
                 }
             },
@@ -281,24 +290,77 @@
                             {
                                 "title": "Cookies analíticas:",
                                 "description": "Ayudan a entender cómo los usuarios interactúan con el sitio web (Google Analytics)."
+                            },
+                            {
+                                "title": "Cookies de autenticación:",
+                                "description": "Permiten la autenticación segura de usuarios y mantienen la información de sesión."
+                            },
+                            {
+                                "title": "Cookies de preferencias:",
+                                "description": "Almacenan preferencias del usuario como idioma, tema y configuración de visualización."
+                            }
+                        ]
+                    },
+                    "specificCookies": {
+                        "title": "4. Cookies específicas utilizadas",
+                        "subtitle": "La siguiente tabla detalla las cookies específicas que utilizamos:",
+                        "table": [
+                            {
+                                "name": "auth_token",
+                                "purpose": "Autenticación y gestión de sesiones",
+                                "duration": "24 horas",
+                                "type": "Técnica/Necesaria"
+                            },
+                            {
+                                "name": "user_preferences",
+                                "purpose": "Almacenar preferencias de interfaz de usuario",
+                                "duration": "1 año",
+                                "type": "Preferencia"
+                            },
+                            {
+                                "name": "_ga",
+                                "purpose": "Google Analytics - distingue usuarios",
+                                "duration": "2 años",
+                                "type": "Analítica"
+                            },
+                            {
+                                "name": "_gid",
+                                "purpose": "Google Analytics - distingue usuarios",
+                                "duration": "24 horas",
+                                "type": "Analítica"
+                            },
+                            {
+                                "name": "lang",
+                                "purpose": "Almacena preferencias de idioma",
+                                "duration": "1 año",
+                                "type": "Preferencia"
                             }
                         ]
                     },
                     "management": {
-                        "title": "4. Gestión de cookies",
-                        "content": "Puedes configurar tu navegador para rechazar todas las cookies o recibir una notificación cuando una cookie se envía. Sin embargo, algunas funciones de nuestro sitio web pueden no funcionar correctamente sin cookies."
+                        "title": "5. Gestión de cookies",
+                        "content": "Puedes configurar tu navegador para rechazar todas las cookies o recibir una notificación cuando una cookie se envía. Sin embargo, algunas funciones de nuestro sitio web pueden no funcionar correctamente sin cookies.",
+                        "browsers": {
+                            "title": "Instrucciones para gestionar cookies en los principales navegadores:",
+                            "items": [
+                                "Google Chrome: Configuración > Privacidad y seguridad > Cookies y otros datos de sitios",
+                                "Mozilla Firefox: Opciones > Privacidad y seguridad > Cookies y datos del sitio",
+                                "Safari: Preferencias > Privacidad > Cookies y datos del sitio web",
+                                "Microsoft Edge: Configuración > Cookies y permisos del sitio > Cookies"
+                            ]
+                        }
                     },
                     "thirdParty": {
-                        "title": "5. Cookies de terceros",
+                        "title": "6. Cookies de terceros",
                         "content": "Utilizamos servicios de terceros que pueden establecer cookies en tu dispositivo:",
-                        "items": ["Google Analytics: análisis del uso del sitio web"]
+                        "items": ["Google Analytics: análisis del uso del sitio web. Puedes excluirte del seguimiento de Google Analytics instalando el complemento de exclusión voluntaria para navegadores de Google Analytics disponible en: https://tools.google.com/dlpage/gaoptout"]
                     },
                     "retention": {
-                        "title": "6. Periodo de retención de cookies",
+                        "title": "7. Periodo de retención de cookies",
                         "content": "Las cookies de sesión se eliminan cuando se cierra el navegador. Las cookies persistentes permanecen en tu dispositivo durante un período máximo de 24 meses."
                     },
                     "rights": {
-                        "title": "7. Tus derechos",
+                        "title": "8. Tus derechos",
                         "content": "Puedes ejercer tus derechos de acceso, rectificación, eliminación y oposición contactando con:",
                         "contact": {
                             "email": "Correo electrónico: support@profit-lost.com",
@@ -306,7 +368,7 @@
                         }
                     },
                     "modifications": {
-                        "title": "8. Modificaciones",
+                        "title": "9. Modificaciones",
                         "content": "Reservamos el derecho de actualizar esta política de cookies en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en el sitio web."
                     }
                 }

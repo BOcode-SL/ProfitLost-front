@@ -163,15 +163,24 @@
                     },
                     "minors": {
                         "title": "8. Minors",
-                        "content": "Our services are not directed to minors under 18 years of age. We do not knowingly collect information personal of minors. If you are aware that a minor has provided personal information to us, please contact us and we will proceed to its deletion."
+                        "content": "Our services are not directed at individuals under 18 years of age. We do not knowingly collect personal information from minors. If you become aware that a minor has provided us with personal information, please contact us and we will delete this information."
+                    },
+                    "dataTransfers": {
+                        "title": "9. International Data Transfers",
+                        "content": "Your data is primarily stored and processed within the European Economic Area (EEA). In cases where data may be transferred outside the EEA, we ensure appropriate safeguards through Standard Contractual Clauses approved by the European Commission or other legally approved mechanisms."
+                    },
+                    "accessibility": {
+                        "title": "10. Accessibility",
+                        "content": "We are committed to making our services accessible to all users, including those with disabilities. Our application is designed to be compatible with common assistive technologies and follows WCAG 2.1 accessibility guidelines where possible."
+                    },
+                    "californiaRights": {
+                        "title": "11. California Residents' Rights",
+                        "content": "If you are a California resident, you may have additional rights under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), including the right to know what personal information we collect, the right to delete your personal information, the right to opt-out of sale of your personal information, and the right to non-discrimination for exercising your privacy rights.",
+                        "contact": "To exercise these rights, please contact us at support@profit-lost.com."
                     },
                     "modifications": {
-                        "title": "9. Modifications",
-                        "content": "We reserve the right to modify this privacy policy. Changes will be published on this page and, in case of substantial modifications, we will notify you by email."
-                    },
-                    "contact": {
-                        "title": "10. Contact",
-                        "content": "For any privacy-related questions: support@profit-lost.com"
+                        "title": "12. Modifications",
+                        "content": "We reserve the right to modify this privacy policy. Changes will be published on this page and, in case of substantial modifications, we will notify you via email."
                     }
                 }
             },
@@ -281,26 +290,79 @@
                             {
                                 "title": "Analytical cookies:",
                                 "description": "They help us understand how users interact with the website (Google Analytics)."
+                            },
+                            {
+                                "title": "Authentication cookies:",
+                                "description": "They enable secure user authentication and maintain session information."
+                            },
+                            {
+                                "title": "Preference cookies:",
+                                "description": "They store user preferences like language, theme, and display settings."
+                            }
+                        ]
+                    },
+                    "specificCookies": {
+                        "title": "4. Specific cookies used",
+                        "subtitle": "The following table details the specific cookies we use:",
+                        "table": [
+                            {
+                                "name": "auth_token",
+                                "purpose": "Authentication and session management",
+                                "duration": "24 hours",
+                                "type": "Technical/Necessary"
+                            },
+                            {
+                                "name": "user_preferences",
+                                "purpose": "Store user interface preferences",
+                                "duration": "1 year",
+                                "type": "Preference"
+                            },
+                            {
+                                "name": "_ga",
+                                "purpose": "Google Analytics - distinguishes users",
+                                "duration": "2 years",
+                                "type": "Analytical"
+                            },
+                            {
+                                "name": "_gid",
+                                "purpose": "Google Analytics - distinguishes users",
+                                "duration": "24 hours",
+                                "type": "Analytical"
+                            },
+                            {
+                                "name": "lang",
+                                "purpose": "Stores language preferences",
+                                "duration": "1 year",
+                                "type": "Preference"
                             }
                         ]
                     },
                     "management": {
-                        "title": "4. Cookies management",
-                        "content": "You can configure your browser to reject all cookies or to receive a notification when a cookie is sent. However, some features of our website may not work correctly without cookies."
+                        "title": "5. Cookies management",
+                        "content": "You can configure your browser to reject all cookies or to receive a notification when a cookie is sent. However, some features of our website may not work correctly without cookies.",
+                        "browsers": {
+                            "title": "Instructions for managing cookies in major browsers:",
+                            "items": [
+                                "Google Chrome: Settings > Privacy and Security > Cookies and other site data",
+                                "Mozilla Firefox: Options > Privacy & Security > Cookies and Site Data",
+                                "Safari: Preferences > Privacy > Cookies and website data",
+                                "Microsoft Edge: Settings > Cookies and site permissions > Cookies"
+                            ]
+                        }
                     },
                     "thirdParty": {
-                        "title": "5. Third-party cookies",
+                        "title": "6. Third-party cookies",
                         "content": "We use third-party services that may set cookies on your device:",
                         "items": [
-                            "Google Analytics: website usage analysis"
+                            "Google Analytics: website usage analysis. You can opt out of Google Analytics tracking by installing the Google Analytics Opt-out Browser Add-on available at: https://tools.google.com/dlpage/gaoptout"
                         ]
                     },
                     "retention": {
-                        "title": "6. Cookies retention period",
+                        "title": "7. Cookies retention period",
                         "content": "Session cookies are deleted when the browser is closed. Persistent cookies remain on your device for a maximum period of 24 months."
                     },
                     "rights": {
-                        "title": "7. Your rights",
+                        "title": "8. Your rights",
                         "content": "You can exercise your rights of access, rectification, deletion and opposition by contacting:",
                         "contact": {
                             "email": "Email: support@profit-lost.com",
@@ -308,7 +370,7 @@
                         }
                     },
                     "modifications": {
-                        "title": "8. Modifications",
+                        "title": "9. Modifications",
                         "content": "We reserve the right to update this cookie policy at any time. The changes will come into force immediately after their publication on the website."
                     }
                 }
