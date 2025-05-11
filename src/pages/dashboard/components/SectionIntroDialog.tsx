@@ -26,10 +26,12 @@ import {
     Box,
     useTheme,
     useMediaQuery,
-    Divider
+    Divider,
+    Slide
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, forwardRef } from 'react';
+import { TransitionProps } from '@mui/material/transitions';
 
 // Utils
 import { getIconComponent } from '../../../utils/sectionIconUtils';
@@ -250,6 +252,21 @@ const useSectionInfo = (section: string): SectionInfo => {
 };
 
 /**
+ * Dialog transition component for smooth animation
+ * Uses a slide-up effect for better user experience
+ * 
+ * @param {TransitionProps & {children: React.ReactElement}} props - Transition properties
+ * @param {React.Ref<unknown>} ref - Forwarded ref
+ * @returns {JSX.Element} The transition component
+ */
+const Transition = forwardRef(function Transition(
+    props: TransitionProps & { children: React.ReactElement },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+/**
  * Section Introduction Dialog Component
  * 
  * Displays a welcome dialog for each section with:
@@ -307,10 +324,24 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
             maxWidth="md"
             fullWidth
             fullScreen={fullScreen}
+            TransitionComponent={Transition}
             sx={{
+                '& .MuiDialog-container': {
+                    alignItems: { xs: 'flex-end', sm: 'center' }
+                },
                 '& .MuiPaper-root': {
                     borderRadius: { xs: 0, sm: 3 },
-                    maxHeight: { xs: '100%', sm: '80vh' }
+                    height: { xs: 'calc(100dvh - 56px)', sm: 'auto' },
+                    width: { xs: '100%', sm: '100%' },
+                    maxHeight: { xs: 'calc(100dvh - 56px)', sm: '80dvh' },
+                    m: { xs: 0, sm: 3 },
+                    borderTopLeftRadius: { xs: 16, sm: 3 },
+                    borderTopRightRadius: { xs: 16, sm: 3 },
+                    borderBottomLeftRadius: { xs: 0, sm: 3 },
+                    borderBottomRightRadius: { xs: 0, sm: 3 }
+                },
+                '& .MuiBackdrop-root': {
+                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' }
                 }
             }}
         >

@@ -28,7 +28,9 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Slide
+    Slide,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
@@ -206,6 +208,8 @@ interface GlobalOnboardingDialogProps {
 export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardingDialogProps) {
     const { t, i18n } = useTranslation();
     const { userPreferences, loadUserData } = useUser();
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [activeStep, setActiveStep] = useState(0);
     const [preferences, setPreferences] = useState<OnboardingProgress["preferences"]>({
@@ -478,9 +482,24 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
             keepMounted
             maxWidth="sm"
             fullWidth
+            fullScreen={fullScreen}
             sx={{
+                '& .MuiDialog-container': {
+                    alignItems: { xs: 'flex-end', sm: 'center' }
+                },
                 '& .MuiPaper-root': {
-                    borderRadius: 3
+                    borderRadius: { xs: 0, sm: 3 },
+                    height: { xs: 'calc(100dvh - 56px)', sm: 'auto' },
+                    width: { xs: '100%', sm: '100%' },
+                    maxHeight: { xs: 'calc(100dvh - 56px)', sm: '80dvh' },
+                    m: { xs: 0, sm: 3 },
+                    borderTopLeftRadius: { xs: 16, sm: 3 },
+                    borderTopRightRadius: { xs: 16, sm: 3 },
+                    borderBottomLeftRadius: { xs: 0, sm: 3 },
+                    borderBottomRightRadius: { xs: 0, sm: 3 }
+                },
+                '& .MuiBackdrop-root': {
+                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' }
                 }
             }}
         >
