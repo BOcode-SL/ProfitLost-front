@@ -711,6 +711,8 @@
             "disable_currency_amount": "Hide balances"
         },
         "common": {
+            "income": "Income",
+            "expenses": "Expense",
             "understood": "Understood",
             "year": "Year",
             "month": "Month",

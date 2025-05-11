@@ -12,10 +12,11 @@
  * - Month-based transaction grouping for organized display
  * - Responsive design optimized for different screen sizes
  * - Category deletion with appropriate safeguards
+ * - Income and expense summary for selected year
  * 
  * @module CategoryForm
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
     Box,
     Button,
@@ -27,7 +28,8 @@ import {
     Select,
     MenuItem,
     FormControl,
-    useTheme
+    useTheme,
+    Divider
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +40,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -60,7 +64,7 @@ interface GroupedTransactions {
 }
 
 // Utils
-import { formatCurrency } from '../../../../../utils/currencyUtils';
+import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
 import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 
 /**
@@ -118,6 +122,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const [showTransactions, setShowTransactions] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isHidden, setIsHidden] = useState(isCurrencyHidden());
 
     /**
      * Fetch all transactions for the category when component mounts
@@ -161,6 +166,22 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     }, [category]);
 
     /**
+     * Listen for currency visibility toggle events
+     * Updates local component state when visibility changes elsewhere
+     */
+    useEffect(() => {
+        const handleVisibilityChange = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            setIsHidden(customEvent.detail.isHidden);
+        };
+
+        window.addEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        return () => {
+            window.removeEventListener(CURRENCY_VISIBILITY_EVENT, handleVisibilityChange);
+        };
+    }, []);
+
+    /**
      * Filter transactions based on selected year and search query
      * Updates the displayed transactions when filters change
      */
@@ -186,6 +207,35 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         
         setDisplayTransactions(filtered);
     }, [selectedYear, searchQuery, showTransactions, allCategoryTransactions, category]);
+
+    /**
+     * Calculate total income, expenses and balance for the selected year
+     */
+    const categorySummary = useMemo(() => {
+        // Filter transactions for the selected year
+        const yearTransactions = allCategoryTransactions.filter(tx => {
+            const date = fromSupabaseTimestamp(tx.transaction_date);
+            return date.getFullYear().toString() === selectedYear;
+        });
+
+        // Calculate totals
+        let income = 0;
+        let expenses = 0;
+
+        yearTransactions.forEach(tx => {
+            if (tx.amount >= 0) {
+                income += tx.amount;
+            } else {
+                expenses += tx.amount;
+            }
+        });
+
+        // Return calculated values
+        return {
+            income,
+            expenses: Math.abs(expenses) // Make it positive for display
+        };
+    }, [allCategoryTransactions, selectedYear]);
 
     // Group transactions by month for organized display
     const groupedTransactions: GroupedTransactions = {};
@@ -356,7 +406,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 </Box>
             </Box>
 
-            {/* Transaction history section (only visible in edit mode) */}
+            {/* Category summary and Transaction history section (only visible in edit mode) */}
             {category && yearsWithData.length > 0 && (
                 <Paper
                     elevation={3}
@@ -366,97 +416,188 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         borderRadius: 3,
                     }}
                 >
+                    {/* Year selector */}
+                    <FormControl
+                        size="small"
+                        sx={{
+                            width: '100%',
+                            mb: 3,
+                            '& .MuiSelect-select': {
+                                py: 1
+                            }
+                        }}
+                    >
+                        <Select
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            sx={{
+                                borderRadius: 2,
+                                width: '100%'
+                            }}
+                        >
+                            {yearsWithData.map((year) => (
+                                <MenuItem key={year} value={year}>{year}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    {/* Financial Summary Section - Without "Summary" title */}
+                    <Box sx={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, 
+                        gap: 2,
+                        mb: 3
+                    }}>
+                        {/* Income summary */}
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                borderRadius: 2,
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                p: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '100%',
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    boxShadow: 1,
+                                    borderColor: theme.palette.chart.income
+                                }
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <TrendingUpIcon 
+                                    sx={{ 
+                                        color: theme.palette.chart.income,
+                                        mr: 1,
+                                        fontSize: 20
+                                    }} 
+                                />
+                                <Typography variant="body2" color="text.secondary">
+                                    {t('dashboard.common.income')}
+                                </Typography>
+                            </Box>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: theme.palette.chart.income,
+                                    fontWeight: 600,
+                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                    transition: 'filter 0.3s ease',
+                                    userSelect: isHidden ? 'none' : 'auto'
+                                }}
+                            >
+                                {formatCurrency(categorySummary.income, user)}
+                            </Typography>
+                        </Paper>
+                        
+                        {/* Expenses summary */}
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                borderRadius: 2,
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                p: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '100%',
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    boxShadow: 1,
+                                    borderColor: theme.palette.chart.expenses
+                                }
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <TrendingDownIcon 
+                                    sx={{ 
+                                        color: theme.palette.chart.expenses,
+                                        mr: 1,
+                                        fontSize: 20
+                                    }} 
+                                />
+                                <Typography variant="body2" color="text.secondary">
+                                    {t('dashboard.common.expenses')}
+                                </Typography>
+                            </Box>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: theme.palette.chart.expenses,
+                                    fontWeight: 600,
+                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                    transition: 'filter 0.3s ease',
+                                    userSelect: isHidden ? 'none' : 'auto'
+                                }}
+                            >
+                                {formatCurrency(categorySummary.expenses, user)}
+                            </Typography>
+                        </Paper>
+                    </Box>
+
+                    <Divider sx={{ my: 3 }} />
+
+                    {/* Transaction History Section - Modernized UI */}
                     <Box sx={{
                         display: 'flex',
-                        flexDirection: 'column',
                         justifyContent: 'space-between',
-                        alignItems: { xs: 'stretch', sm: 'center' },
-                        mb: 3,
-                        pb: 2,
-                        gap: { xs: 2, sm: 0 }
+                        alignItems: 'center',
+                        mb: 3
                     }}>
                         <Typography
                             sx={{
                                 fontSize: { xs: '1rem', sm: '1.1rem' },
                                 fontWeight: 600,
-                                mb: { xs: 1, sm: 2 },
-                                textAlign: { xs: 'center', sm: 'left' }
                             }}
                         >
                             {t('dashboard.annualReport.categories.form.history')}
                         </Typography>
-                        <Box sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            flexDirection: 'column',
-                            width: '100%'
-                        }}>
-                            {/* Year selector */}
-                            <FormControl
-                                size="small"
-                                sx={{
-                                    width: '100%',
-                                    '& .MuiSelect-select': {
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => setShowTransactions(!showTransactions)}
+                            startIcon={showTransactions ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                            sx={{
+                                borderRadius: 8,
+                                px: 2,
+                                py: 0.5,
+                                minWidth: { xs: 'auto', sm: '120px' }
+                            }}
+                        >
+                            {showTransactions 
+                                ? t('dashboard.annualReport.categories.form.hideTransactions') 
+                                : t('dashboard.annualReport.categories.form.showTransactions')}
+                        </Button>
+                    </Box>
+                    
+                    {/* Search field for filtering transactions */}
+                    {showTransactions && (
+                        <TextField
+                            fullWidth
+                            size="small"
+                            placeholder={t('dashboard.annualReport.categories.form.searchPlaceholder')}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <SearchIcon sx={{
+                                        fontSize: 20,
+                                        mr: 1,
+                                        color: 'text.secondary'
+                                    }} />
+                                ),
+                                sx: {
+                                    borderRadius: 2,
+                                    '& .MuiOutlinedInput-input': {
                                         py: 1
                                     }
-                                }}
-                            >
-                                <Select
-                                    value={selectedYear}
-                                    onChange={(e) => setSelectedYear(e.target.value)}
-                                    sx={{
-                                        borderRadius: 2,
-                                        width: '100%'
-                                    }}
-                                >
-                                    {yearsWithData.map((year) => (
-                                        <MenuItem key={year} value={year}>{year}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            {/* Toggle button to show/hide transactions */}
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => setShowTransactions(!showTransactions)}
-                                startIcon={showTransactions ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                                sx={{
-                                    borderRadius: 2,
-                                    width: '100%'
-                                }}
-                            >
-                                {showTransactions 
-                                    ? t('dashboard.annualReport.categories.form.hideTransactions') 
-                                    : t('dashboard.annualReport.categories.form.showTransactions')}
-                            </Button>
-                            {/* Search field for filtering transactions */}
-                            {showTransactions && (
-                                <TextField
-                                    fullWidth
-                                    size="small"
-                                    placeholder={t('dashboard.annualReport.categories.form.searchPlaceholder')}
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <SearchIcon sx={{
-                                                fontSize: 20,
-                                                mr: 1,
-                                                color: 'text.secondary'
-                                            }} />
-                                        ),
-                                        sx: {
-                                            borderRadius: 2,
-                                            '& .MuiOutlinedInput-input': {
-                                                py: 1
-                                            }
-                                        }
-                                    }}
-                                />
-                            )}
-                        </Box>
-                    </Box>
+                                }
+                            }}
+                            sx={{ mb: 3 }}
+                        />
+                    )}
 
                     {/* Transactions list grouped by month */}
                     {showTransactions && (
@@ -481,33 +622,42 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                             }}
                                         >
                                             {/* Month header */}
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{
-                                                    mb: 2,
-                                                    textTransform: 'capitalize',
-                                                    fontWeight: 600,
-                                                    color: 'text.secondary',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: 1,
-                                                    fontSize: { xs: '0.9rem', sm: '1rem' }
-                                                }}
-                                            >
-                                                <CalendarMonthIcon sx={{ fontSize: 20 }} />
-                                                {month}
-                                            </Typography>
+                                            <Box sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                mb: 2,
+                                                pb: 1,
+                                                borderBottom: '1px solid',
+                                                borderColor: 'divider'
+                                            }}>
+                                                <CalendarMonthIcon sx={{ 
+                                                    fontSize: 20,
+                                                    color: 'primary.main',
+                                                    mr: 1.5
+                                                }} />
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                        fontWeight: 600,
+                                                        color: 'text.primary',
+                                                        fontSize: { xs: '0.9rem', sm: '1rem' }
+                                                    }}
+                                                >
+                                                    {month}
+                                                </Typography>
+                                            </Box>
                                             {/* Transactions grid */}
                                             <Box sx={{
                                                 display: 'grid',
                                                 gap: 1.5,
                                                 gridTemplateColumns: {
                                                     xs: '1fr',
-                                                    md: 'repeat(auto-fit, minmax(250px, 1fr))'
+                                                    md: 'repeat(auto-fill, minmax(250px, 1fr))'
                                                 },
                                                 maxWidth: '100%',
                                                 overflow: 'hidden',
-                                                p: { xs: 0, sm: 0.5 }
+                                                px: { xs: 0, sm: 0.5 }
                                             }}>
                                                 {/* Individual transaction cards */}
                                                 {monthTransactions.map((transaction) => (
@@ -517,13 +667,6 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                             width: '100%',
                                                             position: 'relative',
                                                             transform: 'translate3d(0, 0, 0)',
-                                                            '&:hover': {
-                                                                '& > .MuiPaper-root': {
-                                                                    borderColor: 'primary.main',
-                                                                    boxShadow: 1,
-                                                                    transition: 'all 0.2s ease-in-out'
-                                                                }
-                                                            }
                                                         }}
                                                     >
                                                         <Paper
@@ -540,6 +683,11 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                                 width: '100%',
                                                                 maxWidth: '100%',
                                                                 boxSizing: 'border-box',
+                                                                transition: 'all 0.2s ease-in-out',
+                                                                '&:hover': {
+                                                                    borderColor: 'primary.main',
+                                                                    boxShadow: 1
+                                                                }
                                                             }}
                                                         >
                                                             <Box sx={{
@@ -562,7 +710,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                                                                     minWidth: 0,
                                                                     wordBreak: 'break-word'
                                                                 }}>
-                                                                    {transaction.description || category.name}
+                                                                    {transaction.description || (category ? category.name : '')}
                                                                 </Typography>
                                                                 {/* Transaction amount */}
                                                                 <Typography sx={{

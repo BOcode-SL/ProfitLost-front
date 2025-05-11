@@ -709,6 +709,8 @@
             "disable_currency_amount": "Ocultar balances"
         },
         "common": {
+            "income": "Ingresos",
+            "expenses": "Gastos",
             "understood": "Entendido",
             "year": "Año",
             "month": "Mes",
