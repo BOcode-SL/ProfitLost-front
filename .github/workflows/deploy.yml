@@ -28,7 +28,7 @@ jobs:
       - name: 🏗️ Build project
         env:
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_URL: https://app.profit-lost.com
         run: pnpm run build
 
       - name: 📂 Sync files
