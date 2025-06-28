@@ -118,6 +118,19 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
 
         return monthsData;
     }, [transactions]);
+    
+    /**
+     * Calculates the difference between income and expenses for a specific month
+     * 
+     * @param {number} monthIndex - The index of the month (0-11)
+     * @returns {number} The profit/loss value for the month
+     */
+    const getMonthlyBalance = (monthIndex: number): number => {
+        const monthData = chartData[monthIndex];
+        if (!monthData) return 0;
+        
+        return parseFloat((monthData.income - monthData.expenses).toFixed(2));
+    };
 
     /**
      * Display loading skeleton while data is being fetched
@@ -171,6 +184,17 @@ export default function AnnualChart({ transactions, isLoading }: AnnualChartProp
                     tickLabelStyle: {
                         angle: isMobile ? 45 : 0,
                         textAnchor: isMobile ? 'start' : 'middle',
+                    },
+                    valueFormatter: (value, context) => {
+                        if (context.location === 'tick') return value;
+                        
+                        // Get month index based on the localized month name
+                        const monthIndex = months.findIndex(m => getMonthShortName(m) === value);
+                        if (monthIndex === -1) return value;
+                        
+                        // Calculate and format the balance for tooltip
+                        const balance = getMonthlyBalance(monthIndex);
+                        return `${value}: ${formatCurrency(balance, user)}`;
                     }
                 }]}
                 height={isMobile ? 300 : 350}
