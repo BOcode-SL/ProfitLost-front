@@ -56,7 +56,7 @@ export default function CookiePolicy() {
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as string[] : [];
     };
 
     /**
@@ -67,7 +67,7 @@ export default function CookiePolicy() {
      */
     const getCookieTypesArray = (key: string): CookieType[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as CookieType[] : [];
     };
 
     /**
@@ -78,7 +78,7 @@ export default function CookiePolicy() {
      */
     const getSpecificCookiesArray = (key: string): SpecificCookie[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as SpecificCookie[] : [];
     };
 
     return (

@@ -34,7 +34,7 @@ export default function LegalNotice() {
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as string[] : [];
     };
 
     return (

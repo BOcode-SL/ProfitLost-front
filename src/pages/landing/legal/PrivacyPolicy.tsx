@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as string[] : [];
     };
 
     return (
@@ -69,6 +69,7 @@ export default function PrivacyPolicy() {
                 {getTranslationArray('home.legal.privacyPolicy.sections.information.items').map((item: string, index: number) => (
                     <li key={index}>{item}</li>
                 ))}
+                <li>{t('home.legal.privacyPolicy.sections.information.paymentData')}</li>
             </Box>
 
             {/* Section 3: Legal basis */}

@@ -35,7 +35,7 @@ export default function TermsOfService() {
      */
     const getTranslationArray = (key: string): string[] => {
         const translation = t(key, { returnObjects: true });
-        return Array.isArray(translation) ? translation : [];
+        return Array.isArray(translation) ? translation as string[] : [];
     };
 
     return (
@@ -59,6 +59,36 @@ export default function TermsOfService() {
             </Typography>
             <Typography>
                 {t('home.legal.terms.sections.description.content')}
+            </Typography>
+
+            {/* Section: Subscription Plans */}
+            <Typography variant="h2" gutterBottom sx={{ fontSize: '1.75rem', mt: 4 }}>
+                {t('home.legal.terms.sections.subscription.title')}
+            </Typography>
+            <Typography paragraph>
+                {t('home.legal.terms.sections.subscription.trialPeriod')}
+            </Typography>
+            <Typography paragraph>
+                {t('home.legal.terms.sections.subscription.plansIntro')}
+            </Typography>
+            <Box component="ul" sx={{ pl: 4, mb: 4 }}>
+                <li>
+                    <Typography component="span" fontWeight="bold">
+                        {t('home.legal.terms.sections.subscription.plans.monthly.title')}
+                    </Typography>{' '}
+                    {t('home.legal.terms.sections.subscription.plans.monthly.price')}{' '}
+                    {t('home.legal.terms.sections.subscription.plans.monthly.description')}
+                </li>
+                <li>
+                    <Typography component="span" fontWeight="bold">
+                        {t('home.legal.terms.sections.subscription.plans.annual.title')}
+                    </Typography>{' '}
+                    {t('home.legal.terms.sections.subscription.plans.annual.price')}{' '}
+                    {t('home.legal.terms.sections.subscription.plans.annual.description')}
+                </li>
+            </Box>
+            <Typography>
+                {t('home.legal.terms.sections.subscription.cancellation')}
             </Typography>
 
             {/* Section 3: Registration and Account */}

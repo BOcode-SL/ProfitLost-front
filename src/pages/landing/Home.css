@@ -135,3 +135,74 @@
         transform: translateY(0px);
     }
 } 
+
+/* 
+ * Pricing container layout
+ * Implements a responsive grid system for pricing cards
+ * Uses a 2-column layout on desktop with consistent spacing
+ */
+.home-container .pricing-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* 
+ * Responsive layout adjustment for mobile devices
+ * Converts pricing grid to single column layout on screens smaller than 768px
+ */
+@media (max-width: 768px) {
+    .home-container .pricing-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 
+ * Individual pricing card styling
+ * Creates a clean, elevated card design with consistent spacing
+ * Includes transition effects for interactive elements
+ */
+.home-container .pricing-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* 
+ * Highlight styling for featured pricing card
+ * Applies gradient background and uses brand colors
+ * Creates visual emphasis for the recommended plan
+ */
+.home-container .pricing-card.highlight {
+    background: linear-gradient(135deg, #fe6f14 0%, #ff8f4c 100%);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(254, 111, 20, 0.3);
+}
+
+/* 
+ * Hover effect for pricing cards
+ * Creates subtle elevation and shadow effect on mouse hover
+ */
+.home-container .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* 
+ * Special hover effect for highlighted pricing card
+ * Maintains the scale but adds additional hover effect
+ */
+.home-container .pricing-card.highlight:hover {
+    transform: translateY(-4px) scale(1.05);
+} 

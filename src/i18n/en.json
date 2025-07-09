@@ -68,6 +68,23 @@
                 }
             }
         },
+        "pricing": {
+            "title": "Pricing Plans",
+            "subtitle": "Simple, transparent pricing for everyone",
+            "trial": "Try all Premium features free for 30 days — No credit card required",
+            "startTrial": "Start Free Trial",
+            "monthly": {
+                "title": "Monthly Plan",
+                "period": "month",
+                "advantage": "Flexible payment, cancel anytime"
+            },
+            "annual": {
+                "title": "Annual Plan",
+                "period": "year",
+                "advantage": "Save 16% compared to monthly plan",
+                "popular": "Most Popular"
+            }
+        },
         "footer": {
             "description": "Profit&Lost is more than an app—it's your partner in financial growth. From tracking expenses to planning for the future, we're here to help you every step of the way.",
             "company": "Company",
@@ -103,7 +120,8 @@
                             "Financial data voluntarily introduced",
                             "Usage and analytical data",
                             "Technical and analytical cookies",
-                            "IP address and browser data"
+                            "IP address and browser data",
+                            "Payment data: information necessary to process your subscription payments, securely stored by our payment processor."
                         ]
                     },
                     "legalBasis": {
@@ -266,6 +284,24 @@
                     "contact": {
                         "title": "12. Contact",
                         "content": "For any questions about these terms, contact: support@profit-lost.com"
+                    },
+                    "subscription": {
+                        "title": "Subscription Plans",
+                        "trialPeriod": "When you register, you get 30 days of free access to all Premium features, with no need to add a card or commitment.",
+                        "plansIntro": "After 30 days, to continue using the app you must choose between:",
+                        "plans": {
+                            "monthly": {
+                                "title": "Monthly",
+                                "price": "€0.99/month",
+                                "description": "Flexible payment, cancel whenever you want"
+                            },
+                            "annual": {
+                                "title": "Annual",
+                                "price": "€9.99/year",
+                                "description": "Save 16% compared to the monthly plan"
+                            }
+                        },
+                        "cancellation": "You can cancel your subscription at any time from the settings section of your account."
                     }
                 }
             },

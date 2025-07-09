@@ -68,6 +68,23 @@
                 }
             }
         },
+        "pricing": {
+            "title": "Planes de Precios",
+            "subtitle": "Precios simples y transparentes para todos",
+            "trial": "Prueba todas las funciones Premium gratis durante 30 días — Sin tarjeta ni compromiso",
+            "startTrial": "Comenzar Prueba Gratis",
+            "monthly": {
+                "title": "Plan Mensual",
+                "period": "mes",
+                "advantage": "Pago flexible, cancela cuando quieras"
+            },
+            "annual": {
+                "title": "Plan Anual",
+                "period": "año",
+                "advantage": "Ahorra un 16% frente al plan mensual",
+                "popular": "Más Popular"
+            }
+        },
         "footer": {
             "description": "Profit&Lost es más que una aplicación: es tu aliado en el crecimiento financiero. Desde el seguimiento de gastos hasta la planificación del futuro, estamos aquí para ayudarte en cada paso del camino.",
             "company": "Compañía",
@@ -103,7 +120,8 @@
                             "Datos financieros voluntariamente introducidos",
                             "Datos de uso y análisis",
                             "Cookies técnicas y analíticas",
-                            "Dirección IP y datos del navegador"
+                            "Dirección IP y datos del navegador",
+                            "Datos de pago: información necesaria para procesar tus pagos de suscripción, almacenada de forma segura por nuestro procesador de pagos."
                         ]
                     },
                     "legalBasis": {
@@ -266,6 +284,24 @@
                     "contact": {
                         "title": "12. Contacto",
                         "content": "Para cualquier pregunta sobre estos términos, contacta con: support@profit-lost.com"
+                    },
+                    "subscription": {
+                        "title": "Planes de Suscripción",
+                        "trialPeriod": "Al registrarte, tienes 30 días de acceso gratuito a todas las funciones Premium, sin necesidad de añadir tarjeta ni compromiso.",
+                        "plansIntro": "Pasados los 30 días, para seguir usando la app deberás elegir entre:",
+                        "plans": {
+                            "monthly": {
+                                "title": "Mensual",
+                                "price": "0,99 €/mes",
+                                "description": "Pago flexible, cancela cuando quieras"
+                            },
+                            "annual": {
+                                "title": "Anual",
+                                "price": "9,99 €/año",
+                                "description": "Ahorra un 16% frente al plan mensual"
+                            }
+                        },
+                        "cancellation": "Puedes cancelar tu suscripción en cualquier momento desde la sección de configuración de tu cuenta."
                     }
                 }
             },
@@ -585,7 +621,7 @@
                 "excerpt": "Te presentamos la nueva app para gestionar tus gastos",
                 "author": "Profit&Lost Team",
                 "content": {
-                    "intro": "¿Te cuesta controlar tus gastos mensuales? 💸 ¿Quieres saber en qué se te va el dinero y cómo puedes ahorrar más? 💰 En Profit&Lost, hemos diseñado una herramienta sencilla y visual para ayudarte a organizar tus finanzas. En este tutorial, te explicamos paso a paso cómo hacerlo.",
+                    "intro": "¿Te cuesta controlar tus gastos mensuales? 💸 ¿Quieres saber en qué se va el dinero y cómo puedes ahorrar más? 💰 En Profit&Lost, hemos diseñado una herramienta sencilla y visual para ayudarte a organizar tus finanzas. En este tutorial, te explicamos paso a paso cómo hacerlo.",
                     "step1": {
                         "title": "Paso 1: Crea tu cuenta y personaliza tus categorías",
                         "items": [
@@ -1357,5 +1393,23 @@
         "message": "Lo sentimos, la página que estás buscando no existe o ha sido movida.",
         "backHome": "Volver al inicio",
         "contactSupport": "Si crees que esto es un error, por favor contacta con soporte"
+    },
+    "subscription": {
+        "title": "Planes de Suscripción",
+        "trialPeriod": "Al registrarte, tienes 30 días de acceso gratuito a todas las funciones Premium, sin necesidad de añadir tarjeta ni compromiso.",
+        "plansIntro": "Pasados los 30 días, para seguir usando la app deberás elegir entre:",
+        "plans": {
+            "monthly": {
+                "title": "Mensual",
+                "price": "0,99 €/mes",
+                "description": "Pago flexible, cancela cuando quieras"
+            },
+            "annual": {
+                "title": "Anual",
+                "price": "9,99 €/año",
+                "description": "Ahorra un 16% frente al plan mensual"
+            }
+        },
+        "cancellation": "Puedes cancelar tu suscripción en cualquier momento desde la sección de configuración de tu cuenta."
     }
 }
