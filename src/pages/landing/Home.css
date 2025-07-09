@@ -153,10 +153,23 @@
 /* 
  * Responsive layout adjustment for mobile devices
  * Converts pricing grid to single column layout on screens smaller than 768px
+ * Reverses the order of cards to show annual plan first on mobile
  */
 @media (max-width: 768px) {
     .home-container .pricing-container {
         grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 0.5rem;
+    }
+    
+    /* Change order of pricing cards on mobile - Annual first, Monthly second */
+    .home-container .pricing-card:nth-child(1) {
+        order: 2; /* Monthly plan moves to second position */
+    }
+    
+    .home-container .pricing-card:nth-child(2) {
+        order: 1; /* Annual plan (highlight) moves to first position */
+        margin-bottom: 1rem;
     }
 }
 
@@ -178,6 +191,13 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
+/* Adjust padding for smaller screens */
+@media (max-width: 576px) {
+    .home-container .pricing-card {
+        padding: 2rem 1.5rem;
+    }
+}
+
 /* 
  * Highlight styling for featured pricing card
  * Applies gradient background and uses brand colors
@@ -188,6 +208,14 @@
     color: white;
     transform: scale(1.05);
     box-shadow: 0 8px 30px rgba(254, 111, 20, 0.3);
+}
+
+/* Adjust scale for mobile screens to avoid cards getting too large */
+@media (max-width: 768px) {
+    .home-container .pricing-card.highlight {
+        transform: scale(1.02);
+        margin: 0.5rem 0;
+    }
 }
 
 /* 
@@ -205,4 +233,11 @@
  */
 .home-container .pricing-card.highlight:hover {
     transform: translateY(-4px) scale(1.05);
+}
+
+/* Adjust hover effect for mobile */
+@media (max-width: 768px) {
+    .home-container .pricing-card.highlight:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
 } 

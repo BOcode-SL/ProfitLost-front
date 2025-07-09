@@ -567,9 +567,10 @@ export default function Home() {
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        fontSize: '1.5rem',
+                                        fontSize: { xs: '1.25rem', sm: '1.5rem' },
                                         fontWeight: 700,
-                                        mb: 2
+                                        mb: 2,
+                                        textAlign: 'center'
                                     }}
                                 >
                                     {t('home.pricing.monthly.title', 'Monthly Plan')}
@@ -582,7 +583,7 @@ export default function Home() {
                                 }}>
                                     <Typography
                                         sx={{
-                                            fontSize: '2.5rem',
+                                            fontSize: { xs: '2rem', sm: '2.5rem' },
                                             fontWeight: 800,
                                             color: '#333'
                                         }}
@@ -603,7 +604,8 @@ export default function Home() {
                                     sx={{
                                         fontWeight: 600,
                                         color: '#fe6f14',
-                                        mb: 3
+                                        mb: 3,
+                                        textAlign: 'center'
                                     }}
                                 >
                                     {t('home.pricing.monthly.advantage', 'Flexible payment, cancel anytime')}
@@ -615,7 +617,7 @@ export default function Home() {
                                         color: '#fe6f14',
                                         borderColor: '#fe6f14',
                                         borderRadius: '8px',
-                                        p: '0.75rem 1.5rem',
+                                        p: { xs: '0.6rem 1.2rem', sm: '0.75rem 1.5rem' },
                                         fontWeight: 600,
                                         transition: 'all 0.3s ease',
                                         '&:hover': {
@@ -633,25 +635,27 @@ export default function Home() {
                             <Box className="pricing-card highlight">
                                 <Box sx={{
                                     position: 'absolute',
-                                    top: '12px',
-                                    right: '12px',
+                                    top: { xs: '8px', sm: '12px' },
+                                    right: { xs: '8px', sm: '12px' },
                                     bgcolor: 'white',
                                     color: '#fe6f14',
                                     borderRadius: '20px',
-                                    px: 2,
+                                    px: { xs: 1.5, sm: 2 },
                                     py: 0.5,
-                                    fontSize: '0.875rem',
-                                    fontWeight: 700
+                                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap'
                                 }}>
                                     {t('home.pricing.annual.popular', 'Most Popular')}
                                 </Box>
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        fontSize: '1.5rem',
+                                        fontSize: { xs: '1.25rem', sm: '1.5rem' },
                                         fontWeight: 700,
                                         mb: 2,
-                                        color: 'white'
+                                        color: 'white',
+                                        textAlign: 'center'
                                     }}
                                 >
                                     {t('home.pricing.annual.title', 'Annual Plan')}
@@ -664,7 +668,7 @@ export default function Home() {
                                 }}>
                                     <Typography
                                         sx={{
-                                            fontSize: '2.5rem',
+                                            fontSize: { xs: '2rem', sm: '2.5rem' },
                                             fontWeight: 800,
                                             color: 'white'
                                         }}
@@ -686,7 +690,9 @@ export default function Home() {
                                     borderRadius: '8px',
                                     p: 1, 
                                     mb: 3,
-                                    fontWeight: 600
+                                    fontWeight: 600,
+                                    textAlign: 'center',
+                                    width: '100%'
                                 }}>
                                     {t('home.pricing.annual.advantage', 'Save 16% compared to monthly plan')}
                                 </Box>
@@ -697,7 +703,7 @@ export default function Home() {
                                         bgcolor: 'white',
                                         color: '#fe6f14',
                                         borderRadius: '8px',
-                                        p: '0.75rem 1.5rem',
+                                        p: { xs: '0.6rem 1.2rem', sm: '0.75rem 1.5rem' },
                                         fontWeight: 600,
                                         transition: 'all 0.3s ease',
                                         '&:hover': {
