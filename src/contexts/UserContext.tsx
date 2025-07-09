@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 // Types
 import type { User } from '../types/supabase/users';
 import type { PreferenceContent } from '../types/supabase/preferences';
+import type { Subscription } from '../types/supabase/subscriptions';
 
 // Services
 import { userService } from '../services/user.service';
@@ -25,6 +26,7 @@ import { userService } from '../services/user.service';
 export interface UserWithPreferences extends User {
     preferences: PreferenceContent;
     role: string; // Role code like 'admin', 'user', etc.
+    subscription: Subscription | null; // User subscription data
 }
 
 /**
@@ -38,6 +40,7 @@ interface UserContextType {
     loadUserData: () => Promise<void>; // Function to refresh user data
     userPreferences: PreferenceContent | null; // User preferences
     userRole: string | null;     // User role ('admin', 'user', etc.)
+    userSubscription: Subscription | null; // User subscription data
 }
 
 /**
@@ -77,6 +80,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserWithPreferences | null>(null); // State for user data
     const [userPreferences, setUserPreferences] = useState<PreferenceContent | null>(null); // State for preferences
     const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+    const [userSubscription, setUserSubscription] = useState<Subscription | null>(null); // State for user subscription
     const [isLoading, setIsLoading] = useState(true);    // Loading state tracker
     const { i18n } = useTranslation();                   // i18n instance for language management
 
@@ -123,14 +127,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                     reset_token_expired?: string | null;
                     preferences: PreferenceContent;
                     role: string;
+                    subscription: Subscription | null;
                 };
-                
+
                 // Create a user preferences object with defaults merged with API data
                 const preferences = {
                     ...defaultPreferences,
                     ...(apiData.preferences || {})
                 } as PreferenceContent;
-                
+
                 // Create a User object with all required fields
                 const userData: UserWithPreferences = {
                     id: apiData.id,
@@ -150,12 +155,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                     updated_by: null,
                     deleted_by: null,
                     preferences: preferences,
-                    role: apiData.role || 'user'
+                    role: apiData.role || 'user',
+                    subscription: apiData.subscription
                 };
 
                 setUser(userData);
                 setUserPreferences(preferences);
                 setUserRole(apiData.role || null);
+                setUserSubscription(apiData.subscription);
 
                 // Update application language based on user preference
                 const userLanguage = convertLanguageFormat(preferences.language);
@@ -164,12 +171,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                 setUser(null);
                 setUserPreferences(null);
                 setUserRole(null);
+                setUserSubscription(null);
             }
         } catch (error) {
             console.error('Error loading user data:', error);
             setUser(null);
             setUserPreferences(null);
             setUserRole(null);
+            setUserSubscription(null);
         } finally {
             setIsLoading(false);
         }
@@ -182,7 +191,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     // Provide user context to children components
     return (
-        <UserContext.Provider value={{ user, setUser, isLoading, loadUserData, userPreferences, userRole }}>
+        <UserContext.Provider value={{ user, setUser, isLoading, loadUserData, userPreferences, userRole, userSubscription }}>
             {children}
         </UserContext.Provider>
     );
@@ -198,10 +207,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 // eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => {
     const context = useContext(UserContext);
-    
+
     if (context === undefined) {
         throw new Error('useUser must be used within a UserProvider');
     }
-    
+
     return context;
 }; 

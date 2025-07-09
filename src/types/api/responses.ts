@@ -20,12 +20,12 @@ import type { HttpStatusCode } from './common';
 
 // Supabase models
 import type { UUID } from '../supabase/common';
-import type { User } from '../supabase/users';
 import type { RecurrenceType, Transaction } from '../supabase/transactions';
 import type { Category } from '../supabase/categories';
 import type { Note } from '../supabase/notes';
 import type { Account } from '../supabase/accounts';
 import type { PreferenceContent } from '../supabase/preferences';
+import type { Subscription } from '../supabase/subscriptions';
 
 /**
  * Types for authentication API responses
@@ -83,7 +83,18 @@ export interface AuthApiResponse {
  * @typedef UserApiResponse
  */
 export type UserApiErrorResponse = ApiErrorResponse<UserErrorType>;
-export type UserApiSuccessResponse = ApiSuccessResponse<User | User[]>;
+export interface UserApiSuccessResponse extends ApiSuccessResponse {
+    data?: {
+        id: UUID;
+        username: string;
+        email: string;
+        name: string;
+        surname: string;
+        preferences: PreferenceContent;
+        role: string;
+        subscription: Subscription | null;
+    };
+}
 export type UserApiResponse = UserApiSuccessResponse | UserApiErrorResponse;
 
 /**
