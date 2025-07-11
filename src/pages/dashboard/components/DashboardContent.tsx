@@ -80,6 +80,12 @@ export default function DashboardContent({ activeSection, isTrialEnded, navigate
      */
     useEffect(() => {
         if (user && activeSection && userPreferences && userPreferences.onboarding.completed) {
+            // Don't show intro dialog for subscription section
+            if (activeSection === 'subscription') {
+                setShowIntro(false);
+                return;
+            }
+
             const sectionIntro = userPreferences.onboarding.sections.find(
                 (section) => section.section === activeSection
             );
