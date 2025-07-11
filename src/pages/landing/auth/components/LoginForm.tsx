@@ -6,9 +6,10 @@
  * 
  * @module LoginForm
  */
-import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography, Link } from '@mui/material';
-import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
-import { toast } from 'react-hot-toast';
+// import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography, Link } from '@mui/material';
+import { TextField, Button, InputAdornment, IconButton, Box, Link } from '@mui/material';
+// import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
+// import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -30,7 +31,7 @@ interface LoginFormProps {
     setShowResetPassword: (show: boolean) => void; // Function to show/hide reset password form
     isFormValid: () => boolean; // Function to validate the form
     handleSubmit: (e: React.FormEvent) => void; // Function to handle form submission
-    handleGoogleSuccess: (tokenResponse: TokenResponse) => Promise<void>; // Function to handle Google login success
+    // handleGoogleSuccess: (tokenResponse: TokenResponse) => Promise<void>; // Function to handle Google login success
 }
 
 /**
@@ -52,7 +53,7 @@ export default function LoginForm({
     setShowResetPassword,
     isFormValid,
     handleSubmit,
-    handleGoogleSuccess
+    // handleGoogleSuccess
 }: LoginFormProps) {
     const { t } = useTranslation();
 
@@ -60,14 +61,17 @@ export default function LoginForm({
      * Initializes Google login functionality
      * Handles success and error cases for Google authentication
      */
+    /*
     const loginWithGoogle = useGoogleLogin({
         onSuccess: handleGoogleSuccess,
         onError: () => { toast.error(t('home.auth.login.form.googleError')); }
     });
+    */
 
     return (
         <Box component="form" onSubmit={handleSubmit}>
             {/* Google Login button */}
+            {/*
             <Box sx={{ width: '100%', mb: 2 }}>
                 <Button
                     fullWidth
@@ -91,12 +95,14 @@ export default function LoginForm({
                 </Button>
             </Box>
 
-            {/* Divider for visual separation */}
+            /* Divider for visual separation */}
+            {/*
             <Divider sx={{ my: 2 }}>
                 <Typography sx={{ color: '#666', px: 2 }}>
                     {t('home.auth.common.or')}
                 </Typography>
             </Divider>
+            */}
 
             {/* Input for email or username */}
             <TextField
