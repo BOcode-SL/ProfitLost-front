@@ -845,6 +845,12 @@
             "noData": "No data available",
             "retry": "Retry",
             "more": "View more",
+            "upgrade": "Upgrade",
+            "trialEnded": "Your trial period has ended. Please upgrade your subscription to continue using all features.",
+            "trialEndingSoon": "Your trial will end in {{days}} days. Upgrade now to continue using all features.",
+            "subscriptionActive": "Your subscription is active until {{date}}.",
+            "paymentFailed": "We couldn't process your last payment. Please update your payment information.",
+            "renewalSoon": "Your subscription will renew on {{date}}.",
             "colors": {
                 "background": "Background color",
                 "text": "Text color"
@@ -1050,6 +1056,55 @@
                 "deleteAccountSuccess": "Account deleted successfully",
                 "deleteAccountError": "Error deleting account",
                 "username": "Username"
+            },
+            "subscription": {
+                "title": "Subscription",
+                "upgrade": "Upgrade",
+                "cancel": "Cancel",
+                "currentStatus": "Current Subscription",
+                "plan": "Plan",
+                "status": "Status",
+                "manage": "Manage Subscription",
+                "trialActive": "Trial Active ({{days}} days remaining)",
+                "trialPeriod": "Trial Period",
+                "subscriptionPeriod": "Subscription Period",
+                "availablePlans": "Available Plans",
+                "mostPopular": "Most Popular",
+                "bestValue": "Best Value",
+                "selected": "Selected",
+                "select": "Select",
+                "subscribe": "Subscribe Now",
+                "planTypes": {
+                    "trial": "Trial",
+                    "monthly": "Monthly",
+                    "annual": "Annual"
+                },
+                "statuses": {
+                    "trialing": "Trial",
+                    "active": "Active",
+                    "canceled": "Canceled",
+                    "incomplete": "Incomplete",
+                    "incomplete_expired": "Payment Failed",
+                    "past_due": "Payment Past Due",
+                    "unpaid": "Unpaid"
+                },
+                "features": {
+                    "feature1": "Unlimited transactions",
+                    "feature2": "Priority customer support",
+                    "feature3": "Advanced analytics and insights"
+                },
+                "plans": {
+                    "monthly": {
+                        "title": "Monthly",
+                        "price": "0,99 €/month",
+                        "description": "Flexible payment, cancel whenever you want"
+                    },
+                    "annual": {
+                        "title": "Annual",
+                        "price": "9,99 €/year",
+                        "description": "Save 16% compared to the monthly plan"
+                    }
+                }
             }
         },
         "dashhome": {

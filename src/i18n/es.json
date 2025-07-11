@@ -843,6 +843,12 @@
             "noData": "No hay datos disponibles",
             "retry": "Reintentar",
             "more": "Ver más",
+            "upgrade": "Actualizar",
+            "trialEnded": "Tu periodo de prueba ha finalizado. Por favor, actualiza tu suscripción para continuar usando todas las funciones.",
+            "trialEndingSoon": "Tu prueba finalizará en {{days}} días. Actualiza ahora para seguir usando todas las funciones.",
+            "subscriptionActive": "Tu suscripción está activa hasta el {{date}}.",
+            "paymentFailed": "No pudimos procesar tu último pago. Por favor, actualiza tu información de pago.",
+            "renewalSoon": "Tu suscripción se renovará el {{date}}.",
             "colors": {
                 "background": "Color de fondo",
                 "text": "Color de texto"
@@ -1048,6 +1054,55 @@
                 "deleteAccountSuccess": "Cuenta eliminada correctamente",
                 "deleteAccountError": "Error al eliminar la cuenta",
                 "username": "Nombre de usuario"
+            },
+            "subscription": {
+                "title": "Suscripción",
+                "upgrade": "Actualizar",
+                "cancel": "Cancelar",
+                "currentStatus": "Suscripción actual",
+                "plan": "Plan",
+                "status": "Estado",
+                "manage": "Gestionar suscripción",
+                "trialActive": "Prueba activa ({{days}} días restantes)",
+                "trialPeriod": "Periodo de prueba",
+                "subscriptionPeriod": "Periodo de suscripción",
+                "availablePlans": "Planes disponibles",
+                "mostPopular": "Más popular",
+                "bestValue": "Mejor valor",
+                "selected": "Seleccionado",
+                "select": "Seleccionar",
+                "subscribe": "Suscribirse ahora",
+                "planTypes": {
+                    "trial": "Prueba",
+                    "monthly": "Mensual",
+                    "annual": "Anual"
+                },
+                "statuses": {
+                    "trialing": "En prueba",
+                    "active": "Activo",
+                    "canceled": "Cancelado",
+                    "incomplete": "Incompleto",
+                    "incomplete_expired": "Pago fallido",
+                    "past_due": "Pago vencido",
+                    "unpaid": "Sin pagar"
+                },
+                "features": {
+                    "feature1": "Transacciones ilimitadas",
+                    "feature2": "Soporte prioritario al cliente",
+                    "feature3": "Análisis e informes avanzados"
+                },
+                "plans": {
+                    "monthly": {
+                        "title": "Mensual",
+                        "price": "0,99 €/mes",
+                        "description": "Pago flexible, cancela cuando quieras"
+                    },
+                    "annual": {
+                        "title": "Anual",
+                        "price": "9,99 €/año",
+                        "description": "Ahorra un 16% frente al plan mensual"
+                    }
+                }
             }
         },
         "dashhome": {

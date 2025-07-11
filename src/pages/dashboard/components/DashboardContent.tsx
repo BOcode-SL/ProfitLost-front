@@ -13,7 +13,10 @@
  */
 
 import { Suspense, lazy, useEffect, useState } from 'react';
-import { Box, Paper, CircularProgress } from '@mui/material';
+import { Box, Paper, CircularProgress, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { NavigateFunction } from 'react-router-dom';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 // Contexts
 import { useUser } from '../../../contexts/UserContext';
@@ -30,6 +33,7 @@ const AnnualReport = lazy(() => import('../features/annualReport/AnnualReport'))
 const Transactions = lazy(() => import('../features/transactions/Transactions'));
 const Accounts = lazy(() => import('../features/accounts/Accounts'));
 const Notes = lazy(() => import('../features/notes/Notes'));
+const Subscription = lazy(() => import('../features/settings/Subscription'));
 
 /**
  * Interface for the props of the DashboardContent component
@@ -39,6 +43,10 @@ const Notes = lazy(() => import('../features/notes/Notes'));
 interface DashboardContentProps {
     /** The currently active section key to display */
     activeSection: string;
+    /** Whether the trial period has ended */
+    isTrialEnded: boolean;
+    /** Navigation function to redirect to other pages */
+    navigate: NavigateFunction;
 }
 
 /**
@@ -49,9 +57,12 @@ interface DashboardContentProps {
  * 
  * @param {DashboardContentProps} props - The component props
  * @param {string} props.activeSection - The key of the currently active section
+ * @param {boolean} props.isTrialEnded - Whether the trial has ended
+ * @param {NavigateFunction} props.navigate - Function to navigate to other routes
  * @returns {JSX.Element} The rendered DashboardContent component
  */
-export default function DashboardContent({ activeSection }: DashboardContentProps) {
+export default function DashboardContent({ activeSection, isTrialEnded, navigate }: DashboardContentProps) {
+    const { t } = useTranslation();
     const { user, userPreferences, loadUserData } = useUser();
     const [showIntro, setShowIntro] = useState(false);
 
@@ -102,8 +113,67 @@ export default function DashboardContent({ activeSection }: DashboardContentProp
             pt: { xs: 11, md: 0 },
             pb: { xs: 14, md: 2 },
             pl: { xs: 2, md: 0 },
-            width: '100%'
+            width: '100%',
+            position: 'relative'
         }}>
+            {isTrialEnded && (
+                <Paper 
+                    elevation={1}
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        justifyContent: { xs: 'center', sm: 'space-between' },
+                        alignItems: 'center',
+                        mb: 2,
+                        position: 'sticky',
+                        top: { xs: 11, md: 0 },
+                        zIndex: 1000,
+                        p: { xs: 1.5, sm: 2 },
+                        border: '1px solid',
+                        borderRadius: '8px',
+                        borderColor: 'warning.main'
+                    }}
+                >
+                    <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 1,
+                        textAlign: { xs: 'center', sm: 'left' },
+                        mb: { xs: 1.5, sm: 0 },
+                        width: { xs: '100%', sm: 'auto' }
+                    }}>
+                        <WarningAmberIcon 
+                            color="warning" 
+                            sx={{ 
+                                fontSize: { xs: '1.3rem', sm: '1.5rem' },
+                                flexShrink: 0
+                            }} 
+                        />
+                        {t('dashboard.common.trialEnded')}
+                    </Box>
+                    <Button 
+                        color="warning"
+                        size="small"
+                        variant="outlined"
+                        onClick={() => navigate('/dashboard?section=subscription')}
+                        sx={{ 
+                            ml: { xs: 0, sm: 2 },
+                            mt: { xs: 0.5, sm: 0 },
+                            width: { xs: '100%', sm: 'auto' },
+                            borderColor: 'warning.dark',
+                            color: 'warning.dark',
+                            '&:hover': {
+                                borderColor: 'warning.dark',
+                                backgroundColor: 'rgba(237, 108, 2, 0.08)'
+                            }
+                        }}
+                    >
+                        {t('dashboard.common.upgrade')}
+                    </Button>
+                </Paper>
+            )}
+            
             <Suspense fallback={<LoadingIndicator />}>
                 <SectionContent activeSection={activeSection} />
             </Suspense>
@@ -172,6 +242,9 @@ function SectionContent({ activeSection }: SectionContentProps) {
             return <Accounts />;
         case 'notes':
             return <Notes />;
+        case 'settings':
+        case 'subscription':
+            return <Subscription />;
         default:
             return <UnderConstructionSection name={activeSection} />;
     }

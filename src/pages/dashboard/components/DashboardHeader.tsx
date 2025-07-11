@@ -42,6 +42,7 @@ import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 
 // Services
 import { authService } from '../../../services/auth.service';
@@ -116,11 +117,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     // Check if user is admin using role from UserContext
     const isAdmin = userRole === 'admin' || false;
     
-    // Menu items for settings
+    // Menu items for settings - add subscription to the primary section
     const menuItems = {
         primary: [
             { icon: <PersonOutlineOutlinedIcon />, text: t('dashboard.settings.userSettings.title') },
             { icon: <SecurityOutlinedIcon />, text: t('dashboard.settings.securityPrivacy.title') },
+            { icon: <PaymentOutlinedIcon />, text: t('dashboard.settings.subscription.title')},
         ],
         secondary: [
             { icon: <HelpOutlineOutlinedIcon />, text: t('dashboard.settings.help.title') },
@@ -161,11 +163,20 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
 
     /**
      * Opens the settings drawer with the selected component
+     * or redirects to the subscription section if specified
      * 
      * @param {string} component - The component key to display
+     * @param {string} [redirect] - Optional redirect path
      */
-    const handleSettingsClick = (component: string) => {
+    const handleSettingsClick = (component: string, redirect?: string) => {
         setDrawerOpen(false);
+        
+        if (redirect) {
+            // Redirect to main content section instead of opening drawer
+            navigate(`/dashboard?section=${redirect}`);
+            return;
+        }
+        
         setSettingsDrawer({
             open: true,
             component,
@@ -374,7 +385,7 @@ interface UserDrawerProps {
     
     /** Menu items to display in the drawer */
     menuItems: {
-        primary: Array<{ icon: React.ReactNode; text: string }>;
+        primary: Array<{ icon: React.ReactNode; text: string; redirect?: string }>;
         secondary: Array<{ icon: React.ReactNode; text: string }>;
     };
     
@@ -382,7 +393,7 @@ interface UserDrawerProps {
     onClose: () => void;
     
     /** Function to handle settings item clicks */
-    onSettingsClick: (component: string) => void;
+    onSettingsClick: (component: string, redirect?: string) => void;
     
     /** Function to handle logout */
     onLogout: () => void;
@@ -471,12 +482,26 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
                     <List disablePadding>
                         {menuItems.primary.map((item) => (
                             <ListItem key={item.text} disablePadding>
-                                <ListItemButton onClick={() => onSettingsClick(item.text)}>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.text} />
-                                </ListItemButton>
+                                {item.text === t('dashboard.settings.subscription.title') ? (
+                                    <ListItemButton 
+                                        onClick={() => {
+                                            onClose();
+                                            window.location.href = '/dashboard?section=subscription';
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.text} />
+                                    </ListItemButton>
+                                ) : (
+                                    <ListItemButton onClick={() => onSettingsClick(item.text, item.redirect)}>
+                                        <ListItemIcon>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.text} />
+                                    </ListItemButton>
+                                )}
                             </ListItem>
                         ))}
                     </List>

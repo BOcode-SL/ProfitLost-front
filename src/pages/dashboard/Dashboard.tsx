@@ -42,13 +42,25 @@ import { dispatchTransactionUpdated } from '../../utils/events';
  */
 export default function Dashboard() {
     const { t } = useTranslation();
-    const { user, isLoading, userPreferences, userRole } = useUser();
+    const { user, isLoading, userPreferences, userRole, userSubscription } = useUser();
     const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeSection, setActiveSection] = useState('dashhome');
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [transactionDrawerOpen, setTransactionDrawerOpen] = useState(false);
+
+    // Check if trial has ended
+    const isTrialEnded = useMemo(() => {
+        if (!userSubscription || userSubscription.status !== 'trialing') {
+            return false;
+        }
+        
+        const trialEndDate = new Date(userSubscription.trial_end);
+        const currentDate = new Date();
+        
+        return currentDate > trialEndDate;
+    }, [userSubscription]);
 
     /**
      * Redirects unauthenticated users to the authentication page
@@ -172,7 +184,11 @@ export default function Dashboard() {
                     onAddTransaction={handleAddTransaction}
                     userRole={userRole}
                 />
-                <DashboardContent activeSection={activeSection} />
+                <DashboardContent 
+                    activeSection={activeSection} 
+                    isTrialEnded={isTrialEnded} 
+                    navigate={navigate}
+                />
             </Box>
 
             {/* Onboarding dialog for new users */}

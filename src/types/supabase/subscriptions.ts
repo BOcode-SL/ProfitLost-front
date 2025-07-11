@@ -14,7 +14,14 @@ import { UUID, TrackingFields, ISODateString } from './common';
  * 
  * @typedef {string} SubscriptionStatus
  */
-export type SubscriptionStatus = 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid';
+export type SubscriptionStatus = 'active' | 'canceled' | 'trialing';
+
+/**
+ * Type for the type of plan a subscription is
+ * 
+ * @typedef {string} PlanType
+ */
+export type PlanType = 'monthly' | 'annual' | 'trial';
 
 /**
  * Interface representing a user subscription.
@@ -28,7 +35,7 @@ export interface Subscription extends TrackingFields {
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   status: SubscriptionStatus;
-  plan_type: string;
+  plan_type: PlanType;
   current_period_start: ISODateString | null;
   current_period_end: ISODateString | null;
   canceled_at: ISODateString | null;
