@@ -13,7 +13,7 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-// import { TokenResponse } from '@react-oauth/google';
+import { TokenResponse } from '@react-oauth/google';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, Button, Paper } from '@mui/material';
 
@@ -370,7 +370,6 @@ export default function AuthPage() {
      * @param {TokenResponse} tokenResponse - OAuth token response from Google
      * @returns {Promise<void>}
      */
-    /*
     const handleGoogleSuccess = async (tokenResponse: TokenResponse) => {
         setLoading(true);
         try {
@@ -412,7 +411,6 @@ export default function AuthPage() {
             setLoading(false);
         }
     };
-    */
 
     return (
         <>
@@ -440,7 +438,7 @@ export default function AuthPage() {
                             onClick={() => navigate('/')}
                         />
                     </Box>
-                    
+
                     <Box sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', md: 'row' },
@@ -467,7 +465,7 @@ export default function AuthPage() {
                                     mb: 4
                                 }}
                             >
-                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')}/>
+                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
                             </Box>
 
                             <Paper elevation={0} sx={{
@@ -480,7 +478,7 @@ export default function AuthPage() {
                                 <Typography variant="h4" component="h1" align="center" gutterBottom>
                                     {getResetPasswordStepTitle(resetStep, t)}
                                 </Typography>
-                                
+
                                 <Box sx={{ mb: 4 }} />
 
                                 <ResetPasswordForm
@@ -502,7 +500,7 @@ export default function AuthPage() {
                                     handleVerifyToken={handleVerifyToken}
                                     handleResetPassword={handleResetPassword}
                                 />
-                                
+
                                 <Box sx={{ textAlign: 'center', mt: 3 }}>
                                     <Typography variant="body2">
                                         <Box
@@ -547,7 +545,7 @@ export default function AuthPage() {
                             onClick={() => navigate('/')}
                         />
                     </Box>
-                    
+
                     <Box sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', md: 'row' },
@@ -572,7 +570,7 @@ export default function AuthPage() {
                                     mb: 4
                                 }}
                             >
-                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')}/>
+                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
                             </Box>
 
                             <Paper elevation={0} sx={{
@@ -599,7 +597,7 @@ export default function AuthPage() {
                                         setShowResetPassword={setShowResetPassword}
                                         isFormValid={isFormValid}
                                         handleSubmit={handleSubmit}
-                                        // handleGoogleSuccess={handleGoogleSuccess}
+                                        handleGoogleSuccess={handleGoogleSuccess}
                                     />
                                 ) : (
                                     <RegisterForm
