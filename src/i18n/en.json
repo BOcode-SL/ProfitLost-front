@@ -497,8 +497,12 @@
                     },
                     "submit": "Login",
                     "googleButton": "Continue with Google",
-                    "googleError": "Error authenticating with Google",
-                    "alternativeAction": "Don't have an account? Sign up"
+                    "googleError": "Error authenticating with Google"
+                },
+                "cta": {
+                    "title": "Already have an account?",
+                    "description": "Sign in with your account to continue tracking your finances and achieving your goals.",
+                    "button": "Sign in"
                 }
             },
             "logout": {
@@ -530,28 +534,39 @@
                         "label": "Password",
                         "helper": "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
                     },
-                    "submit": "Create Account",
-                    "alternativeAction": "Already have an account? Sign in"
+                    "submit": "Create Account"
+                },
+                "cta": {
+                    "title": "New to Profit&Lost?",
+                    "description": "Create an account and start managing your finances easily. It only takes a minute to get started.",
+                    "button": "Sign up"
                 }
             },
             "resetPassword": {
                 "title": "Reset Password",
                 "subtitle": "Enter your email to receive a recovery code",
+                "backToLogin": "Back to login",
                 "steps": {
                     "email": {
                         "title": "Enter your email",
+                        "description": "Enter your email to receive a recovery code",
                         "label": "Email",
-                        "submit": "Send Recovery Code"
+                        "submit": "Send Recovery Code",
+                        "placeholder": "email@example.com"
                     },
                     "token": {
                         "title": "Enter recovery code",
+                        "description": "Enter the recovery code we sent to your email",
                         "label": "Recovery Code",
-                        "submit": "Verify Code"
+                        "submit": "Verify Code",
+                        "helper": "6 digits"
                     },
                     "password": {
                         "title": "Create new password",
+                        "description": "Create a new password for your account",
                         "newPassword": {
-                            "label": "New Password"
+                            "label": "New Password",
+                            "helper": "Minimum 8 characters, one uppercase letter, one lowercase letter, one number and one symbol"
                         },
                         "confirmPassword": {
                             "label": "Confirm New Password",

@@ -8,7 +8,7 @@
  * 
  * @module ResetPasswordForm
  */
-import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
+import { TextField, Button, InputAdornment, IconButton, Box, Typography } from '@mui/material';
 import { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -38,6 +38,28 @@ interface ResetPasswordFormProps {
     handleVerifyToken: (e: FormEvent) => void; // Function to handle token verification
     handleResetPassword: (e: FormEvent) => void; // Function to handle password reset
 }
+
+/**
+ * Helper function to get the step title based on current step
+ * 
+ * @param {('email' | 'token' | 'password')} step - Current reset step
+ * @returns {string} The title for the current step
+ */
+export const getResetPasswordStepTitle = (
+    step: 'email' | 'token' | 'password', 
+    t: (key: string) => string
+): string => {
+    switch (step) {
+        case 'email':
+            return t('home.auth.resetPassword.steps.email.title');
+        case 'token':
+            return t('home.auth.resetPassword.steps.token.title');
+        case 'password':
+            return t('home.auth.resetPassword.steps.password.title');
+        default:
+            return '';
+    }
+};
 
 /**
  * Reset password form component
@@ -70,31 +92,45 @@ export default function ResetPasswordForm({
 }: ResetPasswordFormProps) {
     const { t } = useTranslation();
 
+    // Common styles for consistency with other forms
+    const commonButtonStyle = {
+        mt: 3,
+        mb: 2,
+        bgcolor: '#fe6f14',
+        '&:hover': { bgcolor: '#c84f03' }
+    };
+
     switch (resetStep) {
         // Email step
         case 'email':
             return (
                 <Box component="form" onSubmit={handleForgotPassword}>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                            {t('home.auth.resetPassword.steps.email.description')}
+                        </Typography>
+                    </Box>
+                    
                     {/* Email Input */}
                     <TextField
                         fullWidth
                         required
+                        variant="outlined"
                         label={t('home.auth.resetPassword.steps.email.label')}
                         type="email"
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value.trim())}
-                        sx={{ mb: 2 }}
+                        placeholder={t('home.auth.resetPassword.steps.email.placeholder')}
+                        margin="normal"
                     />
+                    
                     {/* Send Recovery Code Button */}
                     <Button
                         fullWidth
                         variant="contained"
                         type="submit"
                         disabled={!resetEmail || loading}
-                        sx={{
-                            bgcolor: '#fe6f14',
-                            '&:hover': { bgcolor: '#c84f03' }
-                        }}
+                        sx={commonButtonStyle}
                     >
                         {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.email.submit')}
                     </Button>
@@ -104,10 +140,17 @@ export default function ResetPasswordForm({
         case 'token':
             return (
                 <Box component="form" onSubmit={handleVerifyToken}>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                            {t('home.auth.resetPassword.steps.token.description')}
+                        </Typography>
+                    </Box>
+                    
                     {/* Recovery Code Input */}
                     <TextField
                         fullWidth
                         required
+                        variant="outlined"
                         label={t('home.auth.resetPassword.steps.token.label')}
                         value={resetToken}
                         onChange={(e) => {
@@ -117,24 +160,22 @@ export default function ResetPasswordForm({
                                 setResetToken(value);
                             }
                         }}
-                        sx={{ mb: 2 }}
+                        margin="normal"
                         inputProps={{
                             maxLength: 6,
                             pattern: '[0-9]*',
                             inputMode: 'numeric'
                         }}
-                        helperText={t('home.auth.resetPassword.steps.token.helper', { defaultValue: '6-digit code sent to your email' })}
+                        helperText={t('home.auth.resetPassword.steps.token.helper')}
                     />
+                    
                     {/* Verify Code Button */}
                     <Button
                         fullWidth
                         variant="contained"
                         type="submit"
-                        disabled={!resetToken || loading}
-                        sx={{
-                            bgcolor: '#fe6f14',
-                            '&:hover': { bgcolor: '#c84f03' }
-                        }}
+                        disabled={!resetToken || loading || resetToken.length !== 6}
+                        sx={commonButtonStyle}
                     >
                         {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.token.submit')}
                     </Button>
@@ -144,15 +185,23 @@ export default function ResetPasswordForm({
         case 'password':
             return (
                 <Box component="form" onSubmit={handleResetPassword}>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                            {t('home.auth.resetPassword.steps.password.description')}
+                        </Typography>
+                    </Box>
+                    
                     {/* New Password Input */}
                     <TextField
                         fullWidth
                         required
+                        variant="outlined"
                         type={showNewPassword ? 'text' : 'password'}
                         label={t('home.auth.resetPassword.steps.password.newPassword.label')}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         margin="normal"
+                        helperText={t('home.auth.resetPassword.steps.password.newPassword.helper')}
                         slotProps={{
                             input: {
                                 endAdornment: (
@@ -165,16 +214,18 @@ export default function ResetPasswordForm({
                             }
                         }}
                     />
+                    
                     {/* Confirm New Password Input */}
                     <TextField
                         fullWidth
                         required
+                        variant="outlined"
                         type={showConfirmPassword ? 'text' : 'password'}
                         label={t('home.auth.resetPassword.steps.password.confirmPassword.label')}
-                        helperText={t('home.auth.resetPassword.steps.password.confirmPassword.helper')}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         margin="normal"
+                        helperText={t('home.auth.resetPassword.steps.password.confirmPassword.helper')}
                         slotProps={{
                             input: {
                                 endAdornment: (
@@ -187,17 +238,14 @@ export default function ResetPasswordForm({
                             }
                         }}
                     />
+                    
                     {/* Reset Password Button */}
                     <Button
                         fullWidth
                         variant="contained"
                         type="submit"
                         disabled={!newPassword || !confirmPassword || loading}
-                        sx={{
-                            mt: 3,
-                            bgcolor: '#fe6f14',
-                            '&:hover': { bgcolor: '#c84f03' }
-                        }}
+                        sx={commonButtonStyle}
                     >
                         {loading ? t('home.auth.common.loading') : t('home.auth.resetPassword.steps.password.submit')}
                     </Button>

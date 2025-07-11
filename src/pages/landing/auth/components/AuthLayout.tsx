@@ -27,6 +27,10 @@ interface AuthLayoutProps {
     onAlternativeActionClick?: () => void; // Function to handle alternative action click
 }
 
+// Header height constant for use in calculations
+export const AUTH_HEADER_HEIGHT = 80; // pixels
+export const LOGO_HEIGHT = 75; // pixels - matching the height in AuthPage
+
 /**
  * Authentication Layout component
  * 
@@ -51,12 +55,39 @@ export default function AuthLayout({
     return (
         <>
             <LanguageSelector />
-            {/* Main container for the layout */}
+            {/* Header with logo */}
             <Box sx={{
-                minHeight: '100vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: `${AUTH_HEADER_HEIGHT}px`,
+                width: '100%',
+                backgroundColor: 'white',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                zIndex: 100,
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            }}>
+                <Box
+                    component="img"
+                    src="/logo/logoPL3.svg"
+                    alt="Profit & Lost Logo"
+                    sx={{
+                        height: `${LOGO_HEIGHT}px`,
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => navigate('/')}
+                />
+            </Box>
+            
+            {/* Main container for the layout - adjusted for header height */}
+            <Box sx={{
+                minHeight: `calc(100vh - ${AUTH_HEADER_HEIGHT}px)`,
                 p: { xs: 2, sm: 3, md: 4 },
                 overflow: 'auto',
-                background: 'linear-gradient(135deg, rgba(255, 163, 106, 0.403) 0%, rgba(183, 79, 14, 0.501) 100%)'
+                background: 'linear-gradient(135deg, rgba(255, 163, 106, 0.403) 0%, rgba(183, 79, 14, 0.501) 100%)',
+                marginTop: `${AUTH_HEADER_HEIGHT}px`
             }}>
                 {/* Container for the content */}
                 <Container maxWidth="sm" sx={{

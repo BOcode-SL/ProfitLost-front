@@ -484,6 +484,11 @@
             "login": {
                 "title": "Bienvenido de nuevo!",
                 "subtitle": "Inicia sesión en tu cuenta",
+                "cta": {
+                    "title": "¿Ya tienes cuenta?",
+                    "description": "Inicia sesión con tu cuenta para continuar monitorizando tus finanzas y alcanzando tus metas.",
+                    "button": "Iniciar sesión"
+                },
                 "form": {
                     "identifier": {
                         "label": "Email o nombre de usuario",
@@ -495,8 +500,7 @@
                     },
                     "submit": "Iniciar sesión",
                     "googleButton": "Continuar con Google",
-                    "googleError": "Error al autenticar con Google",
-                    "alternativeAction": "¿No tienes una cuenta? Regístrate"
+                    "googleError": "Error al autenticar con Google"
                 }
             },
             "logout": {
@@ -506,6 +510,11 @@
             "register": {
                 "title": "Crea una cuenta",
                 "subtitle": "Únete a nosotros y comienza a gestionar tus finanzas",
+                "cta": {
+                    "title": "¿Nuevo en Profit&Lost?",
+                    "description": "Crea una cuenta y comienza a gestionar tus finanzas fácilmente. Solo toma un minuto comenzar.",
+                    "button": "Registrarse"
+                },
                 "form": {
                     "name": {
                         "label": "Nombre",
@@ -528,28 +537,34 @@
                         "label": "Contraseña",
                         "helper": "Mínimo 8 caracteres, una letra mayúscula, una letra minúscula, un número y un símbolo"
                     },
-                    "submit": "Crear cuenta",
-                    "alternativeAction": "¿Ya tienes una cuenta? Inicia sesión"
+                    "submit": "Crear cuenta"
                 }
             },
             "resetPassword": {
                 "title": "Restablecer contraseña",
                 "subtitle": "Ingresa tu email para recibir un código de recuperación",
+                "backToLogin": "Volver al inicio de sesión",
                 "steps": {
                     "email": {
                         "title": "Ingresa tu email",
+                        "description": "Ingresa tu email para recibir un código de recuperación",
                         "label": "Email",
-                        "submit": "Enviar código de recuperación"
+                        "submit": "Enviar código de recuperación",
+                        "placeholder": "email@ejemplo.com"
                     },
                     "token": {
                         "title": "Ingresa el código de recuperación",
+                        "description": "Ingresa el código de recuperación que te hemos enviado a tu email",
                         "label": "Código de recuperación",
-                        "submit": "Verificar código"
+                        "submit": "Verificar código",
+                        "helper": "6 dígitos"
                     },
                     "password": {
                         "title": "Crea una nueva contraseña",
+                        "description": "Crea una nueva contraseña para tu cuenta",
                         "newPassword": {
-                            "label": "Nueva contraseña"
+                            "label": "Nueva contraseña",
+                            "helper": "Mínimo 8 caracteres, una letra mayúscula, una letra minúscula, un número y un símbolo"
                         },
                         "confirmPassword": {
                             "label": "Confirmar nueva contraseña",
@@ -561,22 +576,22 @@
             },
             "errors": {
                 "missingFields": "Todos los campos son requeridos",
-                "invalidFormat": "Formato inválido. Por favor, verifica los campos",
+                "invalidFormat": "Formato inválido. Por favor, revisa los campos",
                 "emailExists": "Email ya registrado",
                 "usernameExists": "Nombre de usuario ya en uso",
-                "passwordRequirements": "La contraseña debe tener al menos 8 caracteres, contener al menos una letra mayúscula, una letra minúscula y un número",
+                "passwordRequirements": "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número",
                 "invalidCredentials": "Credenciales inválidas",
-                "accountInactive": "Cuenta inactiva. Contacta al soporte",
-                "accountLocked": "Cuenta bloqueada temporalmente. Intenta de nuevo en {{minutes}} minutos",
-                "serverError": "Error del servidor. Por favor, inténtalo de nuevo más tarde",
+                "accountInactive": "Cuenta inactiva. Contacta con soporte",
+                "accountLocked": "Cuenta bloqueada temporalmente. Inténtalo de nuevo en {{minutes}} minutos",
+                "serverError": "Error del servidor. Por favor, inténtalo más tarde",
                 "connectionError": "Error de conexión",
                 "emailNotFound": "Email no encontrado",
                 "invalidToken": "Token inválido o expirado",
                 "passwordsDoNotMatch": "Las contraseñas no coinciden"
             },
             "success": {
-                "welcome": "Bienvenido de nuevo!",
-                "registration": "Registro exitoso!",
+                "welcome": "¡Bienvenido de nuevo!",
+                "registration": "¡Registro exitoso!",
                 "recoveryCodeSent": "Código de recuperación enviado a tu email",
                 "passwordReset": "Contraseña restablecida correctamente"
             }
