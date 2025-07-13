@@ -11,7 +11,6 @@
  * 
  * @module LegalLayout
  */
-import { useEffect } from 'react';
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import LanguageSelector from '../../components/LanguageSelector';
+import ScrollToTop from '../../components/ScrollToTop';
 
 /**
  * Props for the LegalLayout component
@@ -45,13 +45,10 @@ interface LegalLayoutProps {
 export default function LegalLayout({ title, children }: LegalLayoutProps) {
     const navigate = useNavigate();
 
-    // Scroll to top when component mounts for better user experience
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
 
     return (
         <>
+            <ScrollToTop />
             <LanguageSelector />
             <Header />
             {/* Main container with decorative gradient header */}

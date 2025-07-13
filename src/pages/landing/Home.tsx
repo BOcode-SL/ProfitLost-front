@@ -26,6 +26,7 @@ import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlin
 import Footer from './components/Footer';
 import Header from './components/Header';
 import LanguageSelector from './components/LanguageSelector';
+import ScrollToTop from './components/ScrollToTop';
 
 // Styles
 import './Home.css';
@@ -63,6 +64,7 @@ export default function Home() {
 
     return (
         <Box className="home-container">
+            <ScrollToTop />
             <LanguageSelector />
             <Header />
 

@@ -33,6 +33,7 @@ import { isIOS } from '../../../utils/deviceDetection';
 // Components
 import Footer from '../components/Footer';
 import LanguageSelector from '../components/LanguageSelector';
+import ScrollToTop from '../components/ScrollToTop';
 // Import only the AUTH_HEADER_HEIGHT and LOGO_HEIGHT constants
 import { AUTH_HEADER_HEIGHT, LOGO_HEIGHT } from './components/AuthLayout';
 import LoginForm from './components/LoginForm';
@@ -414,6 +415,7 @@ export default function AuthPage() {
 
     return (
         <>
+            <ScrollToTop />
             <LanguageSelector />
             {showResetPassword ? (
                 <>
