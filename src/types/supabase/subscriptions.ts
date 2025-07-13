@@ -39,8 +39,8 @@ export interface Subscription extends TrackingFields {
   current_period_start: ISODateString | null;
   current_period_end: ISODateString | null;
   canceled_at: ISODateString | null;
-  trial_start: ISODateString;
-  trial_end: ISODateString;
+  trial_start: ISODateString | null;
+  trial_end: ISODateString | null;
 }
 
 /**

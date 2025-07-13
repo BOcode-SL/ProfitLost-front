@@ -23,8 +23,11 @@ import {
     CardActions,
     Divider,
     Chip,
-    Stack
+    Stack,
+    CircularProgress,
+    Alert
 } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
@@ -35,9 +38,13 @@ import { useUser } from '../../../../contexts/UserContext';
 // Utils
 import { formatDate } from '../../../../utils/dateUtils';
 
+// Services
+import { subscriptionService } from '../../../../services/subscription.service';
+
 // Types
 import { PlanType, SubscriptionStatus } from '../../../../types/supabase/subscriptions';
 import { UserWithPreferences } from '../../../../contexts/UserContext';
+import { ApiResponse } from '../../../../types/api/common';
 
 // Component interfaces
 interface TrialPeriodInfoProps {
@@ -57,14 +64,35 @@ interface SubscriptionPeriodInfoProps {
 interface PlanCardProps {
     planType: PlanType;
     handleSubscribe: (planType: PlanType) => void;
+    priceId?: string;
+    isLoading: boolean;
 }
 
 interface ManageSubscriptionButtonProps {
     onClick: () => void;
+    isLoading: boolean;
 }
 
 interface PlanTypeDisplayProps {
     planType: PlanType;
+}
+
+interface SubscriptionPlan {
+    id: string;
+    name: string;
+    planType: PlanType;
+    priceId: string;
+    amount: number;
+    currency: string;
+    interval: string;
+}
+
+interface ApiPlan {
+    id: string;
+    name: string;
+    unit_amount: number;
+    currency: string;
+    interval: string;
 }
 
 // Component for trial period information
@@ -72,16 +100,16 @@ const TrialPeriodInfo = ({ trialStart, trialEnd, daysRemaining, user }: TrialPer
     const { t } = useTranslation();
 
     return (
-        <Box sx={{ 
-            flex: '1 1 45%', 
+        <Box sx={{
+            flex: '1 1 45%',
             minWidth: { xs: '100%', sm: '120px' },
             mb: { xs: 1, sm: 0 }
         }}>
             <Typography variant="subtitle2" gutterBottom>
                 {t('dashboard.settings.subscription.trialPeriod')}
             </Typography>
-            <Box sx={{ 
-                display: 'flex', 
+            <Box sx={{
+                display: 'flex',
                 gap: 1,
                 flexWrap: { xs: 'wrap', sm: 'nowrap' }
             }}>
@@ -119,8 +147,8 @@ const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: Subscr
                         : t('dashboard.settings.subscription.subscriptionPeriod')
                 }
             </Typography>
-            <Box sx={{ 
-                display: 'flex', 
+            <Box sx={{
+                display: 'flex',
                 gap: 1,
                 flexWrap: { xs: 'wrap', sm: 'nowrap' }
             }}>
@@ -140,7 +168,8 @@ const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: Subscr
 };
 
 // Component for a single subscription plan card
-const PlanCard = ({ planType, handleSubscribe }: PlanCardProps) => {
+// const PlanCard = ({ planType, handleSubscribe, priceId, isLoading }: PlanCardProps) => {
+const PlanCard = ({ planType, handleSubscribe, isLoading }: PlanCardProps) => {
     const { t } = useTranslation();
     const isMonthly = planType === 'monthly';
     const color = isMonthly ? "primary" : "secondary";
@@ -198,9 +227,15 @@ const PlanCard = ({ planType, handleSubscribe }: PlanCardProps) => {
                     fullWidth
                     variant="contained"
                     onClick={() => handleSubscribe(planType)}
+                    // disabled={isLoading || !priceId}
+                    disabled={true}
                     color={color}
                 >
-                    {t('dashboard.settings.subscription.subscribe')}
+                    {isLoading ? (
+                        <CircularProgress size={24} color="inherit" />
+                    ) : (
+                        t('dashboard.settings.subscription.subscribe')
+                    )}
                 </Button>
             </CardActions>
         </Card>
@@ -208,18 +243,23 @@ const PlanCard = ({ planType, handleSubscribe }: PlanCardProps) => {
 };
 
 // Component for subscription management button
-const ManageSubscriptionButton = ({ onClick }: ManageSubscriptionButtonProps) => {
+const ManageSubscriptionButton = ({ onClick, isLoading }: ManageSubscriptionButtonProps) => {
     const { t } = useTranslation();
 
     return (
         <Button
             variant="contained"
             color="primary"
-            startIcon={<PaymentOutlinedIcon />}
+            startIcon={!isLoading && <PaymentOutlinedIcon />}
             onClick={onClick}
+            disabled={isLoading}
             sx={{ alignSelf: 'flex-start' }}
         >
-            {t('dashboard.settings.subscription.manage')}
+            {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+            ) : (
+                t('dashboard.settings.subscription.manage')
+            )}
         </Button>
     );
 };
@@ -253,6 +293,10 @@ const PlanTypeDisplay = ({ planType }: PlanTypeDisplayProps) => {
 export default function Subscription() {
     const { t } = useTranslation();
     const { user, userSubscription } = useUser();
+    const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     // Get days remaining in trial
     const getDaysRemaining = () => {
@@ -266,19 +310,136 @@ export default function Subscription() {
         return Math.max(0, diffDays);
     };
 
+    // Fetch subscription plans
+    useEffect(() => {
+        const fetchPlans = async () => {
+            try {
+                setIsLoadingPlans(true);
+                const response = await subscriptionService.getSubscriptionPlans();
+
+                if (response.data && Array.isArray(response.data)) {
+                    const formattedPlans = response.data.map((planData: Record<string, unknown>) => {
+                        // Cast to ApiPlan with necessary type safety
+                        const plan: ApiPlan = {
+                            id: String(planData.id || ''),
+                            name: String(planData.name || ''),
+                            unit_amount: Number(planData.unit_amount || 0),
+                            currency: String(planData.currency || 'usd'),
+                            interval: String(planData.interval || 'month')
+                        };
+
+                        // Ensure we properly detect the plan type regardless of API naming convention
+                        let planType: PlanType;
+                        const interval = plan.interval.toLowerCase();
+
+                        if (interval === 'month') {
+                            planType = 'monthly';
+                        } else if (interval === 'year') {
+                            planType = 'annual';
+                        } else if (interval.includes('month')) {
+                            planType = 'monthly';
+                        } else if (interval.includes('year') || interval.includes('annual')) {
+                            planType = 'annual';
+                        } else {
+                            planType = 'monthly';
+                        }
+
+                        return {
+                            id: plan.id,
+                            name: plan.name,
+                            planType: planType,
+                            priceId: plan.id,
+                            amount: plan.unit_amount / 100, // Convert cents to currency units
+                            currency: plan.currency,
+                            interval: plan.interval
+                        };
+                    });
+
+                    setPlans(formattedPlans);
+                }
+                setError(null);
+            } catch (err) {
+                const apiError = err as ApiResponse;
+                setError(apiError.message || 'Failed to load subscription plans');
+                console.error('Error fetching subscription plans:', err);
+            } finally {
+                setIsLoadingPlans(false);
+            }
+        };
+
+        fetchPlans();
+    }, []);
+
     // Handle subscription purchase
-    const handleSubscribe = (planType: PlanType) => {
-        console.log(`Subscribing to ${planType} plan`);
-        alert(`Processing ${planType} subscription...`);
+    const handleSubscribe = async (planType: PlanType) => {
+        const plan = plans.find(p => p.planType === planType);
+
+        if (!plan) {
+            setError(`No ${planType} plan found`);
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            // Create URLs for success and cancel
+            const successUrl = `${window.location.origin}/dashboard/settings`;
+            const cancelUrl = `${window.location.origin}/dashboard/settings`;
+
+            const response = await subscriptionService.createCheckoutSession(
+                plan.priceId,
+                successUrl,
+                cancelUrl
+            );
+
+            if (response.url) {
+                // Redirect to Stripe Checkout
+                window.location.href = response.url;
+            } else {
+                setError('No checkout URL returned');
+            }
+        } catch (err) {
+            const apiError = err as ApiResponse;
+            setError(apiError.message || 'Failed to create checkout session');
+            console.error('Error creating checkout session:', err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     // Handle subscription management
-    const handleManageSubscription = () => {
-        alert('Redirecting to subscription management portal');
+    const handleManageSubscription = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            // Create return URL
+            const returnUrl = `${window.location.origin}/dashboard/settings`;
+
+            const response = await subscriptionService.createPortalSession(returnUrl);
+
+            if (response.url) {
+                // Redirect to Stripe Customer Portal
+                window.location.href = response.url;
+            } else {
+                setError('No portal URL returned');
+            }
+        } catch (err) {
+            const apiError = err as ApiResponse;
+            setError(apiError.message || 'Failed to create portal session');
+            console.error('Error creating portal session:', err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const daysRemaining = getDaysRemaining();
     const isTrialing = userSubscription?.status === 'trialing';
+
+    // Find price IDs for each plan type
+    const monthlyPlanPriceId = plans.find(plan => plan.planType === 'monthly')?.priceId;
+    const annualPlanPriceId = plans.find(plan => plan.planType === 'annual')?.priceId;
 
     return (
         <Box sx={{
@@ -287,6 +448,12 @@ export default function Subscription() {
             gap: { xs: 3, sm: 2 },
             px: { xs: 1, sm: 0 }
         }}>
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
+
             {/* Current Subscription Status */}
             <Paper
                 elevation={3}
@@ -344,7 +511,10 @@ export default function Subscription() {
 
                             {/* Only show button when NOT in trial */}
                             {!isTrialing && (
-                                <ManageSubscriptionButton onClick={handleManageSubscription} />
+                                <ManageSubscriptionButton
+                                    onClick={handleManageSubscription}
+                                    isLoading={isLoading}
+                                />
                             )}
                         </Box>
                     </Box>
@@ -365,14 +535,30 @@ export default function Subscription() {
                         {t('dashboard.settings.subscription.availablePlans')}
                     </Typography>
 
-                    <Stack
-                        direction={{ xs: 'column', md: 'row' }}
-                        spacing={2}
-                        sx={{ mt: 1 }}
-                    >
-                        <PlanCard planType="monthly" handleSubscribe={handleSubscribe} />
-                        <PlanCard planType="annual" handleSubscribe={handleSubscribe} />
-                    </Stack>
+                    {isLoadingPlans ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+                            <CircularProgress />
+                        </Box>
+                    ) : (
+                        <Stack
+                            direction={{ xs: 'column', md: 'row' }}
+                            spacing={2}
+                            sx={{ mt: 1 }}
+                        >
+                            <PlanCard
+                                planType="monthly"
+                                handleSubscribe={handleSubscribe}
+                                priceId={monthlyPlanPriceId}
+                                isLoading={isLoading}
+                            />
+                            <PlanCard
+                                planType="annual"
+                                handleSubscribe={handleSubscribe}
+                                priceId={annualPlanPriceId}
+                                isLoading={isLoading}
+                            />
+                        </Stack>
+                    )}
                 </Paper>
             )}
         </Box>

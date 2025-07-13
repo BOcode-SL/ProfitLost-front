@@ -113,6 +113,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await userService.getUserData(); // Fetch user profile data
 
+            // Agregar logs para depurar
+            console.log('API Response userData:', response);
+            
             if (response.success && response.data) {
                 // Los datos de usuario vienen directamente en el response.data, no en un subobjeto 'user'
                 const apiData = response.data as unknown as {
