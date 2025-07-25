@@ -168,8 +168,7 @@ const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: Subscr
 };
 
 // Component for a single subscription plan card
-// const PlanCard = ({ planType, handleSubscribe, priceId, isLoading }: PlanCardProps) => {
-const PlanCard = ({ planType, handleSubscribe, isLoading }: PlanCardProps) => {
+const PlanCard = ({ planType, handleSubscribe, priceId, isLoading }: PlanCardProps) => {
     const { t } = useTranslation();
     const isMonthly = planType === 'monthly';
     const color = isMonthly ? "primary" : "secondary";
@@ -227,8 +226,7 @@ const PlanCard = ({ planType, handleSubscribe, isLoading }: PlanCardProps) => {
                     fullWidth
                     variant="contained"
                     onClick={() => handleSubscribe(planType)}
-                    // disabled={isLoading || !priceId}
-                    disabled={true}
+                    disabled={isLoading || !priceId}
                     color={color}
                 >
                     {isLoading ? (
