@@ -24,11 +24,11 @@ import {
     Divider,
     Chip,
     Stack,
-    CircularProgress,
-    Alert
+    CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 
@@ -37,6 +37,7 @@ import { useUser } from '../../../../contexts/UserContext';
 
 // Utils
 import { formatDate } from '../../../../utils/dateUtils';
+import { determinePlanType } from '../../../../utils/planTypeUtils';
 
 // Services
 import { subscriptionService } from '../../../../services/subscription.service';
@@ -133,6 +134,38 @@ const TrialPeriodInfo = ({ trialStart, trialEnd, daysRemaining, user }: TrialPer
 const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: SubscriptionPeriodInfoProps) => {
     const { t } = useTranslation();
 
+    const getStatusColor = () => {
+        switch (status) {
+            case 'canceled':
+            case 'past_due':
+            case 'unpaid':
+                return "error.main";
+            case 'active':
+                return "success.main";
+            case 'trialing':
+                return "info.main";
+            default:
+                return "text.secondary";
+        }
+    };
+
+    const getStatusText = () => {
+        switch (status) {
+            case 'active':
+                return t('dashboard.settings.subscription.subscriptionPeriod');
+            case 'canceled':
+                return t('dashboard.settings.subscription.statuses.canceled');
+            case 'past_due':
+                return t('dashboard.settings.subscription.statuses.pastDue');
+            case 'unpaid':
+                return t('dashboard.settings.subscription.statuses.unpaid');
+            case 'trialing':
+                return t('dashboard.settings.subscription.trialPeriod');
+            default:
+                return t('dashboard.settings.subscription.subscriptionPeriod');
+        }
+    };
+
     return (
         <Box sx={{
             flex: '1 1 45%',
@@ -140,12 +173,7 @@ const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: Subscr
             mb: { xs: 1, sm: 0 }
         }}>
             <Typography variant="subtitle2" gutterBottom>
-                {status === 'active'
-                    ? t('dashboard.settings.subscription.subscriptionPeriod')
-                    : status === 'canceled'
-                        ? t('dashboard.settings.subscription.statuses.canceled')
-                        : t('dashboard.settings.subscription.subscriptionPeriod')
-                }
+                {getStatusText()}
             </Typography>
             <Box sx={{
                 display: 'flex',
@@ -158,7 +186,7 @@ const SubscriptionPeriodInfo = ({ periodStart, periodEnd, status, user }: Subscr
                 <Typography variant="body2" color="text.secondary">-</Typography>
                 <Typography
                     variant="body2"
-                    color={status === 'canceled' ? "error.main" : "text.secondary"}
+                    color={getStatusColor()}
                 >
                     {formatDate(periodEnd, user)}
                 </Typography>
@@ -294,7 +322,6 @@ export default function Subscription() {
     const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLoadingPlans, setIsLoadingPlans] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
     // Get days remaining in trial
     const getDaysRemaining = () => {
@@ -315,7 +342,7 @@ export default function Subscription() {
                 setIsLoadingPlans(true);
                 const response = await subscriptionService.getSubscriptionPlans();
 
-                if (response.data && Array.isArray(response.data)) {
+                if ('data' in response && response.success && response.data && Array.isArray(response.data)) {
                     const formattedPlans = response.data.map((planData: Record<string, unknown>) => {
                         // Cast to ApiPlan with necessary type safety
                         const plan: ApiPlan = {
@@ -326,21 +353,8 @@ export default function Subscription() {
                             interval: String(planData.interval || 'month')
                         };
 
-                        // Ensure we properly detect the plan type regardless of API naming convention
-                        let planType: PlanType;
-                        const interval = plan.interval.toLowerCase();
-
-                        if (interval === 'month') {
-                            planType = 'monthly';
-                        } else if (interval === 'year') {
-                            planType = 'annual';
-                        } else if (interval.includes('month')) {
-                            planType = 'monthly';
-                        } else if (interval.includes('year') || interval.includes('annual')) {
-                            planType = 'annual';
-                        } else {
-                            planType = 'monthly';
-                        }
+                        // Detect plan type based on interval with better logic
+                        const planType = determinePlanType(plan.interval, false); // false porque aquí no hay trial
 
                         return {
                             id: plan.id,
@@ -355,10 +369,10 @@ export default function Subscription() {
 
                     setPlans(formattedPlans);
                 }
-                setError(null);
             } catch (err) {
                 const apiError = err as ApiResponse;
-                setError(apiError.message || 'Failed to load subscription plans');
+                const errorMessage = apiError.message || t('dashboard.common.error.loading');
+                toast.error(errorMessage);
                 console.error('Error fetching subscription plans:', err);
             } finally {
                 setIsLoadingPlans(false);
@@ -373,13 +387,17 @@ export default function Subscription() {
         const plan = plans.find(p => p.planType === planType);
 
         if (!plan) {
-            setError(`No ${planType} plan found`);
+            toast.error(t('dashboard.common.error.generic'));
+            return;
+        }
+
+        if (!plan.priceId) {
+            toast.error(t('dashboard.common.error.generic'));
             return;
         }
 
         try {
             setIsLoading(true);
-            setError(null);
 
             // Create URLs for success and cancel
             const successUrl = `${window.location.origin}/dashboard/settings`;
@@ -391,15 +409,16 @@ export default function Subscription() {
                 cancelUrl
             );
 
-            if (response.url) {
+            if ('url' in response && response.url) {
                 // Redirect to Stripe Checkout
                 window.location.href = response.url;
             } else {
-                setError('No checkout URL returned');
+                toast.error(t('dashboard.common.error.generic'));
             }
         } catch (err) {
             const apiError = err as ApiResponse;
-            setError(apiError.message || 'Failed to create checkout session');
+            const errorMessage = apiError.message || t('dashboard.common.error.generic');
+            toast.error(errorMessage);
             console.error('Error creating checkout session:', err);
         } finally {
             setIsLoading(false);
@@ -410,22 +429,22 @@ export default function Subscription() {
     const handleManageSubscription = async () => {
         try {
             setIsLoading(true);
-            setError(null);
 
             // Create return URL
             const returnUrl = `${window.location.origin}/dashboard/settings`;
 
             const response = await subscriptionService.createPortalSession(returnUrl);
 
-            if (response.url) {
+            if ('url' in response && response.url) {
                 // Redirect to Stripe Customer Portal
                 window.location.href = response.url;
             } else {
-                setError('No portal URL returned');
+                toast.error(t('dashboard.common.error.generic'));
             }
         } catch (err) {
             const apiError = err as ApiResponse;
-            setError(apiError.message || 'Failed to create portal session');
+            const errorMessage = apiError.message || t('dashboard.common.error.generic');
+            toast.error(errorMessage);
             console.error('Error creating portal session:', err);
         } finally {
             setIsLoading(false);
@@ -446,12 +465,6 @@ export default function Subscription() {
             gap: { xs: 3, sm: 2 },
             px: { xs: 1, sm: 0 }
         }}>
-            {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                    {error}
-                </Alert>
-            )}
-
             {/* Current Subscription Status */}
             <Paper
                 elevation={3}
@@ -479,7 +492,7 @@ export default function Subscription() {
                         gap: 3,
                         flexDirection: { xs: 'column', sm: 'row' }
                     }}>
-                        {/* Trial Dates */}
+                        {/* Show Trial Period Info only when in trial */}
                         {isTrialing && userSubscription?.trial_start && userSubscription?.trial_end && (
                             <TrialPeriodInfo
                                 trialStart={userSubscription.trial_start}
@@ -489,32 +502,23 @@ export default function Subscription() {
                             />
                         )}
 
-                        {/* Subscription Period */}
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', sm: 'row' },
-                            justifyContent: 'space-between',
-                            alignItems: { xs: 'flex-start', sm: 'center' },
-                            width: '100%',
-                            gap: { xs: 2, sm: 0 }
-                        }}>
-                            {userSubscription?.current_period_start && userSubscription?.current_period_end && (
-                                <SubscriptionPeriodInfo
-                                    periodStart={userSubscription.current_period_start}
-                                    periodEnd={userSubscription.current_period_end}
-                                    status={userSubscription?.status as SubscriptionStatus}
-                                    user={user}
-                                />
-                            )}
+                        {/* Show Subscription Period Info only when NOT in trial */}
+                        {!isTrialing && userSubscription?.current_period_start && userSubscription?.current_period_end && (
+                            <SubscriptionPeriodInfo
+                                periodStart={userSubscription.current_period_start}
+                                periodEnd={userSubscription.current_period_end}
+                                status={userSubscription?.status as SubscriptionStatus}
+                                user={user}
+                            />
+                        )}
 
-                            {/* Only show button when NOT in trial */}
-                            {!isTrialing && (
-                                <ManageSubscriptionButton
-                                    onClick={handleManageSubscription}
-                                    isLoading={isLoading}
-                                />
-                            )}
-                        </Box>
+                        {/* Only show button when NOT in trial */}
+                        {!isTrialing && (
+                            <ManageSubscriptionButton
+                                onClick={handleManageSubscription}
+                                isLoading={isLoading}
+                            />
+                        )}
                     </Box>
                 </Stack>
             </Paper>

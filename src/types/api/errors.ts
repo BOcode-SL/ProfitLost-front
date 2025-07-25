@@ -129,3 +129,22 @@ export type CategoryErrorType =
 export type NoteErrorType =
     | CommonErrorType
     | 'NOTE_NOT_FOUND';
+
+/**
+ * Types for subscription errors
+ * Used for subscription and billing management
+ * 
+ * @typedef {string} SubscriptionErrorType
+ */
+export type SubscriptionErrorType =
+    | CommonErrorType
+    | 'INVALID_PRICE_ID'
+    | 'ACTIVE_SUBSCRIPTION_EXISTS'
+    | 'MISSING_STRIPE_ID'
+    | 'CHECKOUT_ERROR'
+    | 'PORTAL_ERROR'
+    | 'PLANS_ERROR'
+    | 'WEBHOOK_ERROR'
+    | 'SUBSCRIPTION_NOT_FOUND'
+    | 'PAYMENT_FAILED'
+    | 'TRIAL_EXPIRED';

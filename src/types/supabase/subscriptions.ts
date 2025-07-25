@@ -14,7 +14,7 @@ import { UUID, TrackingFields, ISODateString } from './common';
  * 
  * @typedef {string} SubscriptionStatus
  */
-export type SubscriptionStatus = 'active' | 'canceled' | 'trialing';
+export type SubscriptionStatus = 'active' | 'canceled' | 'trialing' | 'past_due' | 'unpaid';
 
 /**
  * Type for the type of plan a subscription is

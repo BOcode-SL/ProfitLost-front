@@ -14,7 +14,8 @@ import type {
     UserErrorType,
     CategoryErrorType,
     AccountErrorType,
-    NoteErrorType
+    NoteErrorType,
+    SubscriptionErrorType
 } from './errors';
 import type { HttpStatusCode } from './common';
 
@@ -392,4 +393,40 @@ export interface VerifyResetTokenRequest {
 export interface UpdateForgottenPasswordRequest {
     token: string;
     newPassword: string;
+}
+
+/**
+ * Types for subscription API responses
+ * 
+ * @typedef SubscriptionApiErrorResponse
+ * @typedef SubscriptionApiSuccessResponse
+ * @typedef SubscriptionApiResponse
+ */
+export type SubscriptionApiErrorResponse = ApiErrorResponse<SubscriptionErrorType>;
+
+export interface SubscriptionApiSuccessResponse extends ApiSuccessResponse {
+    url?: string; // For checkout and portal sessions
+    data?: Record<string, unknown>[]; // For subscription plans
+}
+
+export type SubscriptionApiResponse = SubscriptionApiSuccessResponse | SubscriptionApiErrorResponse;
+
+/**
+ * Request Types for subscription operations
+ * 
+ * @interface CreateCheckoutSessionRequest
+ */
+export interface CreateCheckoutSessionRequest {
+    priceId: string;
+    successUrl: string;
+    cancelUrl: string;
+}
+
+/**
+ * Request to create a customer portal session
+ * 
+ * @interface CreatePortalSessionRequest
+ */
+export interface CreatePortalSessionRequest {
+    returnUrl: string;
 }
