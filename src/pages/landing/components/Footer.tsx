@@ -61,10 +61,10 @@ export default function Footer() {
                     }}>
                         <Box
                             component="img"
-                            src="/logo/logoPL3.svg"
+                            src="/logo/logoTextMix.svg"
                             alt="logo"
                             sx={{
-                                width: { xs: 160, sm: 160, md: 200 },
+                                width: { xs: 80, sm: 100, md: 120 },
                                 mb: { xs: 2, sm: 3 },
                                 height: 'auto',
                                 display: 'block',

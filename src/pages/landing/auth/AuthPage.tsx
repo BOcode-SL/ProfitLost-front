@@ -434,7 +434,7 @@ export default function AuthPage() {
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                     }}>
                         <img
-                            src="/logo/logoPL3.svg"
+                            src="/logo/logoLandMix.svg"
                             alt="Profit & Lost Logo"
                             style={{ height: `${LOGO_HEIGHT}px`, cursor: 'pointer' }}
                             onClick={() => navigate('/')}
@@ -467,7 +467,7 @@ export default function AuthPage() {
                                     mb: 4
                                 }}
                             >
-                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
+                                <img src="/logo/logoLandMix.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
                             </Box>
 
                             <Paper elevation={0} sx={{
@@ -541,7 +541,7 @@ export default function AuthPage() {
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                     }}>
                         <img
-                            src="/logo/logoPL3.svg"
+                            src="/logo/logoLandMix.svg"
                             alt="Profit & Lost Logo"
                             style={{ height: `${LOGO_HEIGHT}px`, cursor: 'pointer' }}
                             onClick={() => navigate('/')}
@@ -572,7 +572,7 @@ export default function AuthPage() {
                                     mb: 4
                                 }}
                             >
-                                <img src="/logo/logoPL3.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
+                                <img src="/logo/logoLandMix.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
                             </Box>
 
                             <Paper elevation={0} sx={{

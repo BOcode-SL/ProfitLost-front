@@ -132,7 +132,7 @@ const NotFound: React.FC = () => {
 
                     {/* Company logo */}
                     <img
-                        src="/logo/logoPL.svg"
+                        src="/logo/logoOrange.svg"
                         alt="Profit Lost Logo"
                         style={{
                             width: isMobile ? '120px' : '150px',

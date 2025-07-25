@@ -29,7 +29,7 @@ interface AuthLayoutProps {
 
 // Header height constant for use in calculations
 export const AUTH_HEADER_HEIGHT = 80; // pixels
-export const LOGO_HEIGHT = 75; // pixels - matching the height in AuthPage
+export const LOGO_HEIGHT = 50; // pixels - matching the height in AuthPage
 
 /**
  * Authentication Layout component
@@ -71,7 +71,7 @@ export default function AuthLayout({
             }}>
                 <Box
                     component="img"
-                    src="/logo/logoPL3.svg"
+                    src="/logo/logoLandMix.svg"
                     alt="Profit & Lost Logo"
                     sx={{
                         height: `${LOGO_HEIGHT}px`,
@@ -80,7 +80,7 @@ export default function AuthLayout({
                     onClick={() => navigate('/')}
                 />
             </Box>
-            
+
             {/* Main container for the layout - adjusted for header height */}
             <Box sx={{
                 minHeight: `calc(100vh - ${AUTH_HEADER_HEIGHT}px)`,
@@ -105,7 +105,7 @@ export default function AuthLayout({
                         <Box sx={{ textAlign: 'center', mb: 4 }}>
                             <Box
                                 component="img"
-                                src="/logo/logoPL3.svg"
+                                src="/logo/logoLandMix.svg"
                                 alt="logo"
                                 sx={{
                                     width: 200,

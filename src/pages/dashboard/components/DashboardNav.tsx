@@ -33,13 +33,13 @@ import { ThemeContext } from '../../../contexts/ThemeContext';
 interface MenuItem {
   /** Display label for the menu item */
   label: string;
-  
+
   /** Icon identifier string to render */
   icon: string;
-  
+
   /** Unique identifier for the section */
   key: string;
-  
+
   /** Whether the item should only be shown to admins */
   adminOnly?: boolean;
 }
@@ -52,16 +52,16 @@ interface MenuItem {
 interface DashboardNavProps {
   /** The currently active section of the dashboard */
   activeSection: string;
-  
+
   /** Function to handle clicks on menu items */
   handleMenuItemClick: (sectionKey: string) => void;
-  
+
   /** Array of menu items available in the navigation */
   menuItems: MenuItem[];
-  
+
   /** Optional function to handle the click event for adding a transaction */
   onAddTransaction?: () => void;
-  
+
   /** User role from context for admin item filtering */
   userRole: string | null;
 }
@@ -88,8 +88,8 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
     <img
       className="no-select"
       src={isDarkMode
-        ? "/logo/logoPL3_white.png"
-        : "/logo/logoPL3.svg"}
+        ? "/logo/logoLandMix2.svg"
+        : "/logo/logoLandMix.svg"}
       alt="logo"
     />
   </Box>
@@ -103,10 +103,10 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
 interface DesktopNavItemProps {
   /** Menu item to render */
   item: MenuItem;
-  
+
   /** Currently active section key */
   activeSection: string;
-  
+
   /** Function to handle item click */
   handleMenuItemClick: (key: string) => void;
 }
@@ -160,10 +160,10 @@ const DesktopNavItem = ({
 interface MobileNavItemProps {
   /** Menu item to render */
   item: MenuItem;
-  
+
   /** Currently active section key */
   activeSection: string;
-  
+
   /** Function to handle item click */
   handleMenuItemClick: (key: string) => void;
 }
@@ -236,13 +236,13 @@ const MobileNavItem = ({
 interface DesktopNavProps {
   /** Array of all menu items to display */
   allMenuItems: MenuItem[];
-  
+
   /** Currently active section key */
   activeSection: string;
-  
+
   /** Function to handle menu item clicks */
   handleMenuItemClick: (key: string) => void;
-  
+
   /** Whether dark mode is active */
   isDarkMode: boolean;
 }
@@ -302,28 +302,28 @@ const DesktopNav = ({
 interface MobileNavProps {
   /** Main menu items for primary navigation */
   mainMenuItems: MenuItem[];
-  
+
   /** Additional menu items for the "more" menu */
   moreMenuItems: MenuItem[];
-  
+
   /** Currently active section key */
   activeSection: string;
-  
+
   /** Function to handle menu item clicks */
   handleMenuItemClick: (key: string) => void;
-  
+
   /** Element to anchor the "more" menu to */
   moreAnchorEl: null | HTMLElement;
-  
+
   /** Function to handle click on the "more" button */
   handleMoreClick: (event: React.MouseEvent<HTMLElement>) => void;
-  
+
   /** Function to close the "more" menu */
   handleMoreClose: () => void;
-  
+
   /** Function to handle clicks on items in the "more" menu */
   handleMoreItemClick: (key: string) => void;
-  
+
   /** Optional function to handle transaction creation */
   onAddTransaction?: () => void;
 }

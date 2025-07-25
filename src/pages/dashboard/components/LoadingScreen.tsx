@@ -34,7 +34,7 @@ const LoadingScreen = () => {
         }}>
             <Box
                 component="img"
-                src="/logo/logoPL.svg"
+                src="/logo/logoOrange.svg"
                 alt="logo"
                 sx={{
                     width: 200,

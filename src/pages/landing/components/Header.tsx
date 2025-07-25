@@ -69,14 +69,14 @@ export default function Header() {
                     sx={{
                         justifyContent: 'space-between',
                         px: { xs: 2, sm: 3, md: 4 },
-                        py: { xs: 0.2, sm: 0 },
+                        py: { xs: 1, sm: 1.25, md: 1.5 },
                         minHeight: 'unset !important'
                     }}
                 >
                     {/* Brand logo with navigation to home page */}
                     <Box
                         component="img"
-                        src="/logo/logoPL3.svg"
+                        src="/logo/logoLandMix.svg"
                         alt="logo"
                         sx={{
                             width: { xs: 120, sm: 150 },
