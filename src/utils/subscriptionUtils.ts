@@ -29,8 +29,8 @@ export function hasActiveSubscription(
 
   // Check if subscription is in trial period
   if (subscription.status === "trialing") {
-    if (subscription.trial_end) {
-      const trialEnd = new Date(subscription.trial_end);
+    if (subscription.current_period_end) {
+      const trialEnd = new Date(subscription.current_period_end);
       const now = new Date();
       return trialEnd > now; // Trial is still active
     }
@@ -48,5 +48,20 @@ export function hasActiveSubscription(
   }
 
   // All other statuses (canceled, past_due, unpaid) are considered inactive
+  return false;
+}
+
+/**
+ * Returns true if the user's trial period has ended.
+ * @param subscription - The user's subscription object
+ * @returns {boolean}
+ */
+export function isTrialEnded(subscription: Subscription | null): boolean {
+  if (!subscription) return false;
+  if (subscription.status === "trialing" && subscription.current_period_end) {
+    const now = new Date();
+    const trialEnd = new Date(subscription.current_period_end);
+    return trialEnd <= now;
+  }
   return false;
 }

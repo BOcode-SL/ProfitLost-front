@@ -26,7 +26,7 @@ import { userService } from "../../../services/user.service";
 
 // Components
 import SectionIntroDialog from "./SectionIntroDialog";
-import { hasActiveSubscription } from "../../../utils/subscriptionUtils";
+import { isTrialEnded } from "../../../utils/subscriptionUtils";
 
 // Lazy-loaded feature components
 const DashHome = lazy(() => import("../features/dashHome/DashHome"));
@@ -134,7 +134,7 @@ export default function DashboardContent({
         position: "relative",
       }}
     >
-      {hasActiveSubscription(userSubscription) && (
+      {isTrialEnded(userSubscription) && (
         <Paper
           elevation={1}
           sx={{

@@ -325,7 +325,7 @@ export default function TransactionTable({
               onClick={handleCreateClick}
               startIcon={<AddIcon />}
               size="small"
-              disabled={hasActiveSubscription(userSubscription)}
+              disabled={!hasActiveSubscription(userSubscription)}
             >
               {t("dashboard.transactions.table.addTransaction")}
             </Button>

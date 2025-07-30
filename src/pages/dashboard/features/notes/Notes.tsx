@@ -281,7 +281,7 @@ export default function Notes() {
             color="primary"
             fullWidth
             onClick={handleCreateNote}
-            disabled={isSaving || hasActiveSubscription(userSubscription)}
+            disabled={isSaving || !hasActiveSubscription(userSubscription)}
             startIcon={<AddIcon />}
           >
             {isSaving ? (

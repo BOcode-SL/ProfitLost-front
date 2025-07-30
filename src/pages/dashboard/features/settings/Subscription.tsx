@@ -374,9 +374,9 @@ export default function Subscription() {
 
   // Get days remaining in trial
   const getDaysRemaining = () => {
-    if (!userSubscription?.trial_end) return 0;
+    if (!userSubscription?.current_period_end) return 0;
 
-    const trialEnd = new Date(userSubscription.trial_end);
+    const trialEnd = new Date(userSubscription.current_period_end);
     const today = new Date();
     const diffTime = trialEnd.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -442,7 +442,7 @@ export default function Subscription() {
     };
 
     fetchPlans();
-  }, []);
+  }, [t]);
 
   // Handle subscription purchase
   const handleSubscribe = async (planType: PlanType) => {
@@ -566,11 +566,11 @@ export default function Subscription() {
           >
             {/* Show Trial Period Info only when in trial */}
             {isTrialing &&
-              userSubscription?.trial_start &&
-              userSubscription?.trial_end && (
+              userSubscription?.current_period_start &&
+              userSubscription?.current_period_end && (
                 <TrialPeriodInfo
-                  trialStart={userSubscription.trial_start}
-                  trialEnd={userSubscription.trial_end}
+                  trialStart={userSubscription.current_period_start}
+                  trialEnd={userSubscription.current_period_end}
                   daysRemaining={daysRemaining}
                   user={user}
                 />

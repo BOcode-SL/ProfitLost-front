@@ -416,7 +416,7 @@ export default function AccountsTable({
           }}
           startIcon={<AddIcon />}
           size="small"
-          disabled={hasActiveSubscription(userSubscription)}
+          disabled={!hasActiveSubscription(userSubscription)}
           sx={{
             width: { xs: "100%", sm: "auto" },
           }}

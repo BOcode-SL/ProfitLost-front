@@ -395,7 +395,7 @@ export default function AnnualCategories({
             onClick={() => setDrawerOpen(true)}
             startIcon={<AddIcon />}
             size="small"
-            disabled={hasActiveSubscription(userSubscription)}
+            disabled={!hasActiveSubscription(userSubscription)}
           >
             {t("dashboard.annualReport.categories.addCategory")}
           </Button>
