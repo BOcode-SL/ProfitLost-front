@@ -42,7 +42,7 @@ import { dispatchTransactionUpdated } from "../../utils/events";
  */
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { user, isLoading, userPreferences, userRole, userSubscription } =
+  const { user, isLoading, userPreferences, userRole } =
     useUser();
   const navigate = useNavigate();
 

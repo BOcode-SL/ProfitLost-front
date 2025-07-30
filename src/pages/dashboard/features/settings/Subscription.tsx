@@ -406,11 +406,17 @@ export default function Subscription() {
                 name: String(planData.name || ""),
                 unit_amount: Number(planData.unit_amount || 0),
                 currency: String(planData.currency || "usd"),
-                interval: String(planData.interval || "month"),
+                interval: String(planData.interval || "monthly"),
               };
 
-              // Detect plan type based on interval with better logic
-              const planType = determinePlanType(plan.interval, false); // false porque aquí no hay trial
+              // Detect plan type based on interval
+              let planType: PlanType;
+              try {
+                planType = determinePlanType(plan.interval, false);
+              } catch {
+                console.warn(`Invalid interval "${plan.interval}", defaulting to monthly`);
+                planType = "monthly";
+              }
 
               return {
                 id: plan.id,

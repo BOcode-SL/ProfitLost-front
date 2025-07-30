@@ -286,9 +286,9 @@ export default function AccountsTable({
         // If API fails, fall back to the basic account data
         const basicAccount = existingAccount
           ? {
-              ...existingAccount,
-              available_years: availableYears,
-            }
+            ...existingAccount,
+            available_years: availableYears,
+          }
           : null;
         setSelectedAccount(basicAccount);
         setIsDrawerOpen(true);
