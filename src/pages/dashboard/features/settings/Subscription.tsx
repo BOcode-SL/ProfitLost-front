@@ -37,7 +37,6 @@ import { useUser } from "../../../../contexts/UserContext";
 
 // Utils
 import { formatDate } from "../../../../utils/dateUtils";
-import { determinePlanType } from "../../../../utils/subscriptionUtils";
 
 // Services
 import { subscriptionService } from "../../../../services/subscription.service";
@@ -409,11 +408,10 @@ export default function Subscription() {
                 interval: String(planData.interval || "monthly"),
               };
 
-              // Detect plan type based on interval
               let planType: PlanType;
-              try {
-                planType = determinePlanType(plan.interval, false);
-              } catch {
+              if (plan.interval === "monthly" || plan.interval === "annual") {
+                planType = plan.interval as PlanType;
+              } else {
                 console.warn(`Invalid interval "${plan.interval}", defaulting to monthly`);
                 planType = "monthly";
               }

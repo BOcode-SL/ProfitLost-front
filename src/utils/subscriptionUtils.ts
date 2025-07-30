@@ -2,38 +2,7 @@
  * Utility functions for subscription management and validation
  */
 
-import type {
-  Subscription,
-} from "../types/supabase/subscriptions";
-
-export type PlanType = "monthly" | "annual" | "trial";
-
-/**
- * Determines plan type based on Stripe interval and trial status
- *
- * @param interval - Stripe recurring interval (e.g., 'month', 'year')
- * @param hasTrial - Whether the subscription has an active trial
- * @returns {PlanType} The determined plan type
- */
-export function determinePlanType(
-  interval: string,
-  hasTrial: boolean = false
-): PlanType {
-  if (hasTrial) {
-    return "trial";
-  }
-
-  const normalizedInterval = interval.toLowerCase().trim();
-
-  switch (normalizedInterval) {
-    case "monthly":
-      return "monthly";
-    case "annual":
-      return "annual";
-    default:
-      throw new Error(`Unknown interval: "${interval}". Expected "monthly" or "annual".`);
-  }
-}
+import type { Subscription, PlanType } from "../types/supabase/subscriptions";
 
 /**
  * Validates if a plan type is valid
