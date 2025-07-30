@@ -164,9 +164,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                 setUserRole(apiData.role || null);
                 setUserSubscription(apiData.subscription);
 
-                // Update application language based on user preference
-                const userLanguage = convertLanguageFormat(preferences.language);
-                await i18n.changeLanguage(userLanguage);
+                // Language change will be handled by the separate useEffect
             } else {
                 setUser(null);
                 setUserPreferences(null);
@@ -182,12 +180,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [i18n]);
+    }, []); // Remove i18n dependency to prevent multiple calls
 
     // Load user data on component mount
     useEffect(() => {
         loadUserData();
     }, [loadUserData]);
+
+    // Handle language changes separately to avoid re-triggering loadUserData
+    useEffect(() => {
+        if (userPreferences?.language) {
+            const userLanguage = convertLanguageFormat(userPreferences.language);
+            i18n.changeLanguage(userLanguage);
+        }
+    }, [userPreferences?.language, i18n]);
 
     // Provide user context to children components
     return (

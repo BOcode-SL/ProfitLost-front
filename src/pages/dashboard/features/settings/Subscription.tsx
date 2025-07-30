@@ -37,6 +37,7 @@ import { useUser } from "../../../../contexts/UserContext";
 
 // Utils
 import { formatDate } from "../../../../utils/dateUtils";
+import { determinePlanType } from "../../../../utils/subscriptionUtils";
 
 // Services
 import { subscriptionService } from "../../../../services/subscription.service";
@@ -229,26 +230,28 @@ const PlanCard = ({
 
   return (
     <Card
-      elevation={1}
+      elevation={2}
       sx={{
-        borderRadius: 2,
+        borderRadius: 3,
         border: "1px solid",
         borderColor: "divider",
-        transition: "all 0.2s ease",
+        transition: "all 0.3s ease",
         flex: { xs: "1 1 100%", md: "1 0 48%" },
-        minHeight: { xs: "auto", md: "350px" },
+        minHeight: { xs: "auto", md: "380px" },
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <CardContent>
+      <CardContent sx={{ p: 3, pb: 2 }}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
-            mb: 1,
+            alignItems: "flex-start",
+            mb: 2,
           }}
         >
-          <Typography variant="subtitle1" fontWeight="500">
+          <Typography variant="h6" fontWeight="600" color="text.primary">
             {t(`dashboard.settings.subscription.plans.${planType}.title`)}
           </Typography>
           <Chip
@@ -259,45 +262,68 @@ const PlanCard = ({
             )}
             color={color}
             size="small"
-            sx={{ height: 20, fontSize: "0.7rem" }}
+            sx={{
+              height: 24,
+              fontSize: "0.75rem",
+              fontWeight: 500,
+              borderRadius: "12px",
+            }}
           />
         </Box>
 
-        <Typography variant="h6" fontWeight="700" mb={0.5}>
+        <Typography variant="h4" fontWeight="700" mb={1} color="primary.main">
           {t(`dashboard.settings.subscription.plans.${planType}.price`)}
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" mb={1.5}>
+        <Typography variant="body1" color="text.secondary" mb={2.5} sx={{ lineHeight: 1.6 }}>
           {t(`dashboard.settings.subscription.plans.${planType}.description`)}
         </Typography>
 
-        <Divider sx={{ my: 1.5 }} />
+        <Divider sx={{ my: 2.5 }} />
 
-        <Stack spacing={1} my={1.5}>
+        <Stack spacing={1.5} mb={2}>
           {["feature1", "feature2", "feature3"].map((feature) => (
             <Box
               key={feature}
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                py: 0.5,
+              }}
             >
               <CheckCircleOutlineIcon
                 color={color}
                 fontSize="small"
-                sx={{ fontSize: "1rem" }}
+                sx={{ fontSize: "1.2rem" }}
               />
-              <Typography variant="body2">
+              <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {t(`dashboard.settings.subscription.features.${feature}`)}
               </Typography>
             </Box>
           ))}
         </Stack>
       </CardContent>
-      <CardActions sx={{ px: 2, pb: 2 }}>
+      <CardActions sx={{ px: 3, pb: 3, pt: 0 }}>
         <Button
           fullWidth
           variant="contained"
           onClick={() => handleSubscribe(planType)}
           disabled={isLoading || !priceId}
           color={color}
+          sx={{
+            py: 1.5,
+            px: 3,
+            borderRadius: 2,
+            fontSize: "1rem",
+            fontWeight: 600,
+            textTransform: "none",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            "&:disabled": {
+              boxShadow: "none",
+              transform: "none",
+            },
+          }}
         >
           {isLoading ? (
             <CircularProgress size={24} color="inherit" />
@@ -324,7 +350,20 @@ const ManageSubscriptionButton = ({
       startIcon={!isLoading && <PaymentOutlinedIcon />}
       onClick={onClick}
       disabled={isLoading}
-      sx={{ alignSelf: "flex-start" }}
+      sx={{
+        alignSelf: "flex-start",
+        py: 1.5,
+        px: 3,
+        borderRadius: 2,
+        fontSize: "1rem",
+        fontWeight: 600,
+        textTransform: "none",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        "&:disabled": {
+          boxShadow: "none",
+          transform: "none",
+        },
+      }}
     >
       {isLoading ? (
         <CircularProgress size={24} color="inherit" />
@@ -353,12 +392,18 @@ const PlanTypeDisplay = ({ planType }: PlanTypeDisplayProps) => {
   };
 
   return (
-    <Box sx={{ mb: 1 }}>
+    <Box sx={{ mb: 2 }}>
       <Chip
         label={t(`dashboard.settings.subscription.planTypes.${planType}`)}
         color={getPlanColor()}
-        size="small"
-        sx={{ fontWeight: 500 }}
+        size="medium"
+        sx={{
+          fontWeight: 600,
+          fontSize: "0.875rem",
+          height: 32,
+          borderRadius: "16px",
+          px: 2,
+        }}
       />
     </Box>
   );
@@ -408,13 +453,8 @@ export default function Subscription() {
                 interval: String(planData.interval || "monthly"),
               };
 
-              let planType: PlanType;
-              if (plan.interval === "monthly" || plan.interval === "annual") {
-                planType = plan.interval as PlanType;
-              } else {
-                console.warn(`Invalid interval "${plan.interval}", defaulting to monthly`);
-                planType = "monthly";
-              }
+              // Use the utility function for consistent plan type determination
+              const planType = determinePlanType(plan.interval);
 
               return {
                 id: plan.id,
@@ -429,20 +469,21 @@ export default function Subscription() {
           );
 
           setPlans(formattedPlans);
+        } else {
+          toast.error(t("dashboard.common.error.loading"));
         }
       } catch (err) {
         const apiError = err as ApiResponse;
         const errorMessage =
           apiError.message || t("dashboard.common.error.loading");
         toast.error(errorMessage);
-        console.error("Error fetching subscription plans:", err);
       } finally {
         setIsLoadingPlans(false);
       }
     };
 
     fetchPlans();
-  }, [t]);
+  }, []); // Remove t dependency to prevent multiple calls
 
   // Handle subscription purchase
   const handleSubscribe = async (planType: PlanType) => {
@@ -482,7 +523,6 @@ export default function Subscription() {
       const errorMessage =
         apiError.message || t("dashboard.common.error.generic");
       toast.error(errorMessage);
-      console.error("Error creating checkout session:", err);
     } finally {
       setIsLoading(false);
     }
@@ -509,7 +549,6 @@ export default function Subscription() {
       const errorMessage =
         apiError.message || t("dashboard.common.error.generic");
       toast.error(errorMessage);
-      console.error("Error creating portal session:", err);
     } finally {
       setIsLoading(false);
     }
@@ -525,6 +564,11 @@ export default function Subscription() {
   const annualPlanPriceId = plans.find(
     (plan) => plan.planType === "annual"
   )?.priceId;
+
+  // Fallback: if no plans found, show a message
+  const hasPlans = plans.length > 0;
+  const hasMonthlyPlan = !!monthlyPlanPriceId;
+  const hasAnnualPlan = !!annualPlanPriceId;
 
   return (
     <Box
@@ -617,24 +661,46 @@ export default function Subscription() {
             <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
               <CircularProgress />
             </Box>
+          ) : !hasPlans ? (
+            <Box sx={{ textAlign: "center", my: 4 }}>
+              <Typography variant="body1" color="text.secondary">
+                {t("dashboard.settings.subscription.noPlansAvailable")}
+              </Typography>
+            </Box>
           ) : (
             <Stack
               direction={{ xs: "column", md: "row" }}
               spacing={2}
               sx={{ mt: 1 }}
             >
-              <PlanCard
-                planType="monthly"
-                handleSubscribe={handleSubscribe}
-                priceId={monthlyPlanPriceId}
-                isLoading={isLoading}
-              />
-              <PlanCard
-                planType="annual"
-                handleSubscribe={handleSubscribe}
-                priceId={annualPlanPriceId}
-                isLoading={isLoading}
-              />
+              {hasMonthlyPlan ? (
+                <PlanCard
+                  planType="monthly"
+                  handleSubscribe={handleSubscribe}
+                  priceId={monthlyPlanPriceId}
+                  isLoading={isLoading}
+                />
+              ) : (
+                <Box sx={{ textAlign: "center", p: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("dashboard.settings.subscription.monthlyPlanUnavailable")}
+                  </Typography>
+                </Box>
+              )}
+              {hasAnnualPlan ? (
+                <PlanCard
+                  planType="annual"
+                  handleSubscribe={handleSubscribe}
+                  priceId={annualPlanPriceId}
+                  isLoading={isLoading}
+                />
+              ) : (
+                <Box sx={{ textAlign: "center", p: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t("dashboard.settings.subscription.annualPlanUnavailable")}
+                  </Typography>
+                </Box>
+              )}
             </Stack>
           )}
         </Paper>
