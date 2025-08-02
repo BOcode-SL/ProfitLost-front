@@ -467,7 +467,7 @@ export default function Subscription() {
               };
             }
           );
-
+          
           setPlans(formattedPlans);
         } else {
           toast.error(t("dashboard.common.error.loading"));
@@ -487,7 +487,9 @@ export default function Subscription() {
 
   // Handle subscription purchase
   const handleSubscribe = async (planType: PlanType) => {
-    const plan = plans.find((p) => p.planType === planType);
+    // Filter plans by planType and amount > 0
+    const availablePlans = plans.filter((p) => p.planType === planType && p.amount > 0);
+    const plan = availablePlans[0];
 
     if (!plan) {
       toast.error(t("dashboard.common.error.generic"));
@@ -557,12 +559,12 @@ export default function Subscription() {
   const daysRemaining = getDaysRemaining();
   const isTrialing = userSubscription?.status === "trialing";
 
-  // Find price IDs for each plan type
+  // Find price IDs for each plan type, filtering out $0 plans
   const monthlyPlanPriceId = plans.find(
-    (plan) => plan.planType === "monthly"
+    (plan) => plan.planType === "monthly" && plan.amount > 0
   )?.priceId;
   const annualPlanPriceId = plans.find(
-    (plan) => plan.planType === "annual"
+    (plan) => plan.planType === "annual" && plan.amount > 0
   )?.priceId;
 
   // Fallback: if no plans found, show a message
