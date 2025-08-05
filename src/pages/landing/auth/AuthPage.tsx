@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { TokenResponse } from '@react-oauth/google';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Box, Typography, Button, Paper, Link } from '@mui/material';
 
 // Types
 import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../../types/api/responses';
@@ -34,8 +34,6 @@ import { isIOS } from '../../../utils/deviceDetection';
 import Footer from '../components/Footer';
 import LanguageSelector from '../components/LanguageSelector';
 import ScrollToTop from '../components/ScrollToTop';
-// Import only the AUTH_HEADER_HEIGHT and LOGO_HEIGHT constants
-import { AUTH_HEADER_HEIGHT, LOGO_HEIGHT } from './components/AuthLayout';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import ResetPasswordForm, { getResetPasswordStepTitle } from './components/ResetPasswordForm';
@@ -70,6 +68,10 @@ export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // Header height and logo height
+    const AUTH_HEADER_HEIGHT = 80;
+    const LOGO_HEIGHT = 50;
 
     // Form data state
     const [loginData, setLoginData] = useState<LoginCredentials>({
@@ -505,19 +507,16 @@ export default function AuthPage() {
 
                                 <Box sx={{ textAlign: 'center', mt: 3 }}>
                                     <Typography variant="body2">
-                                        <Box
-                                            component="span"
-                                            onClick={() => setShowResetPassword(false)}
+                                        <Link
                                             sx={{
-                                                color: '#fe6f14',
+                                                color: '#666',
                                                 cursor: 'pointer',
-                                                '&:hover': {
-                                                    textDecoration: 'underline'
-                                                }
+                                                textDecoration: 'none'
                                             }}
+                                            onClick={() => setShowResetPassword(false)}
                                         >
                                             {t('home.auth.resetPassword.backToLogin')}
-                                        </Box>
+                                        </Link>
                                     </Typography>
                                 </Box>
                             </Paper>
