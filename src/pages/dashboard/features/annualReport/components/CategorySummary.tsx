@@ -33,6 +33,7 @@ import {
     DialogContent,
     DialogActions,
     Slide,
+    Divider,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
@@ -43,7 +44,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -254,6 +254,15 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                 tempGroupedByMonthKey[monthKey] = [];
             }
             tempGroupedByMonthKey[monthKey].push(tx);
+        });
+
+        // Sort transactions within each month by date (ascending: day 1 first, then day 30)
+        Object.keys(tempGroupedByMonthKey).forEach(monthKey => {
+            tempGroupedByMonthKey[monthKey].sort((a, b) => {
+                const dateA = fromSupabaseTimestamp(a.transaction_date);
+                const dateB = fromSupabaseTimestamp(b.transaction_date);
+                return dateA.getTime() - dateB.getTime();
+            });
         });
 
         const result: GroupedTransactions = {};
@@ -518,55 +527,60 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                                         </Box>
 
                                         {/* Transactions */}
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                             {monthTransactions.map((transaction) => (
-                                                <Box
-                                                    key={transaction.id}
-                                                    sx={{
-                                                        p: 2,
-                                                        borderRadius: 1,
-                                                        border: '1px solid',
-                                                        borderColor: 'divider',
-                                                        backgroundColor: 'background.default'
-                                                    }}
-                                                >
-                                                    <Box sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'flex-start',
-                                                        gap: 2
-                                                    }}>
-                                                        <Box sx={{ flex: 1 }}>
-                                                            <Typography variant="body2" fontWeight={500}>
+                                                <Box key={transaction.id}>
+                                                    <Box
+                                                        sx={{
+                                                            p: 1,
+                                                            my: 1,
+                                                            borderRadius: 3,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: 1,
+                                                            transition: 'background-color 0.3s ease',
+                                                            '&:hover': {
+                                                                bgcolor: `${category.color}20`,
+                                                            },
+                                                        }}
+                                                    >
+
+
+                                                        {/* Transaction description and date information */}
+                                                        <Box
+                                                            sx={{
+                                                                flex: 1,
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                px: 1,
+                                                            }}
+                                                        >
+                                                            <Typography variant="body1">
                                                                 {transaction.description || category.name}
                                                             </Typography>
-                                                            <Typography
-                                                                variant="caption"
-                                                                color="text.secondary"
-                                                                sx={{
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    gap: 0.5,
-                                                                    mt: 0.5
-                                                                }}
-                                                            >
-                                                                <ScheduleIcon sx={{ fontSize: 14 }} />
+                                                            <Typography variant="caption" color="text.secondary">
                                                                 {fromSupabaseTimestamp(transaction.transaction_date).toLocaleDateString()}
                                                             </Typography>
                                                         </Box>
+
+                                                        {/* Transaction amount with color coding and privacy blur */}
                                                         <Typography
-                                                            variant="body2"
-                                                            fontWeight={600}
                                                             sx={{
                                                                 color: transaction.amount >= 0
                                                                     ? theme.palette.chart.income
                                                                     : theme.palette.chart.expenses,
-                                                                whiteSpace: 'nowrap'
+                                                                width: { xs: '25%', md: '20%' },
+                                                                textAlign: 'right',
+                                                                fontWeight: 600,
+                                                                filter: isHidden ? 'blur(8px)' : 'none',
+                                                                transition: 'filter 0.3s ease',
+                                                                userSelect: isHidden ? 'none' : 'auto',
                                                             }}
                                                         >
                                                             {formatCurrency(transaction.amount, user)}
                                                         </Typography>
                                                     </Box>
+                                                    <Divider />
                                                 </Box>
                                             ))}
                                         </Box>
