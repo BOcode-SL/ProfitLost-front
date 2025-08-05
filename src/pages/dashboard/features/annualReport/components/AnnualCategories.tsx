@@ -506,16 +506,30 @@ export default function AnnualCategories({
                     },
                   }}
                 >
-                  {/* Category color indicator dot */}
+                  {/* Category color indicator with letter */}
                   <Box
                     sx={{
-                      width: { xs: 20, sm: 24 },
-                      height: { xs: 20, sm: 24 },
-                      borderRadius: "50%",
-                      bgcolor: category.color,
+                      width: { xs: 40, sm: 48 },
+                      height: { xs: 40, sm: 48 },
+                      borderRadius: 2,
+                      backgroundColor: `${category.color}20`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       flexShrink: 0,
                     }}
-                  />
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: category.color,
+                        fontWeight: 600,
+                        fontSize: { xs: '1rem', sm: '1.25rem' }
+                      }}
+                    >
+                      {category.name.charAt(0).toUpperCase()}
+                    </Typography>
+                  </Box>
                   {/* Category name */}
                   <ListItemText
                     primary={category.name}
