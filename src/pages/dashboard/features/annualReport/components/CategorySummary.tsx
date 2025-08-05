@@ -34,6 +34,10 @@ import {
     DialogActions,
     Slide,
     Divider,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
@@ -47,8 +51,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -276,17 +279,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
         return result;
     }, [displayTransactions, t]);
 
-    /**
-     * Handle year change
-     */
-    const handleYearChange = (direction: 'prev' | 'next') => {
-        const currentIndex = yearsWithData.indexOf(selectedYear);
-        if (direction === 'prev' && currentIndex < yearsWithData.length - 1) {
-            setSelectedYear(yearsWithData[currentIndex + 1]);
-        } else if (direction === 'next' && currentIndex > 0) {
-            setSelectedYear(yearsWithData[currentIndex - 1]);
-        }
-    };
+
 
     /**
      * Handle category deletion
@@ -386,31 +379,21 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
             {/* Content */}
             <Box sx={{ flex: 1, overflow: 'auto', p: 3 }}>
                 {/* Year Selector */}
-                <Paper elevation={1} sx={{ p: 2, mb: 3, borderRadius: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                            {t('dashboard.common.year')}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <IconButton
-                                onClick={() => handleYearChange('prev')}
-                                disabled={yearsWithData.indexOf(selectedYear) >= yearsWithData.length - 1}
-                                size="small"
-                            >
-                                <ChevronLeftIcon />
-                            </IconButton>
-                            <Typography variant="h6" fontWeight={600} sx={{ minWidth: 80, textAlign: 'center' }}>
-                                {selectedYear}
-                            </Typography>
-                            <IconButton
-                                onClick={() => handleYearChange('next')}
-                                disabled={yearsWithData.indexOf(selectedYear) <= 0}
-                                size="small"
-                            >
-                                <ChevronRightIcon />
-                            </IconButton>
-                        </Box>
-                    </Box>
+                <Paper elevation={1} sx={{ p: 1, mb: 3, borderRadius: 3 }}>
+                    <FormControl size="small" fullWidth>
+                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                        <Select
+                            value={selectedYear}
+                            label={t('dashboard.common.year')}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                        >
+                            {yearsWithData.map(year => (
+                                <MenuItem key={year} value={year}>
+                                    {year}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Paper>
 
                 {/* Financial Summary */}
