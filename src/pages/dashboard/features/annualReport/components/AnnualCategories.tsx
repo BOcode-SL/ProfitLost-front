@@ -87,8 +87,23 @@ interface EditCategoryState {
   color: string;
 }
 
+/**
+ * State interface for category summary view
+ * Tracks the current category being viewed in summary mode
+ *
+ * @interface SummaryCategoryState
+ */
+interface SummaryCategoryState {
+  /** Whether the summary dialog is open */
+  isOpen: boolean;
+
+  /** The category being viewed */
+  category: Category | null;
+}
+
 // Components
 import CategoryForm from "./CategoryForm";
+import CategorySummary from "./CategorySummary";
 import DrawerBase from "../../../components/ui/DrawerBase";
 
 /**
@@ -144,6 +159,10 @@ export default function AnnualCategories({
     category: null,
     name: "",
     color: "",
+  });
+  const [summaryCategory, setSummaryCategory] = useState<SummaryCategoryState>({
+    isOpen: false,
+    category: null,
   });
   const [savingChanges, setSavingChanges] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState({
@@ -237,17 +256,15 @@ export default function AnnualCategories({
   };
 
   /**
-   * Handler for category selection to edit
-   * Opens the category edit form with the selected category data
+   * Handler for category selection to view summary
+   * Opens the category summary view with the selected category data
    *
-   * @param {Category} category - The category to edit
+   * @param {Category} category - The category to view
    */
   const handleCategoryClick = (category: Category) => {
-    setEditCategory({
+    setSummaryCategory({
       isOpen: true,
       category,
-      name: category.name,
-      color: category.color,
     });
   };
 
@@ -260,6 +277,29 @@ export default function AnnualCategories({
     if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
       setCategories(categoriesResponse.data as Category[]);
     }
+  };
+
+  /**
+   * Handler for opening category edit form from summary
+   * Closes summary and opens edit form
+   *
+   * @param {Category} category - The category to edit
+   */
+  const handleEditFromSummary = (category: Category) => {
+    setSummaryCategory({ isOpen: false, category: null });
+    setEditCategory({
+      isOpen: true,
+      category,
+      name: category.name,
+      color: category.color,
+    });
+  };
+
+  /**
+   * Handler for closing category summary
+   */
+  const handleCloseSummary = () => {
+    setSummaryCategory({ isOpen: false, category: null });
   };
 
   /**
@@ -516,6 +556,21 @@ export default function AnnualCategories({
             onSubmit={handleCreateCategory}
             onClose={() => setDrawerOpen(false)}
           />
+        </DrawerBase>
+
+        {/* Category summary drawer dialog */}
+        <DrawerBase
+          open={summaryCategory.isOpen}
+          onClose={handleCloseSummary}
+        >
+          {summaryCategory.category && (
+            <CategorySummary
+              category={summaryCategory.category}
+              onSubmit={handleUpdateCategory}
+              onClose={handleCloseSummary}
+              onEdit={handleEditFromSummary}
+            />
+          )}
         </DrawerBase>
 
         {/* Category editing drawer dialog */}

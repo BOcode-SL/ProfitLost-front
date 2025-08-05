@@ -1179,7 +1179,8 @@
                     "hideTransactions": "Hide",
                     "searchPlaceholder": "Search transactions...",
                     "noSearchResults": "No transactions found",
-                    "tryDifferentSearch": "Try a different search term"
+                    "tryDifferentSearch": "Try a different search term",
+                    "transactions": "transactions"
                 },
                 "delete": {
                     "title": "Delete Category",

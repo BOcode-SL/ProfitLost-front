@@ -389,7 +389,9 @@
                     "thirdParty": {
                         "title": "6. Cookies de terceros",
                         "content": "Utilizamos servicios de terceros que pueden establecer cookies en tu dispositivo:",
-                        "items": ["Google Analytics: análisis del uso del sitio web. Puedes excluirte del seguimiento de Google Analytics instalando el complemento de exclusión voluntaria para navegadores de Google Analytics disponible en: https://tools.google.com/dlpage/gaoptout"]
+                        "items": [
+                            "Google Analytics: análisis del uso del sitio web. Puedes excluirte del seguimiento de Google Analytics instalando el complemento de exclusión voluntaria para navegadores de Google Analytics disponible en: https://tools.google.com/dlpage/gaoptout"
+                        ]
                     },
                     "retention": {
                         "title": "7. Periodo de retención de cookies",
@@ -1177,7 +1179,8 @@
                     "hideTransactions": "Ocultar",
                     "searchPlaceholder": "Buscar movimientos...",
                     "noSearchResults": "No se encontraron movimientos",
-                    "tryDifferentSearch": "Intenta con otros términos de búsqueda"
+                    "tryDifferentSearch": "Intenta con otros términos de búsqueda",
+                    "transactions": "Movimientos"
                 },
                 "delete": {
                     "title": "Delete Category",
