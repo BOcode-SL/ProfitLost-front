@@ -17,7 +17,7 @@
  *
  * @module AccountsTable
  */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -135,6 +135,7 @@ export default function AccountsTable({
   const [isHidden, setIsHidden] = useState(isCurrencyHidden());
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoadingAccount, setIsLoadingAccount] = useState(false);
+  const [actionButtons, setActionButtons] = useState<React.ReactNode>(null);
 
   /**
    * Effect to listen for currency visibility changes app-wide
@@ -506,6 +507,8 @@ export default function AccountsTable({
           setIsDrawerOpen(false);
           setSelectedAccount(null);
         }}
+        layout="withActions"
+        actions={actionButtons}
       >
         {isLoadingAccount ? (
           <Box
@@ -536,6 +539,7 @@ export default function AccountsTable({
             }}
             onDelete={onDelete}
             account={selectedAccount}
+            onGetActions={setActionButtons}
           />
         )}
       </DrawerBase>

@@ -17,7 +17,7 @@
  *
  * @module TransactionTable
  */
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -114,6 +114,12 @@ export default function TransactionTable({
 
   /** Controls whether monetary values should be blurred for privacy */
   const [isHidden, setIsHidden] = useState(isCurrencyHidden());
+
+  /** Action buttons for edit drawer */
+  const [editActionButtons, setEditActionButtons] = useState<React.ReactNode>(null);
+
+  /** Action buttons for create drawer */
+  const [createActionButtons, setCreateActionButtons] = useState<React.ReactNode>(null);
 
   /**
    * Listen for currency visibility toggle events across the application
@@ -476,7 +482,12 @@ export default function TransactionTable({
       </Paper>
 
       {/* Transaction edit drawer - appears when editing a transaction */}
-      <DrawerBase open={editDrawerOpen} onClose={handleCloseEditDrawer}>
+      <DrawerBase
+        open={editDrawerOpen}
+        onClose={handleCloseEditDrawer}
+        layout="withActions"
+        actions={editActionButtons}
+      >
         {selectedTransaction && (
           <TransactionForm
             transaction={selectedTransaction}
@@ -486,6 +497,7 @@ export default function TransactionTable({
             }}
             onClose={handleCloseEditDrawer}
             categories={categories}
+            onGetActions={setEditActionButtons}
           />
         )}
       </DrawerBase>
@@ -494,6 +506,8 @@ export default function TransactionTable({
       <DrawerBase
         open={createDrawerOpen}
         onClose={() => setCreateDrawerOpen(false)}
+        layout="withActions"
+        actions={createActionButtons}
       >
         <TransactionForm
           onSubmit={() => {
@@ -502,6 +516,7 @@ export default function TransactionTable({
           }}
           onClose={() => setCreateDrawerOpen(false)}
           categories={categories}
+          onGetActions={setCreateActionButtons}
         />
       </DrawerBase>
     </Box>

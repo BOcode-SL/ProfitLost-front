@@ -11,7 +11,7 @@
  * 
  * @module CategoryForm
  */
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     Box,
     Button,
@@ -48,6 +48,9 @@ interface CategoryFormProps {
 
     /** Optional callback function for deletion */
     onDelete?: () => void;
+
+    /** Optional callback to get action buttons for external use */
+    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -59,7 +62,7 @@ interface CategoryFormProps {
  * @param {CategoryFormProps} props - Component properties
  * @returns {JSX.Element} Rendered form component
  */
-export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
+export default function CategoryForm({ category, onSubmit, onClose, onDelete, onGetActions }: CategoryFormProps) {
     const { t } = useTranslation();
 
     // Form state
@@ -67,13 +70,11 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
     const [color, setColor] = useState(category?.color || '#ff8e38');
     const [saving, setSaving] = useState(false);
 
-
-
     /**
      * Handle form submission for creating or updating a category
      * Validates inputs and makes appropriate API calls
      */
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         // Validate category name
         if (!name.trim()) {
             toast.error(t('dashboard.annualReport.categories.form.categoryNameRequired'));
@@ -116,7 +117,42 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
         } finally {
             setSaving(false);
         }
-    };
+    }, [name, color, category, t, onSubmit, onClose]);
+
+    /**
+     * Creates action buttons for external use
+     */
+    const actionButtons = useMemo(() => (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+            {category && onDelete && (
+                <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={onDelete}
+                    disabled={saving}
+                    fullWidth
+                >
+                    {t('dashboard.common.delete')}
+                </Button>
+            )}
+            <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={saving}
+                fullWidth
+            >
+                {saving ? <CircularProgress size={24} /> :
+                    (category ? t('dashboard.common.update') : t('dashboard.common.create'))}
+            </Button>
+        </Box>
+    ), [category, onDelete, saving, t, handleSubmit]);
+
+    /**
+     * Notify parent component of action buttons when they change
+     */
+    useEffect(() => {
+        onGetActions?.(actionButtons);
+    }, [actionButtons, onGetActions]);
 
     return (
         <Box sx={{ p: 3 }}>
@@ -163,30 +199,6 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                         size="small"
                     />
                 </Paper>
-
-                {/* Action buttons */}
-                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                    {category && onDelete && (
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={onDelete}
-                            disabled={saving}
-                            fullWidth
-                        >
-                            {t('dashboard.common.delete')}
-                        </Button>
-                    )}
-                    <Button
-                        variant="contained"
-                        onClick={handleSubmit}
-                        disabled={saving}
-                        fullWidth
-                    >
-                        {saving ? <CircularProgress size={24} /> :
-                            (category ? t('dashboard.common.update') : t('dashboard.common.create'))}
-                    </Button>
-                </Box>
             </Box>
         </Box>
     );

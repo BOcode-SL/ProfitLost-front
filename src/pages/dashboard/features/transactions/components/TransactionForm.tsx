@@ -18,7 +18,7 @@
  * 
  * @module TransactionForm
  */
-import { useState, useEffect, forwardRef } from 'react';
+import { useState, useEffect, forwardRef, useMemo, useCallback } from 'react';
 import {
     Box,
     TextField,
@@ -68,22 +68,22 @@ import type { Transaction, RecurrenceType } from '../../../../../types/supabase/
 interface TransactionUpdateData {
     /** Date and time of the transaction in UTC format */
     transaction_date: string;
-    
+
     /** Description or purpose of the transaction */
     description: string | null;
-    
+
     /** Monetary value (positive for income, negative for expenses) */
     amount: number;
-    
+
     /** Reference to the category ID for categorization */
     category_id: string;
-    
+
     /** Type of recurrence if this is a recurring transaction */
     recurrence_type: RecurrenceType;
-    
+
     /** End date for recurring transactions series */
     recurrence_end_date: string | null;
-    
+
     /** Optional ID linking related recurring transactions */
     recurrence_id?: string | null;
 }
@@ -96,16 +96,16 @@ interface TransactionUpdateData {
 interface UpdateData {
     /** Description or purpose of the transaction */
     description: string | null;
-    
+
     /** Monetary value (positive for income, negative for expenses) */
     amount: number;
-    
+
     /** Reference to the category ID for categorization */
     category_id: string;
-    
+
     /** Optional date to update single transactions in a series */
     transaction_date?: string;
-    
+
     /** Flag to update all future instances of a recurring transaction */
     updateAll?: boolean;
 }
@@ -118,15 +118,18 @@ interface UpdateData {
 interface TransactionFormProps {
     /** Optional existing transaction for editing mode (omit for creation mode) */
     transaction?: Transaction;
-    
+
     /** Callback function triggered after successful form submission */
     onSubmit: () => void;
-    
+
     /** Callback function to close the form dialog/drawer */
     onClose: () => void;
-    
+
     /** Optional pre-loaded categories to improve performance */
     categories?: Category[];
+
+    /** Optional callback to get action buttons for external use */
+    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -190,16 +193,16 @@ const calculateRecurringDates = (startDate: string, endDate: string, recurrenceT
  * @param {TransactionFormProps} props - Component properties
  * @returns {JSX.Element} Rendered transaction form component
  */
-export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories }: TransactionFormProps) {
+export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories, onGetActions }: TransactionFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
-    
+
     /**
      * Component State
      */
     /** Available categories for transaction categorization */
     const [categories, setCategories] = useState<Category[]>(propCategories || []);
-    
+
     /** Loading state for categories data */
     const [isLoadingCategories, setIsLoadingCategories] = useState(!propCategories);
 
@@ -223,33 +226,33 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         // Format as YYYY-MM-DDTHH:mm:ss
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     });
-    
+
     /** Transaction description text */
     const [description, setDescription] = useState(transaction?.description || '');
-    
+
     /** Transaction amount as string (positive value) */
     const [amount, setAmount] = useState(transaction ? Math.abs(transaction.amount).toString() : '');
-    
+
     /** Selected category for the transaction */
     const [category, setCategory] = useState<Category | null>(null);
-    
+
     /** Flag indicating if transaction is income (true) or expense (false) */
     const [isIncome, setIsIncome] = useState(transaction ? transaction.amount >= 0 : false);
-    
+
     /** Loading state during deletion operation */
     const [isDeleting, setIsDeleting] = useState(false);
-    
+
     /** Loading state during form submission */
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     /** Flag to control visibility of delete confirmation dialog */
     const [deleteDialog, setDeleteDialog] = useState(false);
-    
+
     /** Recurrence type for recurring transactions */
     const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(() => {
         return transaction?.recurrence_type || null;
     });
-    
+
     /** End date for recurring transaction series */
     const [recurrenceEndDate, setRecurrenceEndDate] = useState(() => {
         if (transaction?.recurrence_end_date) {
@@ -257,13 +260,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
         }
         return '';
     });
-    
+
     /** Flag to control visibility of recurrent transaction edit dialog */
     const [editRecurrentDialog, setEditRecurrentDialog] = useState(false);
-    
+
     /** Temporary storage for transaction data during update workflow */
     const [transactionDataToUpdate, setTransactionDataToUpdate] = useState<TransactionUpdateData | null>(null);
-    
+
     /** Flag to update all future instances of a recurring transaction */
     const [updateAllRecurrent, setUpdateAllRecurrent] = useState(false);
 
@@ -278,7 +281,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 setIsLoadingCategories(false);
                 return;
             }
-            
+
             try {
                 setIsLoadingCategories(true);
                 const response = await categoryService.getAllCategories();
@@ -335,7 +338,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
      * 
      * @param {React.FormEvent} e - Form submission event
      */
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Validate required fields
@@ -410,7 +413,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             toast.error(t('dashboard.transactions.errors.updateError'));
             setIsSubmitting(false);
         }
-    };
+    }, [amount, category, recurrenceType, recurrenceEndDate, description, date, isIncome, transaction, t, onSubmit, onClose]);
 
     /**
      * Opens the delete confirmation dialog
@@ -427,7 +430,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const confirmDelete = async () => {
         try {
             if (!transaction) return;
-            
+
             await transactionService.deleteTransaction(
                 transaction.id,
                 transaction.recurrence_id ? updateAllRecurrent : undefined
@@ -498,6 +501,71 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     const recurringDates = date && recurrenceType && recurrenceEndDate
         ? calculateRecurringDates(date, recurrenceEndDate, recurrenceType)
         : [];
+
+    /**
+     * Creates action buttons for external use
+     */
+    const actionButtons = useMemo(() => (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+            {transaction ? (
+                // Edit mode buttons (delete and update)
+                <>
+                    <Button
+                        onClick={handleDeleteClick}
+                        variant="outlined"
+                        color="error"
+                        disabled={isDeleting || isSubmitting}
+                        fullWidth
+                    >
+                        {t('dashboard.common.delete')}
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        variant="contained"
+                        disabled={isSubmitting}
+                        fullWidth
+                    >
+                        {isSubmitting ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            t('dashboard.common.update')
+                        )}
+                    </Button>
+                </>
+            ) : (
+                // Create mode buttons (cancel and create)
+                <>
+                    <Button
+                        onClick={onClose}
+                        variant="outlined"
+                        disabled={isSubmitting}
+                        fullWidth
+                    >
+                        {t('dashboard.common.cancel')}
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        variant="contained"
+                        disabled={isSubmitting}
+                        fullWidth
+                    >
+                        {isSubmitting ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            t('dashboard.common.create')
+                        )}
+                    </Button>
+                </>
+            )}
+        </Box>
+    ), [transaction, isDeleting, isSubmitting, t, handleSubmit, onClose]);
+
+    /**
+     * Notify parent component of action buttons when they change
+     */
+    useEffect(() => {
+        onGetActions?.(actionButtons);
+    }, [actionButtons, onGetActions]);
 
     /**
      * Delete confirmation dialog component
@@ -801,13 +869,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
     // Show a loading state if categories are being loaded
     if (isLoadingCategories) {
         return (
-            <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                p: 3 
+                p: 3
             }}>
                 <CircularProgress size={40} sx={{ mb: 2 }} />
                 <Typography>{t('dashboard.common.loading')}</Typography>
@@ -824,8 +892,8 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     <CloseIcon />
                 </IconButton>
                 <Typography variant="h6">
-                    {transaction 
-                        ? t('dashboard.transactions.form.title.edit') 
+                    {transaction
+                        ? t('dashboard.transactions.form.title.edit')
                         : t('dashboard.transactions.form.title.new')}
                 </Typography>
             </Box>
@@ -1004,60 +1072,6 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
                     {/* Recurrence configuration section */}
                     <RecurrenceSwitch isEditing={!!transaction} />
-
-                    {/* Action buttons for form submission */}
-                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
-                        {transaction ? (
-                            // Edit mode buttons (delete and update)
-                            <>
-                                <Button
-                                    onClick={handleDeleteClick}
-                                    variant="outlined"
-                                    color="error"
-                                    disabled={isDeleting || isSubmitting}
-                                    fullWidth
-                                >
-                                    {t('dashboard.common.delete')}
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    disabled={isSubmitting}
-                                    fullWidth
-                                >
-                                    {isSubmitting ? (
-                                        <CircularProgress size={24} color="inherit" />
-                                    ) : (
-                                        t('dashboard.common.update')
-                                    )}
-                                </Button>
-                            </>
-                        ) : (
-                            // Create mode buttons (cancel and create)
-                            <>
-                                <Button
-                                    onClick={onClose}
-                                    variant="outlined"
-                                    disabled={isSubmitting}
-                                    fullWidth
-                                >
-                                    {t('dashboard.common.cancel')}
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    disabled={isSubmitting}
-                                    fullWidth
-                                >
-                                    {isSubmitting ? (
-                                        <CircularProgress size={24} color="inherit" />
-                                    ) : (
-                                        t('dashboard.common.create')
-                                    )}
-                                </Button>
-                            </>
-                        )}
-                    </Box>
                 </Box>
             </form>
 

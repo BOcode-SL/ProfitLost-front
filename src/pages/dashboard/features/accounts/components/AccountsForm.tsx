@@ -55,7 +55,7 @@ import type { UUID } from '../../../../../types/supabase/common';
 interface AccountWithYearRecords extends Account {
     /** Annual financial records containing monthly data */
     year_records?: YearRecord[];
-    
+
     /** All available years in the system for year selection */
     available_years?: number[];
 }
@@ -69,15 +69,18 @@ interface AccountWithYearRecords extends Account {
 interface AccountsFormProps {
     /** Function called when form is closed without saving */
     onClose: () => void;
-    
+
     /** Function called after successful form submission, returns success status */
     onSuccess: (account: AccountWithYearRecords) => Promise<boolean>;
-    
+
     /** Optional function for handling account deletion */
     onDelete?: (accountId: UUID) => void;
-    
+
     /** Account data for editing mode (undefined/null for creation mode) */
     account?: AccountWithYearRecords | null;
+
+    /** Optional callback to get action buttons for external use */
+    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /** Array of month abbreviations used for data mapping and display */
@@ -92,7 +95,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
  * @param {AccountsFormProps} props - Component properties
  * @returns {JSX.Element} Rendered account form component
  */
-export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
+export default function AccountsForm({ onClose, onSuccess, onDelete, account, onGetActions }: AccountsFormProps) {
     const { t } = useTranslation();
 
     // Form state for account properties
@@ -114,11 +117,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
     const [loadingYears, setLoadingYears] = useState(false);
     const [availableYearsData, setAvailableYearsData] = useState<number[]>(
         // Initialize directly with provided years if available
-        account?.available_years && account.available_years.length > 0 
+        account?.available_years && account.available_years.length > 0
             ? [...account.available_years].sort((a, b) => b - a)
             : []
     );
-    
+
     /** Years that have been added but not yet saved */
     const [pendingYears, setPendingYears] = useState<number[]>([]);
 
@@ -131,14 +134,14 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
      */
     const loadAvailableYears = useCallback(async () => {
         if (!account?.id) return;
-        
+
         setLoadingYears(true);
         try {
             // Strategy 1: Use years provided by parent component
             if (account.available_years && account.available_years.length > 0) {
                 const sortedYears = [...account.available_years].sort((a, b) => b - a);
                 setAvailableYearsData(sortedYears);
-                
+
                 // Set current year if available, otherwise first year
                 const currentYear = new Date().getFullYear();
                 if (sortedYears.includes(currentYear)) {
@@ -146,79 +149,79 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 } else if (sortedYears.length > 0) {
                     setSelectedYear(sortedYears[0]);
                 }
-                
+
                 setLoadingYears(false);
                 return;
             }
-            
+
             // Strategy 2: Get ALL available years from the API
             const yearsResponse = await accountService.getAvailableYears();
             if (yearsResponse.success && yearsResponse.data) {
                 const apiYears = yearsResponse.data as unknown as number[];
-                
+
                 if (apiYears && apiYears.length > 0) {
                     const sortedYears = [...apiYears].sort((a, b) => b - a);
                     setAvailableYearsData(sortedYears);
-                    
+
                     const currentYear = new Date().getFullYear();
                     if (sortedYears.includes(currentYear)) {
                         setSelectedYear(currentYear);
                     } else if (sortedYears.length > 0) {
                         setSelectedYear(sortedYears[0]);
                     }
-                    
+
                     setLoadingYears(false);
                     return;
                 }
             }
-            
+
             // Strategy 3: Use account's existing year_records
             if (account.year_records && account.year_records.length > 0) {
                 const years = new Set<number>();
-                
+
                 account.year_records.forEach(record => {
                     if (record.year) {
                         years.add(record.year);
                     }
                 });
-                
+
                 // Always add current year as a fallback option
                 const currentYear = new Date().getFullYear();
                 years.add(currentYear);
-                
+
                 const sortedYears = Array.from(years).sort((a, b) => b - a);
                 setAvailableYearsData(sortedYears);
-                
+
                 if (sortedYears.includes(currentYear)) {
                     setSelectedYear(currentYear);
                 } else if (sortedYears.length > 0) {
                     setSelectedYear(sortedYears[0]);
                 }
-                
+
                 setLoadingYears(false);
                 return;
             }
-            
+
             // Strategy 4: Get account detail from API as last resort
             const response = await accountService.getAccountDetailById(account.id);
             if (response.success && response.data) {
                 const accountData = response.data as AccountWithYearRecords;
                 if (accountData.year_records && accountData.year_records.length > 0) {
                     const years = new Set<number>();
-                    
+
                     accountData.year_records.forEach(record => {
                         if (record.year) {
                             years.add(record.year);
                         }
                     });
-                    
+
                     // Always add current year as a fallback
                     const currentYear = new Date().getFullYear();
                     years.add(currentYear);
-                    
+
                     const sortedYears = Array.from(years).sort((a, b) => b - a);
                     setAvailableYearsData(sortedYears);
-                    
+
                     if (sortedYears.includes(currentYear)) {
                         setSelectedYear(currentYear);
                     } else if (sortedYears.length > 0) {
@@ -244,7 +247,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         if (account?.available_years && account.available_years.length > 0) {
             const sortedYears = [...account.available_years].sort((a, b) => b - a);
             const currentYear = new Date().getFullYear();
-            
+
             if (sortedYears.includes(currentYear)) {
                 setSelectedYear(currentYear);
             } else if (sortedYears.length > 0) {
@@ -271,14 +274,14 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             const allYears = new Set([...account.available_years, ...pendingYears]);
             return Array.from(allYears).sort((a, b) => b - a);
         }
-        
+
         // Strategy 2: Years loaded from API
         if (availableYearsData.length > 0) {
             // Combine with pending years
             const allYears = new Set([...availableYearsData, ...pendingYears]);
             return Array.from(allYears).sort((a, b) => b - a);
         }
-        
+
         // Strategy 3: Calculate from account data
         const years = new Set<number>();
         const currentYear = new Date().getFullYear();
@@ -287,7 +290,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         if (account?.year_records) {
             account.year_records.forEach(record => years.add(record.year));
         }
-        
+
         // Add pending years
         pendingYears.forEach(year => years.add(year));
 
@@ -304,15 +307,15 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         const numericYear = typeof selectedYear === 'string' && selectedYear !== ''
             ? parseInt(selectedYear)
             : typeof selectedYear === 'number' ? selectedYear : null;
-            
+
         if (numericYear !== null) {
             // Initialize data containers
             const values: Record<string, number> = {};
             const inputs: Record<string, string> = {};
-            
+
             // First check if we already have the data in the provided account
             let hasExistingData = false;
-            
+
             if (account?.year_records) {
                 const yearRecord = account.year_records.find(record => record.year === numericYear);
                 if (yearRecord) {
@@ -328,12 +331,12 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     setMonthlyInput(inputs);
                 }
             }
-            
+
             // If we don't have the data and this is an existing account, fetch it
             if (!hasExistingData && account?.id) {
                 // Set loading state
                 setSavingChanges(true);
-                
+
                 // Initialize with zeros first to avoid empty form while loading
                 months.forEach(month => {
                     values[month] = 0;
@@ -341,7 +344,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 });
                 setMonthlyValues(values);
                 setMonthlyInput(inputs);
-                
+
                 /**
                  * Load account details directly from API
                  * Fetches year-specific data for the account
@@ -353,18 +356,18 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         if (response.success && response.data) {
                             const responseData = response.data as { yearRecord?: YearRecord };
                             const yearRecord = responseData.yearRecord;
-                            
+
                             if (yearRecord) {
                                 const newValues: Record<string, number> = {};
                                 const newInputs: Record<string, string> = {};
-                                
+
                                 months.forEach(month => {
                                     const monthKey = month.toLowerCase() as keyof YearRecord;
                                     const value = yearRecord[monthKey] as number | null;
                                     newValues[month] = value !== null ? value : 0;
                                     newInputs[month] = value !== null ? value.toString().replace('.', ',') : '0';
                                 });
-                                
+
                                 setMonthlyValues(newValues);
                                 setMonthlyInput(newInputs);
                             }
@@ -376,7 +379,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                         setSavingChanges(false);
                     }
                 };
-                
+
                 loadAccountDetails();
             }
         }
@@ -399,7 +402,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
      * Form submission handler
      * Validates form data and calls appropriate create/update functions
      */
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         // Validate account name
         if (!accountName.trim()) {
             toast.error(t('dashboard.accounts.errors.nameRequired'));
@@ -407,10 +410,10 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         }
 
         // Ensure valid year value
-        const numericYear = typeof selectedYear === 'string' 
-            ? parseInt(selectedYear) 
+        const numericYear = typeof selectedYear === 'string'
+            ? parseInt(selectedYear)
             : selectedYear;
-            
+
         if (isNaN(numericYear)) {
             toast.error(t('dashboard.accounts.errors.invalidYear'));
             return;
@@ -446,7 +449,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 };
 
                 // Update or create year record for the currently selected year
-                const yearRecordIndex = updatedAccount.year_records?.findIndex(record => 
+                const yearRecordIndex = updatedAccount.year_records?.findIndex(record =>
                     record.year === numericYear
                 );
                 if (yearRecordIndex !== undefined && yearRecordIndex >= 0) {
@@ -488,7 +491,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 if (success) {
                     // Clear pending years after successful save
                     setPendingYears([]);
-                    
+
                     // Refresh available years if we added new ones
                     if (pendingYears.length > 0) {
                         try {
@@ -504,7 +507,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                             console.error('Error refreshing available years:', error);
                         }
                     }
-                    
+
                     // Force refresh the UI
                     setForceRefresh(prev => prev + 1);
                 }
@@ -545,7 +548,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
         } finally {
             setSavingChanges(false);
         }
-    };
+    }, [accountName, selectedYear, monthlyValues, account, backgroundColor, textColor, isActive, pendingYears, onSuccess, t]);
 
     /**
      * Handles account deletion with confirmation
@@ -598,7 +601,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
         // Add year to pending list
         setPendingYears(prev => [...prev, yearNumber]);
-        
+
         // Update local UI state - add year to dropdown
         setAvailableYearsData(prevYears => {
             const newYears = [...prevYears];
@@ -608,17 +611,17 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             }
             return newYears;
         });
-        
+
         // Select the newly added year
         setSelectedYear(yearNumber);
-        
+
         // Reset input and hide the form
         setShowYearInput(false);
         setNewYear('');
-        
+
         // Force refresh to update dropdown
         setForceRefresh(prev => prev + 1);
-        
+
         // Show notification
         toast.success(t('dashboard.accounts.success.yearAddedPending'));
     };
@@ -636,6 +639,43 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             }
         }
     }, [selectedYear, account?.id, availableYearsData, loadAvailableYears]);
+
+    /**
+     * Creates action buttons for external use
+     */
+    const actionButtons = useMemo(() => (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+            {account && (
+                <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => setDeleteDialog(true)}
+                    fullWidth
+                >
+                    {t('dashboard.common.delete')}
+                </Button>
+            )}
+            <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={savingChanges}
+                fullWidth
+            >
+                {savingChanges ? (
+                    <CircularProgress size={24} color="inherit" />
+                ) : (
+                    account ? t('dashboard.common.update') : t('dashboard.common.create')
+                )}
+            </Button>
+        </Box>
+    ), [account, savingChanges, t, handleSubmit]);
+
+    /**
+     * Notify parent component of action buttons when they change
+     */
+    useEffect(() => {
+        onGetActions?.(actionButtons);
+    }, [actionButtons, onGetActions]);
 
     return (
         <Box sx={{ p: 3 }}>
@@ -696,8 +736,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                             // Map years to menu items with pending indicator
                                             (() => {
                                                 return availableYears.map(year => (
-                                                    <MenuItem 
-                                                        key={`year-option-${year}`} 
+                                                    <MenuItem
+                                                        key={`year-option-${year}`}
                                                         value={year.toString()}
                                                         sx={pendingYears.includes(year) ? {
                                                             fontStyle: 'italic',
@@ -729,8 +769,8 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                                         onChange={(e) => setNewYear(e.target.value)}
                                         placeholder={t('dashboard.accounts.form.enterYear')}
                                         fullWidth
-                                        inputProps={{ 
-                                            min: 1900, 
+                                        inputProps={{
+                                            min: 1900,
                                             max: 9999,
                                             step: 1
                                         }}
@@ -830,47 +870,21 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                     </Box>
                 </Paper>
 
-                {/* Action buttons (delete/save) */}
-                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                    {account && (
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={() => setDeleteDialog(true)}
-                            sx={{ flex: 1 }}
-                        >
-                            {t('dashboard.common.delete')}
-                        </Button>
-                    )}
-                    <Button
-                        variant="contained"
-                        onClick={handleSubmit}
-                        disabled={savingChanges}
-                        sx={{ flex: 1}}
-                    >
-                        {savingChanges ? (
-                            <CircularProgress size={24} color="inherit" />
-                        ) : (
-                            account ? t('dashboard.common.update') : t('dashboard.common.create')
-                        )}
-                    </Button>
-                </Box>
-                
                 {/* Pending years notification */}
                 {pendingYears.length > 0 && (
-                    <Typography 
-                        variant="caption" 
-                        color="primary.main" 
-                        sx={{ 
-                            mt: 1, 
+                    <Typography
+                        variant="caption"
+                        color="primary.main"
+                        sx={{
+                            mt: 1,
                             textAlign: 'center',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}
                     >
-                        {pendingYears.length === 1 
-                            ? t('dashboard.accounts.pendingYear') 
+                        {pendingYears.length === 1
+                            ? t('dashboard.accounts.pendingYear')
                             : t('dashboard.accounts.pendingYears', { count: pendingYears.length })}
                     </Typography>
                 )}

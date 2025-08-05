@@ -87,6 +87,9 @@ interface CategorySummaryProps {
 
     /** Callback to open edit form */
     onEdit: (category: Category) => void;
+
+    /** Optional callback to get action buttons for external use */
+    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -115,7 +118,7 @@ const MONTH_ORDER = [
  * Displays a comprehensive summary of a category including transaction history,
  * financial statistics, and management options.
  */
-export default function CategorySummary({ category, onSubmit, onClose, onEdit }: CategorySummaryProps) {
+export default function CategorySummary({ category, onSubmit, onClose, onEdit, onGetActions }: CategorySummaryProps) {
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
@@ -296,17 +299,51 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
         }
     };
 
+    /**
+     * Creates action buttons for external use
+     */
+    const actionButtons = useMemo(() => (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => setDeleteDialogOpen(true)}
+                fullWidth
+            >
+                {t('dashboard.common.delete')}
+            </Button>
+            <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                onClick={() => onEdit(category)}
+                fullWidth
+            >
+                {t('dashboard.annualReport.categories.editCategory')}
+            </Button>
+        </Box>
+    ), [t, onEdit, category]);
+
+    /**
+     * Notify parent component of action buttons when they change
+     */
+    useEffect(() => {
+        onGetActions?.(actionButtons);
+    }, [actionButtons, onGetActions]);
+
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* Header */}
             <Box sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
                 p: 3,
                 borderBottom: 1,
                 borderColor: 'divider'
             }}>
+                <IconButton onClick={onClose} sx={{ mr: 2 }}>
+                    <CloseIcon />
+                </IconButton>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box
                         sx={{
@@ -335,9 +372,6 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
                         </Typography>
                     </Box>
                 </Box>
-                <IconButton onClick={onClose}>
-                    <CloseIcon />
-                </IconButton>
             </Box>
 
             {/* Content */}
@@ -566,28 +600,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
                 </Paper>
             </Box>
 
-            {/* Actions */}
-            <Box sx={{ p: 3, borderTop: 1, borderColor: 'divider' }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Button
-                        variant="outlined"
-                        color="error"
-                        startIcon={<DeleteIcon />}
-                        onClick={() => setDeleteDialogOpen(true)}
-                        fullWidth
-                    >
-                        {t('dashboard.common.delete')}
-                    </Button>
-                    <Button
-                        variant="contained"
-                        startIcon={<EditIcon />}
-                        onClick={() => onEdit(category)}
-                        fullWidth
-                    >
-                        {t('dashboard.annualReport.categories.editCategory')}
-                    </Button>
-                </Box>
-            </Box>
+
 
             {/* Delete Confirmation Dialog */}
             <Dialog

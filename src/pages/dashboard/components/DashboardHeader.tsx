@@ -83,10 +83,10 @@ interface DashboardHeaderProps {
 interface SettingsDrawerState {
     /** Whether the drawer is open */
     open: boolean;
-    
+
     /** The current component to display */
     component: string;
-    
+
     /** Optional source of navigation */
     source?: 'settings';
 }
@@ -116,13 +116,13 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
 
     // Check if user is admin using role from UserContext
     const isAdmin = userRole === 'admin' || false;
-    
+
     // Menu items for settings - add subscription to the primary section
     const menuItems = {
         primary: [
             { icon: <PersonOutlineOutlinedIcon />, text: t('dashboard.settings.userSettings.title') },
             { icon: <SecurityOutlinedIcon />, text: t('dashboard.settings.securityPrivacy.title') },
-            { icon: <PaymentOutlinedIcon />, text: t('dashboard.settings.subscription.title')},
+            { icon: <PaymentOutlinedIcon />, text: t('dashboard.settings.subscription.title') },
         ],
         secondary: [
             { icon: <HelpOutlineOutlinedIcon />, text: t('dashboard.settings.help.title') },
@@ -170,13 +170,13 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
      */
     const handleSettingsClick = (component: string, redirect?: string) => {
         setDrawerOpen(false);
-        
+
         if (redirect) {
             // Redirect to main content section instead of opening drawer
             navigate(`/dashboard?section=${redirect}`);
             return;
         }
-        
+
         setSettingsDrawer({
             open: true,
             component,
@@ -228,7 +228,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 onToggleCurrency={handleToggleCurrency}
                 onOpenUserDrawer={() => setDrawerOpen(true)}
                 isAdmin={isAdmin}
-                // profileImage={user?.profile_image}
+            // profileImage={user?.profile_image}
             />
 
             {/* User Settings Drawer */}
@@ -239,7 +239,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
                 onClose={() => setDrawerOpen(false)}
                 onSettingsClick={handleSettingsClick}
                 onLogout={handleLogout}
-                // profileImage={user?.profile_image}
+            // profileImage={user?.profile_image}
             />
 
             {/* Settings Component Drawer */}
@@ -266,25 +266,25 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
 interface HeaderBarProps {
     /** User object or null if not logged in */
     user: User | null;
-    
+
     /** Whether dark mode is currently active */
     isDarkMode: boolean;
-    
+
     /** Whether currency amounts are currently hidden */
     isDisabledCurrencyAmount: boolean;
-    
+
     /** Function to toggle between dark and light themes */
     toggleTheme: () => void;
-    
+
     /** Function to toggle currency visibility */
     onToggleCurrency: () => void;
-    
+
     /** Function to open the user profile drawer */
     onOpenUserDrawer: () => void;
-    
+
     /** Whether the current user has admin privileges */
     isAdmin: boolean;
-    
+
     /** Optional user profile image URL */
     profileImage?: string;
 }
@@ -334,9 +334,9 @@ function HeaderBar({
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     {/* Currency visibility toggle */}
                     <IconButton onClick={onToggleCurrency}>
-                        <Tooltip 
-                            title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ? 
-                                'enable_currency_amount' : 
+                        <Tooltip
+                            title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ?
+                                'enable_currency_amount' :
                                 'disable_currency_amount'}`)}>
                             {isDisabledCurrencyAmount ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                         </Tooltip>
@@ -379,25 +379,25 @@ function HeaderBar({
 interface UserDrawerProps {
     /** Whether the drawer is open */
     open: boolean;
-    
+
     /** User object or null if not logged in */
     user: User | null;
-    
+
     /** Menu items to display in the drawer */
     menuItems: {
         primary: Array<{ icon: React.ReactNode; text: string; redirect?: string }>;
         secondary: Array<{ icon: React.ReactNode; text: string }>;
     };
-    
+
     /** Function to close the drawer */
     onClose: () => void;
-    
+
     /** Function to handle settings item clicks */
     onSettingsClick: (component: string, redirect?: string) => void;
-    
+
     /** Function to handle logout */
     onLogout: () => void;
-    
+
     /** Optional user profile image URL */
     profileImage?: string;
 }
@@ -483,7 +483,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
                         {menuItems.primary.map((item) => (
                             <ListItem key={item.text} disablePadding>
                                 {item.text === t('dashboard.settings.subscription.title') ? (
-                                    <ListItemButton 
+                                    <ListItemButton
                                         onClick={() => {
                                             onClose();
                                             window.location.href = '/dashboard?section=subscription';
@@ -554,16 +554,16 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
 interface SettingsDrawerProps {
     /** Whether the drawer is open */
     open: boolean;
-    
+
     /** The title of the current component being displayed */
     component: string;
-    
+
     /** Function to close the drawer */
     onClose: () => void;
-    
+
     /** Function to navigate back to the previous screen */
     onBack: () => void;
-    
+
     /** The component to render inside the drawer */
     children: React.ReactNode;
 }
@@ -577,10 +577,14 @@ interface SettingsDrawerProps {
  * @returns {JSX.Element} The rendered SettingsDrawer component
  */
 function SettingsDrawer({ open, component, onClose, onBack, children }: SettingsDrawerProps) {
+    const [actionButtons, setActionButtons] = useState<React.ReactNode>(null);
+
     return (
         <DrawerBase
             open={open}
             onClose={onClose}
+            layout="withActions"
+            actions={actionButtons}
         >
             <Box sx={{ p: 3 }}>
                 {/* Drawer header with back button and title */}
@@ -601,7 +605,13 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
                         <CircularProgress />
                     </Box>
                 }>
-                    {children}
+                    {children && React.isValidElement(children) ? (
+                        React.cloneElement(children as React.ReactElement<{ onGetActions?: (actions: React.ReactNode) => void }>, {
+                            onGetActions: setActionButtons
+                        })
+                    ) : (
+                        children
+                    )}
                 </Suspense>
             </Box>
         </DrawerBase>

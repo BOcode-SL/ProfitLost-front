@@ -15,7 +15,7 @@
  * 
  * @module UserSettings
  */
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import {
     Box,
     TextField,
@@ -40,11 +40,11 @@ import { userService } from '../../../../services/user.service';
 
 // Types
 import type { UserApiErrorResponse } from '../../../../types/api/responses';
-import { 
-    Language, 
-    Currency, 
-    DateFormat, 
-    TimeFormat 
+import {
+    Language,
+    Currency,
+    DateFormat,
+    TimeFormat
 } from '../../../../types/supabase/preferences';
 
 /**
@@ -92,6 +92,9 @@ const languageOptions = [
 interface UserSettingsProps {
     /** Optional callback function triggered after successful profile update */
     onSuccess?: () => void;
+
+    /** Optional callback to get action buttons for external use */
+    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -103,7 +106,7 @@ interface UserSettingsProps {
  * @param {UserSettingsProps} props - Component properties
  * @returns {JSX.Element} The rendered user settings interface
  */
-export default function UserSettings({ onSuccess }: UserSettingsProps) {
+export default function UserSettings({ onSuccess, onGetActions }: UserSettingsProps) {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
 
@@ -112,10 +115,10 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
      */
     /** Reference to hidden file input for profile image selection */
     const fileInputRef = useRef<HTMLInputElement>(null);
-    
+
     /** Loading state for form submission */
     const [loading, setLoading] = useState(false);
-    
+
     /** Form data state containing all user preferences and profile information */
     const [formData, setFormData] = useState({
         name: user?.name || '',
@@ -202,7 +205,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
      * Submits form data to update user profile
      * Includes validation, API communication, and error handling
      */
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         if (!formData.name.trim()) {
             toast.error(t('dashboard.settings.userSettings.nameRequired'));
             return;
@@ -235,7 +238,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                 dateFormat: formData.dateFormat,
                 timeFormat: formData.timeFormat
             });
-            
+
             if (response.success) {
                 if (formData.previewUrl) {
                     URL.revokeObjectURL(formData.previewUrl);
@@ -250,7 +253,29 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [formData, t, loadUserData, onSuccess]);
+
+    /**
+     * Creates action buttons for external use
+     */
+    const actionButtons = useMemo(() => (
+        <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={loading}
+            fullWidth
+            size="medium"
+        >
+            {loading ? t('dashboard.settings.userSettings.saving') : t('dashboard.settings.userSettings.saveChanges')}
+        </Button>
+    ), [handleSubmit, loading, t]);
+
+    /**
+     * Notify parent component of action buttons when they change
+     */
+    useEffect(() => {
+        onGetActions?.(actionButtons);
+    }, [actionButtons, onGetActions]);
 
     return (
         <Box sx={{
@@ -448,17 +473,6 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                         </FormControl>
                     </Box>
                 </Paper>
-
-                {/* Save Changes Button - Primary action with loading state */}
-                <Button
-                    variant="contained"
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    fullWidth
-                    size="medium"
-                >
-                    {loading ? t('dashboard.settings.userSettings.saving') : t('dashboard.settings.userSettings.saveChanges')}
-                </Button>
             </Box>
         </Box>
     );
