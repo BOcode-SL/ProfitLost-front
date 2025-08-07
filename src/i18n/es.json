@@ -1180,7 +1180,8 @@
                     "searchPlaceholder": "Buscar movimientos...",
                     "noSearchResults": "No se encontraron movimientos",
                     "tryDifferentSearch": "Intenta con otros términos de búsqueda",
-                    "transactions": "Movimientos"
+                    "transactions": "Movimientos",
+                    "noTransactions": "No hay movimientos"
                 },
                 "delete": {
                     "title": "Delete Category",
