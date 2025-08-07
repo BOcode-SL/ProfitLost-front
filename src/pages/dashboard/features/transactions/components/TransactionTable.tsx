@@ -423,7 +423,7 @@ export default function TransactionTable({
                             <IconWithSize
                               iconName={category.icon}
                               color={category.color}
-                              size="0.75rem"
+                              size="1.15rem"
                             />
                           );
                         } else {
@@ -489,7 +489,7 @@ export default function TransactionTable({
                               <IconWithSize
                                 iconName={category.icon}
                                 color={category.color}
-                                size="1rem"
+                                size="1.25rem"
                               />
                             );
                           } else if (category) {
