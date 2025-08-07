@@ -339,7 +339,7 @@ export default function AnnualCategories({
           toast.error(t("dashboard.common.error.INVALID_ID_FORMAT"));
           break;
         default:
-          toast.error(t("dashboard.common.error.DELETE_ERROR"));
+          toast.error(t("dashboard.annualReport.categories.errors.deleteError"));
       }
     } finally {
       setSavingChanges(false);

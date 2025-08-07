@@ -283,7 +283,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
                 onClose();
             }
         } catch {
-            toast.error(t('dashboard.common.error.DELETE_ERROR'));
+            toast.error(t('dashboard.annualReport.categories.errors.deleteError'));
         } finally {
             setIsDeleting(false);
             setDeleteDialogOpen(false);
