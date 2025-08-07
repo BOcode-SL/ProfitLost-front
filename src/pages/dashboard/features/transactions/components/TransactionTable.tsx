@@ -55,6 +55,9 @@ import { hasActiveSubscription } from "../../../../../utils/subscriptionUtils";
 import TransactionForm from "./TransactionForm";
 import DrawerBase from "../../../components/ui/DrawerBase";
 
+// Utils
+import { IconWithSize } from "../../../../../utils/IconWithSize";
+
 /**
  * Props interface for the TransactionTable component
  *
@@ -405,16 +408,45 @@ export default function TransactionTable({
                       },
                     }}
                   >
-                    {/* Category color indicator for mobile view */}
+                    {/* Category color indicator with icon for mobile view */}
                     <Box
                       sx={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        bgcolor: getCategoryColor(transaction.category_id),
-                        display: { xs: "block", md: "none" },
+                        width: { xs: 32, sm: 36 },
+                        height: { xs: 32, sm: 36 },
+                        borderRadius: 2,
+                        backgroundColor: `${getCategoryColor(transaction.category_id)}20`,
+                        display: { xs: "flex", md: "none" },
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
                       }}
-                    />
+                    >
+                      {(() => {
+                        const category = getCategoryById(transaction.category_id);
+                        if (category?.icon) {
+                          return (
+                            <IconWithSize
+                              iconName={category.icon}
+                              color={category.color}
+                              size="0.75rem"
+                            />
+                          );
+                        } else {
+                          return (
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: getCategoryColor(transaction.category_id),
+                                fontWeight: 600,
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                              }}
+                            >
+                              {getCategoryNameById(transaction.category_id).charAt(0).toUpperCase()}
+                            </Typography>
+                          );
+                        }
+                      })()}
+                    </Box>
 
                     {/* Transaction description and date information */}
                     <Box
@@ -434,7 +466,7 @@ export default function TransactionTable({
                       </Typography>
                     </Box>
 
-                    {/* Category display with color indicator (desktop only) */}
+                    {/* Category display with icon indicator (desktop only) */}
                     <Box
                       sx={{
                         display: { xs: "none", md: "flex" },
@@ -445,12 +477,55 @@ export default function TransactionTable({
                     >
                       <Box
                         sx={{
-                          width: 15,
-                          height: 15,
-                          borderRadius: "50%",
-                          bgcolor: getCategoryColor(transaction.category_id),
+                          width: 32,
+                          height: 32,
+                          borderRadius: 2,
+                          backgroundColor: `${getCategoryColor(transaction.category_id)}20`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
                         }}
-                      />
+                      >
+                        {(() => {
+                          const category = getCategoryById(transaction.category_id);
+                          if (category?.icon) {
+                            return (
+                              <IconWithSize
+                                iconName={category.icon}
+                                color={category.color}
+                                size="1rem"
+                              />
+                            );
+                          } else if (category) {
+                            return (
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  color: category.color,
+                                  fontWeight: 600,
+                                  fontSize: '1rem'
+                                }}
+                              >
+                                {category.name.charAt(0).toUpperCase()}
+                              </Typography>
+                            );
+                          } else {
+                            return (
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  color: getCategoryColor(transaction.category_id),
+                                  fontWeight: 600,
+                                  fontSize: '1rem'
+                                }}
+                              >
+                                {getCategoryNameById(transaction.category_id).charAt(0).toUpperCase()}
+                              </Typography>
+                            );
+                          }
+                        })()}
+                      </Box>
                       <Typography>
                         {getCategoryNameById(transaction.category_id)}
                       </Typography>

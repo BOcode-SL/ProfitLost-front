@@ -185,6 +185,15 @@ export const searchIcons = (query: string): string[] => {
 
 // Función para obtener el componente de icono según la librería
 export const getIconComponent = (iconName: string, library: IconLibrary) => {
+    if (library === 'material') {
+        const pascalCaseName = iconName
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
+
+        return (MaterialIcons as Record<string, React.ComponentType>)[pascalCaseName];
+    }
+
     return {
         name: iconName,
         library: library

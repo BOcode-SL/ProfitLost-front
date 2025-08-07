@@ -55,9 +55,7 @@ import {
   CURRENCY_VISIBILITY_EVENT,
 } from "../../../../../utils/currencyUtils";
 import { hasActiveSubscription } from "../../../../../utils/subscriptionUtils";
-
-// Material Icons
-import * as MaterialIcons from '@mui/icons-material';
+import { IconWithSize } from "../../../../../utils/IconWithSize";
 
 // Types
 import type { Category } from "../../../../../types/supabase/categories";
@@ -177,18 +175,7 @@ export default function AnnualCategories({
   const [categoryFormActions, setCategoryFormActions] = useState<React.ReactNode>(null);
   const [categorySummaryActions, setCategorySummaryActions] = useState<React.ReactNode>(null);
 
-  /**
-   * Get Material Icon component by name
-   */
-  const getMaterialIconComponent = (iconName: string) => {
-    // Convert kebab-case to PascalCase for MUI icons
-    const pascalCaseName = iconName
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
 
-    return (MaterialIcons as Record<string, React.ComponentType>)[pascalCaseName];
-  };
 
   /**
    * Fetch all categories on component mount
@@ -536,25 +523,11 @@ export default function AnnualCategories({
                     }}
                   >
                     {category.icon ? (
-                      <Box sx={{ color: category.color }}>
-                        {(() => {
-                          const IconComponent = getMaterialIconComponent(category.icon);
-                          return IconComponent ? (
-                            <IconComponent />
-                          ) : (
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                color: category.color,
-                                fontWeight: 600,
-                                fontSize: { xs: '1rem', sm: '1.25rem' }
-                              }}
-                            >
-                              {category.name.charAt(0).toUpperCase()}
-                            </Typography>
-                          );
-                        })()}
-                      </Box>
+                      <IconWithSize
+                        iconName={category.icon}
+                        color={category.color}
+                        size="1.25rem"
+                      />
                     ) : (
                       <Typography
                         variant="h6"
