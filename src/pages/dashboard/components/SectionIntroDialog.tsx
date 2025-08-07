@@ -33,7 +33,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { TransitionProps } from '@mui/material/transitions';
-import { Home, BarChart2, PieChart, CreditCard, Edit3 } from 'react-feather';
+import { getFeatherIcon } from './DashboardNav';
 
 /**
  * Section Information Interface
@@ -107,28 +107,14 @@ const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) =
 };
 
 /**
- * Get the appropriate icon component for a given section name
+ * Get the appropriate icon component for a given section
  * 
- * @param {string} iconName - The name of the icon to retrieve
+ * @param {string} sectionKey - The section key to retrieve icon for
  * @returns {JSX.Element} The icon component
  */
-const getSectionIcon = (iconName: string) => {
-    const iconProps = { size: 24, color: 'currentColor' };
-
-    switch (iconName) {
-        case 'home':
-            return <Home {...iconProps} />;
-        case 'bar-chart-2':
-            return <BarChart2 {...iconProps} />;
-        case 'pie-chart':
-            return <PieChart {...iconProps} />;
-        case 'credit-card':
-            return <CreditCard {...iconProps} />;
-        case 'edit-3':
-            return <Edit3 {...iconProps} />;
-        default:
-            return <Home {...iconProps} />;
-    }
+const getSectionIcon = (sectionKey: string) => {
+    // Use the same function from DashboardNav but with larger icon size
+    return getFeatherIcon(sectionKey, 24);
 };
 
 /**
@@ -273,27 +259,27 @@ const useSectionInfo = (section: string): SectionInfo => {
             dashhome: {
                 title: t('dashboard.dashhome.intro.title'),
                 content: t('dashboard.dashhome.intro.content', { returnObjects: true }) as string[],
-                icon: 'home'
+                icon: 'dashhome'
             },
             annualReport: {
                 title: t('dashboard.annualReport.intro.title'),
                 content: t('dashboard.annualReport.intro.content', { returnObjects: true }) as string[],
-                icon: 'bar_chart_4_bars'
+                icon: 'annualReport'
             },
             transactions: {
                 title: t('dashboard.transactions.intro.title'),
                 content: t('dashboard.transactions.intro.content', { returnObjects: true }) as string[],
-                icon: 'receipt_long'
+                icon: 'transactions'
             },
             accounts: {
                 title: t('dashboard.accounts.intro.title'),
                 content: t('dashboard.accounts.intro.content', { returnObjects: true }) as string[],
-                icon: 'account_balance'
+                icon: 'accounts'
             },
             notes: {
                 title: t('dashboard.notes.intro.title'),
                 content: t('dashboard.notes.intro.content', { returnObjects: true }) as string[],
-                icon: 'note_alt'
+                icon: 'notes'
             }
         };
 

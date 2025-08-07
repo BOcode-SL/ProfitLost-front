@@ -97,8 +97,8 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
  * @param {string} sectionKey - The section key to get icon for
  * @returns {JSX.Element} The appropriate react-feather icon component
  */
-const getFeatherIcon = (sectionKey: string) => {
-  const iconProps = { size: 20, color: "currentColor" };
+export const getFeatherIcon = (sectionKey: string, size = 20) => {
+  const iconProps = { size, color: "currentColor" };
 
   switch (sectionKey) {
     case 'dashhome':
