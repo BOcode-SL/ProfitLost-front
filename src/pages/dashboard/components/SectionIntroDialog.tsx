@@ -27,7 +27,8 @@ import {
     useTheme,
     useMediaQuery,
     Divider,
-    Slide
+    Slide,
+    CircularProgress
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo, forwardRef } from 'react';
@@ -117,16 +118,12 @@ const getSectionIcon = (iconName: string) => {
     switch (iconName) {
         case 'home':
             return <Home {...iconProps} />;
-        case 'bar_chart_4_bars':
         case 'bar-chart-2':
             return <BarChart2 {...iconProps} />;
-        case 'receipt_long':
         case 'pie-chart':
             return <PieChart {...iconProps} />;
-        case 'account_balance':
         case 'credit-card':
             return <CreditCard {...iconProps} />;
-        case 'note_alt':
         case 'edit-3':
             return <Edit3 {...iconProps} />;
         default:
@@ -157,7 +154,15 @@ const IconCircle = ({ icon }: { icon: string }) => {
                 borderRadius: '50%',
                 backgroundColor: theme => theme.palette.primary.main,
                 color: theme => theme.palette.primary.contrastText,
-                overflow: 'hidden'
+                overflow: 'hidden',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                transition: 'all 0.3s ease',
+                border: '2px solid transparent',
+                '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)',
+                    borderColor: theme => theme.palette.primary.light,
+                }
             }}
         >
             <Box
@@ -166,7 +171,19 @@ const IconCircle = ({ icon }: { icon: string }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    lineHeight: 1
+                    lineHeight: 1,
+                    animation: 'pulse 2s infinite',
+                    '@keyframes pulse': {
+                        '0%': {
+                            opacity: 0.8,
+                        },
+                        '50%': {
+                            opacity: 1,
+                        },
+                        '100%': {
+                            opacity: 0.8,
+                        }
+                    }
                 }}
             >
                 {getSectionIcon(icon)}
@@ -206,17 +223,21 @@ const AnimatedListItem = ({ item, index, isVisible }: AnimatedListItemProps) => 
             sx={{
                 py: 1,
                 opacity: 0,
-                transform: 'translateY(10px)',
-                animation: isVisible ? `fadeInUp 0.5s ease forwards ${index * 0.1}s` : 'none',
-                '@keyframes fadeInUp': {
+                transform: 'translateX(-10px)',
+                animation: isVisible ? `fadeIn 0.5s ease forwards ${index * 0.1}s` : 'none',
+                '@keyframes fadeIn': {
                     '0%': {
                         opacity: 0,
-                        transform: 'translateY(10px)'
+                        transform: 'translateX(-10px)'
                     },
                     '100%': {
                         opacity: 1,
-                        transform: 'translateY(0)'
+                        transform: 'translateX(0)'
                     }
+                },
+                borderRadius: 1,
+                '&:hover': {
+                    backgroundColor: 'action.hover',
                 }
             }}
         >
@@ -225,7 +246,9 @@ const AnimatedListItem = ({ item, index, isVisible }: AnimatedListItemProps) => 
                 sx={{
                     '& .MuiListItemText-primary': {
                         fontSize: '1rem',
-                        lineHeight: 1.5
+                        lineHeight: 1.5,
+                        fontWeight: 400,
+                        color: theme => theme.palette.text.primary
                     }
                 }}
             />
@@ -312,6 +335,7 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [isVisible, setIsVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const sectionInfo = useSectionInfo(section);
 
@@ -337,6 +361,7 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
             }, 100);
         } else {
             setIsVisible(false);
+            setLoading(false);
         }
 
         return () => {
@@ -357,18 +382,22 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
                     alignItems: { xs: 'flex-end', sm: 'center' }
                 },
                 '& .MuiPaper-root': {
-                    borderRadius: { xs: 0, sm: 3 },
+                    borderRadius: { xs: 0, sm: 2 },
                     height: { xs: 'calc(100dvh - 56px)', sm: 'auto' },
                     width: { xs: '100%', sm: '100%' },
                     maxHeight: { xs: 'calc(100dvh - 56px)', sm: '80dvh' },
                     m: { xs: 0, sm: 3 },
-                    borderTopLeftRadius: { xs: 16, sm: 3 },
-                    borderTopRightRadius: { xs: 16, sm: 3 },
-                    borderBottomLeftRadius: { xs: 0, sm: 3 },
-                    borderBottomRightRadius: { xs: 0, sm: 3 }
+                    borderTopLeftRadius: { xs: 16, sm: 8 },
+                    borderTopRightRadius: { xs: 16, sm: 8 },
+                    borderBottomLeftRadius: { xs: 0, sm: 8 },
+                    borderBottomRightRadius: { xs: 0, sm: 8 },
+                    backgroundImage: 'none',
+                    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 4px 8px',
+                    border: '1px solid rgba(0, 0, 0, 0.05)'
                 },
                 '& .MuiBackdrop-root': {
-                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' }
+                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' },
+                    backdropFilter: 'blur(5px)'
                 }
             }}
         >
@@ -376,7 +405,22 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
 
             <Divider />
 
-            <DialogContent sx={{ px: { xs: 3, sm: 3 }, py: 2 }}>
+            <DialogContent
+                sx={{
+                    px: { xs: 3, sm: 3 },
+                    py: 2,
+                    '&::-webkit-scrollbar': {
+                        width: '8px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'rgba(128, 128, 128, 0.3)',
+                        borderRadius: '4px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        backgroundColor: 'transparent',
+                    },
+                }}
+            >
                 <List sx={{ pt: 1 }}>
                     {contentArray.map((item: string, index: number) => (
                         <AnimatedListItem
@@ -389,19 +433,49 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
                 </List>
             </DialogContent>
 
-            <DialogActions sx={{ px: 3, py: 2 }}>
+            <DialogActions
+                sx={{
+                    px: 3,
+                    py: 2,
+                    borderTop: '1px solid',
+                    borderColor: 'divider'
+                }}
+            >
                 <Button
-                    onClick={onClose}
+                    onClick={() => {
+                        setLoading(true);
+                        setTimeout(() => {
+                            onClose();
+                        }, 400);
+                    }}
                     color="primary"
+                    variant="contained"
                     size="large"
+                    disabled={loading}
                     sx={{
                         textTransform: 'none',
                         fontWeight: 500,
                         px: 4,
-                        borderRadius: 2
+                        borderRadius: 2,
+                        minWidth: '140px',
+                        boxShadow: theme.shadows[1],
+                        transition: 'all 0.3s ease-in-out',
+                        position: 'relative'
                     }}
                 >
-                    {t('dashboard.common.understood')}
+                    {loading ? (
+                        <CircularProgress
+                            size={24}
+                            sx={{
+                                color: 'primary.light',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px'
+                            }}
+                        />
+                    ) : t('dashboard.common.understood')}
                 </Button>
             </DialogActions>
         </Dialog>

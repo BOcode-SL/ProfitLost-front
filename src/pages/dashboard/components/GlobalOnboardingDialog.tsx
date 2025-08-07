@@ -30,11 +30,13 @@ import {
     MenuItem,
     Slide,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    CircularProgress
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { IconWithSize } from '../../../utils/IconWithSize';
 
 // Contexts
 import { useUser } from '../../../contexts/UserContext';
@@ -54,22 +56,22 @@ import { Language, Currency, DateFormat, TimeFormat, PreferenceContent } from '.
 interface OnboardingProgress {
     /** Current active step in the wizard */
     activeStep: number;
-    
+
     /** User selected preferences */
     preferences: {
         /** User interface language */
         language?: Language;
-        
+
         /** Currency for financial calculations */
         currency?: Currency;
-        
+
         /** Date display format */
         dateFormat?: DateFormat;
-        
+
         /** Time display format */
         timeFormat?: TimeFormat;
     };
-    
+
     /** Array of category IDs selected by the user */
     selectedCategories: string[];
 }
@@ -107,31 +109,41 @@ const languageOptions = [
 ];
 
 /**
+ * Interface for default categories
+ */
+interface DefaultCategory {
+    id: number;
+    name: string;
+    color: string;
+    icon: string;
+}
+
+/**
  * Predefined category templates by language
  * These serve as default categories users can select during onboarding
  */
-const defaultCategories = {
+const defaultCategories: Record<string, DefaultCategory[]> = {
     enUS: [
-        { id: 0, name: 'Supermarket', color: '#FF6F61' },
-        { id: 1, name: 'Transportation', color: '#6A5ACD' },
-        { id: 2, name: 'Entertainment', color: '#FF8C00' },
-        { id: 3, name: 'Shopping', color: '#32CD32' },
-        { id: 4, name: 'House', color: '#20B2AA' },
-        { id: 5, name: 'Healthcare', color: '#FF4500' },
-        { id: 6, name: 'Salary', color: '#3CB371' },
-        { id: 7, name: 'Investments', color: '#1E90FF' }
+        { id: 0, name: 'Supermarket', color: '#FF6F61', icon: 'local-grocery-store' },
+        { id: 1, name: 'Transportation', color: '#6A5ACD', icon: 'directions-car' },
+        { id: 2, name: 'Entertainment', color: '#FF8C00', icon: 'sports' },
+        { id: 3, name: 'Shopping', color: '#32CD32', icon: 'shopping-bag' },
+        { id: 4, name: 'House', color: '#20B2AA', icon: 'home' },
+        { id: 5, name: 'Healthcare', color: '#FF4500', icon: 'medical-services' },
+        { id: 6, name: 'Salary', color: '#3CB371', icon: 'work' },
+        { id: 7, name: 'Investments', color: '#1E90FF', icon: 'business' }
     ],
     esES: [
-        { id: 0, name: 'Supermercado', color: '#FF6F61' },
-        { id: 1, name: 'Transporte', color: '#6A5ACD' },
-        { id: 2, name: 'Entretenimiento', color: '#FF8C00' },
-        { id: 3, name: 'Compras', color: '#32CD32' },
-        { id: 4, name: 'Casa', color: '#20B2AA' },
-        { id: 5, name: 'Salud', color: '#FF4500' },
-        { id: 6, name: 'Salario', color: '#3CB371' },
-        { id: 7, name: 'Inversiones', color: '#1E90FF' }
+        { id: 0, name: 'Supermercado', color: '#FF6F61', icon: 'local-grocery-store' },
+        { id: 1, name: 'Transporte', color: '#6A5ACD', icon: 'directions-car' },
+        { id: 2, name: 'Entretenimiento', color: '#FF8C00', icon: 'sports' },
+        { id: 3, name: 'Compras', color: '#32CD32', icon: 'shopping-bag' },
+        { id: 4, name: 'Casa', color: '#20B2AA', icon: 'home' },
+        { id: 5, name: 'Salud', color: '#FF4500', icon: 'medical-services' },
+        { id: 6, name: 'Salario', color: '#3CB371', icon: 'work' },
+        { id: 7, name: 'Inversiones', color: '#1E90FF', icon: 'business' }
     ]
-} as const;
+};
 
 /**
  * Saves onboarding progress to local storage
@@ -182,7 +194,7 @@ const Transition = forwardRef(function Transition(
 interface GlobalOnboardingDialogProps {
     /** Indicates if the dialog is currently open */
     open: boolean;
-    
+
     /** Callback function to execute when the dialog is closed */
     onClose: () => void;
 }
@@ -212,6 +224,7 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [activeStep, setActiveStep] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     const [preferences, setPreferences] = useState<OnboardingProgress["preferences"]>({
         language: userPreferences?.language || 'enUS',
         currency: userPreferences?.currency || 'USD',
@@ -270,13 +283,13 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 ...prev,
                 [key]: value
             };
-            
+
             // Update i18n language if the language preference changes
             if (key === 'language') {
                 const newLang = value === 'esES' ? 'es' : 'en';
                 i18n.changeLanguage(newLang);
             }
-            
+
             return newPreferences;
         });
     };
@@ -287,6 +300,8 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
      */
     const handleNext = async () => {
         try {
+            setIsLoading(true);
+
             if (activeStep === 0) {
                 // Step 1: Save user preferences to API
                 // Create a complete PreferenceContent object to match Supabase structure
@@ -302,7 +317,7 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                         sections: []
                     }
                 };
-                
+
                 await userService.onboardingPreferences(completePreferences);
                 await loadUserData();
                 setActiveStep((prevStep) => prevStep + 1);
@@ -311,15 +326,17 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 // Validate that at least one category is selected
                 if (selectedCategories.length === 0) {
                     toast.error(t('dashboard.onboarding.errors.selectCategory'));
+                    setIsLoading(false);
                     return;
                 }
 
                 // Map selected categories and create them via API
                 const selectedCats = selectedCategories.map(index => {
-                    const category = defaultCategories[preferences.language as keyof typeof defaultCategories][parseInt(index)];
+                    const category = defaultCategories[preferences.language || 'enUS'][parseInt(index)];
                     return {
                         name: category.name,
-                        color: category.color
+                        color: category.color,
+                        icon: category.icon
                     };
                 });
                 await categoryService.createDefaultCategories(selectedCats);
@@ -329,9 +346,15 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 onClose();
                 setActiveStep((prevStep) => prevStep + 1);
             }
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
+
         } catch (error) {
             console.error('Error in the onboarding process:', error);
             toast.error(t('dashboard.onboarding.errors.title'));
+            setIsLoading(false);
         }
     };
 
@@ -340,7 +363,11 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
      * Returns to the previous step in the wizard
      */
     const handleBack = () => {
-        setActiveStep((prevStep) => prevStep - 1);
+        setIsLoading(true);
+        setTimeout(() => {
+            setActiveStep((prevStep) => prevStep - 1);
+            setIsLoading(false);
+        }, 300);
     };
 
     /**
@@ -433,17 +460,36 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                                     sx={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        p: 1,
-                                        border: 1,
-                                        borderColor: 'divider',
-                                        borderRadius: 1,
+                                        p: 2,
+                                        mb: 1,
+                                        border: '1px solid',
+                                        borderColor: selectedCategories.includes(index.toString())
+                                            ? 'primary.main'
+                                            : 'divider',
+                                        borderRadius: 2,
                                         cursor: 'pointer',
                                         bgcolor: selectedCategories.includes(index.toString())
-                                            ? 'action.selected'
+                                            ? 'rgba(254, 111, 20, 0.04)'
                                             : 'transparent',
+                                        position: 'relative',
+                                        boxShadow: 'none',
+                                        transition: 'all 0.2s ease-in-out',
                                         '&:hover': {
-                                            bgcolor: 'action.hover'
-                                        }
+                                            borderColor: 'primary.main',
+                                            bgcolor: 'rgba(254, 111, 20, 0.03)',
+                                            boxShadow: theme => theme.shadows[1],
+                                        },
+                                        '&::after': selectedCategories.includes(index.toString()) ? {
+                                            content: '""',
+                                            position: 'absolute',
+                                            top: -1,
+                                            right: -1,
+                                            width: 24,
+                                            height: 24,
+                                            borderTopRightRadius: 6,
+                                            bgcolor: 'primary.main',
+                                            clipPath: 'polygon(100% 0, 0 0, 100% 100%)',
+                                        } : {}
                                     }}
                                     onClick={() => {
                                         setSelectedCategories(prev =>
@@ -455,14 +501,42 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                                 >
                                     <Box
                                         sx={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: '50%',
-                                            bgcolor: category.color,
-                                            mr: 2
+                                            width: { xs: 40, sm: 48 },
+                                            height: { xs: 40, sm: 48 },
+                                            borderRadius: 2,
+                                            backgroundColor: `${category.color}20`,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            mr: 2,
+                                            flexShrink: 0
                                         }}
-                                    />
-                                    <Typography sx={{ flex: 1 }}>
+                                    >
+                                        {category.icon ? (
+                                            <IconWithSize
+                                                iconName={category.icon}
+                                                color={category.color}
+                                                size="1.5rem"
+                                            />
+                                        ) : (
+                                            <Typography
+                                                variant="h6"
+                                                sx={{
+                                                    color: category.color,
+                                                    fontWeight: 600,
+                                                    fontSize: { xs: '1.25rem', sm: '1.5rem' }
+                                                }}
+                                            >
+                                                {category.name.charAt(0).toUpperCase()}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                    <Typography
+                                        sx={{
+                                            flex: 1,
+                                            fontWeight: selectedCategories.includes(index.toString()) ? 500 : 400
+                                        }}
+                                    >
                                         {category.name}
                                     </Typography>
                                 </Box>
@@ -488,23 +562,57 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                     alignItems: { xs: 'flex-end', sm: 'center' }
                 },
                 '& .MuiPaper-root': {
-                    borderRadius: { xs: 0, sm: 3 },
+                    borderRadius: { xs: 0, sm: 2 },
                     height: { xs: 'calc(100dvh - 56px)', sm: 'auto' },
                     width: { xs: '100%', sm: '100%' },
                     maxHeight: { xs: 'calc(100dvh - 56px)', sm: '80dvh' },
                     m: { xs: 0, sm: 3 },
-                    borderTopLeftRadius: { xs: 16, sm: 3 },
-                    borderTopRightRadius: { xs: 16, sm: 3 },
-                    borderBottomLeftRadius: { xs: 0, sm: 3 },
-                    borderBottomRightRadius: { xs: 0, sm: 3 }
+                    borderTopLeftRadius: { xs: 16, sm: 8 },
+                    borderTopRightRadius: { xs: 16, sm: 8 },
+                    borderBottomLeftRadius: { xs: 0, sm: 8 },
+                    borderBottomRightRadius: { xs: 0, sm: 8 },
+                    backgroundImage: 'none',
+                    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 4px 8px',
+                    border: '1px solid rgba(0, 0, 0, 0.05)'
                 },
                 '& .MuiBackdrop-root': {
-                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' }
+                    backgroundColor: { xs: 'rgba(0, 0, 0, 0.7)', sm: 'rgba(0, 0, 0, 0.5)' },
+                    backdropFilter: 'blur(5px)'
                 }
             }}
         >
-            <DialogTitle sx={{ pb: 1 }}>
-                <Stepper activeStep={activeStep} alternativeLabel>
+            <DialogTitle
+                sx={{
+                    pb: 1,
+                    borderBottom: '1px solid',
+                    borderColor: 'divider'
+                }}
+            >
+                <Stepper
+                    activeStep={activeStep}
+                    alternativeLabel
+                    sx={{
+                        '& .MuiStepLabel-label': {
+                            fontFamily: '"Rubik", sans-serif',
+                            mt: 0.5,
+                        },
+                        '& .MuiStepLabel-label.Mui-active': {
+                            color: 'primary.main',
+                            fontWeight: 500,
+                        },
+                        '& .MuiStepLabel-iconContainer': {
+                            '& .MuiStepIcon-root': {
+                                color: 'grey.400',
+                                '&.Mui-active': {
+                                    color: 'primary.main',
+                                },
+                                '&.Mui-completed': {
+                                    color: 'primary.light',
+                                },
+                            },
+                        },
+                    }}
+                >
                     {steps.map((label) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
@@ -513,27 +621,95 @@ export default function GlobalOnboardingDialog({ open, onClose }: GlobalOnboardi
                 </Stepper>
             </DialogTitle>
 
-            <DialogContent>
+            <DialogContent
+                sx={{
+                    p: { xs: 3, sm: 3 },
+                    '&::-webkit-scrollbar': {
+                        width: '8px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'rgba(128, 128, 128, 0.3)',
+                        borderRadius: '4px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        backgroundColor: 'transparent',
+                    },
+                }}
+            >
                 {getStepContent(activeStep)}
             </DialogContent>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 3 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    p: 3,
+                    borderTop: '1px solid',
+                    borderColor: 'divider'
+                }}
+            >
                 <Button
                     onClick={handleBack}
-                    disabled={activeStep === 0}
+                    disabled={activeStep === 0 || isLoading}
                     variant="outlined"
-                    sx={{ width: '120px' }}
+                    size="large"
+                    sx={{
+                        width: '140px',
+                        position: 'relative',
+                        boxShadow: theme => theme.shadows[0],
+                        borderRadius: 2,
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': {
+                            transform: 'none',
+                        },
+                    }}
                 >
-                    {t('dashboard.onboarding.buttons.back')}
+                    {isLoading && activeStep !== 0 ? (
+                        <CircularProgress
+                            size={24}
+                            sx={{
+                                color: 'primary.main',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px'
+                            }}
+                        />
+                    ) : t('dashboard.onboarding.buttons.back')}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={handleNext}
-                    sx={{ width: '120px' }}
+                    disabled={isLoading}
+                    size="large"
+                    sx={{
+                        width: '140px',
+                        position: 'relative',
+                        boxShadow: theme => theme.shadows[1],
+                        borderRadius: 2,
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': {
+                            transform: 'none',
+                            boxShadow: theme => theme.shadows[2],
+                        },
+                    }}
                 >
-                    {activeStep === steps.length - 1
+                    {isLoading ? (
+                        <CircularProgress
+                            size={24}
+                            sx={{
+                                color: 'primary.light',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px'
+                            }}
+                        />
+                    ) : (activeStep === steps.length - 1
                         ? t('dashboard.onboarding.buttons.finish')
-                        : t('dashboard.onboarding.buttons.next')}
+                        : t('dashboard.onboarding.buttons.next'))}
                 </Button>
             </Box>
         </Dialog>
