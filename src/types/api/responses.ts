@@ -228,6 +228,7 @@ export interface RegisterCredentials {
 export interface CreateCategoryRequest {
     name: string;
     color: string;
+    icon?: string;
 }
 
 /**
@@ -238,6 +239,7 @@ export interface CreateCategoryRequest {
 export interface UpdateCategoryRequest {
     name?: string;
     color?: string;
+    icon?: string;
 }
 
 /**

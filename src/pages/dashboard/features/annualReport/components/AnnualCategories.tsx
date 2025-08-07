@@ -56,6 +56,9 @@ import {
 } from "../../../../../utils/currencyUtils";
 import { hasActiveSubscription } from "../../../../../utils/subscriptionUtils";
 
+// Material Icons
+import * as MaterialIcons from '@mui/icons-material';
+
 // Types
 import type { Category } from "../../../../../types/supabase/categories";
 import type { Transaction } from "../../../../../types/supabase/transactions";
@@ -173,6 +176,19 @@ export default function AnnualCategories({
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const [categoryFormActions, setCategoryFormActions] = useState<React.ReactNode>(null);
   const [categorySummaryActions, setCategorySummaryActions] = useState<React.ReactNode>(null);
+
+  /**
+   * Get Material Icon component by name
+   */
+  const getMaterialIconComponent = (iconName: string) => {
+    // Convert kebab-case to PascalCase for MUI icons
+    const pascalCaseName = iconName
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
+
+    return (MaterialIcons as Record<string, React.ComponentType>)[pascalCaseName];
+  };
 
   /**
    * Fetch all categories on component mount
@@ -506,7 +522,7 @@ export default function AnnualCategories({
                     },
                   }}
                 >
-                  {/* Category color indicator with letter */}
+                  {/* Category color indicator with icon or letter */}
                   <Box
                     sx={{
                       width: { xs: 40, sm: 48 },
@@ -519,16 +535,38 @@ export default function AnnualCategories({
                       flexShrink: 0,
                     }}
                   >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: category.color,
-                        fontWeight: 600,
-                        fontSize: { xs: '1rem', sm: '1.25rem' }
-                      }}
-                    >
-                      {category.name.charAt(0).toUpperCase()}
-                    </Typography>
+                    {category.icon ? (
+                      <Box sx={{ color: category.color }}>
+                        {(() => {
+                          const IconComponent = getMaterialIconComponent(category.icon);
+                          return IconComponent ? (
+                            <IconComponent />
+                          ) : (
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: category.color,
+                                fontWeight: 600,
+                                fontSize: { xs: '1rem', sm: '1.25rem' }
+                              }}
+                            >
+                              {category.name.charAt(0).toUpperCase()}
+                            </Typography>
+                          );
+                        })()}
+                      </Box>
+                    ) : (
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: category.color,
+                          fontWeight: 600,
+                          fontSize: { xs: '1rem', sm: '1.25rem' }
+                        }}
+                      >
+                        {category.name.charAt(0).toUpperCase()}
+                      </Typography>
+                    )}
                   </Box>
                   {/* Category name */}
                   <ListItemText

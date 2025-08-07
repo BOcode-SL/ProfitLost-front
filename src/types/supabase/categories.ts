@@ -20,6 +20,7 @@ export interface Category extends TrackingFields {
     user_id: UUID;              // Owner of the category
     name: string;               // Category name (decrypted)
     color: string;              // Color for visual identification (hex or name)
+    icon?: string;              // Icon name for the category (Material Icons)
 }
 
 /**
