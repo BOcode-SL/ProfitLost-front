@@ -43,15 +43,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import CloseIcon from '@mui/icons-material/Close';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-
+import { X, Edit, Trash2, Search, Calendar, TrendingUp, TrendingDown, Search as SearchOff } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -309,7 +301,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
             <Button
                 variant="outlined"
                 color="error"
-                startIcon={<DeleteIcon />}
+                startIcon={<Trash2 size={20} color="currentColor" />}
                 onClick={() => setDeleteDialogOpen(true)}
                 fullWidth
             >
@@ -317,7 +309,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
             </Button>
             <Button
                 variant="contained"
-                startIcon={<EditIcon />}
+                startIcon={<Edit size={20} color="currentColor" />}
                 onClick={() => onEdit(category)}
                 fullWidth
             >
@@ -344,7 +336,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                 borderColor: 'divider'
             }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <CloseIcon />
+                    <X size={20} color="currentColor" />
                 </IconButton>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box
@@ -407,8 +399,10 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                         <Card elevation={1} sx={{ borderRadius: 2 }}>
                             <CardContent sx={{ p: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                    <TrendingUpIcon
-                                        sx={{ color: theme.palette.chart.income, mr: 1, fontSize: 20 }}
+                                    <TrendingUp
+                                        size={20}
+                                        color={theme.palette.chart.income}
+                                        style={{ marginRight: 8 }}
                                     />
                                     <Typography variant="body2" color="text.secondary">
                                         {t('dashboard.common.income')}
@@ -432,8 +426,10 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                         <Card elevation={1} sx={{ borderRadius: 2 }}>
                             <CardContent sx={{ p: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                    <TrendingDownIcon
-                                        sx={{ color: theme.palette.chart.expenses, mr: 1, fontSize: 20 }}
+                                    <TrendingDown
+                                        size={20}
+                                        color={theme.palette.chart.expenses}
+                                        style={{ marginRight: 8 }}
                                     />
                                     <Typography variant="body2" color="text.secondary">
                                         {t('dashboard.common.expenses')}
@@ -473,7 +469,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                             onChange={(e) => setSearchQuery(e.target.value)}
                             InputProps={{
                                 startAdornment: (
-                                    <SearchIcon sx={{ fontSize: 20, mr: 1, color: 'text.secondary' }} />
+                                    <Search size={20} color="text.secondary" style={{ marginRight: 8 }} />
                                 ),
                                 sx: { borderRadius: 2 }
                             }}
@@ -499,11 +495,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                                             borderBottom: '1px solid',
                                             borderColor: 'divider'
                                         }}>
-                                            <CalendarMonthIcon sx={{
-                                                fontSize: 20,
-                                                color: 'primary.main',
-                                                mr: 1.5
-                                            }} />
+                                            <Calendar size={20} color="primary.main" style={{ marginRight: 12 }} />
                                             <Typography variant="subtitle2" fontWeight={600}>
                                                 {month}
                                             </Typography>
@@ -578,7 +570,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                                 p: 4,
                                 textAlign: 'center'
                             }}>
-                                <SearchOffIcon sx={{ fontSize: 48, mb: 2, color: 'text.secondary' }} />
+                                <SearchOff size={48} color="text.secondary" style={{ marginBottom: 16 }} />
                                 <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
                                     {t('dashboard.annualReport.categories.form.noSearchResults')}
                                 </Typography>

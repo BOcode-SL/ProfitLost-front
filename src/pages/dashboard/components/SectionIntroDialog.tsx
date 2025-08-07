@@ -32,9 +32,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo, forwardRef } from 'react';
 import { TransitionProps } from '@mui/material/transitions';
-
-// Utils
-import { getIconComponent } from '../../../utils/sectionIconUtils';
+import { Home, BarChart2, PieChart, CreditCard, Edit3 } from 'react-feather';
 
 /**
  * Section Information Interface
@@ -46,10 +44,10 @@ import { getIconComponent } from '../../../utils/sectionIconUtils';
 interface SectionInfo {
     /** Section title displayed in the dialog header */
     title: string;
-    
+
     /** Array of content points to display as a list */
     content: string[];
-    
+
     /** Icon identifier for the section */
     icon: string;
 }
@@ -62,10 +60,10 @@ interface SectionInfo {
 interface SectionIntroDialogProps {
     /** Indicates whether the dialog is visible */
     open: boolean;
-    
+
     /** Callback function to execute when the dialog is closed */
     onClose: () => void;
-    
+
     /** The section for which the introduction is displayed */
     section: string;
 }
@@ -108,6 +106,35 @@ const DialogTitleWithIcon = ({ title, icon }: { title: string; icon: string }) =
 };
 
 /**
+ * Get the appropriate icon component for a given section name
+ * 
+ * @param {string} iconName - The name of the icon to retrieve
+ * @returns {JSX.Element} The icon component
+ */
+const getSectionIcon = (iconName: string) => {
+    const iconProps = { size: 24, color: 'currentColor' };
+
+    switch (iconName) {
+        case 'home':
+            return <Home {...iconProps} />;
+        case 'bar_chart_4_bars':
+        case 'bar-chart-2':
+            return <BarChart2 {...iconProps} />;
+        case 'receipt_long':
+        case 'pie-chart':
+            return <PieChart {...iconProps} />;
+        case 'account_balance':
+        case 'credit-card':
+            return <CreditCard {...iconProps} />;
+        case 'note_alt':
+        case 'edit-3':
+            return <Edit3 {...iconProps} />;
+        default:
+            return <Home {...iconProps} />;
+    }
+};
+
+/**
  * Icon Circle Component
  * 
  * Creates a circular badge with the section icon
@@ -142,7 +169,7 @@ const IconCircle = ({ icon }: { icon: string }) => {
                     lineHeight: 1
                 }}
             >
-                {getIconComponent(icon)}
+                {getSectionIcon(icon)}
             </Box>
         </Box>
     );
@@ -156,10 +183,10 @@ const IconCircle = ({ icon }: { icon: string }) => {
 interface AnimatedListItemProps {
     /** Content text to display */
     item: string;
-    
+
     /** Index used for staggered animation */
     index: number;
-    
+
     /** Whether the animation should be visible */
     isVisible: boolean;
 }
@@ -302,7 +329,7 @@ export default function SectionIntroDialog({ open, onClose, section }: SectionIn
      * Adds a small delay before starting animations for better UX
      */
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout;
+        let timeoutId: number;
 
         if (open) {
             timeoutId = setTimeout(() => {

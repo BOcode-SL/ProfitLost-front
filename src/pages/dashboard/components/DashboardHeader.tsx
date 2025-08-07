@@ -32,23 +32,13 @@ import {
     Tooltip,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
+import { Eye, EyeOff, Sun, Moon, X, User, Shield, HelpCircle, LogOut, ArrowLeft, CreditCard } from 'react-feather';
 
 // Services
 import { authService } from '../../../services/auth.service';
 
 // Types
-import { User } from '../../../types/supabase/users';
+import { User as UserType } from '../../../types/supabase/users';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -71,7 +61,7 @@ const Help = React.lazy(() => import('../features/settings/Help'));
  */
 interface DashboardHeaderProps {
     /** User object or null if not logged in */
-    user: User | null;
+    user: UserType | null;
 }
 
 /**
@@ -120,12 +110,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     // Menu items for settings - add subscription to the primary section
     const menuItems = {
         primary: [
-            { icon: <PersonOutlineOutlinedIcon />, text: t('dashboard.settings.userSettings.title') },
-            { icon: <SecurityOutlinedIcon />, text: t('dashboard.settings.securityPrivacy.title') },
-            { icon: <PaymentOutlinedIcon />, text: t('dashboard.settings.subscription.title') },
+            { icon: <User size={20} color="currentColor" />, text: t('dashboard.settings.userSettings.title') },
+            { icon: <Shield size={20} color="currentColor" />, text: t('dashboard.settings.securityPrivacy.title') },
+            { icon: <CreditCard size={20} color="currentColor" />, text: t('dashboard.settings.subscription.title') },
         ],
         secondary: [
-            { icon: <HelpOutlineOutlinedIcon />, text: t('dashboard.settings.help.title') },
+            { icon: <HelpCircle size={20} color="currentColor" />, text: t('dashboard.settings.help.title') },
         ]
     };
 
@@ -265,7 +255,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
  */
 interface HeaderBarProps {
     /** User object or null if not logged in */
-    user: User | null;
+    user: UserType | null;
 
     /** Whether dark mode is currently active */
     isDarkMode: boolean;
@@ -338,14 +328,14 @@ function HeaderBar({
                             title={t(`dashboard.tooltips.${isDisabledCurrencyAmount ?
                                 'enable_currency_amount' :
                                 'disable_currency_amount'}`)}>
-                            {isDisabledCurrencyAmount ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+                            {isDisabledCurrencyAmount ? <Eye size={20} color="currentColor" /> : <EyeOff size={20} color="currentColor" />}
                         </Tooltip>
                     </IconButton>
 
                     {/* Theme toggle (dark/light mode) */}
                     <IconButton onClick={toggleTheme}>
                         <Tooltip title={t(`dashboard.tooltips.${isDarkMode ? 'light_mode' : 'dark_mode'}`)}>
-                            {isDarkMode ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+                            {isDarkMode ? <Sun size={20} color="currentColor" /> : <Moon size={20} color="currentColor" />}
                         </Tooltip>
                     </IconButton>
                 </Box>
@@ -381,7 +371,7 @@ interface UserDrawerProps {
     open: boolean;
 
     /** User object or null if not logged in */
-    user: User | null;
+    user: UserType | null;
 
     /** Menu items to display in the drawer */
     menuItems: {
@@ -422,7 +412,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
                 {/* Drawer header with close button */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
                     <IconButton onClick={onClose}>
-                        <CloseOutlinedIcon />
+                        <X size={20} color="currentColor" />
                     </IconButton>
                 </Box>
 
@@ -536,7 +526,7 @@ function UserDrawer({ open, user, menuItems, onClose, onSettingsClick, onLogout,
                         variant="outlined"
                         color="primary"
                         onClick={onLogout}
-                        startIcon={<LogoutOutlinedIcon />}
+                        startIcon={<LogOut size={20} color="currentColor" />}
                     >
                         {t('dashboard.common.logout')}
                     </Button>
@@ -590,7 +580,7 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
                 {/* Drawer header with back button and title */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                     <IconButton onClick={onBack} sx={{ mr: 2 }}>
-                        <ArrowBackOutlinedIcon />
+                        <ArrowLeft size={20} color="currentColor" />
                     </IconButton>
                     <Typography variant="h6">{component}</Typography>
                 </Box>

@@ -16,7 +16,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { Box, Paper, CircularProgress, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { NavigateFunction } from "react-router-dom";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { AlertTriangle } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../contexts/UserContext";
@@ -163,12 +163,9 @@ export default function DashboardContent({
               width: { xs: "100%", sm: "auto" },
             }}
           >
-            <WarningAmberIcon
-              color="warning"
-              sx={{
-                fontSize: { xs: "1.3rem", sm: "1.5rem" },
-                flexShrink: 0,
-              }}
+            <AlertTriangle
+              size={24}
+              color="#ed6c02"
             />
             {t("dashboard.common.trialEnded")}
           </Box>

@@ -40,7 +40,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { useTranslation } from "react-i18next";
-import AddIcon from "@mui/icons-material/Add";
+import { Plus } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../../../contexts/UserContext";
@@ -435,7 +435,7 @@ export default function AnnualCategories({
           <Button
             variant="contained"
             onClick={() => setDrawerOpen(true)}
-            startIcon={<AddIcon />}
+            startIcon={<Plus size={20} color="currentColor" />}
             size="small"
             disabled={!hasActiveSubscription(userSubscription)}
           >

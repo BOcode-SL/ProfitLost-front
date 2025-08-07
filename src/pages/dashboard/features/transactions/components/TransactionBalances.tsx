@@ -17,12 +17,13 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Skeleton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import { Download, Upload } from 'react-feather';
 
 // Utils
 import { formatCurrency, isCurrencyHidden, CURRENCY_VISIBILITY_EVENT } from '../../../../../utils/currencyUtils';
+
+// Icons
+import PiggyBank from '../../../../../icons/Piggy-Bank';
 
 // Types
 import type { UserWithPreferences } from '../../../../../contexts/UserContext';
@@ -35,13 +36,13 @@ import type { UserWithPreferences } from '../../../../../contexts/UserContext';
 interface TransactionBalancesProps {
     /** Total income amount for the selected period */
     totalIncome: number;
-    
+
     /** Total expenses amount for the selected period */
     totalExpenses: number;
-    
+
     /** User information with formatting preferences */
     user: UserWithPreferences | null;
-    
+
     /** Indicates if the data is currently loading */
     loading?: boolean;
 }
@@ -102,21 +103,21 @@ export default function TransactionBalances({
                         justifyContent: 'center',
                         gap: 2
                     }}>
-                        <Skeleton 
-                            variant="circular" 
-                            width={32} 
-                            height={32} 
-                            sx={{ 
+                        <Skeleton
+                            variant="circular"
+                            width={32}
+                            height={32}
+                            sx={{
                                 animation: 'pulse 1.5s ease-in-out infinite'
-                            }} 
+                            }}
                         />
-                        <Skeleton 
-                            variant="text" 
-                            width={100} 
-                            height={36} 
-                            sx={{ 
+                        <Skeleton
+                            variant="text"
+                            width={100}
+                            height={36}
+                            sx={{
                                 animation: 'pulse 1.5s ease-in-out infinite'
-                            }} 
+                            }}
                         />
                     </Paper>
                 ))}
@@ -129,23 +130,23 @@ export default function TransactionBalances({
      * Defines icon, value, and color for each financial metric
      */
     const balanceItems = [
-        { 
-            label: 'download', 
-            value: totalIncome, 
-            color: theme.palette.chart.income, 
-            icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'download',
+            value: totalIncome,
+            color: theme.palette.chart.income,
+            icon: <Download size={32} color={theme.palette.chart.income} />
         },
-        { 
-            label: 'upload', 
-            value: totalExpenses, 
-            color: theme.palette.chart.expenses, 
-            icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'upload',
+            value: totalExpenses,
+            color: theme.palette.chart.expenses,
+            icon: <Upload size={32} color={theme.palette.chart.expenses} />
         },
-        { 
-            label: 'savings', 
-            value: totalIncome - totalExpenses, 
-            color: totalIncome - totalExpenses > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, 
-            icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'savings',
+            value: totalIncome - totalExpenses,
+            color: totalIncome - totalExpenses > 0 ? theme.palette.success.main : theme.palette.error.main,
+            icon: <PiggyBank style={{ width: 32, height: 32, fill: totalIncome - totalExpenses > 0 ? theme.palette.success.main : theme.palette.error.main }} />
         }
     ];
 
@@ -169,15 +170,15 @@ export default function TransactionBalances({
                     gap: 2
                 }}>
                     {/* Metric icon with appropriate color */}
-                    <Box sx={{ 
+                    <Box sx={{
                         color: color,
                         display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1
                     }}>{icon}</Box>
-                    
+
                     {/* Metric value with currency formatting and privacy blur */}
-                    <Box sx={{ 
+                    <Box sx={{
                         fontSize: '1.5rem',
                         filter: isHidden ? 'blur(8px)' : 'none',
                         transition: 'filter 0.3s ease',

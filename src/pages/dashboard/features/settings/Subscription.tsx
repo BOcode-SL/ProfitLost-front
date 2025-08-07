@@ -29,8 +29,7 @@ import {
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
+import { CheckCircle, CreditCard } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../../contexts/UserContext";
@@ -292,10 +291,9 @@ const PlanCard = ({
                 py: 0.5,
               }}
             >
-              <CheckCircleOutlineIcon
-                color={color}
-                fontSize="small"
-                sx={{ fontSize: "1.2rem" }}
+              <CheckCircle
+                size={20}
+                color={color === "primary" ? "#1976d2" : "#9c27b0"}
               />
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {t(`dashboard.settings.subscription.features.${feature}`)}
@@ -347,7 +345,7 @@ const ManageSubscriptionButton = ({
     <Button
       variant="contained"
       color="primary"
-      startIcon={!isLoading && <PaymentOutlinedIcon />}
+      startIcon={!isLoading && <CreditCard size={20} />}
       onClick={onClick}
       disabled={isLoading}
       sx={{
@@ -467,7 +465,7 @@ export default function Subscription() {
               };
             }
           );
-          
+
           setPlans(formattedPlans);
         } else {
           toast.error(t("dashboard.common.error.loading"));

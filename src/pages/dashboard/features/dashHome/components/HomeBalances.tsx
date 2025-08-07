@@ -18,9 +18,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import { TrendingUp, TrendingDown, Minus } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -40,10 +38,10 @@ import { fromSupabaseTimestamp } from '../../../../../utils/dateUtils';
 interface HomeBalancesProps {
     /** Type of financial metric to display (income, expenses, or savings) */
     type: 'income' | 'expenses' | 'savings';
-    
+
     /** Array of transactions to analyze for comparison */
     transactions: Transaction[];
-    
+
     /** Indicates if data is currently loading */
     isLoading: boolean;
 }
@@ -105,16 +103,16 @@ const BalanceCard = ({ type, amount, percentage, previousAmount }:
      */
     const getTrendIcon = () => {
         if (percentage === 0) {
-            return <TrendingFlatIcon sx={{ fontSize: '1.2rem' }} />;
+            return <Minus size={20} />;
         }
         if (type === 'Spendings') {
             return isPositiveTrend ?
-                <TrendingDownIcon sx={{ fontSize: '1.2rem' }} /> :
-                <TrendingUpIcon sx={{ fontSize: '1.2rem' }} />;
+                <TrendingDown size={20} /> :
+                <TrendingUp size={20} />;
         }
         return isPositiveTrend ?
-            <TrendingUpIcon sx={{ fontSize: '1.2rem' }} /> :
-            <TrendingDownIcon sx={{ fontSize: '1.2rem' }} />;
+            <TrendingUp size={20} /> :
+            <TrendingDown size={20} />;
     };
 
     return (

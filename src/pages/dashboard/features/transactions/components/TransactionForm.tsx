@@ -43,7 +43,8 @@ import {
 import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import CloseIcon from '@mui/icons-material/Close';
+
+import { X } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -889,7 +890,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <CloseIcon />
+                    <X size={20} color="currentColor" />
                 </IconButton>
                 <Typography variant="h6">
                     {transaction

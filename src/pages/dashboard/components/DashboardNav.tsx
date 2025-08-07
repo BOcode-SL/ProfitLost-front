@@ -16,11 +16,7 @@
 import { useState, useContext } from 'react';
 import { Box, Paper, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Fab } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-
-// Utils
-import { getIconComponent } from '../../../utils/sectionIconUtils';
+import { Plus, MoreHorizontal, Home, BarChart2, PieChart, Edit3, CreditCard } from 'react-feather';
 
 // Contexts
 import { ThemeContext } from '../../../contexts/ThemeContext';
@@ -96,6 +92,31 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => (
 );
 
 /**
+ * Returns the appropriate react-feather icon component based on the section key
+ * 
+ * @param {string} sectionKey - The section key to get icon for
+ * @returns {JSX.Element} The appropriate react-feather icon component
+ */
+const getFeatherIcon = (sectionKey: string) => {
+  const iconProps = { size: 20, color: "currentColor" };
+
+  switch (sectionKey) {
+    case 'dashhome':
+      return <Home {...iconProps} />;
+    case 'annualReport':
+      return <BarChart2 {...iconProps} />;
+    case 'transactions':
+      return <PieChart {...iconProps} />;
+    case 'notes':
+      return <Edit3 {...iconProps} />;
+    case 'accounts':
+      return <CreditCard {...iconProps} />;
+    default:
+      return <Home {...iconProps} />;
+  }
+};
+
+/**
  * Interface for the props of the DesktopNavItem component
  * 
  * @interface DesktopNavItemProps
@@ -146,7 +167,7 @@ const DesktopNavItem = ({
     }}
   >
     <ListItemIcon sx={{ color: 'inherit' }}>
-      {getIconComponent(item.icon)}
+      {getFeatherIcon(item.key)}
     </ListItemIcon>
     <ListItemText primary={item.label} />
   </ListItem>
@@ -222,7 +243,7 @@ const MobileNavItem = ({
         px: 0.5
       }}
     >
-      {getIconComponent(item.icon)}
+      {getFeatherIcon(item.key)}
       {displayLabel()}
     </Box>
   );
@@ -387,7 +408,7 @@ const MobileNav = ({
             },
           }}
         >
-          <AddOutlinedIcon />
+          <Plus size={20} color="currentColor" />
         </Fab>
       )}
 
@@ -427,7 +448,7 @@ const MobileNav = ({
             height: '100%'
           }}
         >
-          <MoreHorizOutlinedIcon sx={{ fontSize: '1.4rem' }} />
+          <MoreHorizontal size={20} color="currentColor" />
           <Box sx={{ fontSize: '0.7rem', textAlign: 'center' }}>{t('dashboard.common.more')}</Box>
         </Box>
       </Paper>
@@ -454,7 +475,7 @@ const MobileNav = ({
               gap: 2
             }}
           >
-            {getIconComponent(item.icon)}
+            {getFeatherIcon(item.key)}
             {item.label}
           </MenuItem>
         ))}

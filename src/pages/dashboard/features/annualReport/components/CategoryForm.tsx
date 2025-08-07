@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import CloseIcon from '@mui/icons-material/Close';
+import { X } from 'react-feather';
 
 // Services
 import { categoryService } from '../../../../../services/category.service';
@@ -159,7 +159,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete, on
             {/* Form header with title and close button */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <CloseIcon />
+                    <X size={20} color="currentColor" />
                 </IconButton>
                 <Typography variant="h6">
                     {category

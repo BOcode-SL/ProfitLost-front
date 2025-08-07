@@ -15,12 +15,13 @@
  */
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Paper, useTheme, Skeleton } from '@mui/material';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import { Download, Upload } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
+
+// Icons
+import PiggyBank from '../../../../../icons/Piggy-Bank';
 
 // Utils
 import { CURRENCY_VISIBILITY_EVENT, formatCurrency, isCurrencyHidden } from '../../../../../utils/currencyUtils';
@@ -36,7 +37,7 @@ import type { Transaction } from '../../../../../types/supabase/transactions';
 interface AnnualBalancesProps {
     /** Array of transactions to calculate balance summaries from */
     transactions: Transaction[];
-    
+
     /** Indicates if data is currently loading */
     isLoading: boolean;
 }
@@ -81,23 +82,23 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
      * Each item represents one card to be displayed in the grid
      */
     const balanceItems = [
-        { 
-            label: 'download', 
-            value: totals.income, 
-            color: theme.palette.chart.income, 
-            icon: <FileDownloadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'download',
+            value: totals.income,
+            color: theme.palette.chart.income,
+            icon: <Download size={32} color={theme.palette.chart.income} />
         },
-        { 
-            label: 'upload', 
-            value: totals.expenses, 
-            color: theme.palette.chart.expenses, 
-            icon: <FileUploadOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'upload',
+            value: totals.expenses,
+            color: theme.palette.chart.expenses,
+            icon: <Upload size={32} color={theme.palette.chart.expenses} />
         },
-        { 
-            label: 'savings', 
-            value: totals.balance, 
-            color: totals.balance > 0 ? theme.palette.chart.income : theme.palette.chart.expenses, 
-            icon: <SavingsOutlinedIcon sx={{ fontSize: '2rem' }} /> 
+        {
+            label: 'savings',
+            value: totals.balance,
+            color: totals.balance > 0 ? theme.palette.success.main : theme.palette.error.main,
+            icon: <PiggyBank style={{ width: 32, height: 32, fill: totals.balance > 0 ? theme.palette.success.main : theme.palette.error.main }} />
         }
     ];
 
@@ -176,7 +177,7 @@ export default function AnnualBalances({ transactions, isLoading }: AnnualBalanc
                     gap: 2
                 }}>
                     {/* Icon with appropriate color for financial metric type */}
-                    <Box sx={{ 
+                    <Box sx={{
                         color: color,
                         display: 'flex',
                         alignItems: 'center',

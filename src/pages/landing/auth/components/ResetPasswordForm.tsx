@@ -1,18 +1,19 @@
 /**
  * Reset Password Form Component
  * 
- * Multi-step form that handles the password recovery process:
- * 1. Email step - Collects user email to send recovery code
- * 2. Token step - Validates the verification code sent to email
- * 3. Password step - Allows setting a new password with confirmation
+ * Provides a multi-step interface for password reset functionality:
+ * - Step 1: Email input for password reset request
+ * - Step 2: Token verification from email
+ * - Step 3: New password and confirmation input
+ * 
+ * Includes field validation, password visibility toggles, and accessibility features.
  * 
  * @module ResetPasswordForm
  */
-import { TextField, Button, InputAdornment, IconButton, Box, Typography } from '@mui/material';
 import { FormEvent } from 'react';
+import { TextField, Button, InputAdornment, IconButton, Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Eye, EyeOff } from 'react-feather';
 
 /**
  * Props interface for the ResetPasswordForm component
@@ -46,7 +47,7 @@ interface ResetPasswordFormProps {
  * @returns {string} The title for the current step
  */
 export const getResetPasswordStepTitle = (
-    step: 'email' | 'token' | 'password', 
+    step: 'email' | 'token' | 'password',
     t: (key: string) => string
 ): string => {
     switch (step) {
@@ -110,7 +111,7 @@ export default function ResetPasswordForm({
                             {t('home.auth.resetPassword.steps.email.description')}
                         </Typography>
                     </Box>
-                    
+
                     {/* Email Input */}
                     <TextField
                         fullWidth
@@ -123,7 +124,7 @@ export default function ResetPasswordForm({
                         placeholder={t('home.auth.resetPassword.steps.email.placeholder')}
                         margin="normal"
                     />
-                    
+
                     {/* Send Recovery Code Button */}
                     <Button
                         fullWidth
@@ -145,7 +146,7 @@ export default function ResetPasswordForm({
                             {t('home.auth.resetPassword.steps.token.description')}
                         </Typography>
                     </Box>
-                    
+
                     {/* Recovery Code Input */}
                     <TextField
                         fullWidth
@@ -168,7 +169,7 @@ export default function ResetPasswordForm({
                         }}
                         helperText={t('home.auth.resetPassword.steps.token.helper')}
                     />
-                    
+
                     {/* Verify Code Button */}
                     <Button
                         fullWidth
@@ -190,7 +191,7 @@ export default function ResetPasswordForm({
                             {t('home.auth.resetPassword.steps.password.description')}
                         </Typography>
                     </Box>
-                    
+
                     {/* New Password Input */}
                     <TextField
                         fullWidth
@@ -207,14 +208,14 @@ export default function ResetPasswordForm({
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <IconButton onClick={() => setShowNewPassword(!showNewPassword)} edge="end">
-                                            {showNewPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                            {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </IconButton>
                                     </InputAdornment>
                                 )
                             }
                         }}
                     />
-                    
+
                     {/* Confirm New Password Input */}
                     <TextField
                         fullWidth
@@ -231,14 +232,14 @@ export default function ResetPasswordForm({
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
-                                            {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </IconButton>
                                     </InputAdornment>
                                 )
                             }
                         }}
                     />
-                    
+
                     {/* Reset Password Button */}
                     <Button
                         fullWidth

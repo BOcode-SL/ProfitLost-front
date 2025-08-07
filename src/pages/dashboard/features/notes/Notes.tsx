@@ -19,7 +19,7 @@ import { Box, Button, Paper, CircularProgress } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import AddIcon from "@mui/icons-material/Add";
+import { Plus } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../../contexts/UserContext";
@@ -282,7 +282,7 @@ export default function Notes() {
             fullWidth
             onClick={handleCreateNote}
             disabled={isSaving || !hasActiveSubscription(userSubscription)}
-            startIcon={<AddIcon />}
+            startIcon={<Plus size={20} />}
           >
             {isSaving ? (
               <CircularProgress size={24} />

@@ -28,10 +28,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import AddIcon from "@mui/icons-material/Add";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import { Plus, ChevronUp, ChevronDown, Move } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../../../contexts/UserContext";
@@ -347,12 +344,10 @@ export default function AccountsTable({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         {/* Drag indicator only shown for active accounts */}
         {!isInactive && (
-          <DragIndicatorIcon
-            sx={{
-              cursor: "grab",
-              fontSize: "20px",
-              opacity: 0.7,
-            }}
+          <Move
+            size={20}
+            color={account.text_color}
+            style={{ opacity: 0.7, cursor: 'grab' }}
           />
         )}
         {/* Account name display */}
@@ -415,7 +410,7 @@ export default function AccountsTable({
             setSelectedAccount(null);
             setIsDrawerOpen(true);
           }}
-          startIcon={<AddIcon />}
+          startIcon={<Plus size={20} color="currentColor" />}
           size="small"
           disabled={!hasActiveSubscription(userSubscription)}
           sx={{
@@ -481,7 +476,7 @@ export default function AccountsTable({
               <Button
                 onClick={() => setShowInactiveAccounts(!showInactiveAccounts)}
                 startIcon={
-                  showInactiveAccounts ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                  showInactiveAccounts ? <ChevronUp size={20} color="currentColor" /> : <ChevronDown size={20} color="currentColor" />
                 }
                 sx={{ mb: 1, color: "text.primary" }}
               >

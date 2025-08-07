@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from 'react';
 import { Container, Typography, Box, TextField, InputAdornment, Chip, Pagination, useTheme, useMediaQuery } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 
 import { CategoryType } from '../../types/blogPost';
@@ -138,8 +138,8 @@ export default function BlogPage() {
     <>
       <LanguageSelector />
       <Header />
-      <Container maxWidth="lg" sx={{ 
-        py: { xs: 3, sm: 5, md: 8 }, 
+      <Container maxWidth="lg" sx={{
+        py: { xs: 3, sm: 5, md: 8 },
         pt: { xs: 14, sm: 16, md: 20 },
         px: { xs: 2, sm: 3, md: 4 }
       }}>
@@ -191,11 +191,11 @@ export default function BlogPage() {
         </Box>
 
         {/* Category filter chips */}
-        <Box sx={{ 
-          mb: { xs: 3, sm: 4 }, 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: { xs: 1, sm: 1.5, md: 2 }, 
+        <Box sx={{
+          mb: { xs: 3, sm: 4 },
+          display: 'flex',
+          justifyContent: 'center',
+          gap: { xs: 1, sm: 1.5, md: 2 },
           flexWrap: 'wrap',
           px: { xs: 1, sm: 0 }
         }}>
@@ -227,16 +227,16 @@ export default function BlogPage() {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <Search size={20} color="currentColor" />
                   </InputAdornment>
                 )
               }
             }}
             onChange={(e) => handleSearch(e.target.value)}
-            sx={{ 
-              maxWidth: { xs: '100%', sm: '500px', md: '600px' }, 
-              mx: 'auto', 
-              display: 'block', 
+            sx={{
+              maxWidth: { xs: '100%', sm: '500px', md: '600px' },
+              mx: 'auto',
+              display: 'block',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '8px',
                 height: { xs: '48px', sm: '56px' },
@@ -255,12 +255,12 @@ export default function BlogPage() {
         </Box>
 
         {/* Blog posts grid layout */}
-        <Box sx={{ 
+        <Box sx={{
           display: 'grid',
-          gridTemplateColumns: { 
+          gridTemplateColumns: {
             xs: '1fr',
             sm: 'repeat(auto-fill, minmax(280px, 1fr))',
-            md: 'repeat(auto-fill, minmax(320px, 1fr))' 
+            md: 'repeat(auto-fill, minmax(320px, 1fr))'
           },
           gap: { xs: 3, sm: 3, md: 4 }
         }}>
@@ -271,9 +271,9 @@ export default function BlogPage() {
               </Box>
             ))
           ) : (
-            <Box sx={{ 
-              gridColumn: '1 / -1', 
-              textAlign: 'center', 
+            <Box sx={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
               py: 8,
               px: 2
             }}>

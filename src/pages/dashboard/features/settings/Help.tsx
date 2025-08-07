@@ -16,7 +16,7 @@
  */
 import { Box, Paper, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ChevronDown } from 'react-feather';
 
 /**
  * Help Component
@@ -58,7 +58,7 @@ export default function Help() {
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                     {/* Getting started section - Basic application introduction */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -88,7 +88,7 @@ export default function Help() {
 
                     {/* Account management section - Creating and managing financial accounts */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -118,7 +118,7 @@ export default function Help() {
 
                     {/* Categories explanation section - Understanding transaction categorization */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -146,7 +146,7 @@ export default function Help() {
 
                     {/* Data protection section - Security and privacy information */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -177,7 +177,7 @@ export default function Help() {
 
                     {/* Reports and analytics section - Working with financial reports */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -205,7 +205,7 @@ export default function Help() {
 
                     {/* Mobile usage guidance - Using the application on mobile devices */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -229,7 +229,7 @@ export default function Help() {
 
                     {/* Support and contact information - How to get additional help */}
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ChevronDown size={20} />}>
                             <Typography
                                 variant="h3"
                                 sx={{

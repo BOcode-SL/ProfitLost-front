@@ -9,8 +9,7 @@
 import { Box, Paper, Typography, alpha, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import { User, Calendar } from 'react-feather';
 
 // Types
 import { BlogPost as BlogPostType } from '../../../types/blogPost';
@@ -206,7 +205,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                             width: isMobile ? '100%' : 'auto'
                         }}
                     >
-                        <PersonOutlineOutlinedIcon sx={{ fontSize: isMobile ? 16 : 20 }} />
+                        <User size={isMobile ? 16 : 20} color="currentColor" />
                         {t(post.author)}
                     </Typography>
                     {/* Publication date */}
@@ -222,7 +221,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                             justifyContent: isMobile ? 'flex-start' : 'flex-end'
                         }}
                     >
-                        <CalendarTodayOutlinedIcon sx={{ fontSize: isMobile ? 16 : 20 }} />
+                        <Calendar size={isMobile ? 16 : 20} color="currentColor" />
                         {formatBlogDate(post.date)}
                     </Typography>
                 </Box>

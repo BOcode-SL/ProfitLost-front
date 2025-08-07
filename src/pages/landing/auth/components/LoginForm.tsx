@@ -1,8 +1,11 @@
 /**
  * Login Form Component
  * 
- * Provides authentication interface with email/username login and Google OAuth.
- * Includes password visibility toggle and forgot password functionality.
+ * Provides the interface for user authentication with fields for:
+ * - Email address
+ * - Password (with visibility toggle)
+ * 
+ * Includes field validation, input formatting, and accessibility features.
  * 
  * @module LoginForm
  */
@@ -10,8 +13,7 @@ import { TextField, Button, InputAdornment, IconButton, Box, Divider, Typography
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Eye, EyeOff } from 'react-feather';
 
 // Types
 import type { LoginCredentials } from '../../../../types/api/responses';
@@ -125,8 +127,11 @@ export default function LoginForm({
                     input: {
                         endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                <IconButton
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    edge="end"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </IconButton>
                             </InputAdornment>
                         )

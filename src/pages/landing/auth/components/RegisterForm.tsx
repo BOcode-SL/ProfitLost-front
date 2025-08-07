@@ -15,8 +15,7 @@
 import { ChangeEvent } from 'react';
 import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Eye, EyeOff } from 'react-feather';
 
 // Types for registration form data and handlers
 import type { RegisterCredentials } from '../../../../types/api/responses';
@@ -71,7 +70,7 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.name.placeholder')}
             />
-            
+
             {/* Surname field */}
             <TextField
                 fullWidth
@@ -84,7 +83,7 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.surname.placeholder')}
             />
-            
+
             {/* Username field with alphanumeric validation */}
             <TextField
                 fullWidth
@@ -109,7 +108,7 @@ export default function RegisterForm({
                     }
                 }}
             />
-            
+
             {/* Email field */}
             <TextField
                 fullWidth
@@ -123,7 +122,7 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.email.placeholder')}
             />
-            
+
             {/* Password field with visibility toggle */}
             <TextField
                 fullWidth
@@ -140,15 +139,18 @@ export default function RegisterForm({
                     input: {
                         endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                <IconButton
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    edge="end"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </IconButton>
                             </InputAdornment>
                         )
                     }
                 }}
             />
-            
+
             {/* Register button */}
             <Button
                 fullWidth

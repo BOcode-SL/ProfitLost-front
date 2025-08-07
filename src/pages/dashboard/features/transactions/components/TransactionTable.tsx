@@ -33,7 +33,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import AddIcon from "@mui/icons-material/Add";
+import { Plus } from "react-feather";
 
 // Contexts
 import { useUser } from "../../../../../contexts/UserContext";
@@ -329,7 +329,7 @@ export default function TransactionTable({
             <Button
               variant="contained"
               onClick={handleCreateClick}
-              startIcon={<AddIcon />}
+              startIcon={<Plus size={20} />}
               size="small"
               disabled={!hasActiveSubscription(userSubscription)}
             >

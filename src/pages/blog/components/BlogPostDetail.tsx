@@ -10,8 +10,7 @@ import { useEffect } from 'react';
 import { Container, Typography, Box, Divider, Paper, Breadcrumbs, Link, Chip, useTheme, useMediaQuery } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import { User, Calendar } from 'react-feather';
 
 // Data and utilities
 import { blogPosts } from '../data/blogData';
@@ -60,7 +59,7 @@ export default function BlogPostDetail() {
     const post = blogPosts.find(post => post.id === Number(id));
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     // Scroll to top when post loads for better user experience
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -92,18 +91,18 @@ export default function BlogPostDetail() {
     return (
         <>
             <LanguageSelector />
-            <Container 
-                maxWidth="md" 
-                sx={{ 
+            <Container
+                maxWidth="md"
+                sx={{
                     py: { xs: 3, sm: 4, md: 5 },
                     pt: { xs: 14, sm: 16, md: 18 },
                     px: { xs: 2, sm: 3, md: 4 }
                 }}
             >
                 {/* Breadcrumb navigation for intuitive site traversal */}
-                <Breadcrumbs 
-                    sx={{ 
-                        mb: { xs: 3, sm: 4 }, 
+                <Breadcrumbs
+                    sx={{
+                        mb: { xs: 3, sm: 4 },
                         mt: { xs: 1, sm: 2 },
                         fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                     }}
@@ -178,17 +177,17 @@ export default function BlogPostDetail() {
                 )}
 
                 {/* Main content paper with post details */}
-                <Paper 
-                    elevation={0} 
-                    sx={{ 
-                        p: { xs: 2, sm: 3, md: 4 }, 
-                        borderRadius: { xs: 2, sm: 3, md: 4 } 
+                <Paper
+                    elevation={0}
+                    sx={{
+                        p: { xs: 2, sm: 3, md: 4 },
+                        borderRadius: { xs: 2, sm: 3, md: 4 }
                     }}
                 >
                     {/* Post title with responsive sizing */}
-                    <Typography 
-                        variant="h3" 
-                        component="h1" 
+                    <Typography
+                        variant="h3"
+                        component="h1"
                         gutterBottom
                         sx={{
                             fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem' },
@@ -219,7 +218,7 @@ export default function BlogPostDetail() {
                                 fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                             }}
                         >
-                            <PersonOutlineOutlinedIcon sx={{ fontSize: isMobile ? 16 : 20 }} />
+                            <User size={isMobile ? 16 : 20} color="currentColor" />
                             {t('blog.by')} {t(post.author)}
                         </Typography>
                         <Typography
@@ -232,7 +231,7 @@ export default function BlogPostDetail() {
                                 fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' }
                             }}
                         >
-                            <CalendarTodayOutlinedIcon sx={{ fontSize: isMobile ? 16 : 20 }} />
+                            <Calendar size={isMobile ? 16 : 20} color="currentColor" />
                             {formatBlogDate(post.date)}
                         </Typography>
                     </Box>

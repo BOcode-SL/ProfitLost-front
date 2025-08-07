@@ -20,9 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Box, Paper, Button, TextField, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Eye, EyeOff, Trash2 } from 'react-feather';
 
 // Services
 import { userService } from '../../../../services/user.service';
@@ -66,17 +64,17 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
         new: false,
         confirm: false
     });
-    
+
     /** Manages password change form input values */
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
     });
-    
+
     /** Controls visibility of account deletion confirmation UI */
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-    
+
     /** Tracks user-entered confirmation text for account deletion */
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
@@ -233,7 +231,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     }
                                                     edge="end"
                                                 >
-                                                    {showPassword.current ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                    {showPassword.current ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -257,7 +255,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
                                                     edge="end"
                                                 >
-                                                    {showPassword.new ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                    {showPassword.new ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -283,7 +281,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                                                     }
                                                     edge="end"
                                                 >
-                                                    {showPassword.confirm ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                    {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
                                                 </IconButton>
                                             </InputAdornment>
                                         )
@@ -330,7 +328,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
                             variant="outlined"
                             color="error"
                             onClick={() => setShowDeleteConfirmation(true)}
-                            startIcon={<DeleteForeverIcon />}
+                            startIcon={<Trash2 size={20} />}
                             sx={{
                                 borderColor: 'red',
                                 color: 'red',

@@ -36,8 +36,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import CloseIcon from '@mui/icons-material/Close';
-import AddIcon from '@mui/icons-material/Add';
+import { X, Plus } from 'react-feather';
 import { accountService } from '../../../../../services/account.service';
 
 // Types
@@ -682,7 +681,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
             {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
-                    <CloseIcon />
+                    <X size={20} color="currentColor" />
                 </IconButton>
                 <Typography variant="h6">
                     {account ? t('dashboard.accounts.editAccount') : t('dashboard.accounts.newAccount')}
@@ -755,7 +754,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
                                             })()
                                         )}
                                         <MenuItem value="add">
-                                            <AddIcon sx={{ mr: 1 }} />
+                                            <Plus size={16} color="currentColor" style={{ marginRight: 8 }} />
                                             {t('dashboard.accounts.form.addYear')}
                                         </MenuItem>
                                     </Select>
@@ -781,7 +780,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
                                         onClick={handleAddYear}
                                         sx={{ minWidth: 'auto', px: 2 }}
                                     >
-                                        <AddIcon />
+                                        <Plus size={16} color="currentColor" />
                                     </Button>
                                     <Button
                                         variant="outlined"
@@ -792,7 +791,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
                                         }}
                                         sx={{ minWidth: 'auto', px: 2 }}
                                     >
-                                        <CloseIcon />
+                                        <X size={16} color="currentColor" />
                                     </Button>
                                 </Box>
                             )}

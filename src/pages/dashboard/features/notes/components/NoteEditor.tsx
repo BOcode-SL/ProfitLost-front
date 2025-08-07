@@ -31,8 +31,7 @@ import {
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import { Trash2, Save } from 'react-feather';
 
 // Types
 import type { Note } from '../../../../../types/supabase/notes';
@@ -45,16 +44,16 @@ import type { Note } from '../../../../../types/supabase/notes';
 interface NoteEditorProps {
     /** The note object to edit, or null if no note is selected */
     note: Note | null;
-    
+
     /** Callback function triggered when note content or title changes */
     onChange?: (key: keyof Note, value: string) => void;
-    
+
     /** Callback function triggered when save button is clicked */
     onSave?: () => void;
-    
+
     /** Callback function triggered when delete is confirmed */
     onDelete?: () => void;
-    
+
     /** Indicates if a save or delete operation is in progress */
     isSaving?: boolean;
 }
@@ -227,7 +226,7 @@ export default function NoteEditor({
                     <Button
                         variant="outlined"
                         color="primary"
-                        startIcon={<DeleteOutlineIcon />}
+                        startIcon={<Trash2 size={20} />}
                         onClick={handleDeleteClick}
                         disabled={isSaving}
                         size="small"
@@ -244,7 +243,7 @@ export default function NoteEditor({
                         startIcon={
                             isSaving ?
                                 <CircularProgress size={20} color="inherit" /> :
-                                <SaveOutlinedIcon />
+                                <Save size={20} />
                         }
                         onClick={onSave}
                         disabled={isSaving}

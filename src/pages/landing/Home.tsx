@@ -12,15 +12,7 @@ import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
-import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
-import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+import { ChevronLeft, ChevronRight, CheckCircle, TrendingUp, BarChart2, PieChart, Edit3, CreditCard, Pocket } from 'react-feather';
 
 // UI Components
 import Footer from './components/Footer';
@@ -346,7 +338,7 @@ export default function Home() {
                                         }
                                     }}
                                 >
-                                    <ArrowBackIosIcon />
+                                    <ChevronLeft size={24} />
                                 </IconButton>
 
                                 {/* Step indicator dots for mobile */}
@@ -374,7 +366,7 @@ export default function Home() {
                                         }
                                     }}
                                 >
-                                    <ArrowForwardIosIcon />
+                                    <ChevronRight size={24} />
                                 </IconButton>
                             </Box>
                         </Box>
@@ -432,54 +424,49 @@ export default function Home() {
                 <div className="features-container bento-grid">
                     {/* Annual Report Feature Card */}
                     <article className="feature-card highlight">
-                        <AssessmentOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
+                        <BarChart2 size={40} color="#fff" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.annualReport.title')}</h4>
                         <p>{t('home.features.cards.annualReport.description')}</p>
                     </article>
 
                     {/* Transactions Feature Card */}
                     <article className="feature-card">
-                        <ReceiptLongOutlinedIcon className="no-select" sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <PieChart size={40} color="#fe6f14" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.transactions.title')}</h4>
                         <p>{t('home.features.cards.transactions.description')}</p>
                     </article>
 
                     {/* Goals Feature Card */}
                     <article className="feature-card">
-                        <TaskAltOutlinedIcon className="no-select"
-                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <CheckCircle size={40} color="#fe6f14" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.goals.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.goals.description')}</p>
                     </article>
 
                     {/* Notes Feature Card */}
                     <article className="feature-card">
-                        <NoteAltOutlinedIcon className="no-select"
-                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <Edit3 size={40} color="#fe6f14" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.notes.title')}</h4>
                         <p>{t('home.features.cards.notes.description')}</p>
                     </article>
 
                     {/* Bank Integration Feature Card */}
                     <article className="feature-card highlight">
-                        <AccountBalanceWalletOutlinedIcon className="no-select"
-                            sx={{ fontSize: '2.5rem', color: 'inherit', mb: 2 }} />
+                        <Pocket size={40} color="#fff" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.bankIntegration.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.bankIntegration.description')}</p>
                     </article>
 
                     {/* Investments Feature Card */}
                     <article className="feature-card">
-                        <TrendingUpOutlinedIcon className="no-select"
-                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <TrendingUp size={40} color="#fe6f14" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.investments.title')}<span className="soon-badge">Soon</span></h4>
                         <p>{t('home.features.cards.investments.description')}</p>
                     </article>
 
                     {/* Accounts Feature Card */}
                     <article className="feature-card">
-                        <AccountBalanceOutlinedIcon className="no-select"
-                            sx={{ fontSize: '2.5rem', color: '#fe6f14', mb: 2 }} />
+                        <CreditCard size={40} color="#fe6f14" style={{ marginBottom: '1rem' }} />
                         <h4>{t('home.features.cards.accounts.title')}</h4>
                         <p>{t('home.features.cards.accounts.description')}</p>
                     </article>
@@ -577,11 +564,11 @@ export default function Home() {
                                 >
                                     {t('home.pricing.monthly.title', 'Monthly Plan')}
                                 </Typography>
-                                <Box sx={{ 
-                                    display: 'flex', 
-                                    alignItems: 'baseline', 
-                                    justifyContent: 'center', 
-                                    mb: 3 
+                                <Box sx={{
+                                    display: 'flex',
+                                    alignItems: 'baseline',
+                                    justifyContent: 'center',
+                                    mb: 3
                                 }}>
                                     <Typography
                                         sx={{
@@ -662,11 +649,11 @@ export default function Home() {
                                 >
                                     {t('home.pricing.annual.title', 'Annual Plan')}
                                 </Typography>
-                                <Box sx={{ 
-                                    display: 'flex', 
-                                    alignItems: 'baseline', 
-                                    justifyContent: 'center', 
-                                    mb: 3 
+                                <Box sx={{
+                                    display: 'flex',
+                                    alignItems: 'baseline',
+                                    justifyContent: 'center',
+                                    mb: 3
                                 }}>
                                     <Typography
                                         sx={{
@@ -687,10 +674,10 @@ export default function Home() {
                                         / {t('home.pricing.annual.period', 'year')}
                                     </Typography>
                                 </Box>
-                                <Box sx={{ 
-                                    bgcolor: 'rgba(255,255,255,0.2)', 
+                                <Box sx={{
+                                    bgcolor: 'rgba(255,255,255,0.2)',
                                     borderRadius: '8px',
-                                    p: 1, 
+                                    p: 1,
                                     mb: 3,
                                     fontWeight: 600,
                                     textAlign: 'center',
