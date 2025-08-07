@@ -15,7 +15,7 @@
  * 
  * @module UserSettings
  */
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import {
     Box,
     TextField,
@@ -92,9 +92,6 @@ const languageOptions = [
 interface UserSettingsProps {
     /** Optional callback function triggered after successful profile update */
     onSuccess?: () => void;
-
-    /** Optional callback to get action buttons for external use */
-    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -106,7 +103,7 @@ interface UserSettingsProps {
  * @param {UserSettingsProps} props - Component properties
  * @returns {JSX.Element} The rendered user settings interface
  */
-export default function UserSettings({ onSuccess, onGetActions }: UserSettingsProps) {
+export default function UserSettings({ onSuccess }: UserSettingsProps) {
     const { t } = useTranslation();
     const { user, loadUserData } = useUser();
 
@@ -270,20 +267,20 @@ export default function UserSettings({ onSuccess, onGetActions }: UserSettingsPr
         </Button>
     ), [handleSubmit, loading, t]);
 
-    /**
-     * Notify parent component of action buttons when they change
-     */
-    useEffect(() => {
-        onGetActions?.(actionButtons);
-    }, [actionButtons, onGetActions]);
+    // Removed notification of action buttons
 
     return (
         <Box sx={{
             width: '100%',
             maxWidth: '600px',
-            margin: '0 auto'
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%'
         }}>
             <Box sx={{
+                flex: 1,
+                overflow: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 3
@@ -473,7 +470,9 @@ export default function UserSettings({ onSuccess, onGetActions }: UserSettingsPr
                         </FormControl>
                     </Box>
                 </Paper>
+                {actionButtons}
             </Box>
+
         </Box>
     );
 }

@@ -77,9 +77,6 @@ interface AccountsFormProps {
 
     /** Account data for editing mode (undefined/null for creation mode) */
     account?: AccountWithYearRecords | null;
-
-    /** Optional callback to get action buttons for external use */
-    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /** Array of month abbreviations used for data mapping and display */
@@ -94,7 +91,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
  * @param {AccountsFormProps} props - Component properties
  * @returns {JSX.Element} Rendered account form component
  */
-export default function AccountsForm({ onClose, onSuccess, onDelete, account, onGetActions }: AccountsFormProps) {
+export default function AccountsForm({ onClose, onSuccess, onDelete, account }: AccountsFormProps) {
     const { t } = useTranslation();
 
     // Form state for account properties
@@ -669,15 +666,9 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
         </Box>
     ), [account, savingChanges, t, handleSubmit]);
 
-    /**
-     * Notify parent component of action buttons when they change
-     */
-    useEffect(() => {
-        onGetActions?.(actionButtons);
-    }, [actionButtons, onGetActions]);
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
             {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
@@ -689,7 +680,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
             </Box>
 
             {/* Account form */}
-            <Box component="form">
+            <Box component="form" sx={{ flex: 1, overflow: 'auto' }}>
                 {/* Account name input field */}
                 <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
                     <TextField
@@ -887,6 +878,11 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account, on
                             : t('dashboard.accounts.pendingYears', { count: pendingYears.length })}
                     </Typography>
                 )}
+            </Box>
+
+            {/* Action buttons at the bottom */}
+            <Box sx={{ mt: 2 }}>
+                {actionButtons}
             </Box>
 
             {/* Confirmation dialog for account deletion */}

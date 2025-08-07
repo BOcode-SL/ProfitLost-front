@@ -55,9 +55,6 @@ interface CategoryFormProps {
 
     /** Optional callback function for deletion */
     onDelete?: () => void;
-
-    /** Optional callback to get action buttons for external use */
-    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -69,7 +66,7 @@ interface CategoryFormProps {
  * @param {CategoryFormProps} props - Component properties
  * @returns {JSX.Element} Rendered form component
  */
-export default function CategoryForm({ category, onSubmit, onClose, onDelete, onGetActions }: CategoryFormProps) {
+export default function CategoryForm({ category, onSubmit, onClose, onDelete }: CategoryFormProps) {
     const { t } = useTranslation();
 
     // Form state
@@ -173,12 +170,6 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete, on
         </Box>
     ), [category, onDelete, saving, t, handleSubmit]);
 
-    /**
-     * Notify parent component of action buttons when they change
-     */
-    useEffect(() => {
-        onGetActions?.(actionButtons);
-    }, [actionButtons, onGetActions]);
 
     /**
      * Get Material Icon component by name
@@ -194,7 +185,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete, on
     };
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
             {/* Form header with title and close button */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
@@ -208,10 +199,13 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete, on
             </Box>
 
             {/* Category form */}
-            <Box component="form" onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-            }}>
+            <Box
+                component="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit();
+                }}
+                sx={{ flex: 1, overflow: 'auto' }}>
                 {/* Category name section */}
                 <Card sx={{ mb: 2, borderRadius: 3 }}>
                     <CardContent>
@@ -310,6 +304,13 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete, on
                         </Box>
                     </CardContent>
                 </Card>
+            </Box>
+
+            {/* Action buttons at the bottom */}
+            <Box sx={{
+                mt: 2,
+            }}>
+                {actionButtons}
             </Box>
         </Box>
     );

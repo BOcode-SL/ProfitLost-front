@@ -172,10 +172,6 @@ export default function AnnualCategories({
   });
   const [isHidden, setIsHidden] = useState(isCurrencyHidden());
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
-  const [categoryFormActions, setCategoryFormActions] = useState<React.ReactNode>(null);
-  const [categorySummaryActions, setCategorySummaryActions] = useState<React.ReactNode>(null);
-
-
 
   /**
    * Fetch all categories on component mount
@@ -581,13 +577,10 @@ export default function AnnualCategories({
         <DrawerBase
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          layout="withActions"
-          actions={categoryFormActions}
         >
           <CategoryForm
             onSubmit={handleCreateCategory}
             onClose={() => setDrawerOpen(false)}
-            onGetActions={setCategoryFormActions}
           />
         </DrawerBase>
 
@@ -595,8 +588,6 @@ export default function AnnualCategories({
         <DrawerBase
           open={summaryCategory.isOpen}
           onClose={handleCloseSummary}
-          layout="withActions"
-          actions={categorySummaryActions}
         >
           {summaryCategory.category && (
             <CategorySummary
@@ -604,7 +595,6 @@ export default function AnnualCategories({
               onSubmit={handleUpdateCategory}
               onClose={handleCloseSummary}
               onEdit={handleEditFromSummary}
-              onGetActions={setCategorySummaryActions}
             />
           )}
         </DrawerBase>
@@ -620,8 +610,6 @@ export default function AnnualCategories({
               color: "",
             })
           }
-          layout="withActions"
-          actions={categoryFormActions}
         >
           <CategoryForm
             category={editCategory.category || undefined}
@@ -642,7 +630,6 @@ export default function AnnualCategories({
                 });
               }
             }}
-            onGetActions={setCategoryFormActions}
           />
         </DrawerBase>
 

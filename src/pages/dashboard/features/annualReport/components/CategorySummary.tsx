@@ -82,9 +82,6 @@ interface CategorySummaryProps {
 
     /** Callback to open edit form */
     onEdit: (category: Category) => void;
-
-    /** Optional callback to get action buttons for external use */
-    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -113,7 +110,7 @@ const MONTH_ORDER = [
  * Displays a comprehensive summary of a category including transaction history,
  * financial statistics, and management options.
  */
-export default function CategorySummary({ category, onSubmit, onClose, onEdit, onGetActions }: CategorySummaryProps) {
+export default function CategorySummary({ category, onSubmit, onClose, onEdit }: CategorySummaryProps) {
     const { t } = useTranslation();
     const { user } = useUser();
     const theme = useTheme();
@@ -318,23 +315,11 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
         </Box>
     ), [t, onEdit, category]);
 
-    /**
-     * Notify parent component of action buttons when they change
-     */
-    useEffect(() => {
-        onGetActions?.(actionButtons);
-    }, [actionButtons, onGetActions]);
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            {/* Header */}
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                p: 3,
-                borderBottom: 1,
-                borderColor: 'divider'
-            }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {/* Header with title and close button */}
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
                     <X size={20} color="currentColor" />
                 </IconButton>
@@ -369,7 +354,7 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
             </Box>
 
             {/* Content */}
-            <Box sx={{ flex: 1, overflow: 'auto', p: 3 }}>
+            <Box sx={{ flex: 1, overflow: 'auto' }}>
                 {/* Year Selector */}
                 <Paper elevation={1} sx={{ p: 1, mb: 3, borderRadius: 3 }}>
                     <FormControl size="small" fullWidth>
@@ -588,7 +573,12 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit, o
                     </Box>
                 </Paper>
             </Box>
-
+            {/* Action buttons at the bottom */}
+            <Box sx={{
+                mt: 2
+            }}>
+                {actionButtons}
+            </Box>
 
 
             {/* Delete Confirmation Dialog */}

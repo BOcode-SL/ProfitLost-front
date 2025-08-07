@@ -164,17 +164,7 @@ export default function Dashboard() {
     }
   };
 
-  /**
-   * State to store transaction form actions
-   */
-  const [transactionFormActions, setTransactionFormActions] = useState<React.ReactNode>(null);
 
-  /**
-   * Handles getting actions from the transaction form
-   */
-  const handleGetTransactionActions = (actions: React.ReactNode) => {
-    setTransactionFormActions(actions);
-  };
 
   // Display loading screen while authentication state is being verified
   if (isLoading) {
@@ -215,13 +205,10 @@ export default function Dashboard() {
       <DrawerBase
         open={transactionDrawerOpen}
         onClose={handleTransactionDrawerClose}
-        layout="withActions"
-        actions={transactionFormActions}
       >
         <TransactionForm
           onClose={handleTransactionDrawerClose}
           onSubmit={handleTransactionSubmit}
-          onGetActions={handleGetTransactionActions}
         />
       </DrawerBase>
     </>

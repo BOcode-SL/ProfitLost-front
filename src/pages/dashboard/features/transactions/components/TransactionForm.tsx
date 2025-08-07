@@ -128,9 +128,6 @@ interface TransactionFormProps {
 
     /** Optional pre-loaded categories to improve performance */
     categories?: Category[];
-
-    /** Optional callback to get action buttons for external use */
-    onGetActions?: (actions: React.ReactNode) => void;
 }
 
 /**
@@ -194,7 +191,7 @@ const calculateRecurringDates = (startDate: string, endDate: string, recurrenceT
  * @param {TransactionFormProps} props - Component properties
  * @returns {JSX.Element} Rendered transaction form component
  */
-export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories, onGetActions }: TransactionFormProps) {
+export default function TransactionForm({ transaction, onSubmit, onClose, categories: propCategories }: TransactionFormProps) {
     const { t } = useTranslation();
     const { user } = useUser();
 
@@ -534,39 +531,23 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     </Button>
                 </>
             ) : (
-                // Create mode buttons (cancel and create)
-                <>
-                    <Button
-                        onClick={onClose}
-                        variant="outlined"
-                        disabled={isSubmitting}
-                        fullWidth
-                    >
-                        {t('dashboard.common.cancel')}
-                    </Button>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="contained"
-                        disabled={isSubmitting}
-                        fullWidth
-                    >
-                        {isSubmitting ? (
-                            <CircularProgress size={24} color="inherit" />
-                        ) : (
-                            t('dashboard.common.create')
-                        )}
-                    </Button>
-                </>
+                // Create mode - only create button
+                <Button
+                    onClick={handleSubmit}
+                    variant="contained"
+                    disabled={isSubmitting}
+                    fullWidth
+                >
+                    {isSubmitting ? (
+                        <CircularProgress size={24} color="inherit" />
+                    ) : (
+                        t('dashboard.common.create')
+                    )}
+                </Button>
             )}
         </Box>
-    ), [transaction, isDeleting, isSubmitting, t, handleSubmit, onClose]);
+    ), [transaction, isDeleting, isSubmitting, t, handleSubmit]);
 
-    /**
-     * Notify parent component of action buttons when they change
-     */
-    useEffect(() => {
-        onGetActions?.(actionButtons);
-    }, [actionButtons, onGetActions]);
 
     /**
      * Delete confirmation dialog component
@@ -886,7 +867,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
 
     // Main form component structure
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
             {/* Header with close button and title */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <IconButton onClick={onClose} sx={{ mr: 2 }}>
@@ -900,7 +881,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
             </Box>
 
             {/* Transaction form */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ flex: 1, overflow: 'auto' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
                     {/* Date and time input field */}
@@ -1075,6 +1056,13 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     <RecurrenceSwitch isEditing={!!transaction} />
                 </Box>
             </form>
+
+            {/* Action buttons at the bottom */}
+            <Box sx={{
+                mt: 2
+            }}>
+                {actionButtons}
+            </Box>
 
             {/* Dialogs for delete confirmation and recurrence editing */}
             <DeleteDialog />

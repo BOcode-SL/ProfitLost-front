@@ -567,14 +567,11 @@ interface SettingsDrawerProps {
  * @returns {JSX.Element} The rendered SettingsDrawer component
  */
 function SettingsDrawer({ open, component, onClose, onBack, children }: SettingsDrawerProps) {
-    const [actionButtons, setActionButtons] = useState<React.ReactNode>(null);
 
     return (
         <DrawerBase
             open={open}
             onClose={onClose}
-            layout="withActions"
-            actions={actionButtons}
         >
             <Box sx={{ p: 3 }}>
                 {/* Drawer header with back button and title */}
@@ -595,13 +592,7 @@ function SettingsDrawer({ open, component, onClose, onBack, children }: Settings
                         <CircularProgress />
                     </Box>
                 }>
-                    {children && React.isValidElement(children) ? (
-                        React.cloneElement(children as React.ReactElement<{ onGetActions?: (actions: React.ReactNode) => void }>, {
-                            onGetActions: setActionButtons
-                        })
-                    ) : (
-                        children
-                    )}
+                    {children}
                 </Suspense>
             </Box>
         </DrawerBase>
