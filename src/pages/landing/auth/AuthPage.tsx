@@ -543,9 +543,6 @@ export default function AuthPage() {
                                                 cursor: 'pointer',
                                                 textDecoration: 'none',
                                                 fontWeight: 500,
-                                                '&:hover': {
-                                                    textDecoration: 'underline'
-                                                }
                                             }}
                                             onClick={() => setShowResetPassword(false)}
                                         >
