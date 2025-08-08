@@ -69,16 +69,40 @@ export default function LanguageSelector() {
                 <IconButton
                     onClick={toggleLanguage}
                     sx={{
-                        p: 2,
-                        borderRadius: 4,
-                        bgcolor: 'white',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        transition: 'all 0.3s ease',
+                        p: 2.5,
+                        borderRadius: '16px',
+                        background: '#FFFFFF',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'linear-gradient(135deg, rgba(254, 111, 20, 0.05) 0%, rgba(200, 79, 3, 0.05) 100%)',
+                            borderRadius: '16px',
+                            opacity: 0,
+                            transition: 'opacity 0.3s ease',
+                            zIndex: -1
+                        },
                         '&:hover': {
-                            bgcolor: 'primary.main',
-                            color: 'white',
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 6px 16px rgba(0,0,0,0.2)'
+                            transform: 'scale(1.05)',
+                            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.18)',
+                            border: '1px solid rgba(254, 111, 20, 0.3)',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            '&::before': {
+                                opacity: 1
+                            }
+                        },
+                        '&:active': {
+                            transform: 'scale(0.98)',
+                            transition: 'transform 0.1s ease'
                         }
                     }}
                 >
@@ -87,10 +111,15 @@ export default function LanguageSelector() {
                         src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
                         alt={t(`home.header.language.${currentLanguage}`)}
                         sx={{
-                            width: 24,
+                            width: 28,
                             height: 'auto',
                             borderRadius: '4px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                                filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15))'
+                            }
                         }}
                     />
                 </IconButton>

@@ -17,7 +17,6 @@ import { ChevronLeft, ChevronRight, CheckCircle, TrendingUp, BarChart2, PieChart
 // UI Components
 import Footer from './components/Footer';
 import Header from './components/Header';
-import LanguageSelector from './components/LanguageSelector';
 import ScrollToTop from './components/ScrollToTop';
 
 // Styles
@@ -57,7 +56,6 @@ export default function Home() {
     return (
         <Box className="home-container">
             <ScrollToTop />
-            <LanguageSelector />
             <Header />
 
             {/* Hero Section - Main promotional area */}

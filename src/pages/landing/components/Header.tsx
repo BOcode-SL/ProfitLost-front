@@ -2,13 +2,13 @@
  * Header Component
  * 
  * Fixed navigation header that appears across the landing pages.
- * Includes brand logo, navigation links, and login button.
+ * Includes brand logo, navigation links, login button, and language selector.
  * Features a scroll-based styling that changes opacity and blur when scrolling.
  * 
  * @module Header
  */
 import { useState, useEffect } from 'react';
-import { Box, Button, Container, Toolbar } from '@mui/material';
+import { Box, Button, Container, Toolbar, IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -16,15 +16,21 @@ import { useTranslation } from 'react-i18next';
  * Landing page header component
  * 
  * Provides navigation across the website with responsive design.
- * Includes branding, navigation links, and authentication button.
+ * Includes branding, navigation links, authentication button, and language selector.
  * Changes appearance based on scroll position for better UX.
  * 
  * @returns {JSX.Element} The rendered header component
  */
 export default function Header() {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
+
+    // Language selector state
+    const [currentLanguage, setCurrentLanguage] = useState(() => {
+        const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
+        return i18nextLng.startsWith('es') ? 'es' : 'en';
+    });
 
     /**
      * Sets up scroll event listener for header appearance changes
@@ -38,6 +44,27 @@ export default function Header() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Listen for language changes in the browser
+    useEffect(() => {
+        const handleLanguageChange = () => {
+            const i18nextLng = localStorage.getItem('i18nextLng') || 'en';
+            setCurrentLanguage(i18nextLng.startsWith('es') ? 'es' : 'en');
+        };
+
+        window.addEventListener('languagechange', handleLanguageChange);
+        return () => window.removeEventListener('languagechange', handleLanguageChange);
+    }, []);
+
+    /**
+     * Toggles between English and Spanish languages
+     * Updates both the local state and i18n context language
+     */
+    const toggleLanguage = () => {
+        const newLang = currentLanguage === 'en' ? 'es' : 'en';
+        setCurrentLanguage(newLang);
+        i18n.changeLanguage(newLang);
+    };
 
     return (
         <Box
@@ -95,8 +122,36 @@ export default function Header() {
                         onClick={() => navigate('/')}
                     />
 
-                    {/* Navigation links and login button */}
+                    {/* Navigation links, language selector and login button */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {/* Language Selector */}
+                        <Tooltip title={t(`home.header.language.${currentLanguage === 'en' ? 'es' : 'en'}`)}>
+                            <IconButton
+                                onClick={toggleLanguage}
+                                sx={{
+                                    p: 1.5,
+                                    borderRadius: '8px',
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'scale(1.05)'
+                                    }
+                                }}
+                            >
+                                <Box
+                                    component="img"
+                                    src={`https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/${currentLanguage === 'en' ? 'us' : 'es'}.svg`}
+                                    alt={t(`home.header.language.${currentLanguage}`)}
+                                    sx={{
+                                        width: 20,
+                                        height: 'auto',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                            </IconButton>
+                        </Tooltip>
+
+                        {/* Login Button */}
                         <Button
                             variant="contained"
                             size="small"

@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 // Components
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import LanguageSelector from '../../components/LanguageSelector';
 import ScrollToTop from '../../components/ScrollToTop';
 
 /**
@@ -49,7 +48,6 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
     return (
         <>
             <ScrollToTop />
-            <LanguageSelector />
             <Header />
             {/* Main container with decorative gradient header */}
             <Box
