@@ -70,37 +70,58 @@ export default function LoginForm({
     return (
         <Box component="form" onSubmit={handleSubmit}>
             {/* Google Login button */}
-            <Box sx={{ width: '100%', mb: 2 }}>
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    sx={{
-                        color: 'black',
-                        borderColor: '#808080'
-                    }}
-                    onClick={() => loginWithGoogle()}
-                    startIcon={
-                        <img
-                            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                            alt="Google"
-                            width="20"
-                            height="20"
-                            style={{ marginRight: 8 }} // Spacing between icon and text
-                        />
-                    }
-                >
-                    {t('home.auth.login.form.googleButton')}
-                </Button>
-            </Box>
+            <Button
+                fullWidth
+                variant="outlined"
+                size="large"
+                sx={{
+                    mb: 3,
+                    py: 1.5,
+                    borderColor: '#e0e0e0',
+                    color: '#333',
+                    backgroundColor: 'white',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    borderRadius: 2,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    '&:hover': {
+                        borderColor: '#d0d0d0',
+                        backgroundColor: '#f8f9fa',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                    },
+                    transition: 'all 0.2s ease'
+                }}
+                onClick={() => loginWithGoogle()}
+                startIcon={
+                    <img
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        alt="Google"
+                        width="20"
+                        height="20"
+                        style={{ marginRight: 8 }}
+                    />
+                }
+            >
+                {t('home.auth.login.form.googleButton')}
+            </Button>
 
-            {/* Divider for visual separation */}
-            <Divider sx={{ my: 2 }}>
-                <Typography sx={{ color: '#666', px: 2 }}>
+            {/* Divider */}
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Divider sx={{ flex: 1 }} />
+                <Typography
+                    variant="body2"
+                    sx={{
+                        px: 2,
+                        color: 'text.secondary',
+                        fontWeight: 500
+                    }}
+                >
                     {t('home.auth.common.or')}
                 </Typography>
-            </Divider>
+                <Divider sx={{ flex: 1 }} />
+            </Box>
 
-            {/* Input for email or username */}
+            {/* Email/Username Input */}
             <TextField
                 fullWidth
                 required
@@ -110,6 +131,22 @@ export default function LoginForm({
                 placeholder={t('home.auth.login.form.identifier.placeholder')}
                 value={loginData.identifier}
                 onChange={handleChange}
+                sx={{
+                    mb: 3,
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'white',
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        }
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#fe6f14'
+                    }
+                }}
             />
 
             {/* Password Input */}
@@ -119,10 +156,25 @@ export default function LoginForm({
                 type={showPassword ? 'text' : 'password'}
                 label={t('home.auth.login.form.password.label')}
                 variant="outlined"
-                margin="normal"
                 name="password"
                 value={loginData.password}
                 onChange={handleChange}
+                sx={{
+                    mb: 2,
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'white',
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        }
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#fe6f14'
+                    }
+                }}
                 slotProps={{
                     input: {
                         endAdornment: (
@@ -130,6 +182,12 @@ export default function LoginForm({
                                 <IconButton
                                     onClick={() => setShowPassword(!showPassword)}
                                     edge="end"
+                                    sx={{
+                                        color: '#fe6f14',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(254, 111, 20, 0.08)'
+                                        }
+                                    }}
                                 >
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </IconButton>
@@ -140,12 +198,14 @@ export default function LoginForm({
             />
 
             {/* Forgot Password Link */}
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
                 <Link
                     sx={{
-                        color: '#666',
+                        color: '#fe6f14',
                         cursor: 'pointer',
-                        textDecoration: 'none'
+                        textDecoration: 'none',
+                        fontWeight: 500,
+                        fontSize: '0.9rem',
                     }}
                     onClick={() => setShowResetPassword(true)}
                 >
@@ -158,12 +218,27 @@ export default function LoginForm({
                 fullWidth
                 variant="contained"
                 type="submit"
+                size="large"
                 disabled={!isFormValid() || loading}
                 sx={{
-                    mt: 3,
-                    mb: 2,
-                    bgcolor: '#fe6f14',
-                    '&:hover': { bgcolor: '#c84f03' }
+                    py: 1.5,
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                    boxShadow: '0 4px 15px rgba(254, 111, 20, 0.3)',
+                    '&:hover': {
+                        background: 'linear-gradient(135deg, #c84f03 0%, #a63c02 100%)',
+                        boxShadow: '0 6px 20px rgba(254, 111, 20, 0.4)',
+                        transform: 'scale(1.02)'
+                    },
+                    '&:disabled': {
+                        background: '#e0e0e0',
+                        color: '#999',
+                        boxShadow: 'none',
+                        transform: 'none'
+                    },
+                    transition: 'all 0.3s ease'
                 }}
             >
                 {loading ? t('home.auth.common.loading') : t('home.auth.login.form.submit')}

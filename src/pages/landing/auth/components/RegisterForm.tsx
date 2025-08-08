@@ -56,33 +56,57 @@ export default function RegisterForm({
 }: RegisterFormProps) {
     const { t } = useTranslation();
 
+    // Common styles for text fields
+    const textFieldStyles = {
+        mb: 3,
+        '& .MuiOutlinedInput-root': {
+            borderRadius: 2,
+            backgroundColor: 'white',
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#fe6f14'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#fe6f14'
+            }
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+            color: '#fe6f14'
+        }
+    };
+
     return (
         <Box component="form" onSubmit={handleSubmit}>
-            {/* Name field */}
-            <TextField
-                fullWidth
-                required
-                label={t('home.auth.register.form.name.label')}
-                variant="outlined"
-                margin="normal"
-                name="name"
-                value={registerData.name}
-                onChange={handleChange}
-                placeholder={t('home.auth.register.form.name.placeholder')}
-            />
-
-            {/* Surname field */}
-            <TextField
-                fullWidth
-                required
-                label={t('home.auth.register.form.surname.label')}
-                variant="outlined"
-                margin="normal"
-                name="surname"
-                value={registerData.surname}
-                onChange={handleChange}
-                placeholder={t('home.auth.register.form.surname.placeholder')}
-            />
+            {/* Name and Surname Row */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                <TextField
+                    required
+                    label={t('home.auth.register.form.name.label')}
+                    variant="outlined"
+                    name="name"
+                    value={registerData.name}
+                    onChange={handleChange}
+                    placeholder={t('home.auth.register.form.name.placeholder')}
+                    sx={{
+                        flex: 1,
+                        ...textFieldStyles,
+                        mb: 0
+                    }}
+                />
+                <TextField
+                    required
+                    label={t('home.auth.register.form.surname.label')}
+                    variant="outlined"
+                    name="surname"
+                    value={registerData.surname}
+                    onChange={handleChange}
+                    placeholder={t('home.auth.register.form.surname.placeholder')}
+                    sx={{
+                        flex: 1,
+                        ...textFieldStyles,
+                        mb: 0
+                    }}
+                />
+            </Box>
 
             {/* Username field with alphanumeric validation */}
             <TextField
@@ -90,7 +114,6 @@ export default function RegisterForm({
                 required
                 label={t('home.auth.register.form.username.label')}
                 variant="outlined"
-                margin="normal"
                 name="username"
                 helperText={t('home.auth.register.form.username.helper')}
                 placeholder={t('home.auth.register.form.username.placeholder')}
@@ -107,6 +130,13 @@ export default function RegisterForm({
                         } as ChangeEvent<HTMLInputElement>);
                     }
                 }}
+                sx={{
+                    ...textFieldStyles,
+                    '& .MuiFormHelperText-root': {
+                        color: '#fe6f14',
+                        fontSize: '0.8rem'
+                    }
+                }}
             />
 
             {/* Email field */}
@@ -116,11 +146,11 @@ export default function RegisterForm({
                 label={t('home.auth.register.form.email.label')}
                 type="email"
                 variant="outlined"
-                margin="normal"
                 name="email"
                 value={registerData.email}
                 onChange={handleChange}
                 placeholder={t('home.auth.register.form.email.placeholder')}
+                sx={textFieldStyles}
             />
 
             {/* Password field with visibility toggle */}
@@ -130,11 +160,30 @@ export default function RegisterForm({
                 type={showPassword ? 'text' : 'password'}
                 label={t('home.auth.register.form.password.label')}
                 variant="outlined"
-                margin="normal"
                 name="password"
                 helperText={t('home.auth.register.form.password.helper')}
                 value={registerData.password}
                 onChange={handleChange}
+                sx={{
+                    mb: 3,
+                    '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'white',
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#fe6f14'
+                        }
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#fe6f14'
+                    },
+                    '& .MuiFormHelperText-root': {
+                        color: '#fe6f14',
+                        fontSize: '0.8rem'
+                    }
+                }}
                 slotProps={{
                     input: {
                         endAdornment: (
@@ -142,6 +191,12 @@ export default function RegisterForm({
                                 <IconButton
                                     onClick={() => setShowPassword(!showPassword)}
                                     edge="end"
+                                    sx={{
+                                        color: '#fe6f14',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(254, 111, 20, 0.08)'
+                                        }
+                                    }}
                                 >
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </IconButton>
@@ -156,12 +211,27 @@ export default function RegisterForm({
                 fullWidth
                 variant="contained"
                 type="submit"
+                size="large"
                 disabled={!isFormValid() || loading}
                 sx={{
-                    mt: 3,
-                    mb: 2,
-                    bgcolor: '#fe6f14',
-                    '&:hover': { bgcolor: '#c84f03' }
+                    py: 1.5,
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                    boxShadow: '0 4px 15px rgba(254, 111, 20, 0.3)',
+                    '&:hover': {
+                        background: 'linear-gradient(135deg, #c84f03 0%, #a63c02 100%)',
+                        boxShadow: '0 6px 20px rgba(254, 111, 20, 0.4)',
+                        transform: 'scale(1.02)'
+                    },
+                    '&:disabled': {
+                        background: '#e0e0e0',
+                        color: '#999',
+                        boxShadow: 'none',
+                        transform: 'none'
+                    },
+                    transition: 'all 0.3s ease'
                 }}
             >
                 {loading ? t('home.auth.common.loading') : t('home.auth.register.form.submit')}

@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { TokenResponse } from '@react-oauth/google';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, Button, Paper, Link } from '@mui/material';
+import { Box, Typography, Button, Paper, Link, Container, Fade } from '@mui/material';
 
 // Types
 import type { LoginCredentials, RegisterCredentials, AuthApiErrorResponse } from '../../../types/api/responses';
@@ -68,10 +68,6 @@ export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    // Header height and logo height
-    const AUTH_HEADER_HEIGHT = 80;
-    const LOGO_HEIGHT = 50;
 
     // Form data state
     const [loginData, setLoginData] = useState<LoginCredentials>({
@@ -419,307 +415,330 @@ export default function AuthPage() {
         <>
             <ScrollToTop />
             <LanguageSelector />
-            {showResetPassword ? (
-                <>
-                    {/* Desktop Header - only visible on desktop */}
-                    <Box sx={{
-                        display: { xs: 'none', md: 'flex' },
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: `${AUTH_HEADER_HEIGHT}px`,
-                        width: '100%',
-                        backgroundColor: 'white',
-                        position: 'fixed',
+
+            {/* Main Container */}
+            <Box
+                sx={{
+                    minHeight: '100vh',
+                    background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}
+            >
+                {/* Background Pattern */}
+                <Box
+                    sx={{
+                        position: 'absolute',
                         top: 0,
                         left: 0,
-                        zIndex: 100,
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                    }}>
-                        <img
-                            src="/logo/logoLandMix.svg"
-                            alt="Profit & Lost Logo"
-                            style={{ height: `${LOGO_HEIGHT}px`, cursor: 'pointer' }}
-                            onClick={() => navigate('/')}
-                        />
-                    </Box>
+                        right: 0,
+                        bottom: 0,
+                        backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                        pointerEvents: 'none'
+                    }}
+                />
 
-                    <Box sx={{
+                {/* Header */}
+                <Box
+                    sx={{
+                        position: 'relative',
+                        zIndex: 10,
+                        p: { xs: 2, md: 4 },
                         display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        minHeight: { xs: '100vh', md: `calc(100vh - ${AUTH_HEADER_HEIGHT}px)` },
-                        marginTop: { xs: 0, md: `${AUTH_HEADER_HEIGHT}px` },
-                        overflow: 'hidden',
                         justifyContent: 'center',
-                        backgroundColor: '#ffffff'
-                    }}>
-                        <Box sx={{
-                            flex: { xs: '1', md: '1' },
-                            p: { xs: 3, sm: 5, md: 8 },
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            maxWidth: '600px',
-                            width: '100%'
-                        }}>
-                            {/* Mobile logo - only visible on mobile */}
-                            <Box
+                        alignItems: 'center',
+                        minHeight: { xs: '80px', md: '100px' }
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src="/logo/logoLandMix.svg"
+                        alt="Profit & Lost Logo"
+                        sx={{
+                            height: { xs: '40px', md: '50px' },
+                            cursor: 'pointer',
+                            filter: 'brightness(0) invert(1)',
+                            transition: 'transform 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'scale(1.05)'
+                            }
+                        }}
+                        onClick={() => navigate('/')}
+                    />
+                </Box>
+
+                {/* Main Content */}
+                <Container
+                    maxWidth="lg"
+                    sx={{
+                        flex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        zIndex: 10,
+                        py: { xs: 2, md: 4 }
+                    }}
+                >
+                    {showResetPassword ? (
+                        <Fade in={true} timeout={500}>
+                            <Paper
+                                elevation={24}
                                 sx={{
-                                    display: { xs: 'flex', md: 'none' },
-                                    justifyContent: 'center',
-                                    mb: 4
+                                    width: '100%',
+                                    maxWidth: '500px',
+                                    borderRadius: 3,
+                                    overflow: 'hidden',
+                                    background: 'rgba(255, 255, 255, 0.95)',
+                                    backdropFilter: 'blur(10px)',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
                                 }}
                             >
-                                <img src="/logo/logoLandMix.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
-                            </Box>
+                                <Box sx={{ p: { xs: 3, md: 4 } }}>
+                                    <Typography
+                                        variant="h4"
+                                        component="h1"
+                                        align="center"
+                                        sx={{
+                                            fontWeight: 700,
+                                            mb: 1,
+                                            background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                                            backgroundClip: 'text',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent'
+                                        }}
+                                    >
+                                        {getResetPasswordStepTitle(resetStep, t)}
+                                    </Typography>
 
-                            <Paper elevation={0} sx={{
-                                p: { xs: 3, sm: 5 },
-                                maxWidth: '500px',
-                                width: '100%',
-                                mx: 'auto',
-                                backgroundColor: 'transparent'
-                            }}>
-                                <Typography variant="h4" component="h1" align="center" gutterBottom>
-                                    {getResetPasswordStepTitle(resetStep, t)}
-                                </Typography>
+                                    <Box sx={{ mb: 4 }} />
 
-                                <Box sx={{ mb: 4 }} />
+                                    <ResetPasswordForm
+                                        resetStep={resetStep}
+                                        resetEmail={resetEmail}
+                                        resetToken={resetToken}
+                                        newPassword={newPassword}
+                                        confirmPassword={confirmPassword}
+                                        loading={loading}
+                                        showNewPassword={showNewPassword}
+                                        showConfirmPassword={showConfirmPassword}
+                                        setResetEmail={setResetEmail}
+                                        setResetToken={setResetToken}
+                                        setNewPassword={setNewPassword}
+                                        setConfirmPassword={setConfirmPassword}
+                                        setShowNewPassword={setShowNewPassword}
+                                        setShowConfirmPassword={setShowConfirmPassword}
+                                        handleForgotPassword={handleForgotPassword}
+                                        handleVerifyToken={handleVerifyToken}
+                                        handleResetPassword={handleResetPassword}
+                                    />
 
-                                <ResetPasswordForm
-                                    resetStep={resetStep}
-                                    resetEmail={resetEmail}
-                                    resetToken={resetToken}
-                                    newPassword={newPassword}
-                                    confirmPassword={confirmPassword}
-                                    loading={loading}
-                                    showNewPassword={showNewPassword}
-                                    showConfirmPassword={showConfirmPassword}
-                                    setResetEmail={setResetEmail}
-                                    setResetToken={setResetToken}
-                                    setNewPassword={setNewPassword}
-                                    setConfirmPassword={setConfirmPassword}
-                                    setShowNewPassword={setShowNewPassword}
-                                    setShowConfirmPassword={setShowConfirmPassword}
-                                    handleForgotPassword={handleForgotPassword}
-                                    handleVerifyToken={handleVerifyToken}
-                                    handleResetPassword={handleResetPassword}
-                                />
-
-                                <Box sx={{ textAlign: 'center', mt: 3 }}>
-                                    <Typography variant="body2">
+                                    <Box sx={{ textAlign: 'center', mt: 3 }}>
                                         <Link
                                             sx={{
-                                                color: '#666',
+                                                color: '#fe6f14',
                                                 cursor: 'pointer',
-                                                textDecoration: 'none'
+                                                textDecoration: 'none',
+                                                fontWeight: 500,
+                                                '&:hover': {
+                                                    textDecoration: 'underline'
+                                                }
                                             }}
                                             onClick={() => setShowResetPassword(false)}
                                         >
                                             {t('home.auth.resetPassword.backToLogin')}
                                         </Link>
-                                    </Typography>
+                                    </Box>
                                 </Box>
                             </Paper>
-                        </Box>
-                    </Box>
-                </>
-            ) : (
-                <>
-                    {/* Desktop Header - only visible on desktop */}
-                    <Box sx={{
-                        display: { xs: 'none', md: 'flex' },
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: `${AUTH_HEADER_HEIGHT}px`,
-                        width: '100%',
-                        backgroundColor: 'white',
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        zIndex: 100,
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                    }}>
-                        <img
-                            src="/logo/logoLandMix.svg"
-                            alt="Profit & Lost Logo"
-                            style={{ height: `${LOGO_HEIGHT}px`, cursor: 'pointer' }}
-                            onClick={() => navigate('/')}
-                        />
-                    </Box>
+                        </Fade>
+                    ) : (
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: { xs: 'column', lg: 'row' },
+                                gap: { xs: 3, lg: 4 },
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            {/* Form Section */}
+                            <Fade in={true} timeout={500}>
+                                <Paper
+                                    elevation={24}
+                                    sx={{
+                                        width: '100%',
+                                        maxWidth: { xs: '500px', lg: '450px' },
+                                        borderRadius: 3,
+                                        overflow: 'hidden',
+                                        background: 'rgba(255, 255, 255, 0.95)',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                                    }}
+                                >
+                                    <Box sx={{ p: { xs: 3, md: 4 } }}>
+                                        <Typography
+                                            variant="h3"
+                                            component="h1"
+                                            align="center"
+                                            sx={{
+                                                fontWeight: 700,
+                                                mb: 1,
+                                                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                                                backgroundClip: 'text',
+                                                WebkitBackgroundClip: 'text',
+                                                WebkitTextFillColor: 'transparent'
+                                            }}
+                                        >
+                                            {isLogin ? t('home.auth.login.title') : t('home.auth.register.title')}
+                                        </Typography>
 
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        minHeight: { xs: '100vh', md: `calc(100vh - ${AUTH_HEADER_HEIGHT}px)` },
-                        marginTop: { xs: 0, md: `${AUTH_HEADER_HEIGHT}px` },
-                        overflow: 'hidden'
-                    }}>
-                        {/* Left column - Login Form */}
-                        <Box sx={{
-                            flex: { xs: '1', md: '1' },
-                            p: { xs: 3, sm: 5, md: 8 },
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            backgroundColor: '#ffffff'
-                        }}>
-                            {/* Mobile logo - only visible on mobile */}
+                                        <Typography
+                                            variant="body1"
+                                            align="center"
+                                            sx={{
+                                                mb: 4,
+                                                color: 'text.secondary',
+                                                fontSize: '1.1rem'
+                                            }}
+                                        >
+                                            {isLogin ? t('home.auth.login.subtitle') : t('home.auth.register.subtitle')}
+                                        </Typography>
+
+                                        {isLogin ? (
+                                            <LoginForm
+                                                loginData={loginData}
+                                                loading={loading}
+                                                showPassword={showPassword}
+                                                handleChange={handleChange}
+                                                setShowPassword={setShowPassword}
+                                                setShowResetPassword={setShowResetPassword}
+                                                isFormValid={isFormValid}
+                                                handleSubmit={handleSubmit}
+                                                handleGoogleSuccess={handleGoogleSuccess}
+                                            />
+                                        ) : (
+                                            <RegisterForm
+                                                registerData={registerData}
+                                                loading={loading}
+                                                showPassword={showPassword}
+                                                handleChange={handleChange}
+                                                setShowPassword={setShowPassword}
+                                                isFormValid={isFormValid}
+                                                handleSubmit={handleSubmit}
+                                            />
+                                        )}
+
+                                        {/* Mobile toggle */}
+                                        <Box sx={{ display: { xs: 'block', lg: 'none' }, textAlign: 'center', mt: 3 }}>
+                                            <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+                                                {isLogin
+                                                    ? t('home.auth.register.cta.title')
+                                                    : t('home.auth.login.cta.title')}
+                                            </Typography>
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() => setIsLogin(!isLogin)}
+                                                sx={{
+                                                    color: '#fe6f14',
+                                                    borderColor: '#fe6f14',
+                                                    '&:hover': {
+                                                        borderColor: '#c84f03',
+                                                        backgroundColor: 'rgba(254, 111, 20, 0.04)'
+                                                    }
+                                                }}
+                                            >
+                                                {isLogin
+                                                    ? t('home.auth.register.cta.button')
+                                                    : t('home.auth.login.cta.button')}
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </Paper>
+                            </Fade>
+
+                            {/* CTA Section - Desktop Only */}
                             <Box
                                 sx={{
-                                    display: { xs: 'flex', md: 'none' },
+                                    display: { xs: 'none', lg: 'flex' },
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
                                     justifyContent: 'center',
-                                    mb: 4
+                                    maxWidth: '500px',
+                                    textAlign: 'center',
+                                    color: 'white',
+                                    p: 4
                                 }}
                             >
-                                <img src="/logo/logoLandMix.svg" alt="Profit & Lost Logo" style={{ width: '180px', height: 'auto', cursor: 'pointer' }} onClick={() => navigate('/')} />
-                            </Box>
-
-                            <Paper elevation={0} sx={{
-                                p: { xs: 3, sm: 5 },
-                                maxWidth: '500px',
-                                width: '100%',
-                                mx: 'auto',
-                                backgroundColor: 'transparent'
-                            }}>
-                                <Typography variant="h4" component="h1" align="center" gutterBottom>
-                                    {isLogin ? t('home.auth.login.title') : t('home.auth.register.title')}
-                                </Typography>
-                                <Typography variant="subtitle1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-                                    {isLogin ? t('home.auth.login.subtitle') : t('home.auth.register.subtitle')}
-                                </Typography>
-
-                                {isLogin ? (
-                                    <LoginForm
-                                        loginData={loginData}
-                                        loading={loading}
-                                        showPassword={showPassword}
-                                        handleChange={handleChange}
-                                        setShowPassword={setShowPassword}
-                                        setShowResetPassword={setShowResetPassword}
-                                        isFormValid={isFormValid}
-                                        handleSubmit={handleSubmit}
-                                        handleGoogleSuccess={handleGoogleSuccess}
-                                    />
-                                ) : (
-                                    <RegisterForm
-                                        registerData={registerData}
-                                        loading={loading}
-                                        showPassword={showPassword}
-                                        handleChange={handleChange}
-                                        setShowPassword={setShowPassword}
-                                        isFormValid={isFormValid}
-                                        handleSubmit={handleSubmit}
-                                    />
-                                )}
-
-                                {/* Mobile-only toggle between login/register */}
-                                <Box sx={{ display: { xs: 'block', md: 'none' }, textAlign: 'center', mt: 3 }}>
-                                    <Typography variant="body2" sx={{ mb: 2 }}>
-                                        {isLogin
-                                            ? t('home.auth.register.cta.title')
-                                            : t('home.auth.login.cta.title')}
-                                    </Typography>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => setIsLogin(!isLogin)}
-                                        sx={{
-                                            color: '#fe6f14',
-                                            borderColor: '#fe6f14',
-                                            '&:hover': { borderColor: '#c84f03', color: '#c84f03' }
-                                        }}
-                                    >
-                                        {isLogin
-                                            ? t('home.auth.register.cta.button')
-                                            : t('home.auth.login.cta.button')}
-                                    </Button>
-                                </Box>
-                            </Paper>
-                        </Box>
-
-                        {/* Right column - CTA for Register */}
-                        <Box sx={{
-                            flex: { xs: '1', md: '1' },
-                            display: { xs: 'none', md: 'flex' },
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: { xs: 3, sm: 5, md: 8 },
-                            backgroundColor: '#fe6f14',
-                            color: 'white',
-                            textAlign: 'center',
-                            position: 'relative'
-                        }}>
-                            <Box sx={{ maxWidth: '500px' }}>
-                                {isLogin ? (
-                                    <>
+                                <Fade in={true} timeout={800}>
+                                    <Box>
                                         <Typography
                                             variant="h2"
                                             sx={{
-                                                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                                                fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
                                                 fontWeight: 800,
-                                                mb: 'clamp(1rem, 2vw, 1.5rem)',
-                                                color: '#ffffff',
-                                                lineHeight: 1.2
+                                                mb: 3,
+                                                lineHeight: 1.2,
+                                                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
                                             }}
                                         >
-                                            {t('home.auth.register.cta.title')}
+                                            {isLogin
+                                                ? t('home.auth.register.cta.title')
+                                                : t('home.auth.login.cta.title')}
                                         </Typography>
-                                        <Typography variant="body1" sx={{ mb: 4 }}>
-                                            {t('home.auth.register.cta.description')}
-                                        </Typography>
-                                        <Button
-                                            variant="contained"
-                                            size="large"
-                                            onClick={() => setIsLogin(false)}
-                                            sx={{
-                                                backgroundColor: 'white',
-                                                color: '#fe6f14',
-                                                '&:hover': {
-                                                    backgroundColor: '#f5f5f5',
-                                                }
-                                            }}
-                                        >
-                                            {t('home.auth.register.cta.button')}
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
+
                                         <Typography
-                                            variant="h2"
+                                            variant="h6"
                                             sx={{
-                                                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                                                fontWeight: 800,
-                                                mb: 'clamp(1rem, 2vw, 1.5rem)',
-                                                color: '#ffffff',
-                                                lineHeight: 1.2
+                                                mb: 4,
+                                                opacity: 0.9,
+                                                lineHeight: 1.6,
+                                                textShadow: '0 1px 2px rgba(0,0,0,0.2)'
                                             }}
                                         >
-                                            {t('home.auth.login.cta.title')}
+                                            {isLogin
+                                                ? t('home.auth.register.cta.description')
+                                                : t('home.auth.login.cta.description')}
                                         </Typography>
-                                        <Typography variant="body1" sx={{ mb: 4 }}>
-                                            {t('home.auth.login.cta.description')}
-                                        </Typography>
+
                                         <Button
                                             variant="contained"
                                             size="large"
-                                            onClick={() => setIsLogin(true)}
+                                            onClick={() => setIsLogin(!isLogin)}
                                             sx={{
                                                 backgroundColor: 'white',
                                                 color: '#fe6f14',
+                                                px: 4,
+                                                py: 1.5,
+                                                fontSize: '1.1rem',
+                                                fontWeight: 600,
+                                                borderRadius: 2,
+                                                boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
                                                 '&:hover': {
-                                                    backgroundColor: '#f5f5f5',
-                                                }
+                                                    backgroundColor: '#f8f9fa',
+                                                    transform: 'scale(1.02)',
+                                                    boxShadow: '0 12px 35px rgba(0,0,0,0.2)'
+                                                },
+                                                transition: 'all 0.3s ease'
                                             }}
                                         >
-                                            {t('home.auth.login.cta.button')}
+                                            {isLogin
+                                                ? t('home.auth.register.cta.button')
+                                                : t('home.auth.login.cta.button')}
                                         </Button>
-                                    </>
-                                )}
+                                    </Box>
+                                </Fade>
                             </Box>
                         </Box>
-                    </Box>
-                </>
-            )}
+                    )}
+                </Container>
+            </Box>
+
             <Footer />
         </>
     );
