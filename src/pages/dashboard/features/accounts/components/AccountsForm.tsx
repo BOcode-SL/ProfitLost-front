@@ -683,203 +683,204 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
 
             {/* Account form */}
             <Box component="form" sx={{ flex: 1, overflow: 'auto' }}>
-                {/* Account name input field */}
-                <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
-                    <TextField
-                        label={t('dashboard.accounts.form.fields.name.label')}
-                        fullWidth
-                        size="small"
-                        value={accountName}
-                        onChange={(e) => setAccountName(e.target.value)}
-                        placeholder={t('dashboard.accounts.form.fields.name.placeholder')}
-                    />
-                </Paper>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {/* Account name input field */}
+                    <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
+                        <TextField
+                            label={t('dashboard.accounts.form.fields.name.label')}
+                            fullWidth
+                            size="small"
+                            value={accountName}
+                            onChange={(e) => setAccountName(e.target.value)}
+                            placeholder={t('dashboard.accounts.form.fields.name.placeholder')}
+                        />
+                    </Paper>
 
-                {/* Year selection and monthly data (only for edit mode) */}
-                {account && (
-                    <>
-                        {/* Year selection dropdown with option to add new year */}
-                        <Paper elevation={2} sx={{ p: 1, borderRadius: 3, mb: 2 }}>
-                            {!showYearInput ? (
-                                <FormControl size="small" fullWidth>
-                                    <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                                    <Select
-                                        key={`year-select-${forceRefresh}-${availableYears.length}-${pendingYears.length}`}
-                                        value={selectedYear === '' ? '' : selectedYear.toString()}
-                                        label={t('dashboard.common.year')}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            if (value === 'add') {
-                                                setShowYearInput(true);
-                                            } else if (value !== '') {
-                                                setSelectedYear(Number(value));
-                                            }
-                                        }}
-                                        disabled={loadingYears}
-                                    >
-                                        {loadingYears ? (
-                                            <MenuItem value="">
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <CircularProgress size={20} />
-                                                    <span>{t('dashboard.common.loading')}</span>
-                                                </Box>
-                                            </MenuItem>
-                                        ) : (
-                                            // Map years to menu items with pending indicator
-                                            (() => {
-                                                return availableYears.map(year => (
-                                                    <MenuItem
-                                                        key={`year-option-${year}`}
-                                                        value={year.toString()}
-                                                        sx={pendingYears.includes(year) ? {
-                                                            fontStyle: 'italic',
-                                                            '&::after': {
-                                                                content: '"*"',
-                                                                color: 'primary.main',
-                                                                ml: 1,
-                                                                fontWeight: 'bold'
-                                                            }
-                                                        } : {}}
-                                                    >
-                                                        {year}
-                                                    </MenuItem>
-                                                ));
-                                            })()
-                                        )}
-                                        <MenuItem value="add">
-                                            <Plus size={16} color="currentColor" style={{ marginRight: 8 }} />
-                                            {t('dashboard.accounts.form.addYear')}
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            ) : (
-                                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                                    <TextField
-                                        size="small"
-                                        type="number"
-                                        value={newYear}
-                                        onChange={(e) => setNewYear(e.target.value)}
-                                        placeholder={t('dashboard.accounts.form.enterYear')}
-                                        fullWidth
-                                        inputProps={{
-                                            min: 1900,
-                                            max: 9999,
-                                            step: 1
-                                        }}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        onClick={handleAddYear}
-                                        sx={{ minWidth: 'auto', px: 2 }}
-                                    >
-                                        <Plus size={16} color="currentColor" />
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={() => {
-                                            setShowYearInput(false);
-                                            setNewYear('');
-                                        }}
-                                        sx={{ minWidth: 'auto', px: 2 }}
-                                    >
-                                        <X size={16} color="currentColor" />
-                                    </Button>
-                                </Box>
-                            )}
-                        </Paper>
-
-                        {/* Monthly values input fields */}
-                        <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                {months.map(month => (
-                                    <Box key={month}
-                                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Typography>{getMonthName(month)}</Typography>
-                                        <TextField
-                                            size="small"
-                                            type="text"
-                                            inputProps={{
-                                                inputMode: 'decimal',
-                                                pattern: '^[0-9]*([.,][0-9]{0,2})?$'
-                                            }}
-                                            value={monthlyInput[month] || ''}
+                    {/* Year selection and monthly data (only for edit mode) */}
+                    {account && (
+                        <>
+                            {/* Year selection dropdown with option to add new year */}
+                            <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
+                                {!showYearInput ? (
+                                    <FormControl size="small" fullWidth>
+                                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                                        <Select
+                                            key={`year-select-${forceRefresh}-${availableYears.length}-${pendingYears.length}`}
+                                            value={selectedYear === '' ? '' : selectedYear.toString()}
+                                            label={t('dashboard.common.year')}
                                             onChange={(e) => {
-                                                const value = e.target.value.replace(',', '.');
-                                                // Validate input to ensure it's a valid decimal number
-                                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
-                                                    setMonthlyInput(prev => ({
-                                                        ...prev,
-                                                        [month]: value.replace('.', ',')
-                                                    }));
+                                                const value = e.target.value;
+                                                if (value === 'add') {
+                                                    setShowYearInput(true);
+                                                } else if (value !== '') {
+                                                    setSelectedYear(Number(value));
                                                 }
                                             }}
-                                            onBlur={() => {
-                                                // Convert comma to decimal point and parse as float on blur
-                                                const value = monthlyInput[month]?.replace(',', '.') || '0';
-                                                setMonthlyValues(prev => ({
-                                                    ...prev,
-                                                    [month]: parseFloat(value)
-                                                }));
+                                            disabled={loadingYears}
+                                        >
+                                            {loadingYears ? (
+                                                <MenuItem value="">
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <CircularProgress size={20} />
+                                                        <span>{t('dashboard.common.loading')}</span>
+                                                    </Box>
+                                                </MenuItem>
+                                            ) : (
+                                                // Map years to menu items with pending indicator
+                                                (() => {
+                                                    return availableYears.map(year => (
+                                                        <MenuItem
+                                                            key={`year-option-${year}`}
+                                                            value={year.toString()}
+                                                            sx={pendingYears.includes(year) ? {
+                                                                fontStyle: 'italic',
+                                                                '&::after': {
+                                                                    content: '"*"',
+                                                                    color: 'primary.main',
+                                                                    ml: 1,
+                                                                    fontWeight: 'bold'
+                                                                }
+                                                            } : {}}
+                                                        >
+                                                            {year}
+                                                        </MenuItem>
+                                                    ));
+                                                })()
+                                            )}
+                                            <MenuItem value="add">
+                                                <Plus size={16} color="currentColor" style={{ marginRight: 8 }} />
+                                                {t('dashboard.accounts.form.addYear')}
+                                            </MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                ) : (
+                                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            value={newYear}
+                                            onChange={(e) => setNewYear(e.target.value)}
+                                            placeholder={t('dashboard.accounts.form.enterYear')}
+                                            fullWidth
+                                            inputProps={{
+                                                min: 1900,
+                                                max: 9999,
+                                                step: 1
                                             }}
                                         />
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={handleAddYear}
+                                            sx={{ minWidth: 'auto', px: 2 }}
+                                        >
+                                            <Plus size={16} color="currentColor" />
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            onClick={() => {
+                                                setShowYearInput(false);
+                                                setNewYear('');
+                                            }}
+                                            sx={{ minWidth: 'auto', px: 2 }}
+                                        >
+                                            <X size={16} color="currentColor" />
+                                        </Button>
                                     </Box>
-                                ))}
-                            </Box>
-                        </Paper>
+                                )}
+                            </Paper>
 
-                        {/* Account active status toggle */}
-                        <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
-                                <Switch
-                                    checked={isActive}
-                                    onChange={(e) => setIsActive(e.target.checked)}
-                                />
-                            </Box>
-                        </Paper>
-                    </>
-                )}
+                            {/* Monthly values input fields */}
+                            <Paper elevation={2} sx={{ p: 2, borderRadius: 3 }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    {months.map(month => (
+                                        <Box key={month}
+                                            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Typography>{getMonthName(month)}</Typography>
+                                            <TextField
+                                                size="small"
+                                                type="text"
+                                                inputProps={{
+                                                    inputMode: 'decimal',
+                                                    pattern: '^[0-9]*([.,][0-9]{0,2})?$'
+                                                }}
+                                                value={monthlyInput[month] || ''}
+                                                onChange={(e) => {
+                                                    const value = e.target.value.replace(',', '.');
+                                                    // Validate input to ensure it's a valid decimal number
+                                                    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                                        setMonthlyInput(prev => ({
+                                                            ...prev,
+                                                            [month]: value.replace('.', ',')
+                                                        }));
+                                                    }
+                                                }}
+                                                onBlur={() => {
+                                                    // Convert comma to decimal point and parse as float on blur
+                                                    const value = monthlyInput[month]?.replace(',', '.') || '0';
+                                                    setMonthlyValues(prev => ({
+                                                        ...prev,
+                                                        [month]: parseFloat(value)
+                                                    }));
+                                                }}
+                                            />
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Paper>
 
-                {/* Account color settings */}
-                <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3, mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                        <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
-                        <input
-                            type="color"
-                            value={backgroundColor}
-                            onChange={(e) => setBackgroundColor(e.target.value)}
-                        />
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 2 }}>
-                        <Typography>{t('dashboard.accounts.form.fields.textColor')}</Typography>
-                        <input
-                            type="color"
-                            value={textColor}
-                            onChange={(e) => setTextColor(e.target.value)}
-                        />
-                    </Box>
-                </Paper>
+                            {/* Account active status toggle */}
+                            <Paper elevation={2} sx={{ p: 2, borderRadius: 3 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Typography>{t('dashboard.accounts.form.fields.active')}</Typography>
+                                    <Switch
+                                        checked={isActive}
+                                        onChange={(e) => setIsActive(e.target.checked)}
+                                    />
+                                </Box>
+                            </Paper>
+                        </>
+                    )}
 
-                {/* Pending years notification */}
-                {pendingYears.length > 0 && (
-                    <Typography
-                        variant="caption"
-                        color="primary.main"
-                        sx={{
-                            mt: 1,
-                            textAlign: 'center',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
-                    >
-                        {pendingYears.length === 1
-                            ? t('dashboard.accounts.pendingYear')
-                            : t('dashboard.accounts.pendingYears', { count: pendingYears.length })}
-                    </Typography>
-                )}
+                    {/* Account color settings */}
+                    <Paper elevation={2} sx={{ display: 'flex', flexDirection: 'column', p: 2, borderRadius: 3 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+                            <Typography>{t('dashboard.accounts.form.fields.backgroundColor')}</Typography>
+                            <input
+                                type="color"
+                                value={backgroundColor}
+                                onChange={(e) => setBackgroundColor(e.target.value)}
+                            />
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mt: 2 }}>
+                            <Typography>{t('dashboard.accounts.form.fields.textColor')}</Typography>
+                            <input
+                                type="color"
+                                value={textColor}
+                                onChange={(e) => setTextColor(e.target.value)}
+                            />
+                        </Box>
+                    </Paper>
+
+                    {/* Pending years notification */}
+                    {pendingYears.length > 0 && (
+                        <Typography
+                            variant="caption"
+                            color="primary.main"
+                            sx={{
+                                textAlign: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            {pendingYears.length === 1
+                                ? t('dashboard.accounts.pendingYear')
+                                : t('dashboard.accounts.pendingYears', { count: pendingYears.length })}
+                        </Typography>
+                    )}
+                </Box>
             </Box>
 
             {/* Action buttons at the bottom */}

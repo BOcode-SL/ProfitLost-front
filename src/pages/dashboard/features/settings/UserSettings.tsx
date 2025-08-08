@@ -283,7 +283,7 @@ export default function UserSettings({ onSuccess }: UserSettingsProps) {
                 overflow: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3
+                gap: 2
             }}>
                 {/* Profile Image Section - Avatar display and management */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>

@@ -40,7 +40,7 @@ export default function Help() {
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3
+                gap: 2
             }}>
                 {/* FAQ section title */}
                 <Typography

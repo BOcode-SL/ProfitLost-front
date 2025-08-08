@@ -208,104 +208,106 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                     handleSubmit();
                 }}
                 sx={{ flex: 1, overflow: 'auto' }}>
-                {/* Category name section */}
-                <Card sx={{ mb: 2, borderRadius: 3 }}>
-                    <CardContent>
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                            {t('dashboard.annualReport.categories.form.categoryName')}
-                        </Typography>
-                        <TextField
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            fullWidth
-                            size="small"
-                            placeholder="Ej: Alimentación, Transporte..."
-                        />
-                    </CardContent>
-                </Card>
-
-                {/* Color selection section */}
-                <Card sx={{ mb: 2, borderRadius: 3 }}>
-                    <CardContent>
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                            {t('dashboard.annualReport.categories.form.selectColor')}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
-                            <input
-                                type="color"
-                                value={color}
-                                onChange={(e) => setColor(e.target.value)}
-                                style={{
-                                    width: '60px',
-                                    height: '40px',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
-                            />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {/* Category name section */}
+                    <Card sx={{ borderRadius: 3 }}>
+                        <CardContent>
+                            <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                                {t('dashboard.annualReport.categories.form.categoryName')}
+                            </Typography>
                             <TextField
-                                value={color}
-                                onChange={(e) => setColor(e.target.value)}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                fullWidth
                                 size="small"
-                                sx={{ flex: 1 }}
+                                placeholder="Ej: Alimentación, Transporte..."
                             />
-                        </Box>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
 
-                {/* Icon selection section */}
-                <Card sx={{ mb: 2, borderRadius: 3 }}>
-                    <CardContent>
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                            {t('dashboard.annualReport.categories.form.selectIcon')}
-                        </Typography>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: 1
-                            }}
-                        >
-                            {COMMON_CATEGORY_ICONS.map((icon) => {
-                                const isSelected = selectedIcon.name === icon.name;
-                                const IconComponent = getMaterialIconComponent(icon.name);
+                    {/* Color selection section */}
+                    <Card sx={{ borderRadius: 3 }}>
+                        <CardContent>
+                            <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                                {t('dashboard.annualReport.categories.form.selectColor')}
+                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                                <input
+                                    type="color"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    style={{
+                                        width: '60px',
+                                        height: '40px',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                                <TextField
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    size="small"
+                                    sx={{ flex: 1 }}
+                                />
+                            </Box>
+                        </CardContent>
+                    </Card>
 
-                                return (
-                                    <Box key={icon.name}>
-                                        <IconButton
-                                            onClick={() => setSelectedIcon(icon)}
-                                            sx={{
-                                                width: 50,
-                                                height: 50,
-                                                border: isSelected ? 2 : 1,
-                                                borderColor: isSelected ? 'primary.main' : 'divider',
-                                                backgroundColor: isSelected ? 'primary.main' + '20' : 'transparent',
-                                                '&:hover': {
-                                                    backgroundColor: isSelected ? 'primary.main' + '30' : 'action.hover'
-                                                }
-                                            }}
-                                        >
-                                            {IconComponent ? (
-                                                <Box sx={{ color: isSelected ? 'primary.main' : 'text.secondary' }}>
-                                                    <IconComponent />
-                                                </Box>
-                                            ) : (
-                                                <Box
-                                                    sx={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        backgroundColor: isSelected ? 'primary.main' : 'text.secondary',
-                                                        borderRadius: '2px'
-                                                    }}
-                                                />
-                                            )}
-                                        </IconButton>
-                                    </Box>
-                                );
-                            })}
-                        </Box>
-                    </CardContent>
-                </Card>
+                    {/* Icon selection section */}
+                    <Card sx={{ borderRadius: 3 }}>
+                        <CardContent>
+                            <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                                {t('dashboard.annualReport.categories.form.selectIcon')}
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 1
+                                }}
+                            >
+                                {COMMON_CATEGORY_ICONS.map((icon) => {
+                                    const isSelected = selectedIcon.name === icon.name;
+                                    const IconComponent = getMaterialIconComponent(icon.name);
+
+                                    return (
+                                        <Box key={icon.name}>
+                                            <IconButton
+                                                onClick={() => setSelectedIcon(icon)}
+                                                sx={{
+                                                    width: 50,
+                                                    height: 50,
+                                                    border: isSelected ? 2 : 1,
+                                                    borderColor: isSelected ? 'primary.main' : 'divider',
+                                                    backgroundColor: isSelected ? 'primary.main' + '20' : 'transparent',
+                                                    '&:hover': {
+                                                        backgroundColor: isSelected ? 'primary.main' + '30' : 'action.hover'
+                                                    }
+                                                }}
+                                            >
+                                                {IconComponent ? (
+                                                    <Box sx={{ color: isSelected ? 'primary.main' : 'text.secondary' }}>
+                                                        <IconComponent />
+                                                    </Box>
+                                                ) : (
+                                                    <Box
+                                                        sx={{
+                                                            width: 20,
+                                                            height: 20,
+                                                            backgroundColor: isSelected ? 'primary.main' : 'text.secondary',
+                                                            borderRadius: '2px'
+                                                        }}
+                                                    />
+                                                )}
+                                            </IconButton>
+                                        </Box>
+                                    );
+                                })}
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Box>
             </Box>
 
             {/* Action buttons at the bottom */}

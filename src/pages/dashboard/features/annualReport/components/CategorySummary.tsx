@@ -346,221 +346,222 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
 
             {/* Content */}
             <Box sx={{ flex: 1, overflow: 'auto' }}>
-                {/* Year Selector */}
-                <Paper elevation={1} sx={{ p: 1, mb: 3, borderRadius: 3 }}>
-                    <FormControl size="small" fullWidth>
-                        <InputLabel>{t('dashboard.common.year')}</InputLabel>
-                        <Select
-                            value={selectedYear}
-                            label={t('dashboard.common.year')}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                        >
-                            {yearsWithData.map(year => (
-                                <MenuItem key={year} value={year}>
-                                    {year}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Paper>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {/* Year Selector */}
+                    <Paper elevation={1} sx={{ p: 1, borderRadius: 3 }}>
+                        <FormControl size="small" fullWidth>
+                            <InputLabel>{t('dashboard.common.year')}</InputLabel>
+                            <Select
+                                value={selectedYear}
+                                label={t('dashboard.common.year')}
+                                onChange={(e) => setSelectedYear(e.target.value)}
+                            >
+                                {yearsWithData.map(year => (
+                                    <MenuItem key={year} value={year}>
+                                        {year}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Paper>
 
-                {/* Financial Summary */}
-                <Box sx={{
-                    display: 'flex',
-                    gap: 2,
-                    mb: 3,
-                    flexDirection: { xs: 'column', sm: 'row' }
-                }}>
-                    <Box sx={{ flex: 1 }}>
-                        <Card elevation={1} sx={{ borderRadius: 2 }}>
-                            <CardContent sx={{ p: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                    <TrendingUp
-                                        size={20}
-                                        color={theme.palette.chart.income}
-                                        style={{ marginRight: 8 }}
-                                    />
-                                    <Typography variant="body2" color="text.secondary">
-                                        {t('dashboard.common.income')}
+                    {/* Financial Summary */}
+                    <Box sx={{
+                        display: 'flex',
+                        gap: 2,
+                        flexDirection: { xs: 'column', sm: 'row' }
+                    }}>
+                        <Box sx={{ flex: 1 }}>
+                            <Card elevation={1} sx={{ borderRadius: 2 }}>
+                                <CardContent sx={{ p: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                        <TrendingUp
+                                            size={20}
+                                            color={theme.palette.chart.income}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <Typography variant="body2" color="text.secondary">
+                                            {t('dashboard.common.income')}
+                                        </Typography>
+                                    </Box>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            color: theme.palette.chart.income,
+                                            fontWeight: 600,
+                                            filter: isHidden ? 'blur(8px)' : 'none',
+                                            transition: 'filter 0.3s ease'
+                                        }}
+                                    >
+                                        {formatCurrency(categorySummary.income, user)}
                                     </Typography>
-                                </Box>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        color: theme.palette.chart.income,
-                                        fontWeight: 600,
-                                        filter: isHidden ? 'blur(8px)' : 'none',
-                                        transition: 'filter 0.3s ease'
-                                    }}
-                                >
-                                    {formatCurrency(categorySummary.income, user)}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                        <Card elevation={1} sx={{ borderRadius: 2 }}>
-                            <CardContent sx={{ p: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                    <TrendingDown
-                                        size={20}
-                                        color={theme.palette.chart.expenses}
-                                        style={{ marginRight: 8 }}
-                                    />
-                                    <Typography variant="body2" color="text.secondary">
-                                        {t('dashboard.common.expenses')}
+                                </CardContent>
+                            </Card>
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                            <Card elevation={1} sx={{ borderRadius: 2 }}>
+                                <CardContent sx={{ p: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                        <TrendingDown
+                                            size={20}
+                                            color={theme.palette.chart.expenses}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <Typography variant="body2" color="text.secondary">
+                                            {t('dashboard.common.expenses')}
+                                        </Typography>
+                                    </Box>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            color: theme.palette.chart.expenses,
+                                            fontWeight: 600,
+                                            filter: isHidden ? 'blur(8px)' : 'none',
+                                            transition: 'filter 0.3s ease'
+                                        }}
+                                    >
+                                        {formatCurrency(categorySummary.expenses, user)}
                                     </Typography>
+                                </CardContent>
+                            </Card>
+                        </Box>
+                    </Box>
+
+                    {/* Transaction History */}
+                    <Paper elevation={1} sx={{ borderRadius: 2 }}>
+                        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+                            <Typography variant="subtitle1" fontWeight={600}>
+                                {t('dashboard.annualReport.categories.form.history')}
+                            </Typography>
+                        </Box>
+
+                        {/* Search */}
+                        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                placeholder={t('dashboard.annualReport.categories.form.searchPlaceholder')}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <Search size={20} color="text.secondary" style={{ marginRight: 8 }} />
+                                    ),
+                                    sx: { borderRadius: 2 }
+                                }}
+                            />
+                        </Box>
+
+                        {/* Transactions List */}
+                        <Box>
+                            {isLoading ? (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                                    <CircularProgress />
                                 </Box>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        color: theme.palette.chart.expenses,
-                                        fontWeight: 600,
-                                        filter: isHidden ? 'blur(8px)' : 'none',
-                                        transition: 'filter 0.3s ease'
-                                    }}
-                                >
-                                    {formatCurrency(categorySummary.expenses, user)}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Box>
-                </Box>
+                            ) : Object.keys(groupedTransactions).length > 0 ? (
+                                <Box sx={{ p: 2 }}>
+                                    {Object.entries(groupedTransactions).map(([month, monthTransactions]) => (
+                                        <Box key={month} sx={{ mb: 3 }}>
+                                            {/* Month header */}
+                                            <Box sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                mb: 2,
+                                                pb: 1,
+                                                borderBottom: '1px solid',
+                                                borderColor: 'divider'
+                                            }}>
+                                                <Calendar size={20} color="primary.main" style={{ marginRight: 12 }} />
+                                                <Typography variant="subtitle2" fontWeight={600}>
+                                                    {month}
+                                                </Typography>
+                                            </Box>
 
-                {/* Transaction History */}
-                <Paper elevation={1} sx={{ borderRadius: 2 }}>
-                    <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                            {t('dashboard.annualReport.categories.form.history')}
-                        </Typography>
-                    </Box>
-
-                    {/* Search */}
-                    <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-                        <TextField
-                            fullWidth
-                            size="small"
-                            placeholder={t('dashboard.annualReport.categories.form.searchPlaceholder')}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <Search size={20} color="text.secondary" style={{ marginRight: 8 }} />
-                                ),
-                                sx: { borderRadius: 2 }
-                            }}
-                        />
-                    </Box>
-
-                    {/* Transactions List */}
-                    <Box>
-                        {isLoading ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                                <CircularProgress />
-                            </Box>
-                        ) : Object.keys(groupedTransactions).length > 0 ? (
-                            <Box sx={{ p: 2 }}>
-                                {Object.entries(groupedTransactions).map(([month, monthTransactions]) => (
-                                    <Box key={month} sx={{ mb: 3 }}>
-                                        {/* Month header */}
-                                        <Box sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            mb: 2,
-                                            pb: 1,
-                                            borderBottom: '1px solid',
-                                            borderColor: 'divider'
-                                        }}>
-                                            <Calendar size={20} color="primary.main" style={{ marginRight: 12 }} />
-                                            <Typography variant="subtitle2" fontWeight={600}>
-                                                {month}
-                                            </Typography>
-                                        </Box>
-
-                                        {/* Transactions */}
-                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                            {monthTransactions.map((transaction) => (
-                                                <Box key={transaction.id}>
-                                                    <Box
-                                                        sx={{
-                                                            px: 2,
-                                                            py: 1,
-                                                            my: 1,
-                                                            borderRadius: 3,
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: 1,
-                                                            transition: 'background-color 0.3s ease',
-                                                            '&:hover': {
-                                                                bgcolor: `${category.color}20`,
-                                                            },
-                                                        }}
-                                                    >
-                                                        {/* Transaction description and date information */}
+                                            {/* Transactions */}
+                                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                                {monthTransactions.map((transaction) => (
+                                                    <Box key={transaction.id}>
                                                         <Box
                                                             sx={{
-                                                                flex: 1,
+                                                                px: 2,
+                                                                py: 1,
+                                                                my: 1,
+                                                                borderRadius: 3,
                                                                 display: 'flex',
-                                                                flexDirection: 'column',
+                                                                alignItems: 'center',
+                                                                gap: 1,
+                                                                transition: 'background-color 0.3s ease',
+                                                                '&:hover': {
+                                                                    bgcolor: `${category.color}20`,
+                                                                },
                                                             }}
                                                         >
-                                                            <Typography variant="body1">
-                                                                {transaction.description || category.name}
-                                                            </Typography>
-                                                            <Typography variant="caption" color="text.secondary">
-                                                                {fromSupabaseTimestamp(transaction.transaction_date).toLocaleDateString()}
+                                                            {/* Transaction description and date information */}
+                                                            <Box
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                }}
+                                                            >
+                                                                <Typography variant="body1">
+                                                                    {transaction.description || category.name}
+                                                                </Typography>
+                                                                <Typography variant="caption" color="text.secondary">
+                                                                    {fromSupabaseTimestamp(transaction.transaction_date).toLocaleDateString()}
+                                                                </Typography>
+                                                            </Box>
+
+                                                            {/* Transaction amount with color coding and privacy blur */}
+                                                            <Typography
+                                                                sx={{
+                                                                    color: transaction.amount >= 0
+                                                                        ? theme.palette.chart.income
+                                                                        : theme.palette.chart.expenses,
+                                                                    width: { xs: '25%', md: '20%' },
+                                                                    textAlign: 'right',
+                                                                    fontWeight: 600,
+                                                                    filter: isHidden ? 'blur(8px)' : 'none',
+                                                                    transition: 'filter 0.3s ease',
+                                                                    userSelect: isHidden ? 'none' : 'auto',
+                                                                }}
+                                                            >
+                                                                {formatCurrency(transaction.amount, user)}
                                                             </Typography>
                                                         </Box>
-
-                                                        {/* Transaction amount with color coding and privacy blur */}
-                                                        <Typography
-                                                            sx={{
-                                                                color: transaction.amount >= 0
-                                                                    ? theme.palette.chart.income
-                                                                    : theme.palette.chart.expenses,
-                                                                width: { xs: '25%', md: '20%' },
-                                                                textAlign: 'right',
-                                                                fontWeight: 600,
-                                                                filter: isHidden ? 'blur(8px)' : 'none',
-                                                                transition: 'filter 0.3s ease',
-                                                                userSelect: isHidden ? 'none' : 'auto',
-                                                            }}
-                                                        >
-                                                            {formatCurrency(transaction.amount, user)}
-                                                        </Typography>
+                                                        <Divider />
                                                     </Box>
-                                                    <Divider />
-                                                </Box>
-                                            ))}
+                                                ))}
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                ))}
-                            </Box>
-                        ) : searchQuery ? (
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                p: 4,
-                                textAlign: 'center'
-                            }}>
-                                <SearchOff size={48} color="text.secondary" style={{ marginBottom: 16 }} />
-                                <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-                                    {t('dashboard.annualReport.categories.form.noSearchResults')}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {t('dashboard.annualReport.categories.form.tryDifferentSearch')}
-                                </Typography>
-                            </Box>
-                        ) : (
-                            <Box sx={{ p: 4, textAlign: 'center' }}>
-                                <Typography variant="body1" color="text.secondary">
-                                    {t('dashboard.annualReport.categories.form.noTransactions')}
-                                </Typography>
-                            </Box>
-                        )}
-                    </Box>
-                </Paper>
+                                    ))}
+                                </Box>
+                            ) : searchQuery ? (
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    p: 4,
+                                    textAlign: 'center'
+                                }}>
+                                    <SearchOff size={48} color="text.secondary" style={{ marginBottom: 16 }} />
+                                    <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                                        {t('dashboard.annualReport.categories.form.noSearchResults')}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {t('dashboard.annualReport.categories.form.tryDifferentSearch')}
+                                    </Typography>
+                                </Box>
+                            ) : (
+                                <Box sx={{ p: 4, textAlign: 'center' }}>
+                                    <Typography variant="body1" color="text.secondary">
+                                        {t('dashboard.annualReport.categories.form.noTransactions')}
+                                    </Typography>
+                                </Box>
+                            )}
+                        </Box>
+                    </Paper>
+                </Box>
             </Box>
             {/* Action buttons at the bottom */}
             <Box sx={{

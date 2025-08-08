@@ -189,7 +189,7 @@ export default function SecurityPrivacy({ onSuccess }: SecurityPrivacyProps) {
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3
+                gap: 2
             }}>
                 {/* Password Change Section */}
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
