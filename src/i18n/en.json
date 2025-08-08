@@ -965,7 +965,9 @@
                     "noSearchResults": "No transactions found",
                     "tryDifferentSearch": "Try a different search term",
                     "transactions": "Transactions",
-                    "noTransactions": "No transactions"
+                    "noTransactions": "No transactions",
+                    "selectColor": "Select color",
+                    "selectIcon": "Select icon"
                 },
                 "delete": {
                     "title": "Delete Category",

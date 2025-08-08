@@ -226,7 +226,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 <Card sx={{ mb: 2, borderRadius: 3 }}>
                     <CardContent>
                         <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                            Seleccionar color
+                            {t('dashboard.annualReport.categories.form.selectColor')}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
                             <input
@@ -255,7 +255,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 <Card sx={{ mb: 2, borderRadius: 3 }}>
                     <CardContent>
                         <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                            Seleccionar icono
+                            {t('dashboard.annualReport.categories.form.selectIcon')}
                         </Typography>
                         <Box
                             sx={{

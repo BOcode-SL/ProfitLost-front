@@ -965,7 +965,9 @@
                     "noSearchResults": "No se encontraron movimientos",
                     "tryDifferentSearch": "Intenta con otros términos de búsqueda",
                     "transactions": "Movimientos",
-                    "noTransactions": "No hay movimientos"
+                    "noTransactions": "No hay movimientos",
+                    "selectColor": "Seleccionar color",
+                    "selectIcon": "Seleccionar icono"
                 },
                 "delete": {
                     "title": "Delete Category",
