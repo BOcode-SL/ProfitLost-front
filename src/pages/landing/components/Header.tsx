@@ -9,7 +9,7 @@
  */
 import { useState, useEffect } from 'react';
 import { Box, Button, Container, Toolbar } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -88,9 +88,6 @@ export default function Header() {
 
                     {/* Navigation links and login button */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Link to="/blog">
-                            Blog
-                        </Link>
                         <Button
                             variant="contained"
                             size="small"

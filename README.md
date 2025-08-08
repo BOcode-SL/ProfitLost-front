@@ -12,7 +12,6 @@ PL-front-v2/
 │   ├── contexts/           # React context providers
 │   ├── i18n/               # Translation files
 │   ├── pages/              # Page components
-│   │   ├── blog/           # Blog-related pages
 │   │   ├── dashboard/      # Dashboard pages (protected)
 │   │   ├── landing/        # Public landing pages
 │   ├── services/           # API service modules 
@@ -245,67 +244,6 @@ All landing pages fully support multiple languages through the i18next system:
 - Dynamic content loading based on user language preference
 - Persistent language selection with localStorage
 
-## Blog Section
-
-The `/pages/blog` directory contains the educational and marketing blog for the application:
-
-### Directory Structure
-
-```
-blog/
-├── BlogPage.tsx           # Main blog listing page with filtering and search
-├── components/            # Blog-specific components
-│   ├── BlogPost.tsx       # Card component for blog post previews
-│   ├── BlogPostDetail.tsx # Full article page with content rendering
-├── data/                  # Blog content data
-    ├── blogData.ts        # Collection of blog posts with i18n translation keys
-```
-
-### Key Features
-
-#### Blog List Page (BlogPage.tsx)
-- Responsive grid layout for blog post cards
-- Category-based filtering with interactive chips
-- Full-text search across all blog content
-- Pagination for improved performance with large numbers of posts
-- Sorting by publication date (newest first)
-- SEO-friendly headings and metadata
-
-#### Blog Post Components
-- **BlogPost**: Preview card with:
-  - Featured image with hover effects
-  - Category label
-  - Truncated title and excerpt
-  - Author and publication date metadata
-  - Animated hover effects
-  
-- **BlogPostDetail**: Full article page with:
-  - Breadcrumb navigation for easy site traversal
-  - Featured image with category badge
-  - Author information and publication date
-  - Fully formatted content with responsive styling
-  - Support for images, lists, headings, and formatted text
-
-#### Content Management (blogData.ts)
-- Structured content model with translation key support
-- HTML content with translation placeholders (`{{key}}`)
-- Support for multiple post categories (tutorials, tips, introduction)
-- Cloudinary integration for image hosting
-- Future-dated posts for content scheduling
-
-### Internationalization
-The blog system is fully internationalized:
-- All blog content (titles, excerpts, body) uses translation keys
-- Content processing utility (`useProcessBlogContent`) that replaces translation placeholders
-- Date formatting based on user's language preference
-- Category labels and UI elements translated via i18n system
-
-### Content Rendering
-- HTML content rendering with security considerations
-- Custom styling for various HTML elements (headings, lists, links)
-- Responsive typography for optimal reading experience
-- Support for embedded links and external resources
-
 ## Internationalization (i18n)
 
 The application supports multiple languages using the i18next library:
@@ -416,7 +354,6 @@ Each service module:
 The `/utils` directory contains reusable utility functions:
 
 - **apiHeaders.ts**: Functions for generating API request headers, handling iOS token management
-- **blogUtils.ts**: Tools for blog content processing with internationalization support
 - **currencyUtils.ts**: Currency formatting and visibility management
 - **dateUtils.ts**: Date conversion between local time and Supabase UTC formats
 - **deviceDetection.ts**: Device and browser detection utilities
@@ -443,9 +380,7 @@ The `/types` directory contains TypeScript type definitions:
   - **users.ts**: User models
   - **user_roles.ts**: User-role assignments
   - **year_records.ts**: Yearly financial record models
-
-- **blogPost.ts**: Blog content type definitions
-
+  
 ## Global Styles
 
 The `index.css` file contains global styles including:
