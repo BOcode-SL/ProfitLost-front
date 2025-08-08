@@ -172,7 +172,7 @@ export default function AnnualReport() {
         };
 
         window.addEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
-        
+
         return () => {
             window.removeEventListener(TRANSACTION_UPDATED_EVENT, handleTransactionUpdated);
         };
@@ -260,6 +260,24 @@ export default function AnnualReport() {
                             fullWidth
                             sx={{
                                 width: { xs: '100%', sm: 250 },
+                                height: '40px',
+                                '& .MuiToggleButton-root': {
+                                    height: '40px',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 500,
+                                    textTransform: 'none',
+                                    border: '1px solid rgba(0, 0, 0, 0.12)',
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        }
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                    }
+                                }
                             }}
                         >
                             <ToggleButton value="yearToday">
@@ -282,9 +300,9 @@ export default function AnnualReport() {
             </Paper>
 
             {/* Income, expense and balance summary cards */}
-            <AnnualBalances 
-                transactions={filteredTransactions} 
-                isLoading={isLoading && !isUpdatingViewMode} 
+            <AnnualBalances
+                transactions={filteredTransactions}
+                isLoading={isLoading && !isUpdatingViewMode}
             />
 
             {/* Category breakdown and management section */}
