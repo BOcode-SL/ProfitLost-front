@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Footer() {
     const { t } = useTranslation();
-    
+
     /**
      * Navigation links configuration for the footer
      * Each item contains translated text and target route
@@ -39,12 +39,25 @@ export default function Footer() {
         <Box
             component="footer"
             sx={{
-                bgcolor: '#F7F7F7',
+                bgcolor: '#f8f9fa',
                 pb: { xs: 3, sm: 4 },
-                mt: 'auto'
+                mt: 'auto',
+                position: 'relative',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '1px',
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(254, 111, 20, 0.2) 50%, transparent 100%)'
+                }
             }}
         >
-            <Divider sx={{ mb: { xs: 3, sm: 4 } }} />
+            <Divider sx={{
+                mb: { xs: 3, sm: 4 },
+                borderColor: 'rgba(254, 111, 20, 0.1)'
+            }} />
             <Container maxWidth="lg">
                 <Stack
                     direction={{ xs: 'column', md: 'row' }}
@@ -53,7 +66,7 @@ export default function Footer() {
                     alignItems={{ xs: 'center', md: 'flex-start' }}
                 >
                     {/* Logo and company description section */}
-                    <Box sx={{ 
+                    <Box sx={{
                         width: { xs: '100%', md: '60%' },
                         px: { xs: 2, sm: 0 },
                         textAlign: { xs: 'center', md: 'left' }
@@ -68,7 +81,11 @@ export default function Footer() {
                                 height: 'auto',
                                 display: 'block',
                                 marginLeft: { xs: 'auto', md: 0 },
-                                marginRight: { xs: 'auto', md: 0 }
+                                marginRight: { xs: 'auto', md: 0 },
+                                transition: 'transform 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'scale(1.05)'
+                                }
                             }}
                         />
                         <Typography
@@ -79,7 +96,8 @@ export default function Footer() {
                                 width: { xs: '100%', sm: '90%', md: '80%' },
                                 lineHeight: 1.7,
                                 mb: 2,
-                                mx: { xs: 'auto', md: 0 }
+                                mx: { xs: 'auto', md: 0 },
+                                opacity: 0.8
                             }}
                         >
                             {t('home.footer.description')}
@@ -98,12 +116,13 @@ export default function Footer() {
                             sx={{
                                 fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.25rem' },
                                 mb: { xs: 1.5, sm: 2 },
-                                fontWeight: 600
+                                fontWeight: 600,
+                                color: '#333'
                             }}
                         >
                             {t('home.footer.company')}
                         </Typography>
-                        <List sx={{ 
+                        <List sx={{
                             p: 0,
                             display: { xs: 'flex', md: 'block' },
                             flexWrap: 'wrap',
@@ -129,8 +148,12 @@ export default function Footer() {
                                                 primaryTypographyProps={{
                                                     sx: {
                                                         fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
-                                                        '&:hover': { color: '#fe6f14' },
-                                                        transition: 'color 0.2s ease'
+                                                        '&:hover': {
+                                                            color: '#fe6f14',
+                                                            transform: 'translateX(2px)'
+                                                        },
+                                                        transition: 'all 0.2s ease',
+                                                        cursor: 'pointer'
                                                     }
                                                 }}
                                             />
@@ -142,8 +165,12 @@ export default function Footer() {
                                                 primaryTypographyProps={{
                                                     sx: {
                                                         fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
-                                                        '&:hover': { color: '#fe6f14' },
-                                                        transition: 'color 0.2s ease'
+                                                        '&:hover': {
+                                                            color: '#fe6f14',
+                                                            transform: 'translateX(2px)'
+                                                        },
+                                                        transition: 'all 0.2s ease',
+                                                        cursor: 'pointer'
                                                     }
                                                 }}
                                             />
@@ -161,7 +188,7 @@ export default function Footer() {
                         mt: { xs: 4, sm: 5 },
                         pt: { xs: 2, sm: 3 },
                         borderTop: 1,
-                        borderColor: 'divider',
+                        borderColor: 'rgba(254, 111, 20, 0.1)',
                         textAlign: 'center'
                     }}
                 >
@@ -170,7 +197,8 @@ export default function Footer() {
                         color="text.secondary"
                         sx={{
                             fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
-                            py: { xs: 1, md: 0 }
+                            py: { xs: 1, md: 0 },
+                            opacity: 0.7
                         }}
                     >
                         {t('home.footer.copyright')} {' '}
@@ -180,7 +208,15 @@ export default function Footer() {
                             rel="noopener noreferrer"
                             style={{
                                 color: '#fe6f14',
-                                textDecoration: 'none'
+                                textDecoration: 'none',
+                                fontWeight: 500,
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
                             }}
                         >
                             Brian G. Novoa

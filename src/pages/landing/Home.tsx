@@ -62,40 +62,58 @@ export default function Home() {
 
             {/* Hero Section - Main promotional area */}
             <Box component="section" sx={{
-                pt: { xs: '140px', sm: 'clamp(140px, 10vw, 180px)' },
-                pb: { xs: '80px', sm: 'clamp(80px, 10vw, 120px)' }
+                minHeight: '100vh',
+                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                    pointerEvents: 'none'
+                }
             }}>
-                <Container maxWidth={false} sx={{ maxWidth: '1200px' }}>
+                <Container maxWidth={false} sx={{
+                    maxWidth: '1200px',
+                    position: 'relative',
+                    zIndex: 10
+                }}>
                     <Box sx={{
                         display: 'grid',
                         gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                         gap: { xs: '3rem', md: 'clamp(2rem, 4vw, 3rem)' },
                         alignItems: 'center',
-                        px: { xs: 'clamp(1rem, 5vw, 2rem)' }
+                        px: { xs: 'clamp(1rem, 5vw, 2rem)' },
+                        py: { xs: 'clamp(2rem, 8vw, 4rem)' }
                     }}>
                         {/* Left column - Text content */}
                         <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
                             <Typography
                                 variant="h1"
                                 sx={{
-                                    fontSize: 'clamp(2rem, 4vw, 3rem)',
+                                    fontSize: 'clamp(2.5rem, 6vw, 4rem)',
                                     fontWeight: 800,
                                     mb: 'clamp(1rem, 2vw, 1.5rem)',
-                                    background: 'linear-gradient(135deg, #f9701a 10%, #662803 90%)',
-                                    backgroundClip: 'text',
-                                    WebkitBackgroundClip: 'text',
-                                    color: 'transparent',
-                                    lineHeight: 1.2
+                                    color: 'white',
+                                    lineHeight: 1.1,
+                                    textShadow: '0 2px 4px rgba(0,0,0,0.3)'
                                 }}
                             >
                                 {t('home.hero.title')}
                             </Typography>
                             <Typography
                                 sx={{
-                                    fontSize: 'clamp(1.125rem, 2vw, 1.5rem)',
-                                    opacity: 0.8,
-                                    mb: 'clamp(1.5rem, 3vw, 2rem)',
-                                    lineHeight: 1.4
+                                    fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',
+                                    color: 'rgba(255,255,255,0.9)',
+                                    mb: 'clamp(2rem, 4vw, 3rem)',
+                                    lineHeight: 1.4,
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.2)'
                                 }}
                             >
                                 {t('home.hero.subtitle')}
@@ -104,18 +122,20 @@ export default function Home() {
                                 variant="contained"
                                 onClick={() => navigate('/auth')}
                                 sx={{
-                                    bgcolor: '#fe6f14',
-                                    color: '#ffffff',
-                                    borderRadius: '8px',
-                                    p: 'clamp(0.6rem, 1.5vw, 0.8rem) clamp(1.2rem, 2.5vw, 1.6rem)',
+                                    backgroundColor: 'white',
+                                    color: '#fe6f14',
+                                    borderRadius: '12px',
+                                    p: 'clamp(0.8rem, 2vw, 1rem) clamp(2rem, 4vw, 2.5rem)',
                                     fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
-                                    fontWeight: 500,
+                                    fontWeight: 600,
                                     transition: 'all 0.3s ease-in-out',
                                     mx: { xs: 'auto', md: 0 },
                                     display: { xs: 'block', md: 'inline-flex' },
+                                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
                                     '&:hover': {
-                                        transform: 'scale(1.02)',
-                                        bgcolor: '#c84f03'
+                                        transform: 'scale(1.05)',
+                                        backgroundColor: '#f8f9fa',
+                                        boxShadow: '0 12px 35px rgba(0,0,0,0.2)'
                                     }
                                 }}
                             >
@@ -137,15 +157,16 @@ export default function Home() {
                                     width: '100%',
                                     maxWidth: {
                                         xs: '100%',
-                                        sm: 'min(500px, 95%)',
-                                        md: 'min(600px, 90%)'
+                                        sm: 'min(600px, 100%)',
+                                        md: 'min(700px, 100%)',
+                                        lg: 'min(800px, 100%)'
                                     },
                                     height: 'auto',
                                     animation: 'float 6s ease-in-out infinite',
-                                    borderRadius: '0.5rem',
+                                    borderRadius: '16px',
                                     transition: 'transform 0.3s ease',
                                     m: { xs: '0 auto', md: 0 },
-                                    filter: 'drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3))',
+                                    filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
                                     '&:hover': {
                                         transform: 'scale(1.02)'
                                     }
@@ -180,7 +201,7 @@ export default function Home() {
                                 fontSize: { xs: '2rem', md: 'clamp(2.5rem, 4vw, 3rem)' },
                                 fontWeight: 800,
                                 mb: '0.5rem',
-                                background: 'linear-gradient(135deg, #f9701a 0%, #662803 100%)',
+                                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
                                 backgroundClip: 'text',
                                 WebkitBackgroundClip: 'text',
                                 color: 'transparent',
@@ -270,27 +291,31 @@ export default function Home() {
                                             bgcolor: 'white',
                                             borderRadius: '24px',
                                             p: '2rem',
-                                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+                                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
                                             transition: 'all 0.4s ease',
                                             textAlign: 'left',
                                             position: 'relative',
                                             overflow: 'hidden',
                                             border: '1px solid rgba(0, 0, 0, 0.08)',
+                                            '&:hover': {
+                                                transform: 'scale(1.02)',
+                                                boxShadow: '0 16px 48px rgba(0, 0, 0, 0.12)'
+                                            }
                                         }}
                                     >
                                         <Box sx={{
                                             background: 'linear-gradient(135deg, #fe6f14 0%, #ff8f4c 100%)',
                                             color: 'white',
-                                            width: '48px',
-                                            height: '48px',
+                                            width: '56px',
+                                            height: '56px',
                                             borderRadius: '16px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            fontSize: '1.25rem',
-                                            fontWeight: 600,
+                                            fontSize: '1.5rem',
+                                            fontWeight: 700,
                                             mb: '1.5rem',
-                                            boxShadow: '0 4px 12px rgba(254, 111, 20, 0.3)'
+                                            boxShadow: '0 8px 24px rgba(254, 111, 20, 0.3)'
                                         }}>
                                             {step.number}
                                         </Box>
@@ -384,7 +409,7 @@ export default function Home() {
                                 fontSize: { xs: '2rem', md: 'clamp(2.5rem, 4vw, 3rem)' },
                                 fontWeight: 800,
                                 mb: '0.5rem',
-                                background: 'linear-gradient(135deg, #f9701a 0%, #662803 100%)',
+                                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
                                 backgroundClip: 'text',
                                 WebkitBackgroundClip: 'text',
                                 color: 'transparent',
@@ -497,7 +522,7 @@ export default function Home() {
                                 fontSize: { xs: '2rem', md: 'clamp(2.5rem, 4vw, 3rem)' },
                                 fontWeight: 800,
                                 mb: '0.5rem',
-                                background: 'linear-gradient(135deg, #f9701a 0%, #662803 100%)',
+                                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
                                 backgroundClip: 'text',
                                 WebkitBackgroundClip: 'text',
                                 color: 'transparent',
@@ -531,7 +556,7 @@ export default function Home() {
                         >
                             {t('home.pricing.subtitle', 'Simple, transparent pricing for everyone')}
                         </Typography>
-                        <Typography
+                        <Box
                             sx={{
                                 fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
                                 color: '#fe6f14',
@@ -540,26 +565,55 @@ export default function Home() {
                                 mx: 'auto',
                                 mb: '3rem',
                                 lineHeight: 1.4,
-                                p: 2,
+                                p: 3,
                                 bgcolor: 'rgba(254, 111, 20, 0.05)',
-                                borderRadius: '12px',
+                                borderRadius: '16px',
                                 border: '1px solid rgba(254, 111, 20, 0.1)',
-                                display: 'inline-block'
+                                display: 'inline-block',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                '&::before': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '2px',
+                                    background: 'linear-gradient(90deg, #fe6f14 0%, #ff8f4c 100%)'
+                                }
                             }}
                         >
                             {t('home.pricing.trial', 'Try all Premium features free for 30 days — No credit card required')}
-                        </Typography>
+                        </Box>
 
-                        <Box className="pricing-container">
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                            gap: { xs: 2, md: 3 },
+                            maxWidth: '900px',
+                            mx: 'auto'
+                        }}>
                             {/* Monthly Plan */}
-                            <Box className="pricing-card">
+                            <Box sx={{
+                                bgcolor: 'white',
+                                borderRadius: '20px',
+                                p: { xs: 3, md: 4 },
+                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+                                border: '1px solid rgba(0, 0, 0, 0.08)',
+                                transition: 'all 0.3s ease',
+                                position: 'relative',
+                                '&:hover': {
+                                    boxShadow: '0 16px 48px rgba(0, 0, 0, 0.12)'
+                                }
+                            }}>
                                 <Typography
                                     variant="h4"
                                     sx={{
                                         fontSize: { xs: '1.25rem', sm: '1.5rem' },
                                         fontWeight: 700,
                                         mb: 2,
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        color: '#333'
                                     }}
                                 >
                                     {t('home.pricing.monthly.title', 'Monthly Plan')}
@@ -572,7 +626,7 @@ export default function Home() {
                                 }}>
                                     <Typography
                                         sx={{
-                                            fontSize: { xs: '2rem', sm: '2.5rem' },
+                                            fontSize: { xs: '2.5rem', sm: '3rem' },
                                             fontWeight: 800,
                                             color: '#333'
                                         }}
@@ -594,7 +648,8 @@ export default function Home() {
                                         fontWeight: 600,
                                         color: '#fe6f14',
                                         mb: 3,
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        fontSize: '0.9rem'
                                     }}
                                 >
                                     {t('home.pricing.monthly.advantage', 'Flexible payment, cancel anytime')}
@@ -605,10 +660,12 @@ export default function Home() {
                                     sx={{
                                         color: '#fe6f14',
                                         borderColor: '#fe6f14',
-                                        borderRadius: '8px',
-                                        p: { xs: '0.6rem 1.2rem', sm: '0.75rem 1.5rem' },
+                                        borderRadius: '12px',
+                                        p: { xs: '0.8rem 1.5rem', sm: '1rem 2rem' },
                                         fontWeight: 600,
+                                        fontSize: '1rem',
                                         transition: 'all 0.3s ease',
+                                        width: '100%',
                                         '&:hover': {
                                             borderColor: '#c84f03',
                                             bgcolor: 'rgba(254, 111, 20, 0.04)',
@@ -621,11 +678,33 @@ export default function Home() {
                             </Box>
 
                             {/* Annual Plan */}
-                            <Box className="pricing-card highlight">
+                            <Box sx={{
+                                bgcolor: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                                background: 'linear-gradient(135deg, #fe6f14 0%, #c84f03 100%)',
+                                borderRadius: '20px',
+                                p: { xs: 3, md: 4 },
+                                boxShadow: '0 8px 32px rgba(254, 111, 20, 0.2)',
+                                transition: 'all 0.3s ease',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                '&:hover': {
+                                    boxShadow: '0 16px 48px rgba(254, 111, 20, 0.3)'
+                                },
+                                '&::before': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '100%',
+                                    background: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                                    pointerEvents: 'none'
+                                }
+                            }}>
                                 <Box sx={{
                                     position: 'absolute',
-                                    top: { xs: '8px', sm: '12px' },
-                                    right: { xs: '8px', sm: '12px' },
+                                    top: { xs: '12px', sm: '16px' },
+                                    right: { xs: '12px', sm: '16px' },
                                     bgcolor: 'white',
                                     color: '#fe6f14',
                                     borderRadius: '20px',
@@ -633,7 +712,8 @@ export default function Home() {
                                     py: 0.5,
                                     fontSize: { xs: '0.75rem', sm: '0.875rem' },
                                     fontWeight: 700,
-                                    whiteSpace: 'nowrap'
+                                    whiteSpace: 'nowrap',
+                                    zIndex: 1
                                 }}>
                                     {t('home.pricing.annual.popular', 'Most Popular')}
                                 </Box>
@@ -644,7 +724,9 @@ export default function Home() {
                                         fontWeight: 700,
                                         mb: 2,
                                         color: 'white',
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        position: 'relative',
+                                        zIndex: 1
                                     }}
                                 >
                                     {t('home.pricing.annual.title', 'Annual Plan')}
@@ -653,11 +735,13 @@ export default function Home() {
                                     display: 'flex',
                                     alignItems: 'baseline',
                                     justifyContent: 'center',
-                                    mb: 3
+                                    mb: 3,
+                                    position: 'relative',
+                                    zIndex: 1
                                 }}>
                                     <Typography
                                         sx={{
-                                            fontSize: { xs: '2rem', sm: '2.5rem' },
+                                            fontSize: { xs: '2.5rem', sm: '3rem' },
                                             fontWeight: 800,
                                             color: 'white'
                                         }}
@@ -675,13 +759,17 @@ export default function Home() {
                                     </Typography>
                                 </Box>
                                 <Box sx={{
-                                    bgcolor: 'rgba(255,255,255,0.2)',
-                                    borderRadius: '8px',
-                                    p: 1,
+                                    bgcolor: 'rgba(255,255,255,0.15)',
+                                    borderRadius: '12px',
+                                    p: 1.5,
                                     mb: 3,
                                     fontWeight: 600,
                                     textAlign: 'center',
-                                    width: '100%'
+                                    width: '100%',
+                                    fontSize: '0.9rem',
+                                    color: 'white',
+                                    position: 'relative',
+                                    zIndex: 1
                                 }}>
                                     {t('home.pricing.annual.advantage', 'Save 16% compared to monthly plan')}
                                 </Box>
@@ -691,12 +779,16 @@ export default function Home() {
                                     sx={{
                                         bgcolor: 'white',
                                         color: '#fe6f14',
-                                        borderRadius: '8px',
-                                        p: { xs: '0.6rem 1.2rem', sm: '0.75rem 1.5rem' },
+                                        borderRadius: '12px',
+                                        p: { xs: '0.8rem 1.5rem', sm: '1rem 2rem' },
                                         fontWeight: 600,
+                                        fontSize: '1rem',
                                         transition: 'all 0.3s ease',
+                                        width: '100%',
+                                        position: 'relative',
+                                        zIndex: 1,
                                         '&:hover': {
-                                            bgcolor: '#f5f5f5',
+                                            bgcolor: '#f8f9fa',
                                             transform: 'scale(1.02)'
                                         }
                                     }}

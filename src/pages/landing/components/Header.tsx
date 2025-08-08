@@ -58,11 +58,16 @@ export default function Header() {
                 sx={{
                     maxWidth: '1200px !important',
                     margin: '0 auto',
-                    bgcolor: isScrolled ? 'rgba(255, 255, 255, 0.8)' : '#ffffff',
-                    borderRadius: '1rem',
-                    backdropFilter: isScrolled ? 'blur(10px)' : 'none',
-                    WebkitBackdropFilter: isScrolled ? 'blur(10px)' : 'none',
+                    bgcolor: isScrolled ? 'rgba(255, 255, 255, 0.4)' : '#ffffff',
+                    borderRadius: '16px',
+                    backdropFilter: isScrolled ? 'blur(20px)' : 'blur(10px)',
+                    WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'blur(10px)',
                     padding: '0 !important',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: isScrolled
+                        ? '0 8px 32px rgba(0, 0, 0, 0.1)'
+                        : '0 4px 16px rgba(0, 0, 0, 0.05)',
+                    transition: 'all 0.3s ease'
                 }}
             >
                 <Toolbar
@@ -81,7 +86,11 @@ export default function Header() {
                         sx={{
                             width: { xs: 120, sm: 150 },
                             cursor: 'pointer',
-                            userSelect: 'none'
+                            userSelect: 'none',
+                            transition: 'transform 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'scale(1.05)'
+                            }
                         }}
                         onClick={() => navigate('/')}
                     />
@@ -99,13 +108,14 @@ export default function Header() {
                                 px: { xs: 2, sm: 3 },
                                 py: { xs: 0.8, sm: 1 },
                                 fontSize: { xs: '0.875rem', sm: '1rem' },
-                                fontWeight: 500,
-                                boxShadow: 'none',
+                                fontWeight: 600,
+                                boxShadow: '0 4px 16px rgba(254, 111, 20, 0.3)',
                                 whiteSpace: 'nowrap',
                                 transition: 'all 0.3s ease-in-out',
                                 '&:hover': {
                                     transform: 'scale(1.02)',
                                     backgroundColor: '#c84f03',
+                                    boxShadow: '0 6px 24px rgba(254, 111, 20, 0.4)'
                                 }
                             }}
                         >
