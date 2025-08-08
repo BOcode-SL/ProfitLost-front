@@ -36,7 +36,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { X, Plus } from 'react-feather';
+import { X, Plus, Edit, Trash2 } from 'react-feather';
 import { accountService } from '../../../../../services/account.service';
 
 // Types
@@ -645,6 +645,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
                 <Button
                     variant="outlined"
                     color="error"
+                    startIcon={<Trash2 size={20} color="currentColor" />}
                     onClick={() => setDeleteDialog(true)}
                     fullWidth
                 >
@@ -653,6 +654,7 @@ export default function AccountsForm({ onClose, onSuccess, onDelete, account }: 
             )}
             <Button
                 variant="contained"
+                startIcon={account ? <Edit size={20} color="currentColor" /> : <Plus size={20} color="currentColor" />}
                 onClick={handleSubmit}
                 disabled={savingChanges}
                 fullWidth

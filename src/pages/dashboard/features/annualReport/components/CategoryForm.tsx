@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { X } from 'react-feather';
+import { X, Edit, Trash2, Plus } from 'react-feather';
 
 // Services
 import { categoryService } from '../../../../../services/category.service';
@@ -151,6 +151,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
                 <Button
                     variant="outlined"
                     color="error"
+                    startIcon={<Trash2 size={20} color="currentColor" />}
                     onClick={onDelete}
                     disabled={saving}
                     fullWidth
@@ -160,6 +161,7 @@ export default function CategoryForm({ category, onSubmit, onClose, onDelete }: 
             )}
             <Button
                 variant="contained"
+                startIcon={category ? <Edit size={20} color="currentColor" /> : <Plus size={20} color="currentColor" />}
                 onClick={handleSubmit}
                 disabled={saving}
                 fullWidth

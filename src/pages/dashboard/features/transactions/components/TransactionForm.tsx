@@ -44,7 +44,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import { X } from 'react-feather';
+import { X, Edit, Trash2, Plus } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -512,6 +512,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                         onClick={handleDeleteClick}
                         variant="outlined"
                         color="error"
+                        startIcon={<Trash2 size={20} color="currentColor" />}
                         disabled={isDeleting || isSubmitting}
                         fullWidth
                     >
@@ -520,6 +521,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                     <Button
                         onClick={handleSubmit}
                         variant="contained"
+                        startIcon={<Edit size={20} color="currentColor" />}
                         disabled={isSubmitting}
                         fullWidth
                     >
@@ -535,6 +537,7 @@ export default function TransactionForm({ transaction, onSubmit, onClose, catego
                 <Button
                     onClick={handleSubmit}
                     variant="contained"
+                    startIcon={<Plus size={20} color="currentColor" />}
                     disabled={isSubmitting}
                     fullWidth
                 >

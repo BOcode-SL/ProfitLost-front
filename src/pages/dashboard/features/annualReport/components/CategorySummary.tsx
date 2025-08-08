@@ -43,7 +43,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { X, Edit, Trash2, Search, Calendar, TrendingUp, TrendingDown, Search as SearchOff } from 'react-feather';
+import { X, Edit, Search, Calendar, TrendingUp, TrendingDown, Search as SearchOff } from 'react-feather';
 
 // Contexts
 import { useUser } from '../../../../../contexts/UserContext';
@@ -296,15 +296,6 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
     const actionButtons = useMemo(() => (
         <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Trash2 size={20} color="currentColor" />}
-                onClick={() => setDeleteDialogOpen(true)}
-                fullWidth
-            >
-                {t('dashboard.common.delete')}
-            </Button>
-            <Button
                 variant="contained"
                 startIcon={<Edit size={20} color="currentColor" />}
                 onClick={() => onEdit(category)}
@@ -492,7 +483,8 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
                                                 <Box key={transaction.id}>
                                                     <Box
                                                         sx={{
-                                                            p: 1,
+                                                            px: 2,
+                                                            py: 1,
                                                             my: 1,
                                                             borderRadius: 3,
                                                             display: 'flex',
@@ -504,15 +496,12 @@ export default function CategorySummary({ category, onSubmit, onClose, onEdit }:
                                                             },
                                                         }}
                                                     >
-
-
                                                         {/* Transaction description and date information */}
                                                         <Box
                                                             sx={{
                                                                 flex: 1,
                                                                 display: 'flex',
                                                                 flexDirection: 'column',
-                                                                px: 1,
                                                             }}
                                                         >
                                                             <Typography variant="body1">
